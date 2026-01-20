@@ -1,1 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>LanguagePrep Ireland - French</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      /* Colores ajustados ligeramente a un tono más "Francés" (Azul/Rojo/Blanco implícito) */
+      --primary: #2563eb; 
+      --secondary: #ef4444; /* Rojo para acentos */
+      --bg: #f8fafc; 
+      --text: #1e293b; 
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+    .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 90vh; display: flex; flex-direction: column; }
+    
+    /* HEADER */
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; }
+    .subtitle { color: var(--secondary); margin-top: 5px; font-size: 0.95rem; font-weight: 700; }
+    
+    .info-toggle { background: #e0f2fe; color: #0369a1; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; gap: 5px; }
+    .info-box { display: none; background: #f0f9ff; border: 1px solid #bae6fd; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; color: #334155; }
 
+    /* SECTION: CONVERSATION STYLES */
+    .level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+    .level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
+    .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .level-btn.hl.active { color: var(--secondary); }
+
+    .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: transform 0.2s; }
+    .mock-btn:hover { transform: scale(1.02); }
+
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 25px; }
+    .topic-btn { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; text-align: center; color: #475569; transition: 0.2s; }
+    .topic-btn:hover { background: #f1f5f9; }
+    .topic-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); transform: scale(1.02); }
+
+    .question-card { background: #fdf2f8; border-left: 5px solid var(--secondary); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+    
+    /* SHARED COMPONENTS */
+    .audio-btn { margin-top: 15px; background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); }
+    textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
+    textarea:focus { border-color: var(--secondary); outline: none; }
+    .btn-main { width: 100%; padding: 16px; background: var(--text); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
+    .btn-main:disabled { opacity: 0.5; cursor: wait; }
+
+    /* RESULT & FOOTER */
+    #result { margin-top: 30px; display: none; }
+    .student-response-box { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #94a3b8; font-style: italic; color: #475569; }
+    .feedback-box { padding: 25px; border-radius: 15px; background: #fff; border: 1px solid #e2e8f0; }
+    .error-item { margin-bottom: 15px; padding: 15px; background: #fff1f2; border-radius: 10px; border-left: 4px solid #ef4444; }
+
+    .footer-section { margin-top: auto; padding: 40px 20px 20px; border-top: 1px solid #e2e8f0; background: #fafafa; border-radius: 20px; text-align: center; }
+    .profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 15px; }
+    .bio-text { max-width: 600px; margin: 0 auto 25px auto; font-size: 0.95rem; line-height: 1.6; color: #475569; text-align: justify; }
+    .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.2s; }
+    .revolut-btn:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>LanguagePrep Ireland</h1>
+    <p class="subtitle">Module: Leaving Cert French (Oral)</p>
+    
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
+    <div id="infoBox" class="info-box">
+      <strong>Instructions:</strong>
+      <ul>
+        <li>🗣️ <strong>General Conversation:</strong> Select a topic to practice common exam questions.</li>
+        <li>🎲 <strong>Mock Exam:</strong> Click "Start Mock Exam" to get 5 random questions (including Past/Future tenses).</li>
+        <li>⌨️ <strong>Keyboard:</strong> Always use the French keyboard on your phone for voice typing to ensure accents are correct.</li>
+      </ul>
+    </div>
+  </header>
+
+  <div id="sectionConversation">
+    <div class="level-selector">
+      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
+    </div>
+
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <div class="topic-grid" id="topicGrid"></div>
+
+    <div id="exerciseArea" style="display:none;">
+      <div class="question-card">
+        <div id="qDisplay" style="font-weight: 700;"></div>
+        <button class="audio-btn" onclick="speakText()">🔊 Écouter (Listen)</button>
+      </div>
+      <textarea id="userInput" placeholder="Type or use your microphone (French keyboard)..."></textarea>
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate Answer</button>
+    </div>
+
+    <div id="result">
+      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseText"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbFR" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbEN" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsList"></div>
+      </div>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Try another topic</button>
+    </div>
+  </div>
+
+   <div class="footer-section">
+    <img src="david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    
+    <h3 style="margin: 0 0 5px 0;">David Martín</h3>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Spanish Teacher at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="bio-text">
+      <p><em>As a teacher, my goal is to create innovative tools like <strong>LanguagePrep Ireland</strong> to help students excel in their Leaving Cert exams using technology responsibly and effectively.</em></p>
+      <p><em>Mi objetivo es crear recursos innovadores que fomenten un uso responsable y eficiente de la tecnología en la preparación de los exámenes de Leaving Cert.</em></p>
+    </div>
+
+    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
+    
+    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
+      <p>All resources are 100% free. If this tool helps you, consider supporting the project.</p>
+    </div>
+
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
+        Found a bug? Have an idea? Let me know!<br>
+        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
+      </p>
+      
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback (Anonymous)
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+<script>
+// ===========================================
+// CONFIGURACIÓN Y CLAVES (API KEY)
+// ===========================================
+// Pegue aquí su clave API en dos partes como solicitado
+const parteA = "AIzaSyASf_PIq7es0iPVt"; 
+const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
+const API_KEY = parteA + parteB;
+
+// --- NAVEGACIÓN ---
+function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
+
+// ===========================================
+// PARTE 1: CONVERSATION (AI - GEMINI)
+// ===========================================
+let currentLevel = 'OL';
+let currentTopic = null;
+let isMockExam = false; 
+let mockQuestions = []; 
+let mockIndex = 0;      
+
+// Base de datos de Conversación (15 Temas FRANCÉS)
+const DATA = [
+  { title: "1. Moi-même", OL: "Comment t'appelles-tu ? Quel âge as-tu ? Quelle est ta date de naissance ?", HL: "Parle-moi de toi. Décris ta personnalité et tes qualités principales." },
+  { title: "2. Ma famille", OL: "Il y a combien de personnes dans ta famille ? Tu as des frères et sœurs ?", HL: "Parle-moi de ta famille. Est-ce que tu t'entends bien avec tes parents et tes frères et sœurs ?" },
+  { title: "3. Les amis", OL: "Tu as beaucoup d'amis ? Comment s'appelle ton meilleur ami ?", HL: "Parle-moi de ton meilleur ami ou ta meilleure amie. Pourquoi est-ce qu'il/elle est important(e) pour toi ?" },
+  { title: "4. Ma maison", OL: "Tu habites dans une maison ou un appartement ? Comment est ta chambre ?", HL: "Décris ta maison idéale. Si tu pouvais changer quelque chose chez toi, ce serait quoi ?" },
+  { title: "5. Mon quartier", OL: "Est-ce qu'il y a des magasins près de chez toi ? Il y a un parc ?", HL: "Parle-moi de ton quartier. Est-ce qu'il y a des problèmes sociaux ou de la délinquance ?" },
+  { title: "6. Ma ville/village", OL: "Tu aimes ta ville ? Qu'est-ce qu'il y a à faire pour les jeunes ?", HL: "Quels sont les avantages et les inconvénients de vivre en ville par rapport à la campagne ?" },
+  { title: "7. L'école", OL: "Comment s'appelle ton école ? C'est une école mixte ? Il y a combien d'élèves ?", HL: "Parle-moi de ton lycée. Que penses-tu du système éducatif irlandais et des règles de l'école ?" },
+  { title: "8. Les matières", OL: "Quelles matières étudies-tu ? Quelle est ta matière préférée ?", HL: "Parle-moi de tes matières. Penses-tu que le Leaving Cert est un bon système d'évaluation ?" },
+  { title: "9. La routine", OL: "À quelle heure tu te lèves le matin ? À quelle heure tu rentres chez toi ?", HL: "Décris ta journée typique. Est-ce que tu trouves tes journées stressantes en ce moment ?" },
+  { title: "10. Les passe-temps", OL: "Qu'est-ce que tu fais pendant ton temps libre ? Tu fais du sport ?", HL: "Parle-moi de tes loisirs. Pourquoi est-il important d'avoir des passe-temps pour la santé mentale ?" },
+  { title: "11. Tâches ménagères", OL: "Est-ce que tu aides à la maison ? Tu fais ton lit ?", HL: "Parle-moi du partage des tâches ménagères chez toi. Est-ce que c'est équitable ?" },
+  { title: "12. Les vacances", OL: "Où es-tu allé en vacances l'année dernière ? Tu aimes la France ?", HL: "Parle-moi de tes vacances. Préfères-tu partir à l'étranger ou rester en Irlande ? Pourquoi ?" },
+  { title: "13. L'avenir", OL: "Qu'est-ce que tu vas faire l'année prochaine ? Tu veux aller à l'université ?", HL: "Quels sont tes projets pour l'avenir ? Quel métier aimerais-tu faire et pourquoi ?" },
+  { title: "14. Week-end dernier", OL: "Qu'est-ce que tu as fait le week-end dernier ? Tu es sorti ?", HL: "Raconte-moi ce que tu as fait le week-end dernier. C'était un bon week-end ?" },
+  { title: "15. Week-end prochain", OL: "Qu'est-ce que tu feras le week-end prochain ?", HL: "Quels sont tes projets pour le week-end prochain ? Tu as prévu quelque chose de spécial ?" }
+];
+
+// Preguntas Aleatorias de Tiempo (Pasado / Futuro)
+const PAST_Q = ["Qu'est-ce que tu as fait le week-end dernier ?", "Où es-tu allé l'été dernier ?", "Qu'est-ce que tu as fait hier soir ?"];
+const FUT_Q = ["Qu'est-ce que tu feras demain ?", "Quels sont tes projets pour l'été ?", "Qu'est-ce que tu feras après les examens ?"];
+
+function setLevel(lvl) { 
+    currentLevel = lvl; 
+    document.getElementById('btnOL').className = lvl === 'OL' ? 'level-btn active' : 'level-btn'; 
+    document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
+    if(currentTopic && !isMockExam) updateQuestion(); 
+}
+
+function initConv() { 
+    const g = document.getElementById('topicGrid'); 
+    DATA.forEach((item) => { 
+        const b = document.createElement('button'); 
+        b.className = 'topic-btn'; 
+        b.innerText = item.title; 
+        b.onclick = () => { 
+            isMockExam = false; 
+            document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
+            b.classList.add('active'); 
+            currentTopic = item; 
+            updateQuestion(); 
+        }; 
+        g.appendChild(b); 
+    }); 
+}
+
+function speakText() { 
+    const rawHTML = document.getElementById('qDisplay').innerHTML;
+    // Limpieza de texto para el TTS
+    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASSÉ\)|\(FUTUR\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
+    
+    if ('speechSynthesis' in window) { 
+        window.speechSynthesis.cancel(); 
+        const u = new SpeechSynthesisUtterance(t); 
+        u.lang = 'fr-FR'; // Voz en Francés
+        u.rate = 0.9; 
+        window.speechSynthesis.speak(u); 
+    } 
+}
+
+// === LÓGICA DEL MOCK EXAM SECUENCIAL (FRANCÉS) ===
+
+function startMockExam() { 
+    isMockExam = true; 
+    mockIndex = 0; 
+    document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
+    
+    // Seleccionamos 5 preguntas: 3 temas random + 1 Pasado + 1 Futuro
+    let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
+    mockQuestions = [
+        DATA[i[0]][currentLevel],
+        DATA[i[1]][currentLevel],
+        DATA[i[2]][currentLevel],
+        PAST_Q[Math.floor(Math.random()*3)] + " (PASSÉ)",
+        FUT_Q[Math.floor(Math.random()*3)] + " (FUTUR)"
+    ];
+    
+    showMockQuestion();
+}
+
+function showMockQuestion() {
+    document.getElementById('exerciseArea').style.display = 'block'; 
+    document.getElementById('result').style.display = 'none'; 
+    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
+    document.getElementById('userInput').value = "";
+}
+
+function nextMockQuestion() {
+    mockIndex++;
+    showMockQuestion();
+}
+
+function updateQuestion() { 
+    document.getElementById('exerciseArea').style.display = 'block'; 
+    document.getElementById('result').style.display = 'none'; 
+    document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
+}
+
+function resetApp() { 
+    document.getElementById('result').style.display = 'none'; 
+    document.getElementById('exerciseArea').style.display = 'block'; 
+    if(isMockExam) {
+        isMockExam = false;
+        document.getElementById('userInput').value = "";
+        document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
+    } else {
+        document.getElementById('userInput').value = "";
+    }
+}
+
+async function analyze() {
+  const t = document.getElementById('userInput').value; 
+  if(t.length < 3) return alert("S'il te plaît, écris ou dis quelque chose...");
+  
+  const b = document.getElementById('btnAction'); 
+  b.disabled = true; 
+  b.innerText = "⏳ Grading...";
+
+  const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
+
+  // 🔥 PROMPT ACTUALIZADO PARA FRANCÉS 🔥
+  const prompt = `
+    ACT AS: Sympathetic French Leaving Cert Oral Examiner (Ireland).
+    CONTEXT: The input is RAW VOICE TRANSCRIPTION. It has NO PUNCTUATION and NO CAPITALIZATION.
+    
+    QUESTION ASKED: "${questionContext}"
+    
+    CRITICAL INSTRUCTIONS:
+    1. IGNORE completely the lack of punctuation.
+    2. IGNORE run-on sentences. 
+    3. CURRENT LEVEL: ${currentLevel}.
+       - If Ordinary Level (OL): Be VERY GENEROUS. If the French is understandable, score HIGH (80-100%).
+       - If Higher Level (HL): Look for vocabulary/tenses, but still ignore writing mechanics.
+    
+    TASK:
+    Evaluate the student's answer: "${t}"
+    
+    OUTPUT JSON ONLY:
+    {
+      "score": (0-100 based on communication),
+      "feedback_fr": "Brief motivating feedback in French",
+      "feedback_en": "Brief feedback in English",
+      "errors": [
+        { "original": "error", "correction": "fix", "explanation_en": "reason" }
+      ]
+    }
+  `;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    const d = await r.json(); 
+    const cleanJson = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+    const j = JSON.parse(cleanJson);
+    
+    document.getElementById('exerciseArea').style.display = 'none'; 
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('userResponseText').innerText = t;
+    
+    const s = document.getElementById('scoreDisplay');
+    s.innerText = `Score: ${j.score}%`;
+    s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+
+    document.getElementById('fbFR').innerText = "🇫🇷 " + j.feedback_fr; 
+    document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
+    
+    const l = document.getElementById('errorsList'); 
+    l.innerHTML = "";
+    
+    if(j.errors && j.errors.length > 0) {
+        j.errors.forEach(e => { 
+            l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; 
+        });
+    } else {
+        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Très bien ! (Very Good! No significant errors found).</div>";
+    }
+
+    // --- LÓGICA DEL BOTÓN SIGUIENTE EN MOCK EXAM ---
+    const btnReset = document.getElementById('btnReset');
+    if (isMockExam) {
+        if (mockIndex < 4) {
+            btnReset.innerText = "➡️ Next Question";
+            btnReset.onclick = nextMockQuestion; 
+        } else {
+            btnReset.innerText = "🏁 Finish Exam";
+            btnReset.onclick = resetApp; 
+        }
+    } else {
+        btnReset.innerText = "🔄 Try another topic";
+        btnReset.onclick = resetApp;
+    }
+
+  } catch (e) { 
+    console.error(e);
+    alert("Error communicating with AI evaluator. Please try again."); 
+  } finally { 
+    b.disabled = false; 
+    b.innerText = "✨ Evaluate Answer"; 
+  }
+}
+
+// Inicialización
+initConv();
+</script>
+</body>
+</html>

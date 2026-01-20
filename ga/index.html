@@ -170,23 +170,87 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// Base de datos de Conversación (15 Temas de Irlandés)
+// ===========================================
+// DATA CURATED BY EXPERT LEAVING CERT EXAMINER
+// ===========================================
 const DATA = [
-  { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Inis dom fút féin (aois, dath na súl, gruaig).", HL: "Inis dom fút féin. Cén saghas duine thú? Déan cur síos ar do phearsantacht." },
-  { title: "2. Mo Chlann", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha nó deirfiúracha agat?", HL: "Labhair liom faoi do theaghlach. An réitíonn tú go maith leo? Cé hé/hí an duine is gaire duit?" },
-  { title: "3. An Scoil", OL: "An maith leat an scoil seo? Cén t-ábhar is fearr leat?", HL: "Cad é do thuairim faoin gcóras oideachais? An gcuireann an Ardteist brú millteanach ar dhaltaí?" },
-  { title: "4. Caitheamh Aimsire", OL: "Cad a dhéanann tú ag an deireadh seachtaine? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le caitheamh aimsire don mheabhairshláinte? Cad a dhéanann tusa chun scíth a ligean?" },
-  { title: "5. Mo Cheantar", OL: "Cé as thú? An bhfuil go leor áiseanna i do cheantar?", HL: "Déan cur síos ar d’áit chónaithe. Cad iad na fadhbanna is mó atá i do cheantar féin?" },
-  { title: "6. Laethanta Saoire", OL: "Cá ndeachaigh tú ar laethanta saoire anuraidh? An maith leat an Spáinn?", HL: "An fearr leat laethanta saoire in Éirinn nó thar lear? Cén fáth?" },
-  { title: "7. Obair Bhaile", OL: "An bhfaigheann tú a lán obair bhaile? Cén t-ábhar is deacra?", HL: "An gceapann tú go bhfuil an iomarca obair bhaile ag daltaí san Ardteist? Cad a dhéanfá chun an scéal a fheabhsú?" },
-  { title: "8. An Ghaeltacht", OL: "An raibh tú riamh sa Ghaeltacht? Ar thaitin sé leat?", HL: "Cad é do thuairim faoi staid na Gaeilge inniu? An bhfuil todhchaí ag an teanga?" },
-  { title: "9. Fadhbanna Sóisialta", OL: "Cad iad na fadhbanna atá ag daoine óga inniu?", HL: "Tá fadhbanna móra ag an domhan inniu (bochtanas, cogaí, tithíocht). Labhair liom faoi fhadhb amháin atá ag déanamh imní duit." },
-  { title: "10. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteistiméireachta? An rachaidh tú chuig an ollscoil?", HL: "Cén saol atá romhat, dar leat? Ar mhaith leat obair in Éirinn nó dul ar imirce?" },
-  { title: "11. An Aimsir", OL: "Cén sort aimsire atá againn inniu? An maith leat an geimhreadh?", HL: "Is breá leis na Gaeil a bheith ag caint faoin aimsir. Cad é do thuairim faoin athrú aeráide?" },
-  { title: "12. Bia & Deoch", OL: "Cén bia is fearr leat? An maith leat bia folláin?", HL: "An bhfuil nósanna itheacháin ag athrú in Éirinn? An itheann daoine óga bia folláin go leor?" },
-  { title: "13. Sláinte", OL: "An bhfuil tú sláintiúil? An ndéanann tú aclaíocht?", HL: "Cén tábhacht a bhaineann le stíl mhaireachtála shláintiúil? Cad a dhéanann tusa chun fanacht aclaí?" },
-  { title: "14. Teicneolaíocht", OL: "An bhfuil fón póca agat? Cén aip is fearr leat?", HL: "An bhfuilimid ró-spleách ar an teicneolaíocht inniu? Pléigh na buntáistí agus na míbhuntáistí a bhaineann leis na meáin shóisialta." },
-  { title: "15. Ceol & Cultúr", OL: "An maith leat ceol? Cén banna ceoil is fearr leat?", HL: "Tá cultúr saibhir againn in Éirinn. An bhfuil suim agat sa cheol nó sa chultúr Gaelach?" }
+  { 
+    title: "1. Mé Féin (Myself)", 
+    OL: "Cén t-ainm atá ort? Cén aois thú? Inis dom fút féin (dath na súl, gruaig).", 
+    HL: "Inis dom fút féin. Cén saghas duine thú? Cad iad na buanna agus na laigí atá agat?" 
+  },
+  { 
+    title: "2. Mo Chlann (Family)", 
+    OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha nó deirfiúracha agat?", 
+    HL: "An réitíonn tú go maith le do thuismitheoirí i gcónaí? Inis dom faoin duine is sine sa chlann." 
+  },
+  { 
+    title: "3. An Scoil (School)", 
+    OL: "Cén t-ábhar is fearr leat? An maith leat an éide scoile (uniform)?", 
+    HL: "Déan cur síos ar na háiseanna sa scoil seo (leabharlann, halla spóirt). Cad a dhéanfá chun an scoil a fheabhsú?" 
+    // Nota: "Cad a dhéanfá" fuerza el Condicional (puntos extra).
+  },
+  { 
+    title: "4. Caitheamh Aimsire (Hobbies)", 
+    OL: "Cad a dhéanann tú ag an deireadh seachtaine? An imríonn tú spórt?", 
+    HL: "Cén tábhacht a bhaineann leis an spórt do dhaoine óga? An gceapann tú go bhfuil an iomarca brú ar dhaoine óga inniu?" 
+  },
+  { 
+    title: "5. Mo Cheantar (Area)", 
+    OL: "Cá bhfuil tú i do chónaí? An bhfuil pictiúrlann nó páirc in aice láimhe?", 
+    HL: "Déan cur síos ar d’áit chónaithe. Cad iad na fadhbanna sóisialta atá i do cheantar féin (coiriúlacht, drugaí)?" 
+  },
+  { 
+    title: "6. Laethanta Saoire (Holidays)", 
+    OL: "Cá ndeachaigh tú ar laethanta saoire anuraidh? Ar thaitin an bia leat?", 
+    HL: "An fearr leat laethanta saoire in Éirinn nó thar lear? Dá mbuafá an Crannchur Náisiúnta, cá rachfá?" 
+    // Nota: Pregunta de Lotería = Condicional clásico.
+  },
+  { 
+    title: "7. Obair Bhaile (Homework)", 
+    OL: "Cé mhéad ama a chaitheann tú ar obair bhaile gach oíche?", 
+    HL: "An gceapann tú go bhfuil an córas pointí san Ardteist cothrom? Cad é do thuairim faoin mbrú scoile?" 
+  },
+  { 
+    title: "8. An Ghaeltacht", 
+    OL: "An raibh tú riamh sa Ghaeltacht? Ar fhan tú i dteach an choláiste?", 
+    HL: "Cad é do thuairim faoi staid na Gaeilge? Cad is féidir linn a dhéanamh chun an teanga a chur chun cinn?" 
+  },
+  { 
+    title: "9. Fadhbanna Sóisialta", 
+    OL: "Cad iad na fadhbanna atá ag déagóirí? (Alcól, drugaí, bulaíocht)", 
+    HL: "Tá fadhb na tithíochta agus na dtimpeallachta go dona. Cad a dhéanfadh an rialtas dá mbeadh an t-airgead acu?" 
+  },
+  { 
+    title: "10. An Todhchaí (Future)", 
+    OL: "Cad a dhéanfaidh tú tar éis na scoile? An rachaidh tú go dtí an coláiste?", 
+    HL: "Cén post ba mhaith leat a fháil sa todhchaí agus cén fáth? An rachaidh tú ar imirce, dar leat?" 
+  },
+  { 
+    title: "11. An Aimsir (Weather)", 
+    OL: "Cén sort aimsire atá againn inniu? An maith leat an samhradh?", 
+    HL: "Is breá leis na Gaeil a bheith ag caint faoin aimsir. Cad é do thuairim faoin athrú aeráide agus téamh domhanda?" 
+  },
+  { 
+    title: "12. Obair Pháirtaimseartha", 
+    OL: "An bhfuil post páirtaimseartha agat? An bhfaigheann tú airgead póca?", 
+    HL: "An bhfuil sé deacair staidéar agus obair a dhéanamh ag an am céanna? Cad iad na buntáistí a bhaineann le post a bheith agat?" 
+  },
+  { 
+    title: "13. Sláinte & Stíl Mhaireachtála", 
+    OL: "Cad a itheann tú don lón de ghnáth? An bhfuil tú sláintiúil?", 
+    HL: "An gceapann tú go bhfuil fadhb an otrachta (obesity) in Éirinn? Cén fáth a bhfuil bia mear (fast food) chomh coitianta?" 
+  },
+  { 
+    title: "14. Teicneolaíocht", 
+    OL: "An bhfuil fón póca agat? Cén aip is fearr leat (TikTok, Instagram)?", 
+    HL: "An bhfuilimid ró-spleách ar an teicneolaíocht? Pléigh an tionchar atá ag na meáin shóisialta ar mheabhairshláinte daoine óga." 
+  },
+  { 
+    title: "15. Ceol & Féilte", 
+    OL: "An maith leat ceol? An raibh tú ag ceolchoirm riamh?", 
+    HL: "Is tír chultúrtha í Éire. An bhfuil suim agat i gceol Gaelach nó i bhféilte mar Electric Picnic?" 
+  }
 ];
 
 // Preguntas extra para el Mock Exam (Pasado y Futuro)

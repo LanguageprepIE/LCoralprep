@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LanguagePrep Ireland - Leaving Cert Oral Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #f8fafc; --text: #1e293b; --blue: #2563eb; --purple: #7c3aed; --green: #16a34a; --orange: #ea580c; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; text-align: center; }
+    
+    .hero { padding: 60px 20px; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; letter-spacing: -1px; color: var(--text); }
+    .subtitle { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto 40px auto; line-height: 1.6; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    
+    .card { background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: transparent; }
+    
+    .flag { font-size: 3rem; margin-bottom: 15px; }
+    .card h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
+    .card p { margin: 0; color: #64748b; font-size: 0.9rem; }
+    .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 15px; }
+    
+    /* Colores específicos */
+    .es:hover { border-top: 5px solid var(--orange); }
+    .fr:hover { border-top: 5px solid var(--blue); }
+    .ga:hover { border-top: 5px solid var(--green); }
+    .it { opacity: 0.6; cursor: not-allowed; } /* Italiano desactivado por ahora */
+
+    footer { margin-top: 60px; padding: 40px; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>LanguagePrep Ireland</h1>
+    <p class="subtitle">
+      Free AI-powered oral preparation tools for Leaving Certificate students.<br>
+      Created by <strong>David Martín</strong> (Ardgillan CC).
+    </p>
+
+    <div class="grid">
+      <a href="/es/" class="card es">
+        <div class="flag">🇪🇸</div>
+        <h2>Spanish</h2>
+        <p>Conversation topics & Roleplays with AI feedback.</p>
+        <span class="badge" style="background:#ffedd5; color:#c2410c;">Ready</span>
+      </a>
+
+      <a href="/fr/" class="card fr">
+        <div class="flag">🇫🇷</div>
+        <h2>French</h2>
+        <p>Prepare your Document & Oral topics.</p>
+        <span class="badge" style="background:#dbeafe; color:#1e40af;">Ready</span>
+      </a>
+
+      <a href="/ga/" class="card ga">
+        <div class="flag">🇮🇪</div>
+        <h2>Irish (Gaeilge)</h2>
+        <p>Sraith Pictiúr & Comhrá practice.</p>
+        <span class="badge" style="background:#dcfce7; color:#15803d;">Beta</span>
+      </a>
+
+      <div class="card it">
+        <div class="flag">🇮🇹</div>
+        <h2>Italian</h2>
+        <p>Coming soon...</p>
+        <span class="badge" style="background:#f1f5f9; color:#64748b;">In Development</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 LanguagePrep Ireland. All tools are free for students.</p>
+    <p>Using AI responsibly for education.</p>
+  </footer>
+
+</body>
+</html>

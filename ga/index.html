@@ -287,10 +287,35 @@ function initConv() {
 }
 
 function speakText() {
-    // 🔇 AUDIO DESACTIVADO INTENCIONADAMENTE PARA IRLANDÉS
-    // Como la mayoría de dispositivos no tienen voz nativa 'ga-IE',
-    // es mejor que no suene nada a que suene con acento inglés.
-    console.log("Audio desactivado para Gaeilge para proteger la pronunciación.");
+    // 1. Decidir qué texto leer (Pregunta del Mock o del Tema)
+    let textToRead = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
+
+    if ('speechSynthesis' in window) {
+        // Cancelar cualquier audio anterior
+        window.speechSynthesis.cancel();
+
+        // 2. Buscar TODAS las voces disponibles en el dispositivo
+        const voices = window.speechSynthesis.getVoices();
+        
+        // 3. Buscar si hay alguna que sea de irlandés (busca "ga", "Gaeilge" o "Irish")
+        // Nota: Android suele tener 'ga-IE', iOS a veces no.
+        const irishVoice = voices.find(voice => 
+            voice.lang.includes('ga') || voice.name.includes('Gaeilge')
+        );
+
+        // 4. EL FILTRO: Solo hablamos si encontramos una voz irlandesa
+        if (irishVoice) {
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.voice = irishVoice; // Forzamos usar esa voz específica
+            utterance.lang = 'ga-IE';
+            utterance.rate = 0.9; // Un pelín más lento para claridad
+            window.speechSynthesis.speak(utterance);
+            console.log("☘️ Voz irlandesa encontrada y usada: " + irishVoice.name);
+        } else {
+            // Si no hay voz, NO hacemos nada. Silencio absoluto.
+            console.log("🚫 No hay voz irlandesa. Silencio activado para evitar acento inglés.");
+        }
+    }
 }
 
 // === LÓGICA DEL MOCK EXAM (Simulacro) ===

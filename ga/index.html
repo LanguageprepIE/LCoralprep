@@ -286,26 +286,11 @@ function initConv() {
     }); 
 }
 
-function speakText() { 
-    // 1. Coge el HTML de la pregunta
-    const rawHTML = document.getElementById('qDisplay').innerHTML;
-    
-    // 2. LIMPIEZA:
-    // - <[^>]*> : Quita las negritas (<b>) y saltos de linea (<br>)
-    // - HL|OL : Quita las etiquetas de nivel si se colaran
-    // - [0-9]\. : Quita los números de pregunta (ej: "1.")
-    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
-    
-    // 3. Comprobación de soporte
-    if ('speechSynthesis' in window) { 
-        window.speechSynthesis.cancel(); 
-        const u = new SpeechSynthesisUtterance(t); 
-        u.lang = 'ga-IE'; // ESTO ES LO IMPORTANTE: Acento Irlandés
-        u.rate = 0.9;     // Velocidad un poco más lenta para claridad
-        window.speechSynthesis.speak(u); 
-    } else {
-        alert("Your device does not support Text-to-Speech.");
-    }
+function speakText() {
+    // 🔇 AUDIO DESACTIVADO INTENCIONADAMENTE PARA IRLANDÉS
+    // Como la mayoría de dispositivos no tienen voz nativa 'ga-IE',
+    // es mejor que no suene nada a que suene con acento inglés.
+    console.log("Audio desactivado para Gaeilge para proteger la pronunciación.");
 }
 
 // === LÓGICA DEL MOCK EXAM (Simulacro) ===

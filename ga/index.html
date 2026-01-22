@@ -40,7 +40,12 @@
     .topic-btn.active { border-color: var(--primary); background: #dcfce7; color: var(--primary); transform: scale(1.02); }
 
     .question-card { background: #fff7ed; border-left: 5px solid var(--secondary); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+        /* ESTILOS NUEVOS PARA POESÍA */
+    .poem-selector { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .poem-btn { min-width: 140px; padding: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #475569; text-align: center; }
+    .poem-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); }
     
+    .poem-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 15px; padding: 25px; white-space: pre-line; line-height: 1.8; font-size: 1.05rem; color: #334155; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
     /* SHARED COMPONENTS */
     .audio-btn { margin-top: 15px; background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); }
     textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
@@ -73,20 +78,21 @@
     <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
     
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
-    <div id="infoBox" class="info-box">
+        <div id="infoBox" class="info-box">
       <strong>Instructions / Treoracha:</strong>
       <ul>
-        <li>🗣️ <strong>Comhrá (Conversation):</strong> Select a topic below to practice.</li>
-        <li>🎲 <strong>Mock Exam:</strong> Click "Start Mock Exam" for 5 random questions.</li>
+        <li>🗣️ <strong>Comhrá:</strong> Practice conversation topics & Mock Exam.</li>
+        <li>📜 <strong>Filíocht (Poetry):</strong> Read and listen to the poems (Audio by ElevenLabs).</li>
         <li>⌨️ <strong>Keyboard:</strong> Please use the Irish keyboard settings if possible.</li>
       </ul>
 
-            <div style="margin-top: 15px; padding: 10px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 0.85rem;">
+      <div style="margin-top: 15px; padding: 10px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 0.85rem;">
         <p style="margin: 0 0 5px 0;"><strong>⚠️ Note on Audio:</strong></p>
         <p style="margin: 0 0 10px 0;">
           Irish speech synthesis is <strong>experimental</strong>. Devices (Windows/Mac/iPad) often do not have an Irish voice installed by default. 
           <br><br>
           <strong>If the "Listen" button is silent</strong>, it means your computer or device does not support Irish audio yet. Please type your answers instead.
+          <br><em>(Note: The Poetry section uses pre-recorded audio, so it will always work).</em>
         </p>
         <hr style="border: 0; border-top: 1px solid #fcd34d; margin: 5px 0;">
         <p style="margin: 5px 0 0 0;"><strong>⚠️ Nóta faoin bhfuaim:</strong></p>
@@ -97,11 +103,10 @@
     </div>
   </header>
 
-  <div id="sectionConversation">
-    <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Gnáthleibhéal (OL)</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Ardleibhéal (HL)</button>
-    </div>
+  <div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Comhrá (Topics)</button>
+    <button class="tab-btn" onclick="switchTab('poem')" id="tabPoem">📜 Filíocht (Poetry)</button>
+  </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam / Tosaigh Béaltriail</button>
     
@@ -127,6 +132,24 @@
         <div id="errorsList"></div>
       </div>
       <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Try another topic</button>
+    </div>
+  </div>
+  <div id="sectionPoetry" style="display:none;">
+    <div class="poem-selector">
+      <div class="poem-btn" onclick="selectPoem(0, this)">1. Géibheann</div>
+      <div class="poem-btn" onclick="selectPoem(1, this)">2. Colscaradh</div>
+      <div class="poem-btn" onclick="selectPoem(2, this)">3. Mo Ghrá-sa</div>
+      <div class="poem-btn" onclick="selectPoem(3, this)">4. An tEarrach</div>
+      <div class="poem-btn" onclick="selectPoem(4, this)">5. An Spailpín</div>
+      <div class="poem-btn" onclick="selectPoem(5, this)" style="border-color:#ea580c; color:#ea580c;">📖 6. Iníon</div>
+    </div>
+
+    <div id="poemArea" style="display:none;">
+      <audio id="poemAudio" controls style="width: 100%; margin-bottom: 20px;">
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <div class="poem-card" id="poemText"></div>
     </div>
   </div>
 
@@ -346,7 +369,61 @@ async function analyze() {
 
   } catch (e) { console.error(e); alert("Error communicating with AI."); } finally { b.disabled = false; b.innerText = "✨ Evaluate / Ceartaigh"; }
 }
+// === FUNCIÓN DE PESTAÑAS (NUEVA) ===
+function switchTab(tab) {
+  document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('tabPoem').className = tab === 'poem' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
+  document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
+}
 
+// ===========================================
+// DATOS DE POESÍA (LOS 5 CLÁSICOS + INÍON)
+// ===========================================
+const POEMS = [
+  {
+    title: "Géibheann (Caitlín Maude)",
+    text: `Ainmhí mé\nainmhí allta\nas na teochreasa\na bhfuil clú agus cáil\nar mo scéimh\nchroithfinn crainnte na coille\ntráth\nle mo gháir\nach anois\nluím síos\nagus breathnaím trí leathshúil\nar an gcrann aonraic sin thall\ntagann na céadta daoine\nchuile lá\na dhéanfadh rud ar bith\ndom\nach mé a ligean amach`
+  },
+  {
+    title: "Colscaradh (Pádraig Mac Suibhne)",
+    text: `Shantaigh sé bean\ni nead a chine,\nfaoiseamh is gean\nar leac a thine,\naiteas is greann\ni dtógáil clainne.\n\nShantaigh sí fear\nis taobh den bhríste,\ndídean is searc\nis leath den chíste,\nsaoire thar lear\nis meas na mílte.\n\nThángthas ar réiteach.\nScaradar.`
+  },
+  {
+    title: "Mo Ghrá-sa (idir lúibíní) (Nuala Ní Dhomhnaill)",
+    text: `Níl mo ghrá-sa\nmar bhláth na n-airní\na bhíonn i ngairdín\n(nó ar chrann ar bith).\n\nIs má tá aon ghaol aige\nle nóiníní\nis as a chluasa a fhásfaidh siad\n(nuair a bheidh sé ocht dtroigh síos).\n\nNí haon ghlaise cheolmhar\niad a shúile\n(táid róchóngarach dá chéile\nar an gcéad dul síos).\n\nIs más slim é síoda\ntá ribí a ghruaige\n(mar bhean dhubh Shakespeare)\nina wire deilgní.\n\nAch is cuma sin.\nTugann sé dom úlla\n(is nuair a bhíonn sé i ndea-ghiúmar\ncaora fíniúna).`
+  },
+  {
+    title: "An tEarrach Thiar (Máirtín Ó Direáin)",
+    text: `Fear ag glanadh cré\nde ghimseán spáide\nsa gciúnas séimh\ni mbrothall lae:\nBinn an fhuaim\nsan Earrach thiar.\n\nFear ag caitheamh\ncliabh dhá dhroim\nis an fheamainn dhearg\nag lonrú\ni dtaitneamh gréine\nar dhuirling bhán:\nNiamhrach an radharc\nsan Earrach thiar.\n\nFear i ndiaidh\ncliabh aar a dhroim\nsa gciúnas séimh\nis an fheamainn dhearg\nag lonrú\ni dtaitneamh gréine\nar dhuirling bhán.`
+  },
+  {
+    title: "An Spailpín Fánach (Anaithnid)",
+    text: `Is spailpín fánach atáim\nLe fada ag siúl na drúchta,\nAgus ní bhfaighinn i gCorcaigh\nAon fháilte ná i gCluain Meala.\n\nMo léan is mo chrá\nMar a d'imigh mo shláinte\nIs nach bhfuair mé bás\nSula ndearnadh spailpín díom.\n\nAg dul go Caiseal dom\nba chráite an turas é,\ngach bodaire leath-mhagadh\nfúm is a shúile ar leathadh aige.\n\nGo deo deo arís\nní rachad go Caiseal\nag díol ná ag reic mo shláinte\nar mhargadh na saoire.`
+  },
+  {
+    title: "Iníon (Áine Durkin)",
+    text: `'Níl clue a'd, Mom!' a dúirt tú liom\n's tú ag iompú uaim le fearg,\ntá deora i do shúile anois\nag do ráiteas gontach searbh.\n\nBhí mise freisin i d'aois tráth\ni mo dhéagóir meidhreach cool,\na cheap gur óinseach cheart an bhean\na chuir cosa i dtaca romham.\n\nAnois tuigim ciall na máthar sin\nagus iníon óg agam féin,\nis déanaim mar a mhol sí dom\nlena comhairle láidir thréan.\n\nIs ceapann tú go dteipim ort\nbhuel, tuigim duit, a chroí,\nach níl aon lá nár mhéadaigh mo ghrá\nó tháinig tú i mo shaol.`
+  }
+];
+
+function selectPoem(index, btn) {
+    document.querySelectorAll('.poem-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.getElementById('poemArea').style.display = 'block';
+    
+    // Título en negrita + Texto
+    document.getElementById('poemText').innerHTML = `<strong>${POEMS[index].title}</strong><br><br>${POEMS[index].text}`;
+    
+    // Audio Player (CORREGIDO PARA MAYÚSCULAS Poem1.mp3)
+    const audio = document.getElementById('poemAudio');
+    const source = document.getElementById('audioSource');
+    
+    // Aquí es donde he puesto la 'P' mayúscula para que coincida con tus archivos
+    source.src = `Poem${index + 1}.mp3`; 
+    audio.load();
+}
 initConv();
 </script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

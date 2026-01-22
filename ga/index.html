@@ -8,10 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root { 
-      /* Colores ajustados para la versión Irlandesa (Verde/Naranja) */
-      --primary: #16a34a; /* Verde Irlanda */
+      /* Colores Irlanda (Verde, Blanco, Naranja) */
+      --primary: #16a34a; /* Verde */
       --secondary: #ea580c; /* Naranja */
-      --bg: #f0fdf4; /* Fondo verde muy pálido */
+      --bg: #f0fdf4; 
       --text: #1e293b; 
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
@@ -66,10 +66,10 @@
 <div class="container">
   <header>
     <h1>
-  <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
-    LanguagePrep Ireland
-  </a>
-</h1>
+      <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
+        LanguagePrep Ireland
+      </a>
+    </h1>
     <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
     
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
@@ -78,8 +78,22 @@
       <ul>
         <li>🗣️ <strong>Comhrá (Conversation):</strong> Select a topic below to practice.</li>
         <li>🎲 <strong>Mock Exam:</strong> Click "Start Mock Exam" for 5 random questions.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Please use the Irish keyboard settings if possible, or type normally (fada's will be checked).</li>
+        <li>⌨️ <strong>Keyboard:</strong> Please use the Irish keyboard settings if possible.</li>
       </ul>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 0.85rem;">
+        <p style="margin: 0 0 5px 0;"><strong>⚠️ Note on Audio:</strong></p>
+        <p style="margin: 0 0 10px 0;">
+          Irish speech synthesis is <strong>experimental</strong>. Devices (Windows/Mac/iPad) often do not have an Irish voice installed by default. 
+          <br><br>
+          <strong>If the "Listen" button is silent</strong>, it means your computer or device does not support Irish audio yet. Please type your answers instead.
+        </p>
+        <hr style="border: 0; border-top: 1px solid #fcd34d; margin: 5px 0;">
+        <p style="margin: 5px 0 0 0;"><strong>⚠️ Nóta faoin bhfuaim:</strong></p>
+        <p style="margin: 0;">
+          Mura gcloiseann tú dada, níl guth Gaeilge suiteáilte ar do ríomhaire/ghléas. Clóscríobh do chuid freagraí le do thoil.
+        </p>
+      </div>
     </div>
   </header>
 
@@ -117,7 +131,7 @@
   </div>
 
    <div class="footer-section">
-    <img src="david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
@@ -130,24 +144,17 @@
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
     
     <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
-      <p>All resources are 100% free. If this tool helps you, consider supporting the project.</p>
+      <p>All resources are 100% free.</p>
     </div>
 
     <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
-      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
-      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
-        Found a bug? Have an idea? Let me know!<br>
-        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
-      </p>
-      
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        
-        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
+        <textarea name="message" placeholder="Type your suggestion..." required
                   style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
-        
         <button type="submit" 
                 style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
-          Send Feedback (Anonymous)
+          Send Feedback
         </button>
       </form>
     </div>
@@ -158,9 +165,8 @@
 // ===========================================
 // CONFIGURACIÓN Y CLAVES (API KEY)
 // ===========================================
-// PEGA AQUÍ TU CLAVE DE API DE GOOGLE GEMINI
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
+const parteA = ""; // <--- PON TU CLAVE AQUI
+const parteB = ""; // <--- PON TU CLAVE AQUI
 const API_KEY = parteA + parteB;
 
 // --- NAVEGACIÓN ---
@@ -179,86 +185,23 @@ let mockIndex = 0;
 // DATA CURATED BY EXPERT LEAVING CERT EXAMINER
 // ===========================================
 const DATA = [
-  { 
-    title: "1. Mé Féin (Myself)", 
-    OL: "Cén t-ainm atá ort? Cén aois thú? Inis dom fút féin (dath na súl, gruaig).", 
-    HL: "Inis dom fút féin. Cén saghas duine thú? Cad iad na buanna agus na laigí atá agat?" 
-  },
-  { 
-    title: "2. Mo Chlann (Family)", 
-    OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha nó deirfiúracha agat?", 
-    HL: "An réitíonn tú go maith le do thuismitheoirí i gcónaí? Inis dom faoin duine is sine sa chlann." 
-  },
-  { 
-    title: "3. An Scoil (School)", 
-    OL: "Cén t-ábhar is fearr leat? An maith leat an éide scoile (uniform)?", 
-    HL: "Déan cur síos ar na háiseanna sa scoil seo (leabharlann, halla spóirt). Cad a dhéanfá chun an scoil a fheabhsú?" 
-    // Nota: "Cad a dhéanfá" fuerza el Condicional (puntos extra).
-  },
-  { 
-    title: "4. Caitheamh Aimsire (Hobbies)", 
-    OL: "Cad a dhéanann tú ag an deireadh seachtaine? An imríonn tú spórt?", 
-    HL: "Cén tábhacht a bhaineann leis an spórt do dhaoine óga? An gceapann tú go bhfuil an iomarca brú ar dhaoine óga inniu?" 
-  },
-  { 
-    title: "5. Mo Cheantar (Area)", 
-    OL: "Cá bhfuil tú i do chónaí? An bhfuil pictiúrlann nó páirc in aice láimhe?", 
-    HL: "Déan cur síos ar d’áit chónaithe. Cad iad na fadhbanna sóisialta atá i do cheantar féin (coiriúlacht, drugaí)?" 
-  },
-  { 
-    title: "6. Laethanta Saoire (Holidays)", 
-    OL: "Cá ndeachaigh tú ar laethanta saoire anuraidh? Ar thaitin an bia leat?", 
-    HL: "An fearr leat laethanta saoire in Éirinn nó thar lear? Dá mbuafá an Crannchur Náisiúnta, cá rachfá?" 
-    // Nota: Pregunta de Lotería = Condicional clásico.
-  },
-  { 
-    title: "7. Obair Bhaile (Homework)", 
-    OL: "Cé mhéad ama a chaitheann tú ar obair bhaile gach oíche?", 
-    HL: "An gceapann tú go bhfuil an córas pointí san Ardteist cothrom? Cad é do thuairim faoin mbrú scoile?" 
-  },
-  { 
-    title: "8. An Ghaeltacht", 
-    OL: "An raibh tú riamh sa Ghaeltacht? Ar fhan tú i dteach an choláiste?", 
-    HL: "Cad é do thuairim faoi staid na Gaeilge? Cad is féidir linn a dhéanamh chun an teanga a chur chun cinn?" 
-  },
-  { 
-    title: "9. Fadhbanna Sóisialta", 
-    OL: "Cad iad na fadhbanna atá ag déagóirí? (Alcól, drugaí, bulaíocht)", 
-    HL: "Tá fadhb na tithíochta agus na dtimpeallachta go dona. Cad a dhéanfadh an rialtas dá mbeadh an t-airgead acu?" 
-  },
-  { 
-    title: "10. An Todhchaí (Future)", 
-    OL: "Cad a dhéanfaidh tú tar éis na scoile? An rachaidh tú go dtí an coláiste?", 
-    HL: "Cén post ba mhaith leat a fháil sa todhchaí agus cén fáth? An rachaidh tú ar imirce, dar leat?" 
-  },
-  { 
-    title: "11. An Aimsir (Weather)", 
-    OL: "Cén sort aimsire atá againn inniu? An maith leat an samhradh?", 
-    HL: "Is breá leis na Gaeil a bheith ag caint faoin aimsir. Cad é do thuairim faoin athrú aeráide agus téamh domhanda?" 
-  },
-  { 
-    title: "12. Obair Pháirtaimseartha", 
-    OL: "An bhfuil post páirtaimseartha agat? An bhfaigheann tú airgead póca?", 
-    HL: "An bhfuil sé deacair staidéar agus obair a dhéanamh ag an am céanna? Cad iad na buntáistí a bhaineann le post a bheith agat?" 
-  },
-  { 
-    title: "13. Sláinte & Stíl Mhaireachtála", 
-    OL: "Cad a itheann tú don lón de ghnáth? An bhfuil tú sláintiúil?", 
-    HL: "An gceapann tú go bhfuil fadhb an otrachta (obesity) in Éirinn? Cén fáth a bhfuil bia mear (fast food) chomh coitianta?" 
-  },
-  { 
-    title: "14. Teicneolaíocht", 
-    OL: "An bhfuil fón póca agat? Cén aip is fearr leat (TikTok, Instagram)?", 
-    HL: "An bhfuilimid ró-spleách ar an teicneolaíocht? Pléigh an tionchar atá ag na meáin shóisialta ar mheabhairshláinte daoine óga." 
-  },
-  { 
-    title: "15. Ceol & Féilte", 
-    OL: "An maith leat ceol? An raibh tú ag ceolchoirm riamh?", 
-    HL: "Is tír chultúrtha í Éire. An bhfuil suim agat i gceol Gaelach nó i bhféilte mar Electric Picnic?" 
-  }
+  { title: "1. Mé Féin (Myself)", OL: "Cén t-ainm atá ort? Cén aois thú? Inis dom fút féin (dath na súl, gruaig).", HL: "Inis dom fút féin. Cén saghas duine thú? Cad iad na buanna agus na laigí atá agat?" },
+  { title: "2. Mo Chlann (Family)", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha nó deirfiúracha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí i gcónaí? Inis dom faoin duine is sine sa chlann." },
+  { title: "3. An Scoil (School)", OL: "Cén t-ábhar is fearr leat? An maith leat an éide scoile?", HL: "Déan cur síos ar na háiseanna sa scoil seo. Cad a dhéanfá chun an scoil a fheabhsú?" },
+  { title: "4. Caitheamh Aimsire (Hobbies)", OL: "Cad a dhéanann tú ag an deireadh seachtaine? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann leis an spórt do dhaoine óga? An bhfuil an iomarca brú ar dhaoine óga?" },
+  { title: "5. Mo Cheantar (Area)", OL: "Cá bhfuil tú i do chónaí? An bhfuil pictiúrlann nó páirc in aice láimhe?", HL: "Déan cur síos ar d’áit chónaithe. Cad iad na fadhbanna sóisialta atá i do cheantar féin?" },
+  { title: "6. Laethanta Saoire (Holidays)", OL: "Cá ndeachaigh tú ar laethanta saoire anuraidh? Ar thaitin an bia leat?", HL: "An fearr leat laethanta saoire in Éirinn nó thar lear? Dá mbuafá an Crannchur Náisiúnta, cá rachfá?" },
+  { title: "7. Obair Bhaile (Homework)", OL: "Cé mhéad ama a chaitheann tú ar obair bhaile gach oíche?", HL: "An gceapann tú go bhfuil an córas pointí san Ardteist cothrom? Cad é do thuairim faoin mbrú scoile?" },
+  { title: "8. An Ghaeltacht", OL: "An raibh tú riamh sa Ghaeltacht? Ar fhan tú i dteach an choláiste?", HL: "Cad é do thuairim faoi staid na Gaeilge? Cad is féidir linn a dhéanamh chun an teanga a chur chun cinn?" },
+  { title: "9. Fadhbanna Sóisialta", OL: "Cad iad na fadhbanna atá ag déagóirí? (Alcól, drugaí, bulaíocht)", HL: "Tá fadhb na tithíochta agus na dtimpeallachta go dona. Cad a dhéanfadh an rialtas dá mbeadh an t-airgead acu?" },
+  { title: "10. An Todhchaí (Future)", OL: "Cad a dhéanfaidh tú tar éis na scoile? An rachaidh tú go dtí an coláiste?", HL: "Cén post ba mhaith leat a fháil sa todhchaí agus cén fáth? An rachaidh tú ar imirce, dar leat?" },
+  { title: "11. An Aimsir (Weather)", OL: "Cén sort aimsire atá againn inniu? An maith leat an samhradh?", HL: "Is breá leis na Gaeil a bheith ag caint faoin aimsir. Cad é do thuairim faoin athrú aeráide agus téamh domhanda?" },
+  { title: "12. Obair Pháirtaimseartha", OL: "An bhfuil post páirtaimseartha agat? An bhfaigheann tú airgead póca?", HL: "An bhfuil sé deacair staidéar agus obair a dhéanamh ag an am céanna? Cad iad na buntáistí a bhaineann le post a bheith agat?" },
+  { title: "13. Sláinte", OL: "Cad a itheann tú don lón de ghnáth? An bhfuil tú sláintiúil?", HL: "An gceapann tú go bhfuil fadhb an otrachta in Éirinn? Cén fáth a bhfuil bia mear chomh coitianta?" },
+  { title: "14. Teicneolaíocht", OL: "An bhfuil fón póca agat? Cén aip is fearr leat?", HL: "An bhfuilimid ró-spleách ar an teicneolaíocht? Pléigh an tionchar atá ag na meáin shóisialta." },
+  { title: "15. Ceol & Féilte", OL: "An maith leat ceol? An raibh tú ag ceolchoirm riamh?", HL: "Is tír chultúrtha í Éire. An bhfuil suim agat i gceol Gaelach nó i bhféilte mar Electric Picnic?" }
 ];
 
-// Preguntas extra para el Mock Exam (Pasado y Futuro)
 const PAST_Q = ["Cad a rinne tú an deireadh seachtaine seo caite?", "Cá ndeachaigh tú an samhradh seo caite?", "Cad a rinne tú inné tar éis na scoile?"];
 const FUT_Q = ["Cad a dhéanfaidh tú an deireadh seachtaine seo chugainn?", "Cad a dhéanfaidh tú an samhradh seo chugainn?", "Cad iad na pleananna atá agat don bhliain seo chugainn?"];
 
@@ -287,45 +230,32 @@ function initConv() {
 }
 
 function speakText() {
-    // 1. Decidir qué texto leer (Pregunta del Mock o del Tema)
     let textToRead = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-
     if ('speechSynthesis' in window) {
-        // Cancelar cualquier audio anterior
         window.speechSynthesis.cancel();
-
-        // 2. Buscar TODAS las voces disponibles en el dispositivo
         const voices = window.speechSynthesis.getVoices();
-        
-        // 3. Buscar si hay alguna que sea de irlandés (busca "ga", "Gaeilge" o "Irish")
-        // Nota: Android suele tener 'ga-IE', iOS a veces no.
-        const irishVoice = voices.find(voice => 
-            voice.lang.includes('ga') || voice.name.includes('Gaeilge')
-        );
+        // Intentar encontrar voz irlandesa
+        const irishVoice = voices.find(voice => voice.lang.includes('ga') || voice.name.includes('Gaeilge'));
 
-        // 4. EL FILTRO: Solo hablamos si encontramos una voz irlandesa
         if (irishVoice) {
             const utterance = new SpeechSynthesisUtterance(textToRead);
-            utterance.voice = irishVoice; // Forzamos usar esa voz específica
+            utterance.voice = irishVoice;
             utterance.lang = 'ga-IE';
-            utterance.rate = 0.9; // Un pelín más lento para claridad
+            utterance.rate = 0.9; 
             window.speechSynthesis.speak(utterance);
-            console.log("☘️ Voz irlandesa encontrada y usada: " + irishVoice.name);
         } else {
-            // Si no hay voz, NO hacemos nada. Silencio absoluto.
-            console.log("🚫 No hay voz irlandesa. Silencio activado para evitar acento inglés.");
+            // SI NO HAY VOZ, NO LEEMOS NADA PARA NO CONFUNDIR
+            alert("No Irish voice found on this device / Níor aimsíodh guth Gaeilge ar an ngléas seo.");
         }
     }
 }
 
-// === LÓGICA DEL MOCK EXAM (Simulacro) ===
-
+// === LÓGICA DEL MOCK EXAM ===
 function startMockExam() { 
     isMockExam = true; 
     mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     
-    // Elige 3 preguntas aleatorias de los temas + 1 Pasado + 1 Futuro
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
     mockQuestions = [
         DATA[i[0]][currentLevel],
@@ -334,7 +264,6 @@ function startMockExam() {
         PAST_Q[Math.floor(Math.random()*PAST_Q.length)],
         FUT_Q[Math.floor(Math.random()*FUT_Q.length)]
     ];
-    
     showMockQuestion();
 }
 
@@ -345,10 +274,7 @@ function showMockQuestion() {
     document.getElementById('userInput').value = "";
 }
 
-function nextMockQuestion() {
-    mockIndex++;
-    showMockQuestion();
-}
+function nextMockQuestion() { mockIndex++; showMockQuestion(); }
 
 function updateQuestion() { 
     document.getElementById('exerciseArea').style.display = 'block'; 
@@ -362,7 +288,7 @@ function resetApp() {
     if(isMockExam) {
         isMockExam = false;
         document.getElementById('userInput').value = "";
-        document.getElementById('qDisplay').innerHTML = "Select a topic above to start / Roghnaigh topaic thuas.";
+        document.getElementById('qDisplay').innerHTML = "Select a topic above to start.";
     } else {
         document.getElementById('userInput').value = "";
     }
@@ -370,52 +296,31 @@ function resetApp() {
 
 async function analyze() {
   const t = document.getElementById('userInput').value; 
-  if(t.length < 3) return alert("Please type an answer first / Scríobh freagra le do thoil.");
+  if(t.length < 3) return alert("Scríobh freagra le do thoil.");
   
   const b = document.getElementById('btnAction'); 
   b.disabled = true; 
-  b.innerText = "⏳ Ag ceartú (Grading)...";
+  b.innerText = "⏳ Ag ceartú...";
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
-  // 🔥 PROMPT ADAPTADO A GAEILGE 🔥
   const prompt = `
     ACT AS: Sympathetic Leaving Cert Irish Examiner (Gaeilge).
-    CONTEXT: The input is RAW VOICE TRANSCRIPTION or TYPED TEXT. It likely has NO PUNCTUATION and NO CAPITALIZATION.
-    
+    CONTEXT: The input is RAW VOICE TRANSCRIPTION or TYPED TEXT. IGNORE lack of punctuation.
     QUESTION ASKED: "${questionContext}"
-    
-    CRITICAL INSTRUCTIONS:
-    1. IGNORE completely the lack of punctuation/capitalization.
-    2. FOCUS on Gaeilge grammar: Tuiseal Ginideach, Séimhiú, Úrú, Briathra (Tenses).
-    3. CURRENT LEVEL: ${currentLevel}.
-       - If OL (Gnáthleibhéal): Be GENEROUS. If communication is clear, score HIGH.
-       - If HL (Ardleibhéal): Look for richer vocabulary and correct grammar structures.
-    
-    TASK:
-    Evaluate the student's answer: "${t}"
-    
-    OUTPUT JSON ONLY:
-    {
-      "score": (0-100 based on communication & grammar accuracy),
-      "feedback_ga": "Brief motivating feedback in Irish (Gaeilge)",
-      "feedback_en": "Brief feedback in English explaining the main advice",
-      "errors": [
-        { "original": "error phrase", "correction": "corrected phrase", "explanation_en": "brief grammar rule (e.g., 'needs an úrú after ar')" }
-      ]
-    }
+    LEVEL: ${currentLevel}.
+    TASK: Evaluate the student's answer: "${t}".
+    OUTPUT JSON ONLY: { "score": (0-100), "feedback_ga": "Irish feedback", "feedback_en": "English explanation", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }
   `;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
     
     const d = await r.json(); 
-    const cleanJson = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
-    const j = JSON.parse(cleanJson);
+    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
@@ -428,45 +333,22 @@ async function analyze() {
     document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
     
-    const l = document.getElementById('errorsList'); 
-    l.innerHTML = "";
-    
-    if(j.errors && j.errors.length > 0) {
-        j.errors.forEach(e => { 
-            l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; 
-        });
-    } else {
-        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Ar fheabhas! (Excellent! No major errors found).</div>";
-    }
+    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "<div style='color:#166534; font-weight:bold;'>✅ Ar fheabhas!</div>";
 
-    // Botones de Navegación Mock
     const btnReset = document.getElementById('btnReset');
-    if (isMockExam) {
-        if (mockIndex < 4) {
-            btnReset.innerText = "➡️ Next Question / An Chéad Cheist Eile";
-            btnReset.onclick = nextMockQuestion; 
-        } else {
-            btnReset.innerText = "🏁 Críochnaithe / Finish Exam";
-            btnReset.onclick = resetApp;
-        }
+    if (isMockExam && mockIndex < 4) {
+        btnReset.innerText = "➡️ Next Question / An Chéad Cheist Eile";
+        btnReset.onclick = nextMockQuestion; 
     } else {
         btnReset.innerText = "🔄 Try another topic";
         btnReset.onclick = resetApp;
     }
 
-  } catch (e) { 
-    console.error(e);
-    alert("Error communicating with AI evaluator. Please try again."); 
-  } finally { 
-    b.disabled = false; 
-    b.innerText = "✨ Evaluate / Ceartaigh"; 
-  }
+  } catch (e) { console.error(e); alert("Error communicating with AI."); } finally { b.disabled = false; b.innerText = "✨ Evaluate / Ceartaigh"; }
 }
 
-// Inicializar
 initConv();
 </script>
-  <script data-goatcounter="https://lcoralprep.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -384,6 +384,20 @@ async function analyze() {
 
 // Inicialización
 initConv();
+  function readMyInput() {
+    // 1. Coger el texto de la caja
+    const text = document.getElementById("userInput").value;
+    if (!text) return; 
+
+    // 2. Parar si ya estaba hablando
+    window.speechSynthesis.cancel();
+
+    // 3. Leerlo
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES'; // CAMBIAR A 'fr-FR' EN EL ARCHIVO DE FRANCÉS
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+}
 </script>
   <script data-goatcounter="https://lcoralprep.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>

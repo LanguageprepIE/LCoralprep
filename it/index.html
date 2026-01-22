@@ -7,10 +7,10 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇹</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* Usamos los colores de la bandera italiana sutilmente */
+    /* COLORES DE ITALIA */
     :root { 
-      --primary: #059669; /* Verde Italia */
-      --secondary: #dc2626; /* Rojo Italia */
+      --primary: #008C45; /* Verde Bandera Italia */
+      --secondary: #CD212A; /* Rojo Bandera Italia */
       --bg: #f8fafc; 
       --text: #1e293b; 
     }
@@ -36,7 +36,7 @@
     .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .level-btn.hl.active { color: var(--secondary); }
 
-    .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: transform 0.2s; }
+    .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, #008C45 0%, #006633 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0, 140, 69, 0.3); transition: transform 0.2s; }
     .mock-btn:hover { transform: scale(1.02); }
 
     .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 25px; }
@@ -63,7 +63,7 @@
     .btn-send { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
     .btn-send:disabled { background: #cbd5e1; }
     
-    .next-audio-btn { width: 100%; padding: 12px; background: #fb7185; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: none; }
+    .next-audio-btn { width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: none; }
     .feedback-rp { font-size: 0.9em; background: #fffbeb; color: #92400e; padding: 10px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 5px; }
     .model-answer-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline; display: block; margin: 0 auto; }
 
@@ -214,8 +214,8 @@
 // ===========================================
 // CONFIGURACIÓN Y CLAVES (API KEY)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; // <--- PEGA TU CLAVE PARTE A AQUÍ
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; // <--- PEGA TU CLAVE PARTE B AQUÍ
+const parteA = ""; // <--- PEGA TU CLAVE PARTE A AQUÍ
+const parteB = ""; // <--- PEGA TU CLAVE PARTE B AQUÍ
 const API_KEY = parteA + parteB;
 
 // --- NAVEGACIÓN DE PESTAÑAS ---

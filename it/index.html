@@ -450,13 +450,93 @@ let rpActual = null;
 let pasoActual = 0; 
 let speaking = false;
 
-// Datos de RP Italianos Generales (Sin Audios)
+// Base de Datos RP (OFICIAL LEAVING CERT 2024-2028)
 const RP_DB = {
-    1: { context: "At a Café. Ordering breakfast.", dialogs: ["Buongiorno! Cosa desidera?", "Certo. Vuole anche qualcosa da mangiare?", "Ottima scelta. Qualcos'altro?", "Ecco a lei. Sono 5 euro, per favore.", ["Grazie. Arrivederci!", "Buona giornata!", "Prego, alla prossima."]], sugerencias: ["Vorrei un cappuccino, per favore.", "Sì, vorrei un cornetto alla crema.", "No grazie, va bene così.", "Ecco a lei. Grazie mille.", "(Risposta libera)"] },
-    2: { context: "Train Station. Buying a ticket to Rome.", dialogs: ["Buongiorno, mi dica.", "Per quando vuole partire?", "C'è un treno alle 10:30. Va bene?", "Solo andata o andata e ritorno?", ["Il biglietto costa 20 euro.", "Ecco il suo biglietto.", "Buon viaggio!"]], sugerencias: ["Vorrei un biglietto per Roma, per favore.", "Vorrei partire questa mattina.", "Sì, è perfetto.", "Andata e ritorno, grazie.", "(Risposta libera)"] },
-    3: { context: "Hotel Reception. Checking in.", dialogs: ["Buonasera, benvenuti all'Hotel Roma.", "A che nome è la prenotazione?", "Ah sì, ecco qui. Una camera doppia per due notti?", "Mi serve un documento d'identità, per favore.", ["Ecco la chiave, camera 202.", "La colazione è alle 8.", "Buon soggiorno!"]], sugerencias: ["Buonasera, ho una prenotazione.", "La prenotazione è a nome Martin.", "Sì, esatto.", "Ecco il mio passaporto.", "(Risposta libera)"] },
-    4: { context: "At the Doctor's. Feeling unwell.", dialogs: ["Buongiorno, dimmi, cosa c'è che non va?", "Da quanto tempo ti senti così?", "Hai la febbre?", "Ti prescrivo una medicina. Prendi queste compresse due volte al giorno.", ["Riposati qualche giorno.", "Bevi molta acqua.", "Guarirai presto."]], sugerencias: ["Non mi sento bene, ho mal di testa e mal di gola.", "Da due giorni.", "Sì, ho un po' di febbre.", "Grazie dottore, arrivederci.", "(Risposta libera)"] },
-    5: { context: "Clothing Shop. Buying a t-shirt.", dialogs: ["Ciao! Posso aiutarti?", "Che taglia porti?", "Ecco, prova questa. Il camerino è lì in fondo.", "Come ti sta?", ["Costa 15 euro.", "È in saldo oggi.", "Ti sta molto bene."]], sugerencias: ["Sì, sto cercando una maglietta bianca.", "Porto una media (M).", "Grazie, vado a provarla.", "Mi sta bene, la prendo.", "(Risposta libera)"] }
+    1: { 
+        context: "Un problema in albergo. (A problem at the hotel). You booked a room in Milan but they have no record.", 
+        dialogs: [
+            "Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", 
+            "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a suo nome.", 
+            "Capisco che è arrabbiato, ma purtroppo siamo al completo stasera.", 
+            "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", 
+            ["Ho chiamato l'Hotel Stella e hanno una camera libera. Ho prenotato a suo nome.", "È tutto risolto. L'Hotel Stella la aspetta."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Mi chiamo [Nome] e ho una prenotazione per una camera doppia per tre notti.", 
+            "Non è possibile! Sono scioccato. Ho prenotato su internet un mese fa e ho la conferma.", 
+            "È un disastro! È essenziale per me stare in questa zona perché ho delle riunioni di lavoro importanti qui vicino.", 
+            "Sì, per favore. Sarebbe molto gentile se potesse prenotare una camera per me lì.", 
+            "Grazie mille per il suo aiuto. È stato gentilissimo. Arrivederci." 
+        ] 
+    },
+    2: { 
+        context: "Una multa sul treno. (A fine on the train). Florence to Venice. Ticket not validated.", 
+        dialogs: [
+            "Buongiorno. Biglietto, prego.", 
+            "Signore, questo biglietto non è convalidato. Devo farle la multa.", 
+            "Mi dispiace, ma le regole sono regole. La multa è di cinquanta euro. Deve pagare ora.", 
+            "Se non ha contanti, posso darle un bollettino postale. Ha altre domande sul viaggio?", 
+            ["Sì, deve convalidare il biglietto ogni volta che cambia treno.", "Esatto. Ricordi sempre di timbrare prima di salire."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Ecco il mio biglietto.", 
+            "Mi scusi, mi dispiace molto! Non l'ho convalidato perché ero in ritardo e stavo per perdere il treno. Per favore, non mi faccia la multa.", 
+            "Cinquanta euro? Non ho abbastanza soldi con me. Posso pagare con la carta o ricevere la multa per posta?", 
+            "Va bene. Senta, devo convalidare il biglietto anche quando cambio treno a Bologna?", 
+            "Ho capito, grazie per l'informazione. Starò più attento la prossima volta. Arrivederci." 
+        ] 
+    },
+    3: { 
+        context: "In farmacia. (At the chemist's). Working in Italy, feeling unwell.", 
+        dialogs: [
+            "Buongiorno. Dimmi, cosa c'è che non va?", 
+            "Capisco. Da quanto tempo ti senti così? Hai mangiato qualcosa di strano?", 
+            "Sembra un virus. Ti consiglio di prendere queste compresse due volte al giorno e riposare.", 
+            "Oh, capisco. Che lavoro farai?", 
+            ["Non preoccuparti. Con questa medicina starai meglio in due giorni.", "Bevi molta acqua e starai bene presto. Arrivederci."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Non mi sento bene. Ho mal di stomaco, mal di testa e un po' di febbre.", 
+            "Sto male da ieri sera. Forse ho mangiato dei frutti di mare che non erano freschi.", 
+            "Grazie. Per quanti giorni devo prendere le compresse? E devo prenderle prima o dopo i pasti?", 
+            "È molto importante per me guarire presto perché inizio il mio lavoro estivo come cameriere la settimana prossima.", 
+            "Va bene, grazie mille per i consigli dottore. Arrivederci." 
+        ] 
+    },
+    4: { 
+        context: "Dov'è il passaporto? (Where is my passport?). At Fiumicino airport, lost passport. Calling host family.", 
+        dialogs: [
+            "Pronto, casa Rossi. Chi parla?", 
+            "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", 
+            "Aspetta un attimo, vado a controllare... (Pausa)... Sì! L'ho trovato! Era proprio lì.", 
+            "Certo! Prendo subito un taxi e te lo porto all'aeroporto. Arrivo tra mezz'ora.", 
+            ["Non preoccuparti per il taxi. L'importante è che tu riesca a partire.", "Figurati! Corro subito. A dopo!"]
+        ], 
+        sugerencias: [
+            "Pronto Maria? Sono io. Sono all'aeroporto in fila per il check-in e mi sono accorto di non avere il passaporto!", 
+            "L'ultima volta l'ho visto stamattina sul comodino accanto al letto. Per favore, puoi controllare se è lì?", 
+            "Che sollievo! Sono contentissimo. Devo assolutamente tornare in Irlanda oggi per un esame domani.", 
+            "Grazie mille! Ti pago io il taxi, naturalmente. Ci vediamo agli arrivi?", 
+            "Grazie infinite Maria, mi hai salvato la vita! A tra poco." 
+        ] 
+    },
+    5: { 
+        context: "Un colloquio di lavoro. (A job interview). Tourist village in Puglia. Interview with Manager.", 
+        dialogs: [
+            "Buongiorno, prego si accomodi. Mi dica, come si chiama e quanti anni ha?", 
+            "Bene. Vedo dal curriculum che ha esperienza. Mi parli del suo lavoro in Irlanda.", 
+            "Interessante. E parla molto bene l'italiano! Dove l'ha studiato?", 
+            "Molto bravo. Perché pensa di essere il candidato ideale per questo lavoro?", 
+            ["Ottimo. Ha qualche domanda da farmi sul lavoro?", "Perfetto. Le faremo sapere entro domani. Arrivederci."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Mi chiamo [Nome] e ho diciotto anni.", 
+            "Sì, l'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo giochi e attività sportive per i bambini.", 
+            "Studio l'italiano a scuola da cinque anni e guardo molti film italiani per migliorare.", 
+            "Sono una persona molto affidabile, socievole e gran lavoratore. Mi piace molto lavorare in squadra.", 
+            "Sì, vorrei sapere quali sono gli orari di lavoro e se c'è un giorno libero alla settimana. Grazie." 
+        ] 
+    }
 };
 
 function seleccionarRP(id, btn) {

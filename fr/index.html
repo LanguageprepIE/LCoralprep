@@ -24,10 +24,6 @@
     
     .info-toggle { background: #e0f2fe; color: #0369a1; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; gap: 5px; }
     .info-box { display: none; background: #f0f9ff; border: 1px solid #bae6fd; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; color: #334155; }
-  <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
-    <button class="tab-btn" onclick="switchTab('doc')" id="tabDoc">📄 Le Document</button>
-  </div>
 
     /* SECTION: CONVERSATION STYLES */
     .level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
@@ -96,7 +92,10 @@
       </ul>
     </div>
   </header>
-
+<div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+    <button class="tab-btn" onclick="switchTab('doc')" id="tabDoc">📄 Le Document</button>
+  </div>
   <div id="sectionConversation">
     <div class="level-selector">
       <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>

@@ -74,15 +74,27 @@
     </div>
   </div>
 
-  <div id="sectionPoetry" style="display:none;">
-    <div class="rp-selector">
-      <div class="rp-btn-select" onclick="selectPoem(0, this)">Geibheann</div>
-      <div class="rp-btn-select" onclick="selectPoem(1, this)">Colscaradh</div>
-      <div class="rp-btn-select" onclick="selectPoem(2, this)">Mo Ghrá-sa</div>
-      <div class="rp-btn-select" onclick="selectPoem(3, this)">An tEarrach Thiar</div>
-      <div class="rp-btn-select" onclick="selectPoem(4, this)">An Spailpín Fánach</div>
-      <div class="rp-btn-select" onclick="selectPoem(5, this)">Iníon an Bhaoilligh</div>
+    <div id="sectionPoetry" style="display:none;">
+    
+    <div class="level-selector" style="margin-bottom: 15px;">
+      <button class="level-btn active" id="btn2026" onclick="setPoemYear(2026)">📅 Leaving Cert 2026 (6th Yr)</button>
+      <button class="level-btn" id="btn2027" onclick="setPoemYear(2027)">📅 Leaving Cert 2027 (5th Yr)</button>
     </div>
+
+    <div class="rp-selector" id="poemButtonsContainer"></div>
+
+    <div id="poemArea" style="display:none; text-align: left;">
+      <div class="question-card" style="background:#fff; border-left-color:#15803d;">
+        <h3 id="poemTitle" style="margin-top:0; color:#15803d;"></h3>
+        <p style="font-style:italic; color:#666;" id="poemAuthor"></p>
+        
+        <button class="audio-btn" onclick="playPoemAudio()">🔊 Éist leis an Dán (Play Audio)</button>
+        
+        <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
+        <div id="poemText" style="white-space: pre-line; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem;"></div>
+      </div>
+    </div>
+  </div>
 
     <div id="poemArea" style="display:none; text-align: left;">
       <div class="question-card" style="background:#fff; border-left-color:#15803d;">

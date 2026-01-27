@@ -63,7 +63,21 @@ const SRAITH_TITLES = [
   "Sraith 3: Gadaíocht ar an Traein (Theft on the train)",
   "Sraith 4: Cluiche Ceannais na hÉireann (All Ireland Final)",
   "Sraith 5: Drochaimsir / Tuilte (Bad Weather / Floods)",
-  "Sraith 6: Ceolchoirm (The Concert)"
+  "Sraith 6: Ceolchoirm / Ticéid (The Concert)",
+  "Sraith 7: An Tionscadal Scoile (School Project)",
+  "Sraith 8: Cúrsa Gaeilge sa Ghaeltacht (Gaeltacht Course)",
+  "Sraith 9: Obair Bhaile vs Glanadh (Homework vs Cleaning)",
+  "Sraith 10: Saoire sa Spáinn (Holiday in Spain)",
+  "Sraith 11: Ag Campáil / An Phicnic (Camping/Picnic)",
+  "Sraith 12: An tAgallamh Poist (Job Interview)",
+  "Sraith 13: Fadhbanna leis an bhFón (Phone Problems)",
+  "Sraith 14: An Cóisir / Breithlá (The Party/Birthday)",
+  "Sraith 15: Tinneas / An tOspidéal (Illness/Hospital)",
+  "Sraith 16: Madra ar Strae (Lost Dog)",
+  "Sraith 17: Ag cailleadh an bhus (Missing the bus)",
+  "Sraith 18: An Bhialann / Bia Míshláintiúil (Restaurant)",
+  "Sraith 19: Glanadh na hÁite (Cleaning up the area)",
+  "Sraith 20: Robáil sa Bhanc (Bank Robbery)"
 ];
 
 // Actualizar la función switchTab para incluir la nueva pestaña

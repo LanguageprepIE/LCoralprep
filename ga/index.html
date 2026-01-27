@@ -23,27 +23,12 @@
     
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
     <div id="infoBox" class="info-box">
-      <strong>Instructions / Treoracha:</strong>
+      <strong>Treoracha:</strong>
       <ul>
-        <li>🗣️ <strong>Comhrá:</strong> Practice conversation topics & Mock Exam.</li>
-        <li>📜 <strong>Filíocht (Poetry):</strong> Read and listen to the poems (Audio by ElevenLabs).</li>
-        <li>⌨️ <strong>Keyboard:</strong> Please use the Irish keyboard settings if possible.</li>
+        <li>🗣️ <strong>Comhrá:</strong> Practice general conversation topics.</li>
+        <li>📜 <strong>Filíocht:</strong> Read the designated poems for the oral.</li>
+        <li>🖼️ <strong>Sraith Pictiúr:</strong> Describe the 20 official picture sequences.</li>
       </ul>
-
-      <div style="margin-top: 15px; padding: 10px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 5px; font-size: 0.85rem;">
-        <p style="margin: 0 0 5px 0;"><strong>⚠️ Note on Audio:</strong></p>
-        <p style="margin: 0 0 10px 0;">
-          Irish speech synthesis is <strong>experimental</strong>. Devices (Windows/Mac/iPad) often do not have an Irish voice installed by default. 
-          <br><br>
-          <strong>If the "Listen" button is silent</strong>, it means your computer or device does not support Irish audio yet. Please type your answers instead.
-          <br><em>(Note: The Poetry section uses pre-recorded audio, so it will always work).</em>
-        </p>
-        <hr style="border: 0; border-top: 1px solid #fcd34d; margin: 5px 0;">
-        <p style="margin: 5px 0 0 0;"><strong>⚠️ Nóta faoin bhfuaim:</strong></p>
-        <p style="margin: 0;">
-          Mura gcloiseann tú dada, níl guth Gaeilge suiteáilte ar do ríomhaire/ghléas. Clóscríobh do chuid freagraí le do thoil.
-        </p>
-      </div>
     </div>
   </header>
 
@@ -51,7 +36,7 @@
     <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Comhrá</button>
     <button class="tab-btn" onclick="switchTab('poem')" id="tabPoem">📜 Filíocht</button>
     <button class="tab-btn" onclick="switchTab('sraith')" id="tabSraith">🖼️ Sraith Pictiúr</button>
-</div>
+  </div>
 
   <div id="sectionConversation">
     <div class="level-selector">
@@ -59,7 +44,7 @@
       <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Ardleibhéal (HL)</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam / Tosaigh Béaltriail</button>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
 
@@ -68,12 +53,17 @@
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Éist (Listen)</button>
       </div>
-      <textarea id="userInput" placeholder="Scríobh anseo / Type here..."></textarea>
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate / Ceartaigh</button>
+      <textarea id="userInput" placeholder="Scríobh anseo..."></textarea>
+      
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
+        👂 Éist le mo fhreagra
+      </button>
+
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Ceartaigh (Evaluate)</button>
     </div>
 
     <div id="result">
-      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseText"></span></div>
+      <div class="student-response-box"><strong>Dúirt tú:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbGA" style="margin-bottom:10px; font-weight:500;"></div>
@@ -81,94 +71,67 @@
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsList"></div>
       </div>
-      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Try another topic</button>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Ábhar Eile</button>
     </div>
   </div>
 
   <div id="sectionPoetry" style="display:none;">
-        <div class="poem-selector">
-      <div class="poem-btn" onclick="selectSraith(0, this)">1. An Timpiste</div>
-      <div class="poem-btn" onclick="selectSraith(1, this)">2. Staidéar</div>
-      <div class="poem-btn" onclick="selectSraith(2, this)">3. Gadaíocht</div>
-      <div class="poem-btn" onclick="selectSraith(3, this)">4. Cluiche Ceannais</div>
-      <div class="poem-btn" onclick="selectSraith(4, this)">5. Drochaimsir</div>
-      <div class="poem-btn" onclick="selectSraith(5, this)">6. Ceolchoirm</div>
-      <div class="poem-btn" onclick="selectSraith(6, this)">7. An Tionscadal</div>
-      <div class="poem-btn" onclick="selectSraith(7, this)">8. An Ghaeltacht</div>
-      <div class="poem-btn" onclick="selectSraith(8, this)">9. Obair Bhaile</div>
-      <div class="poem-btn" onclick="selectSraith(9, this)">10. Saoire</div>
-      
-      <div class="poem-btn" onclick="selectSraith(10, this)">11. Ag Campáil</div>
-      <div class="poem-btn" onclick="selectSraith(11, this)">12. An tAgallamh</div>
-      <div class="poem-btn" onclick="selectSraith(12, this)">13. Fadhbanna Fóin</div>
-      <div class="poem-btn" onclick="selectSraith(13, this)">14. An Cóisir</div>
-      <div class="poem-btn" onclick="selectSraith(14, this)">15. Tinneas</div>
-      <div class="poem-btn" onclick="selectSraith(15, this)">16. Madra ar Strae</div>
-      <div class="poem-btn" onclick="selectSraith(16, this)">17. An Bus</div>
-      <div class="poem-btn" onclick="selectSraith(17, this)">18. An Bhialann</div>
-      <div class="poem-btn" onclick="selectSraith(18, this)">19. Glanadh</div>
-      <div class="poem-btn" onclick="selectSraith(19, this)">20. An Banc</div>
+    <div class="rp-selector">
+      <div class="rp-btn-select" onclick="selectPoem(0, this)">Geibheann</div>
+      <div class="rp-btn-select" onclick="selectPoem(1, this)">Colscaradh</div>
+      <div class="rp-btn-select" onclick="selectPoem(2, this)">Mo Ghrá-sa</div>
+      <div class="rp-btn-select" onclick="selectPoem(3, this)">An tEarrach Thiar</div>
+      <div class="rp-btn-select" onclick="selectPoem(4, this)">An Spailpín Fánach</div>
     </div>
 
-    <div id="poemArea" style="display:none;">
-      <audio id="poemAudio" controls style="width: 100%; margin-bottom: 20px;">
-        <source id="audioSource" src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-      <div class="poem-card" id="poemText"></div>
+    <div id="poemArea" style="display:none; text-align: left;">
+      <div class="question-card" style="background:#fff; border-left-color:#15803d;">
+        <h3 id="poemTitle" style="margin-top:0; color:#15803d;"></h3>
+        <p style="font-style:italic; color:#666;" id="poemAuthor"></p>
+        <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
+        <div id="poemText" style="white-space: pre-line; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem;"></div>
+      </div>
+      
+      <div class="info-box" style="display:block; margin-top:20px;">
+        <strong>💡 Tip:</strong> Read the poem aloud. Focus on pronunciation and feeling.
+        In the oral, you may be asked to read a verse or talk about the theme.
+      </div>
     </div>
   </div>
+
   <div id="sectionSraith" style="display:none;">
-    
-    <div class="info-box" style="display:block; background:#fff7ed; border-color:#fdba74; color:#9a3412;">
+    <div class="info-box" style="display:block; border-color:#ea580c; background:#fff7ed; color:#c2410c;">
       <strong>🖼️ Instructions / Treoracha:</strong>
       <p style="margin:5px 0 0;">
-        We cannot show the official images due to copyright. <br>
-        <strong>Open your textbook or exam papers</strong> to the Sraith Pictiúr selected below. 
-        Describe what is happening in the pictures to the AI.
+        We cannot show the official images due to copyright.<br>
+        <strong>Open your textbook or exam papers</strong> to the Sraith Pictiúr selected below. Describe what is happening in the pictures to the AI.
       </p>
     </div>
 
-        <div class="poem-selector">
-      <div class="poem-btn" onclick="selectSraith(0, this)">1. An Timpiste</div>
-      <div class="poem-btn" onclick="selectSraith(1, this)">2. Staidéar</div>
-      <div class="poem-btn" onclick="selectSraith(2, this)">3. Gadaíocht</div>
-      <div class="poem-btn" onclick="selectSraith(3, this)">4. Cluiche Ceannais</div>
-      <div class="poem-btn" onclick="selectSraith(4, this)">5. Drochaimsir</div>
-      <div class="poem-btn" onclick="selectSraith(5, this)">6. Ceolchoirm</div>
-      <div class="poem-btn" onclick="selectSraith(6, this)">7. An Tionscadal</div>
-      <div class="poem-btn" onclick="selectSraith(7, this)">8. An Ghaeltacht</div>
-      <div class="poem-btn" onclick="selectSraith(8, this)">9. Obair Bhaile</div>
-      <div class="poem-btn" onclick="selectSraith(9, this)">10. Saoire</div>
-      
-      <div class="poem-btn" onclick="selectSraith(10, this)">11. Ag Campáil</div>
-      <div class="poem-btn" onclick="selectSraith(11, this)">12. An tAgallamh</div>
-      <div class="poem-btn" onclick="selectSraith(12, this)">13. Fadhbanna Fóin</div>
-      <div class="poem-btn" onclick="selectSraith(13, this)">14. An Cóisir</div>
-      <div class="poem-btn" onclick="selectSraith(14, this)">15. Tinneas</div>
-      <div class="poem-btn" onclick="selectSraith(15, this)">16. Madra ar Strae</div>
-      <div class="poem-btn" onclick="selectSraith(16, this)">17. An Bus</div>
-      <div class="poem-btn" onclick="selectSraith(17, this)">18. An Bhialann</div>
-      <div class="poem-btn" onclick="selectSraith(18, this)">19. Glanadh</div>
-      <div class="poem-btn" onclick="selectSraith(19, this)">20. An Banc</div>
-    </div>
-
+    <div class="rp-selector" id="sraithSelector">
+      </div>
 
     <div id="sraithArea" style="display:none;">
       <div class="question-card" style="border-left-color:#ea580c;">
         <h3 id="sraithTitle" style="margin-top:0; color:#ea580c;"></h3>
         <p style="font-weight:600;">Examiner:</p>
-        <div id="sraithQuestion" style="font-size:1.1rem;">Inis dom an scéal. Cad atá ag tarlú sna pictiúir? (Tell me the story).</div>
-        <button class="audio-btn" onclick="speakSraith()">🔊 Éist (Listen)</button>
+        <div style="font-size:1.1rem; margin-bottom:10px;">
+          "Inis dom an scéal. Cad atá ag tarlú sna pictiúir? (Tell me the story)."
+        </div>
+        <button class="audio-btn" onclick="speakSraithPrompt()">🔊 Éist (Listen)</button>
       </div>
       
-      <p style="text-align:center; font-weight:bold; color:#475569;">Déan cur síos ar na pictiúir (Describe the pictures):</p>
       <textarea id="userInputSraith" placeholder="Sa chéad phictiúr feicim... (In the first picture I see...)"></textarea>
-      <button class="btn-main" id="btnActionSraith" onclick="analyzeSraith()">✨ Evaluate / Ceartaigh</button>
+      
+      <button onclick="readMySraithInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
+          👂 Éist le mo chur síos
+      </button>
+
+      <button class="btn-main" id="btnActionSraith" onclick="analyzeSraith()">✨ Ceartaigh</button>
     </div>
 
     <div id="resultSraith" style="display:none; margin-top:30px;">
-      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseTextSraith"></span></div>
+      <div class="student-response-box"><strong>Dúirt tú:</strong> <span id="userResponseTextSraith"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplaySraith" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbGASraith" style="margin-bottom:10px; font-weight:500;"></div>
@@ -176,13 +139,12 @@
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsListSraith"></div>
       </div>
-      <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetSraith()">🔄 Pick another Sraith</button>
+      <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetSraith()">🔄 Sraith Eile</button>
     </div>
   </div>
 
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-    
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
     
@@ -208,7 +170,6 @@
         </button>
       </form>
     </div>
-
   </div>
 
 </div>

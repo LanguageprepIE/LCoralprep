@@ -21,7 +21,7 @@ function switchTab(tab) {
 }
 
 // ===========================================
-// PARTE 1: COMHRÁ
+// PARTE 1: COMHRÁ (LISTA AMPLIADA)
 // ===========================================
 let currentLevel = 'OL';
 let currentTopic = null;
@@ -33,11 +33,15 @@ const DATA = [
   { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
   { title: "2. Mo Theaghlach", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu." },
   { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht, coiriúlacht)" },
-  { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais in Éirinn? An bhfuil an iomarca brú ann?" },
+  { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais? An bhfuil an iomarca brú ann?" },
   { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga? An bhfuil sé sláintiúil?" },
-  { title: "6. An tSamhradh", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort. An maith leat taisteal?" },
+  { title: "6. Laethanta Saoire", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort. An maith leat taisteal?" },
   { title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?" },
-  { title: "8. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Cad iad na dúshláin is mó atá roimh dhaoine óga sa lá atá inniu ann?" }
+  { title: "8. Obair Pháirtaimseartha", OL: "An bhfuil post páirtaimseartha agat? Cad a dhéanann tú?", HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu? Na buntáistí agus na míbhuntáistí." },
+  { title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Cad is féidir linn a dhéanamh chun an Ghaeilge a chur chun cinn? Stádas na teanga." },
+  { title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Drugaí, alcól, dífhostaíocht, agus tithíocht. Cad iad na dúshláin is mó?" },
+  { title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht faoi láthair?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Labhair faoi scéal nuachta mór le déanaí." },
+  { title: "12. Ceol agus Cultúr", OL: "An maith leat ceol? Cén cineál ceoil is fearr leat?", HL: "Tábhacht an chultúir agus an cheoil do dhaoine óga. An dtéann tú chuig ceolchoirmeacha?" }
 ];
 
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
@@ -171,7 +175,7 @@ function selectPoem(index, btn) {
 }
 
 // ===========================================
-// PARTE 3: SRAITH PICTIÚR (SEGÚN PDF OFICIAL)
+// PARTE 3: SRAITH PICTIÚR (LISTA OFICIAL 20)
 // ===========================================
 let currentSraithTitle = "";
 

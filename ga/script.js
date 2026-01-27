@@ -147,7 +147,7 @@ function readMyInput() {
 }
 
 // ===========================================
-// 2. FILÍOCHT (6 POEMAS)
+// 4. DATOS DE POEMAS (CORREGIDO: AN SPAILPÍN FÁNACH)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
@@ -157,9 +157,36 @@ const POEMS = [
   { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: `Shantaigh sé bean\ni nead a chinē,\nfaoiseamh is gean\nar leac a thiné,\naiteas is greann\ni dtógáil na clainne.\n\nShantaigh sí fear\nis taobh den bhríste,\ndídean is searc\nis leath den chíste,\nsaoire thar lear\nis meas na mílte.\n\nThángthas ar réiteach.\nScaradar.` },
   { title: "Mo Ghrá-sa (idir lúibíní)", author: "Nuala Ní Dhomhnaill", text: `Níl mo ghrá-sa\nmar bhláth na n-airne\na bhíonn i ngairdín\n(nó ar chrann ar bith eile\nchun na fírinne a rá).\n\nIs a shúile, más ea,\ntáid ró-chongarach dá chéile\n(ar an nós so\nis ar an nós súd).\n\nIs a chuid gruaige,\n(tá sí cosúil le sreang dheilgneach).\nAch is cuma sin.\nTugann sé dom\núlla\n(is nuair a bhíonn sé i ndea-ghiúmar\ncaora fíniúna).` },
   { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: `Fear ag glanadh cré\nDe ghimseán spáide\nSa gciúineas shéimh\nI mbrothall lae:\nBinn an fhuaim\nSan Earrach thiar.\n\nFear ag caitheamh\nCliabh dhá dhroim\nIs an fheamainn dhearg\nAg lonrú i dtaitneamh gréine\nAr dhuirling bhán:\nNiamhrach an radharc\nSan Earrach thiar.` },
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Is spailpín fánach atáim le fada,\nAg seasamh ar mo shláinte,\nAg siúl an drúchta go moch ar maidin,\n'S ag bailiú galair ráithe;\n\nAch tógfad anois an cailpín deathach,\n'S raghad isteach im' áras,\nBeidh mé tamall im' chónaí i gCaiseal,\n'S glacfad tuilleadh páighe ann.\n\nIn Uíbh Laoire a bhíos tús mo shaoil,\n'S i nGleann an Chaoinn a tógadh mé,\nAch briseadh an cíos orainn go fíor\n'S cuireadh le fán an tsaoil mé;\n\nCasadh an treo orm isteach go Dúrlas\n'S as sin go Cluain Meala,\n'S gur mhinic mo shúile ag sileadh deor\n'S mé ag imeacht lem' chuid earraí.\n\nGo deo deo arís ní raghad go Caiseal\nAg díol ná ag reic mo shláinte,\nNá ar mhargadh na saoire im' shuí cois balla,\nAgascaigh ag déanamh grinn díom,\n\nAg teacht aniar na mbodach 's a n-iarrataí,\n'Siúd chugainn an Spailpín Fánach!'\nAch téanam go Cluain 's beidh cúrsa ansin againn,\n'S gheobhamid airgead láimhe.` },
+  // VERSIÓN ACTUALIZADA CORRECTA:
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada
+ag seasamh ar mo shláinte,
+ag siúl an drúchta go moch ar maidin
+'s ag bailiú galair ráithe;
+ach glacfad fees ó rí na gcroppies,
+cleith is píc chun sáite
+'s go brách arís ní ghlaofar m'ainm
+sa tír seo, an spailpín fánach.
+
+Ba mhinic mo thriall go Cluain gheal Meala
+'s as san go Tiobraid Árann;
+i gCarraig na Siúire thíos do ghearrainn
+cúrsa leathan láidir;
+i gCallainn go dlúth 's mo shúiste im ghlaic
+ag dul chun tosaigh ceard leo
+'s nuair théim go Durlas 's é siúd bhíonn agam –
+'Sin chu'ibh an spailpín fánach!'
+
+Go deo deo arís ní raghad go Caiseal
+ag díol ná ag reic mo shláinte
+ná ar mhargadh na saoire im shuí cois balla,
+im scaoinse ar leataoibh sráide,
+bodairí na tíre ag tíocht ar a gcapaill
+á fhiafraí an bhfuilim hireálta;
+'téanam chun siúil, tá an cúrsa fada' –
+siúd siúl ar an spailpín fánach.` },
   { title: "Iníon an Bhaoilligh", author: "Amhrán Traidisiúnta", text: `Bhí mé oíche taobh istigh ‘Fhéil’ Bríde\nAr faire thíos ar an Mhullach Mhór,\nIs tharla naí dom a dtug mé gnaoi dí\nMar bhí sí caíúil lách álainn óg.\n\nSí go cinnte a mhearaigh m’intinn,\nAgus lia na bhfiann, ó, ní leigheasfadh mé,\nIs tá mo chroí istigh ina mhíle píosa\nMura bhfaighim cead síneadh lena brollach glégheal.\n\nIs fada an lá breá ó thug mé grá duit,\nIs mé i mo pháiste beag óg gan chiall,\nIs dá mbíodh mo mhuintir uilig i bhfeirg liom\nNár chuma liom, a mhíle stór?\n\nA mhíle grá, tá cách ag rá liom\nGur den ghrá ort a gheobhaidh mé bás,\nIs níl an lá margaidh dá mbeadh ins na Gearailtigh\nNach mbeadh cúl fathmhainneach is mise ag ól.\n\n‘S a chailín donn deas a chuaigh i gcontúirt,\nDruid anall liom agus tabhair domh póg\nIs gur leatsa a shiúlfainn cnoic is gleanntáin,\nIs go Baile an Teampaill dá mbíodh sé romhainn;\n\nAch anois ó tá mise curtha cráite,\nIs gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,\nI ngleanntáin áilne lena taobh.` }
 ];
+
 
 function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));

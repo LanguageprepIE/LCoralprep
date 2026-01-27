@@ -33,9 +33,10 @@
   </header>
 
   <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation Topics</button>
-    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
-  </div>
+  <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+  <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
+  <button class="tab-btn" onclick="switchTab('story')" id="tabStory">🖼️ Storie (Pictures)</button>
+</div>
 
   <div id="sectionConversation">
     <div class="level-selector">
@@ -96,7 +97,55 @@
       <button class="model-answer-btn" onclick="mostrarSugerencia()" id="hintBtn" style="display:none; margin-top:10px;">💡 Show Model Answer</button>
     </div>
   </div>
+<div id="sectionStory" style="display:none;">
+  <div class="info-box" style="display:block; border-color:#008C45; background:#f0fdf4; color:#14532d;">
+    <strong>🖼️ Istruzioni:</strong>
+    <p style="margin:5px 0 0;">
+      Open your textbook or exam papers to the Picture Sequence. 
+      Describe what is happening in the pictures. The AI will correct your Italian.
+    </p>
+  </div>
 
+  <div class="rp-selector">
+    <div class="rp-btn-select" onclick="selectStory(0, this)">🛒 1. La Spesa</div>
+    <div class="rp-btn-select" onclick="selectStory(1, this)">🤕 2. L'Incidente</div>
+    <div class="rp-btn-select" onclick="selectStory(2, this)">👛 3. Il Portafoglio</div>
+    <div class="rp-btn-select" onclick="selectStory(3, this)">🎉 4. La Festa</div>
+    <div class="rp-btn-select" onclick="selectStory(4, this)">🚌 5. La Gita</div>
+  </div>
+
+  <div id="storyArea" style="display:none;">
+    <div class="question-card" style="border-left-color:#008C45;">
+      <h3 id="storyTitle" style="margin-top:0; color:#008C45;"></h3>
+      <p style="font-weight:600;">Examiner:</p>
+      <div style="font-size:1.1rem; margin-bottom:10px;">
+        "Guardiamo questa storia. Descrivi ciò che vedi nelle immagini." <br>
+        (Let's look at this story. Describe what you see.)
+      </div>
+      <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Ascolta (Listen)</button>
+    </div>
+
+    <textarea id="userInputStory" placeholder="Nella prima immagine vedo... (In the first picture I see...)"></textarea>
+
+    <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+       👂 Listen to my description
+    </button>
+
+    <button class="btn-main" id="btnActionStory" onclick="analyzeStory()">✨ Evaluate Description</button>
+  </div>
+
+  <div id="resultStory" style="display:none; margin-top:30px;">
+    <div class="student-response-box"><strong>You said:</strong> <span id="userResponseTextStory"></span></div>
+    <div class="feedback-box">
+      <div id="scoreDisplayStory" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+      <div id="fbITStory" style="margin-bottom:10px; font-weight:500;"></div>
+      <div id="fbENStory" style="color:#64748b; font-style:italic;"></div>
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+      <div id="errorsListStory"></div>
+    </div>
+    <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetStory()">🔄 Pick another Story</button>
+  </div>
+</div>
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     

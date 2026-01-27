@@ -1,11 +1,9 @@
-// ===========================================
-// CONFIGURACIÓN Y CLAVES
-// ===========================================
+// CONFIGURACIÓN
 const parteA = "AIzaSyASf_PIq7es0iPVt"; 
 const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
 const API_KEY = parteA + parteB;
 
-// --- NAVEGACIÓN ---
+// NAVEGACIÓN
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function switchTab(tab) {
@@ -16,13 +14,12 @@ function switchTab(tab) {
   document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
   document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
   document.getElementById('sectionSraith').style.display = tab === 'sraith' ? 'block' : 'none';
-  
-  stopAudio(); // Parar audio si cambiamos pestaña
+  stopAudio();
 }
 
-// ===========================================
-// PARTE 1: COMHRÁ (15 TEMAS - IGUAL QUE ESPAÑOL)
-// ===========================================
+// ---------------------------
+// 1. COMHRÁ (15 TEMAS - LISTA COMPLETA)
+// ---------------------------
 let currentLevel = 'OL';
 let currentTopic = null;
 let isMockExam = false; 
@@ -32,19 +29,19 @@ let mockIndex = 0;
 const DATA = [
   { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
   { title: "2. Mo Theaghlach", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu." },
-  { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht, coiriúlacht)" },
+  { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht)" },
   { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais? An bhfuil an iomarca brú ann?" },
-  { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga? An bhfuil sé sláintiúil?" },
-  { title: "6. Laethanta Saoire", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort. An maith leat taisteal?" },
+  { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga?" },
+  { title: "6. An tSamhradh", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort." },
   { title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?" },
-  { title: "8. Obair Pháirtaimseartha", OL: "An bhfuil post páirtaimseartha agat? Cad a dhéanann tú?", HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu? Na buntáistí agus na míbhuntáistí." },
-  { title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Cad is féidir linn a dhéanamh chun an Ghaeilge a chur chun cinn? Stádas na teanga." },
-  { title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Drugaí, alcól, dífhostaíocht, agus tithíocht. Cad iad na dúshláin is mó?" },
-  { title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht faoi láthair?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Labhair faoi scéal nuachta mór le déanaí." },
-  { title: "12. Ceol agus Cultúr", OL: "An maith leat ceol? Cén cineál ceoil is fearr leat?", HL: "Tábhacht an chultúir agus an cheoil do dhaoine óga. An dtéann tú chuig ceolchoirmeacha?" },
-  { title: "13. Teicneolaíocht", OL: "An bhfuil fón póca agat? An úsáideann tú Snapchat/TikTok?", HL: "An bhfuilimid ró-spleách ar an teicneolaíocht? Buntáistí agus míbhuntáistí an idirlín." },
-  { title: "14. Sláinte & Spórt", OL: "An imríonn tú aon spórt? An bhfuil tú sláintiúil?", HL: "An bhfuil fadhb na raimhre againn in Éirinn? Cén fáth a bhfuil sláinte intinne tábhachtach?" },
-  { title: "15. Daoine Cáiliúla", OL: "Cé hé/hí an duine is fearr leat? (Aisteoir, ceoltóir)", HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?" }
+  { title: "8. Obair Pháirtaimseartha", OL: "An bhfuil post agat? Cén sórt oibre a dhéanann tú?", HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu?" },
+  { title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Stádas na Gaeilge. Cad is féidir linn a dhéanamh chun í a chur chun cinn?" },
+  { title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Alcól, drugaí, agus tithíocht. Cad iad na dúshláin is mó?" },
+  { title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Scéal mór le déanaí." },
+  { title: "12. Ceol & Cultúr", OL: "An maith leat ceol? Cén cineál ceoil?", HL: "Tábhacht an chultúir agus an cheoil. An dtéann tú chuig ceolchoirmeacha?" },
+  { title: "13. Teicneolaíocht", OL: "An bhfuil fón póca agat? An úsáideann tú TikTok?", HL: "Buntáistí agus míbhuntáistí an idirlín agus na meáin shóisialta." },
+  { title: "14. Sláinte", OL: "An itheann tú bia sláintiúil? An ndéanann tú aclaíocht?", HL: "Fadhb na raimhre in Éirinn. Cén fáth a bhfuil sláinte intinne tábhachtach?" },
+  { title: "15. Daoine Cáiliúla", OL: "Cé hé/hí an duine is fearr leat?", HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?" }
 ];
 
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
@@ -86,8 +83,7 @@ function speakText() {
 }
 
 function startMockExam() { 
-    isMockExam = true; 
-    mockIndex = 0; 
+    isMockExam = true; mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
     mockQuestions = [
@@ -151,9 +147,9 @@ function readMyInput() {
     window.speechSynthesis.speak(u);
 }
 
-// ===========================================
-// PARTE 2: FILÍOCHT (AUDIO MP3 CORRECTO)
-// ===========================================
+// ---------------------------
+// 2. FILÍOCHT (POEMAS)
+// ---------------------------
 let currentPoemIndex = 0;
 let currentAudio = null;
 
@@ -169,10 +165,8 @@ const POEMS = [
 function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
     stopAudio(); 
     currentPoemIndex = index;
-    
     const p = POEMS[index];
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
@@ -182,23 +176,11 @@ function selectPoem(index, btn) {
 
 function playPoemAudio() {
     stopAudio();
-    // Intenta cargar el archivo Poem1.mp3, Poem2.mp3, etc.
-    // IMPORTANTE: Los archivos deben estar en la carpeta 'ga' y llamarse exactamente así.
+    // Intenta cargar Poem1.mp3, Poem2.mp3...
     const filename = `Poem${currentPoemIndex + 1}.mp3`;
-    
     currentAudio = new Audio(filename);
-    
-    // Si hay error, mostrar alerta para depurar
-    currentAudio.onerror = function() {
-        console.log("Error cargando audio: " + filename);
-        // Intentamos ruta relativa por si acaso
-        const altFilename = `./Poem${currentPoemIndex + 1}.mp3`;
-        const altAudio = new Audio(altFilename);
-        altAudio.play().catch(e => alert("Audio file not found: " + filename));
-        currentAudio = altAudio;
-    };
-    
-    currentAudio.play().catch(e => console.log("Play error: ", e));
+    currentAudio.onerror = function() { alert("⚠️ Níor aimsíodh: " + filename + ". Make sure the file exists in the 'ga' folder."); };
+    currentAudio.play();
 }
 
 function stopAudio() {
@@ -208,9 +190,9 @@ function stopAudio() {
     }
 }
 
-// ===========================================
-// PARTE 3: SRAITH PICTIÚR (20 TÍTULOS)
-// ===========================================
+// ---------------------------
+[span_3](start_span)// 3. SRAITH PICTIÚR (2027 LIST[span_3](end_span))
+// ---------------------------
 let currentSraithTitle = "";
 
 const SRAITH_TITLES = [
@@ -293,6 +275,5 @@ function resetSraith() {
     document.getElementById('userInputSraith').value = "";
 }
 
-// INICIALIZACIÓN
 initConv();
 initSraith();

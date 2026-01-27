@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>LanguagePrep Ireland - Gaeilge</title>
+  <title>LanguagePrep - Gaeilge</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -19,13 +19,14 @@
       </a>
     </h1>
     <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
+    
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
     <div id="infoBox" class="info-box">
       <strong>Treoracha:</strong>
       <ul>
-        <li>🗣️ <strong>Comhrá:</strong> General conversation topics (15 Topics).</li>
-        <li>📜 <strong>Filíocht:</strong> Poetry reading (Including Iníon an Bhaoilligh).</li>
-        <li>🖼️ <strong>Sraith Pictiúr:</strong> The 20 Official Picture Sequences (2025/27).</li>
+        <li>🗣️ <strong>Comhrá:</strong> General conversation (15 Topics).</li>
+        <li>📜 <strong>Filíocht:</strong> Official Poems (2026) + Iníon an Bhaoilligh.</li>
+        <li>🖼️ <strong>Sraith Pictiúr:</strong> The 20 Official Picture Sequences.</li>
       </ul>
     </div>
   </header>
@@ -38,8 +39,8 @@
 
   <div id="sectionConversation">
     <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
+      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Gnáthleibhéal (OL)</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Ardleibhéal (HL)</button>
     </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam</button>
@@ -48,11 +49,15 @@
 
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
-        <div id="qDisplay" style="font-weight: 700;"></div>
-        <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
+        <div id="qDisplay" style="font-weight: 700;">Select a topic...</div>
+        <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
       <textarea id="userInput" placeholder="Scríobh anseo..."></textarea>
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">👂 Éist le mo fhreagra</button>
+      
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
+        👂 Éist le mo fhreagra
+      </button>
+
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate Answer</button>
     </div>
 
@@ -83,9 +88,7 @@
       <div class="question-card" style="background:#fff; border-left-color:#15803d;">
         <h3 id="poemTitle" style="margin-top:0; color:#15803d;"></h3>
         <p style="font-style:italic; color:#666;" id="poemAuthor"></p>
-        
-        <button class="audio-btn" onclick="playPoemAudio()">🔊 Éist leis an Dán (Play MP3)</button>
-        
+        <button class="audio-btn" onclick="playPoemAudio()">🔊 Play Audio (MP3)</button>
         <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
         <div id="poemText" style="white-space: pre-line; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem;"></div>
       </div>
@@ -95,7 +98,7 @@
   <div id="sectionSraith" style="display:none;">
     <div class="info-box" style="display:block; border-color:#ea580c; background:#fff7ed; color:#c2410c;">
       <strong>🖼️ Instructions:</strong>
-      <p style="margin:5px 0 0;">Open your exam papers to the Picture Sequence selected below.</p>
+      <p style="margin:5px 0 0;">Open your exam papers to the Sraith Pictiúr selected below.</p>
     </div>
     <div class="rp-selector" id="sraithSelector"></div>
 
@@ -127,13 +130,24 @@
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
+    
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
-    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #64748b;">
-      <p>All resources are 100% free.</p>
+    
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback
+        </button>
+      </form>
     </div>
   </div>
 
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>

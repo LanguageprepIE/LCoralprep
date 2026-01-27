@@ -400,7 +400,111 @@ function mostrarSugerencia() {
         chat.scrollTop = chat.scrollHeight;
     }
 }
+// ===========================================
+// LÓGICA DE STORIE ILLUSTRATE (PICTURE SEQUENCES)
+// ===========================================
+let currentStoryTitle = "";
 
+const STORIE_TITLES = [
+  "Storia 1: La Spesa al Supermercato (Grocery Shopping)",
+  "Storia 2: L'Incidente Stradale (The Car Accident)",
+  "Storia 3: Il Portafoglio Smarrito/Ritrovato (Lost/Found Wallet)",
+  "Storia 4: La Festa in Casa (The House Party)",
+  "Storia 5: La Gita Scolastica (The School Trip)"
+];
+
+// Actualizar switchTab para incluir 'story'
+const oldSwitch = switchTab; // Guardamos la vieja referencia si fuera necesario, pero mejor reescribirla:
+function switchTab(tab) {
+  document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('tabRole').className = tab === 'role' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('tabStory').className = tab === 'story' ? 'tab-btn active' : 'tab-btn';
+  
+  document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
+  document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
+  document.getElementById('sectionStory').style.display = tab === 'story' ? 'block' : 'none';
+}
+
+function selectStory(index, btn) {
+    document.querySelectorAll('#sectionStory .rp-btn-select').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentStoryTitle = STORIE_TITLES[index];
+    document.getElementById('storyArea').style.display = 'block';
+    document.getElementById('resultStory').style.display = 'none';
+    document.getElementById('storyTitle').innerText = currentStoryTitle;
+    document.getElementById('userInputStory').value = "";
+}
+
+function speakStoryPrompt() {
+    const text = "Guardiamo questa storia. Descrivi ciò che vedi nelle immagini.";
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'it-IT'; u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+    }
+}
+
+function readMyStoryInput() {
+    const text = document.getElementById("userInputStory").value;
+    if (!text) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'it-IT'; u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+}
+
+async function analyzeStory() {
+  const t = document.getElementById('userInputStory').value;
+  if(t.length < 5) return alert("Scrivi o dì qualcosa di più...");
+  
+  const b = document.getElementById('btnActionStory'); 
+  b.disabled = true; b.innerText = "⏳ Valutando...";
+
+  const prompt = `
+    ACT AS: Italian Leaving Cert Examiner.
+    TASK: The student is describing a Picture Sequence (Storia Illustrata): "${currentStoryTitle}".
+    STUDENT INPUT: "${t}"
+    
+    INSTRUCTIONS:
+    1. Check if the Italian grammar (passato prossimo/imperfetto) and vocabulary are correct for this story.
+    2. Ignore lack of punctuation (it might be voice input).
+    3. Be encouraging but correct mistakes clearly.
+    
+    OUTPUT JSON ONLY:
+    { "score": (0-100), "feedback_it": "Feedback in Italian", "feedback_en": "Feedback in English", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }
+  `;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    const d = await r.json(); 
+    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+    
+    document.getElementById('storyArea').style.display = 'none'; 
+    document.getElementById('resultStory').style.display = 'block';
+    
+    document.getElementById('userResponseTextStory').innerText = t;
+    document.getElementById('scoreDisplayStory').innerText = `Punteggio: ${j.score}%`;
+    document.getElementById('scoreDisplayStory').style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    
+    document.getElementById('fbITStory').innerText = "🇮🇹 " + j.feedback_it; 
+    document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en;
+    
+    document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Eccellente!";
+
+  } catch (e) { console.error(e); alert("Errore di connessione."); } finally { b.disabled = false; b.innerText = "✨ Evaluate Description"; }
+}
+
+function resetStory() {
+    document.getElementById('resultStory').style.display = 'none';
+    document.getElementById('storyArea').style.display = 'block';
+    document.getElementById('userInputStory').value = "";
+}
 // Inicializamos la botonera
 initConv();
 

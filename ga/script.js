@@ -147,18 +147,38 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (CORREGIDO: AN SPAILPÍN FÁNACH)
+// 4. DATOS DE POEMAS (COPYRIGHT SAFE)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
 
 const POEMS = [
-  { title: "Geibheann", author: "Caitlín Maude", text: `Ainmhí mé\nainmhí fiáin\nas na teochreasa\nach bhfuil clú agus cáil\nar mo scéimh...\n\nChroithinn crainnte na coille\ntráth\nle mo gháir\nach anois\nluím síos\nagus breathnaím trí leathshúil\nar an gcrann aonraic sin thall\ntagann na céadta daoine\ngach lá\na dhéanfadh rud ar bith dom\nach mé a ligean amach.` },
-  { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: `Shantaigh sé bean\ni nead a chinē,\nfaoiseamh is gean\nar leac a thiné,\naiteas is greann\ni dtógáil na clainne.\n\nShantaigh sí fear\nis taobh den bhríste,\ndídean is searc\nis leath den chíste,\nsaoire thar lear\nis meas na mílte.\n\nThángthas ar réiteach.\nScaradar.` },
-  { title: "Mo Ghrá-sa (idir lúibíní)", author: "Nuala Ní Dhomhnaill", text: `Níl mo ghrá-sa\nmar bhláth na n-airne\na bhíonn i ngairdín\n(nó ar chrann ar bith eile\nchun na fírinne a rá).\n\nIs a shúile, más ea,\ntáid ró-chongarach dá chéile\n(ar an nós so\nis ar an nós súd).\n\nIs a chuid gruaige,\n(tá sí cosúil le sreang dheilgneach).\nAch is cuma sin.\nTugann sé dom\núlla\n(is nuair a bhíonn sé i ndea-ghiúmar\ncaora fíniúna).` },
-  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: `Fear ag glanadh cré\nDe ghimseán spáide\nSa gciúineas shéimh\nI mbrothall lae:\nBinn an fhuaim\nSan Earrach thiar.\n\nFear ag caitheamh\nCliabh dhá dhroim\nIs an fheamainn dhearg\nAg lonrú i dtaitneamh gréine\nAr dhuirling bhán:\nNiamhrach an radharc\nSan Earrach thiar.` },
-  // VERSIÓN ACTUALIZADA CORRECTA:
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada
+  // POEMAS MODERNOS (SOLO INFO, SIN TEXTO ENTERO)
+  { 
+    title: "Geibheann", 
+    author: "Caitlín Maude", 
+    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." 
+  },
+  { 
+    title: "Colscaradh", 
+    author: "Pádraig Mac Suibhne", 
+    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." 
+  },
+  { 
+    title: "Mo Ghrá-sa (idir lúibíní)", 
+    author: "Nuala Ní Dhomhnaill", 
+    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs. She loves him despite his faults." 
+  },
+  { 
+    title: "An tEarrach Thiar", 
+    author: "Máirtín Ó Direáin", 
+    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic, peaceful life on the Aran Islands in Spring." 
+  },
+  // POEMAS TRADICIONALES (TEXTO COMPLETO PERMITIDO)
+  { 
+    title: "An Spailpín Fánach", 
+    author: "Anaithnid (Traditional)", 
+    text: `Im spailpín fánach atáim le fada
 ag seasamh ar mo shláinte,
 ag siúl an drúchta go moch ar maidin
 's ag bailiú galair ráithe;
@@ -183,10 +203,41 @@ im scaoinse ar leataoibh sráide,
 bodairí na tíre ag tíocht ar a gcapaill
 á fhiafraí an bhfuilim hireálta;
 'téanam chun siúil, tá an cúrsa fada' –
-siúd siúl ar an spailpín fánach.` },
-  { title: "Iníon an Bhaoilligh", author: "Amhrán Traidisiúnta", text: `Bhí mé oíche taobh istigh ‘Fhéil’ Bríde\nAr faire thíos ar an Mhullach Mhór,\nIs tharla naí dom a dtug mé gnaoi dí\nMar bhí sí caíúil lách álainn óg.\n\nSí go cinnte a mhearaigh m’intinn,\nAgus lia na bhfiann, ó, ní leigheasfadh mé,\nIs tá mo chroí istigh ina mhíle píosa\nMura bhfaighim cead síneadh lena brollach glégheal.\n\nIs fada an lá breá ó thug mé grá duit,\nIs mé i mo pháiste beag óg gan chiall,\nIs dá mbíodh mo mhuintir uilig i bhfeirg liom\nNár chuma liom, a mhíle stór?\n\nA mhíle grá, tá cách ag rá liom\nGur den ghrá ort a gheobhaidh mé bás,\nIs níl an lá margaidh dá mbeadh ins na Gearailtigh\nNach mbeadh cúl fathmhainneach is mise ag ól.\n\n‘S a chailín donn deas a chuaigh i gcontúirt,\nDruid anall liom agus tabhair domh póg\nIs gur leatsa a shiúlfainn cnoic is gleanntáin,\nIs go Baile an Teampaill dá mbíodh sé romhainn;\n\nAch anois ó tá mise curtha cráite,\nIs gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,\nI ngleanntáin áilne lena taobh.` }
-];
+siúd siúl ar an spailpín fánach.` 
+  },
+  { 
+    title: "Iníon an Bhaoilligh", 
+    author: "Amhrán Traidisiúnta", 
+    text: `Bhí mé oíche taobh istigh ‘Fhéil’ Bríde
+Ar faire thíos ar an Mhullach Mhór,
+Is tharla naí dom a dtug mé gnaoi dí
+Mar bhí sí caíúil lách álainn óg.
 
+Sí go cinnte a mhearaigh m’intinn,
+Agus lia na bhfiann, ó, ní leigheasfadh mé,
+Is tá mo chroí istigh ina mhíle píosa
+Mura bhfaighim cead síneadh lena brollach glégheal.
+
+Is fada an lá breá ó thug mé grá duit,
+Is mé i mo pháiste beag óg gan chiall,
+Is dá mbíodh mo mhuintir uilig i bhfeirg liom
+Nár chuma liom, a mhíle stór?
+
+A mhíle grá, tá cách ag rá liom
+Gur den ghrá ort a gheobhaidh mé bás,
+Is níl an lá margaidh dá mbeadh ins na Gearailtigh
+Nach mbeadh cúl fathmhainneach is mise ag ól.
+
+‘S a chailín donn deas a chuaigh i gcontúirt,
+Druid anall liom agus tabhair domh póg
+Is gur leatsa a shiúlfainn cnoic is gleanntáin,
+Is go Baile an Teampaill dá mbíodh sé romhainn;
+
+Ach anois ó tá mise curtha cráite,
+Is gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,
+I ngleanntáin áilne lena taobh.` 
+  }
+];
 
 function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
@@ -216,7 +267,7 @@ function stopAudio() {
 }
 
 // ===========================================
-// 3. SRAITH PICTIÚR (20 TÍTULOS OFICIALES)
+// 5. DATOS SRAITH PICTIÚR (20 TÍTULOS OFICIALES)
 // ===========================================
 let currentSraithTitle = "";
 const SRAITH_TITLES = [

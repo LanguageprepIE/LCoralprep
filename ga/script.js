@@ -9,19 +9,20 @@ const API_KEY = parteA + parteB;
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function switchTab(tab) {
-  // Botones
   document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabPoem').className = tab === 'poem' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabSraith').className = tab === 'sraith' ? 'tab-btn active' : 'tab-btn';
   
-  // Secciones
   document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
   document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
   document.getElementById('sectionSraith').style.display = tab === 'sraith' ? 'block' : 'none';
+  
+  // Parar audio si cambiamos de pestaña
+  stopAudio();
 }
 
 // ===========================================
-// PARTE 1: COMHRÁ (LISTA AMPLIADA)
+// PARTE 1: COMHRÁ
 // ===========================================
 let currentLevel = 'OL';
 let currentTopic = null;
@@ -149,24 +150,27 @@ function readMyInput() {
 }
 
 // ===========================================
-// PARTE 2: FILÍOCHT (POEMAS)
+// PARTE 2: FILÍOCHT (POEMAS CON AUDIO MP3)
 // ===========================================
+let currentPoemIndex = 0;
+let currentAudio = null;
+
 const POEMS = [
   { title: "Geibheann", author: "Caitlín Maude", text: "Ainmhí mé\nainmhí fiáin\nas na teochreasa\nach bhfuil clú agus cáil\nar mo scéimh...\n\nChroithinn crainnte na coille\ntráth\nle mo gháir\nach anois\nluím síos\nagus breathnaím trí leathshúil\nar an gcrann aonraic sin thall\ntagann na céadta daoine\ngach lá\na dhéanfadh rud ar bith dom\nach mé a ligean amach." },
   { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: "Shantaigh sé bean\ni nead a chinē,\nfaoiseamh is gean\nar leac a thiné,\naiteas is greann\ni dtógáil na clainne.\n\nShantaigh sí fear\nis taobh den bhríste,\ndídean is searc\nis leath den chíste,\nsaoire thar lear\nis meas na mílte.\n\nThángthas ar réiteach.\nScaradar." },
   { title: "Mo Ghrá-sa (idir lúibíní)", author: "Nuala Ní Dhomhnaill", text: "Níl mo ghrá-sa\nmar bhláth na n-airne\na bhíonn i ngairdín\n(nó ar chrann ar bith eile\nchun na fírinne a rá).\n\nIs a shúile, más ea,\ntáid ró-chongarach dá chéile\n(ar an nós so\nis ar an nós súd).\n\nIs a chuid gruaige,\n(tá sí cosúil le sreang dheilgneach).\nAch is cuma sin.\nTugann sé dom\núlla\n(is nuair a bhíonn sé i ndea-ghiúmar\ncaora fíniúna)." },
   { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: "Fear ag glanadh cré\nDe ghimseán spáide\nSa gciúineas shéimh\nI mbrothall lae:\nBinn an fhuaim\nSan Earrach thiar.\n\nFear ag caitheamh\nCliabh dhá dhroim\nIs an fheamainn dhearg\nAg lonrú i dtaitneamh gréine\nAr dhuirling bhán:\nNiamhrach an radharc\nSan Earrach thiar." },
   { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: "Is spailpín fánach mise\nAgus fanfaidh mé mar sin\nAg siúl an drúchta go moch ar maidin\n'S ag bailiú galair ráithín;\nAch dá mbeadh an t-ádh orm is an t-airgead\nIs an chabhair ó Dhia lena chois\nBheadh mo bhaile féin go teann agam\nIs bheadh deireadh le mo shiúl go deo." },
-  { 
-    title: "Iníon an Bhaoilligh", 
-    author: "Amhrán Traidisiúnta", 
-    text: "Bhí mé oíche taobh istigh ‘Fhéil’ Bríde\nAr faire thíos ar an Mhullach Mhór,\nIs tharla naí dom a dtug mé gnaoi dí\nMar bhí sí caíúil lách álainn óg.\n\nSí go cinnte a mhearaigh m’intinn,\nAgus lia na bhfiann, ó, ní leigheasfadh mé,\nIs tá mo chroí istigh ina mhíle píosa\nMura bhfaighim cead síneadh lena brollach glégheal.\n\nIs fada an lá breá ó thug mé grá duit,\nIs mé i mo pháiste beag óg gan chiall,\nIs dá mbíodh mo mhuintir uilig i bhfeirg liom\nNár chuma liom, a mhíle stór?\n\nA mhíle grá, tá cách ag rá liom\nGur den ghrá ort a gheobhaidh mé bás,\nIs níl an lá margaidh dá mbeadh ins na Gearailtigh\nNach mbeadh cúl fathmhainneach is mise ag ól.\n\n‘S a chailín donn deas a chuaigh i gcontúirt,\nDruid anall liom agus tabhair domh póg\nIs gur leatsa a shiúlfainn cnoic is gleanntáin,\nIs go Baile an Teampaill dá mbíodh sé romhainn;\n\nAch anois ó tá mise curtha cráite,\nIs gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,\nI ngleanntáin áilne lena taobh."
-  }
+  { title: "Iníon an Bhaoilligh", author: "Amhrán Traidisiúnta", text: "Bhí mé oíche taobh istigh ‘Fhéil’ Bríde\nAr faire thíos ar an Mhullach Mhór,\nIs tharla naí dom a dtug mé gnaoi dí\nMar bhí sí caíúil lách álainn óg.\n\nSí go cinnte a mhearaigh m’intinn,\nAgus lia na bhfiann, ó, ní leigheasfadh mé,\nIs tá mo chroí istigh ina mhíle píosa\nMura bhfaighim cead síneadh lena brollach glégheal.\n\nIs fada an lá breá ó thug mé grá duit,\nIs mé i mo pháiste beag óg gan chiall,\nIs dá mbíodh mo mhuintir uilig i bhfeirg liom\nNár chuma liom, a mhíle stór?\n\nA mhíle grá, tá cách ag rá liom\nGur den ghrá ort a gheobhaidh mé bás,\nIs níl an lá margaidh dá mbeadh ins na Gearailtigh\nNach mbeadh cúl fathmhainneach is mise ag ól.\n\n‘S a chailín donn deas a chuaigh i gcontúirt,\nDruid anall liom agus tabhair domh póg\nIs gur leatsa a shiúlfainn cnoic is gleanntáin,\nIs go Baile an Teampaill dá mbíodh sé romhainn;\n\nAch anois ó tá mise curtha cráite,\nIs gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,\nI ngleanntáin áilne lena taobh." }
 ];
 
 function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    
+    stopAudio(); // Parar audio anterior si lo hay
+    currentPoemIndex = index;
+    
     const p = POEMS[index];
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
@@ -174,37 +178,41 @@ function selectPoem(index, btn) {
     document.getElementById('poemText').innerText = p.text;
 }
 
+function playPoemAudio() {
+    stopAudio();
+    // Asume que los archivos se llaman Poem1.mp3, Poem2.mp3... Poem6.mp3
+    // El índice va de 0 a 5, así que sumamos 1.
+    const filename = `Poem${currentPoemIndex + 1}.mp3`;
+    
+    currentAudio = new Audio(filename);
+    currentAudio.play().catch(e => alert("Níor aimsíodh an comhad fuaime (Audio file not found): " + filename));
+}
+
+function stopAudio() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+}
+
 // ===========================================
-// PARTE 3: SRAITH PICTIÚR (LISTA OFICIAL 20)
+// PARTE 3: SRAITH PICTIÚR
 // ===========================================
 let currentSraithTitle = "";
 
 const SRAITH_TITLES = [
-  "1. Cuairt ar Aintín i Nua-Eabhrac",
-  "2. Imreoir Gortaithe",
-  "3. Bua sa chomórtas díospóireachta",
-  "4. Ná húsáid an cárta creidmheasa gan chead",
-  "5. Ag toghadh scoláire na bliana",
-  "6. An Ghaeilge - seoid luachmhar agus cuid dár gcultúr",
-  "7. Obair dhian: torthaí maithe san Ardteistiméireacht",
-  "8. Comhoibriú an Phobail",
-  "9. Samhradh Iontach",
-  "10. Drochaimsir an Gheimhridh - Athrú Aeráide",
-  "11. Timpiste sa Choláiste Samhraidh",
-  "12. Sláinte na nóg - Seachtain na Sláinte",
-  "13. Bua ag Cór na Scoile",
-  "14. Teip sa Scrúdú Tiomána",
-  "15. Breoite ar Scoil",
-  "16. Agallamh do nuacht TG4@7",
-  "17. Madra ar Strae",
-  "18. Na Déagóirí Cróga",
-  "19. Rialacha na Scoile",
-  "20. Gaeilge: Teanga Bheo"
+  "1. Cuairt ar Aintín i Nua-Eabhrac", "2. Imreoir Gortaithe", "3. Bua sa chomórtas díospóireachta", 
+  "4. Ná húsáid an cárta creidmheasa gan chead", "5. Ag toghadh scoláire na bliana", "6. An Ghaeilge - seoid luachmhar agus cuid dár gcultúr", 
+  "7. Obair dhian: torthaí maithe san Ardteistiméireacht", "8. Comhoibriú an Phobail", "9. Samhradh Iontach", 
+  "10. Drochaimsir an Gheimhridh - Athrú Aeráide", "11. Timpiste sa Choláiste Samhraidh", "12. Sláinte na nóg - Seachtain na Sláinte", 
+  "13. Bua ag Cór na Scoile", "14. Teip sa Scrúdú Tiomána", "15. Breoite ar Scoil", 
+  "16. Agallamh do nuacht TG4@7", "17. Madra ar Strae", "18. Na Déagóirí Cróga", 
+  "19. Rialacha na Scoile", "20. Gaeilge: Teanga Bheo"
 ];
 
 function initSraith() {
     const s = document.getElementById('sraithSelector');
-    if (!s) return console.error("Error: sraithSelector not found in HTML");
+    if (!s) return;
     s.innerHTML = "";
     SRAITH_TITLES.forEach((title, index) => {
         const d = document.createElement('div');

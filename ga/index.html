@@ -6,7 +6,6 @@
   <title>LanguagePrep Ireland - Gaeilge</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,13 +20,13 @@
     </h1>
     <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
     
-    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Treoracha / Instructions</button>
     <div id="infoBox" class="info-box">
       <strong>Treoracha:</strong>
       <ul>
-        <li>🗣️ <strong>Comhrá:</strong> Practice general conversation topics.</li>
-        <li>📜 <strong>Filíocht:</strong> Read the designated poems for the oral.</li>
-        <li>🖼️ <strong>Sraith Pictiúr:</strong> Describe the 20 official picture sequences.</li>
+        <li>🗣️ <strong>Comhrá:</strong> General conversation topics (Expanded List).</li>
+        <li>📜 <strong>Filíocht:</strong> Official Poems + Iníon an Bhaoilligh.</li>
+        <li>🖼️ <strong>Sraith Pictiúr:</strong> The 20 Official Picture Sequences.</li>
       </ul>
     </div>
   </header>
@@ -71,7 +70,7 @@
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsList"></div>
       </div>
-      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Ábhar Eile</button>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Topaic Eile</button>
     </div>
   </div>
 
@@ -82,6 +81,7 @@
       <div class="rp-btn-select" onclick="selectPoem(2, this)">Mo Ghrá-sa</div>
       <div class="rp-btn-select" onclick="selectPoem(3, this)">An tEarrach Thiar</div>
       <div class="rp-btn-select" onclick="selectPoem(4, this)">An Spailpín Fánach</div>
+      <div class="rp-btn-select" onclick="selectPoem(5, this)">Iníon an Bhaoilligh</div>
     </div>
 
     <div id="poemArea" style="display:none; text-align: left;">
@@ -91,37 +91,30 @@
         <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
         <div id="poemText" style="white-space: pre-line; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem;"></div>
       </div>
-      
-      <div class="info-box" style="display:block; margin-top:20px;">
-        <strong>💡 Tip:</strong> Read the poem aloud. Focus on pronunciation and feeling.
-        In the oral, you may be asked to read a verse or talk about the theme.
-      </div>
     </div>
   </div>
 
   <div id="sectionSraith" style="display:none;">
     <div class="info-box" style="display:block; border-color:#ea580c; background:#fff7ed; color:#c2410c;">
-      <strong>🖼️ Instructions / Treoracha:</strong>
+      <strong>🖼️ Instructions:</strong>
       <p style="margin:5px 0 0;">
-        We cannot show the official images due to copyright.<br>
-        <strong>Open your textbook or exam papers</strong> to the Sraith Pictiúr selected below. Describe what is happening in the pictures to the AI.
+        Open your exam papers to the Sraith Pictiúr selected below (Official 2025 List).
       </p>
     </div>
 
-    <div class="rp-selector" id="sraithSelector">
-      </div>
+    <div class="rp-selector" id="sraithSelector"></div>
 
     <div id="sraithArea" style="display:none;">
       <div class="question-card" style="border-left-color:#ea580c;">
         <h3 id="sraithTitle" style="margin-top:0; color:#ea580c;"></h3>
         <p style="font-weight:600;">Examiner:</p>
         <div style="font-size:1.1rem; margin-bottom:10px;">
-          "Inis dom an scéal. Cad atá ag tarlú sna pictiúir? (Tell me the story)."
+          "Inis dom an scéal. Cad atá ag tarlú sna pictiúir?"
         </div>
         <button class="audio-btn" onclick="speakSraithPrompt()">🔊 Éist (Listen)</button>
       </div>
       
-      <textarea id="userInputSraith" placeholder="Sa chéad phictiúr feicim... (In the first picture I see...)"></textarea>
+      <textarea id="userInputSraith" placeholder="Sa chéad phictiúr feicim..."></textarea>
       
       <button onclick="readMySraithInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
           👂 Éist le mo chur síos
@@ -147,35 +140,15 @@
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
-    
-    <div class="bio-text">
-      <p><em>As a teacher, my goal is to create innovative tools like <strong>LanguagePrep Ireland</strong> to help students excel in their Leaving Cert exams using technology responsibly and effectively.</em></p>
-      <p><em>Is é an sprioc atá agam ná acmhainní nua-aimseartha a chruthú chun cabhrú le daltaí barr feabhais a bhaint amach san Ardteistiméireacht.</em></p>
-    </div>
-
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
-    
-    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
+    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #64748b;">
       <p>All resources are 100% free.</p>
-    </div>
-
-    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
-      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
-      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required
-                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
-        <button type="submit" 
-                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
-          Send Feedback
-        </button>
-      </form>
     </div>
   </div>
 
 </div>
 
 <script src="script.js"></script>
-<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>

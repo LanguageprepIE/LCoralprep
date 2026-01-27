@@ -52,7 +52,107 @@ function setLevel(lvl) {
     document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
     if(currentTopic && !isMockExam) updateQuestion(); 
 }
+// ===========================================
+// LÓGICA DE SRAITH PICTIÚR
+// ===========================================
+let currentSraithTitle = "";
 
+const SRAITH_TITLES = [
+  "Sraith 1: An Timpiste (The Accident)",
+  "Sraith 2: Staidéar vs Caitheamh Aimsire (Study vs Hobbies)",
+  "Sraith 3: Gadaíocht ar an Traein (Theft on the train)",
+  "Sraith 4: Cluiche Ceannais na hÉireann (All Ireland Final)",
+  "Sraith 5: Drochaimsir / Tuilte (Bad Weather / Floods)",
+  "Sraith 6: Ceolchoirm (The Concert)"
+];
+
+// Actualizar la función switchTab para incluir la nueva pestaña
+function switchTab(tab) {
+  document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('tabPoem').className = tab === 'poem' ? 'tab-btn active' : 'tab-btn';
+  document.getElementById('tabSraith').className = tab === 'sraith' ? 'tab-btn active' : 'tab-btn';
+  
+  document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
+  document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
+  document.getElementById('sectionSraith').style.display = tab === 'sraith' ? 'block' : 'none';
+}
+
+function selectSraith(index, btn) {
+    // Quitar active de los otros botones sraith (reusamos la clase poem-btn para diseño rápido)
+    document.querySelectorAll('#sectionSraith .poem-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentSraithTitle = SRAITH_TITLES[index];
+    document.getElementById('sraithArea').style.display = 'block';
+    document.getElementById('resultSraith').style.display = 'none';
+    document.getElementById('sraithTitle').innerText = currentSraithTitle;
+    document.getElementById('userInputSraith').value = "";
+}
+
+function speakSraith() {
+    const text = "Inis dom an scéal. Cad atá ag tarlú sna pictiúir?";
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const voices = window.speechSynthesis.getVoices();
+        const irishVoice = voices.find(voice => voice.lang.includes('ga') || voice.name.includes('Gaeilge'));
+        if (irishVoice) {
+            const u = new SpeechSynthesisUtterance(text);
+            u.voice = irishVoice; u.lang = 'ga-IE'; u.rate = 0.9;
+            window.speechSynthesis.speak(u);
+        } else {
+            alert("No Irish voice found / Níor aimsíodh guth Gaeilge.");
+        }
+    }
+}
+
+async function analyzeSraith() {
+  const t = document.getElementById('userInputSraith').value;
+  if(t.length < 5) return alert("Scríobh níos mó le do thoil.");
+  
+  const b = document.getElementById('btnActionSraith'); 
+  b.disabled = true; b.innerText = "⏳ Ag ceartú...";
+
+  const prompt = `
+    ACT AS: Sympathetic Leaving Cert Irish Examiner.
+    TASK: The student is describing a Picture Series (Sraith Pictiúr): "${currentSraithTitle}".
+    STUDENT INPUT: "${t}"
+    
+    INSTRUCTIONS:
+    1. Check if the Irish grammar and vocabulary are correct for describing this story.
+    2. Ignore spelling mistakes if phonetically close.
+    3. Be encouraging.
+    
+    OUTPUT JSON ONLY:
+    { "score": (0-100), "feedback_ga": "Feedback in Irish", "feedback_en": "Feedback in English", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }
+  `;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    const d = await r.json(); 
+    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+    
+    document.getElementById('sraithArea').style.display = 'none'; 
+    document.getElementById('resultSraith').style.display = 'block';
+    
+    document.getElementById('userResponseTextSraith').innerText = t;
+    document.getElementById('scoreDisplaySraith').innerText = `Scór: ${j.score}%`;
+    document.getElementById('scoreDisplaySraith').style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    document.getElementById('fbGASraith').innerText = "🇮🇪 " + j.feedback_ga; 
+    document.getElementById('fbENSraith').innerText = "🇬🇧 " + j.feedback_en;
+    document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
+
+  } catch (e) { console.error(e); alert("Error."); } finally { b.disabled = false; b.innerText = "✨ Evaluate / Ceartaigh"; }
+}
+
+function resetSraith() {
+    document.getElementById('resultSraith').style.display = 'none';
+    document.getElementById('sraithArea').style.display = 'block';
+    document.getElementById('userInputSraith').value = "";
+}
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
     DATA.forEach((item) => { 

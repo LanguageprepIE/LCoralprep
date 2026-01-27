@@ -17,7 +17,6 @@ function switchTab(tab) {
   document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
   document.getElementById('sectionSraith').style.display = tab === 'sraith' ? 'block' : 'none';
   
-  // Parar audio si cambiamos de pestaña
   stopAudio();
 }
 
@@ -150,7 +149,7 @@ function readMyInput() {
 }
 
 // ===========================================
-// PARTE 2: FILÍOCHT (POEMAS CON AUDIO MP3)
+// PARTE 2: FILÍOCHT (POEMAS)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
@@ -168,7 +167,7 @@ function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     
-    stopAudio(); // Parar audio anterior si lo hay
+    stopAudio(); 
     currentPoemIndex = index;
     
     const p = POEMS[index];
@@ -180,12 +179,17 @@ function selectPoem(index, btn) {
 
 function playPoemAudio() {
     stopAudio();
-    // Asume que los archivos se llaman Poem1.mp3, Poem2.mp3... Poem6.mp3
-    // El índice va de 0 a 5, así que sumamos 1.
+    // Nombres exactos de tus archivos: Poem1.mp3, Poem2.mp3 ... Poem6.mp3
     const filename = `Poem${currentPoemIndex + 1}.mp3`;
     
     currentAudio = new Audio(filename);
-    currentAudio.play().catch(e => alert("Níor aimsíodh an comhad fuaime (Audio file not found): " + filename));
+    
+    // Si hay error, avisamos para saber qué pasa
+    currentAudio.onerror = function() {
+        alert("⚠️ Níor aimsíodh an comhad (File not found): " + filename + "\nCheck if the file is uploaded to the 'ga' folder.");
+    };
+    
+    currentAudio.play();
 }
 
 function stopAudio() {

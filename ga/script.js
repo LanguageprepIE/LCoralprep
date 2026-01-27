@@ -159,10 +159,13 @@ const POEMS_2026 = [
   { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
   { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
   { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
+  // VERSIÓN STUDYCLIX CORRECTA (MUNSTER):
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` },
+  // INÍON AN BHAOILLIGH (SONG) - INCLUIDO EN 2026:
+  { title: "Iníon an Bhaoilligh", author: "Amhrán Traidisiúnta", text: `Bhí mé oíche taobh istigh ‘Fhéil’ Bríde\nAr faire thíos ar an Mhullach Mhór,\nIs tharla naí dom a dtug mé gnaoi dí\nMar bhí sí caíúil lách álainn óg.\n\nSí go cinnte a mhearaigh m’intinn,\nAgus lia na bhfiann, ó, ní leigheasfadh mé,\nIs tá mo chroí istigh ina mhíle píosa\nMura bhfaighim cead síneadh lena brollach glégheal.\n\nIs fada an lá breá ó thug mé grá duit,\nIs mé i mo pháiste beag óg gan chiall,\nIs dá mbíodh mo mhuintir uilig i bhfeirg liom\nNár chuma liom, a mhíle stór?\n\nA mhíle grá, tá cách ag rá liom\nGur den ghrá ort a gheobhaidh mé bás,\nIs níl an lá margaidh dá mbeadh ins na Gearailtigh\nNach mbeadh cúl fathmhainneach is mise ag ól.\n\n‘S a chailín donn deas a chuaigh i gcontúirt,\nDruid anall liom agus tabhair domh póg\nIs gur leatsa a shiúlfainn cnoic is gleanntáin,\nIs go Baile an Teampaill dá mbíodh sé romhainn;\n\nAch anois ó tá mise curtha cráite,\nIs gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,\nI ngleanntáin áilne lena taobh.` }
 ];
 
-// SYLLABUS 2027 (NEW FOR 5th YEAR) - Circular 0070/2024
+// SYLLABUS 2027 (NEW FOR 5th YEAR)
 const POEMS_2027 = [
   { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
   { title: "Iníon", author: "Áine Durkin", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
@@ -326,5 +329,5 @@ function resetSraith() {
 window.onload = function() {
     initConv();
     initSraith();
-    setPoemYear(2026); // Cargar poemas 2026 por defecto
+    setPoemYear(2026); // Cargar 2026 por defecto
 };

@@ -84,10 +84,13 @@
       <div class="rp-btn-select" onclick="selectPoem(5, this)">Iníon an Bhaoilligh</div>
     </div>
 
-    <div id="poemArea" style="display:none; text-align: left;">
+        <div id="poemArea" style="display:none; text-align: left;">
       <div class="question-card" style="background:#fff; border-left-color:#15803d;">
         <h3 id="poemTitle" style="margin-top:0; color:#15803d;"></h3>
         <p style="font-style:italic; color:#666;" id="poemAuthor"></p>
+        
+        <button class="audio-btn" onclick="playPoemAudio()">🔊 Éist leis an Dán (Listen)</button>
+        
         <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
         <div id="poemText" style="white-space: pre-line; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem;"></div>
       </div>

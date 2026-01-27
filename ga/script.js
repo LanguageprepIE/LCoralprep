@@ -26,7 +26,7 @@ function switchTab(tab) {
 }
 
 // ===========================================
-// 1. COMHRÁ (15 TEMAS - LISTA COMPLETA)
+// 1. COMHRÁ (15 TEMAS)
 // ===========================================
 const DATA = [
   { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
@@ -147,71 +147,64 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (5 OFICIALES + AUDIO FUNCIONAL)
+// 4. DATOS DE POEMAS (2026 & 2027)
 // ===========================================
+let currentPoemYear = 2026;
 let currentPoemIndex = 0;
 let currentAudio = null;
 
-const POEMS = [
-  { 
-    title: "Geibheann", 
-    author: "Caitlín Maude", 
-    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." 
-  },
-  { 
-    title: "Colscaradh", 
-    author: "Pádraig Mac Suibhne", 
-    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." 
-  },
-  { 
-    title: "Mo Ghrá-sa (idir lúibíní)", 
-    author: "Nuala Ní Dhomhnaill", 
-    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs. She loves him despite his faults." 
-  },
-  { 
-    title: "An tEarrach Thiar", 
-    author: "Máirtín Ó Direáin", 
-    text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic, peaceful life on the Aran Islands in Spring." 
-  },
-  // POEMA TRADICIONAL 2026 (LEITURA COMPLETA - STUDYCLIX VERSION)
-  { 
-    title: "An Spailpín Fánach", 
-    author: "Anaithnid (Traditional)", 
-    text: `Im spailpín fánach atáim le fada
-ag seasamh ar mo shláinte,
-ag siúl an drúchta go moch ar maidin
-'s ag bailiú galair ráithe;
-ach glacfad fees ó rí na gcroppies,
-cleith is píc chun sáite
-'s go brách arís ní ghlaofar m'ainm
-sa tír seo, an spailpín fánach.
-
-Ba mhinic mo thriall go Cluain gheal Meala
-'s as san go Tiobraid Árann;
-i gCarraig na Siúire thíos do ghearrainn
-cúrsa leathan láidir;
-i gCallainn go dlúth 's mo shúiste im ghlaic
-ag dul chun tosaigh ceard leo
-'s nuair théim go Durlas 's é siúd bhíonn agam –
-'Sin chu'ibh an spailpín fánach!'
-
-Go deo deo arís ní raghad go Caiseal
-ag díol ná ag reic mo shláinte
-ná ar mhargadh na saoire im shuí cois balla,
-im scaoinse ar leataoibh sráide,
-bodairí na tíre ag tíocht ar a gcapaill
-á fhiafraí an bhfuilim hireálta;
-'téanam chun siúil, tá an cúrsa fada' –
-siúd siúl ar an spailpín fánach.` 
-  }
+// SYLLABUS 2026 (ACTUAL 6th YEAR)
+const POEMS_2026 = [
+  { title: "Geibheann", author: "Caitlín Maude", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
+  { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
+  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
+  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
 ];
 
+// SYLLABUS 2027 (NEW FOR 5th YEAR) - Circular 0070/2024
+const POEMS_2027 = [
+  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
+  { title: "Iníon", author: "Áine Durkin", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
+  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
+  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón,\n'S le héirí na maidne tháinig ainnir fá mo dhéin le póg,\nBhí gríosghrua daite aici is bhí loinnir ina céibh mar ór,\n'S b'é íocshláinte an domhain a bheith ag amharc ar an ríon óg.\n\n"A fhialfhir charthannaigh, ná caitear thusa i néalta bróin,\nAch éirigh go tapa is aistrigh liom siar sa ród,\nGo tír dheas na meala nach bhfuair Gallaibh inti réim go fóill,\n'S gheobhair aoibhneas ar hallaí á mealladh le siamsa ceoil."\n\n"A ríon is deise, an tú Héilean fár tréigeadh slóigh,\nNó an oiread de na naoi mná deasa Parnassus tú a bhí déanta i gcló?\nCén tír ins an chruinne inar hoileadh tú, a réalt gan cheo,\nLe gur mian leat mo shamhailse bheith ag cogarnaigh leat siar sa ród?"\n\n"Ná fiafraigh díomsa ceist, ní chodlaím ar an taobh seo den Bhóinn,\nIs síogaí beag linbh mé a hoileadh le taobh Ghráinne Óige;\nI mbruíon Cheart an Chruacháin is i dTuaim a bhím gach tráthnóna,\nIs ar na stiallacha seo de mhaidin bím ag taisteal go bruach Loch Éirne."` }
+];
+
+function setPoemYear(year) {
+    currentPoemYear = year;
+    document.getElementById('btn2026').className = year === 2026 ? 'level-btn active' : 'level-btn';
+    document.getElementById('btn2027').className = year === 2027 ? 'level-btn active' : 'level-btn';
+    renderPoemButtons();
+}
+
+function renderPoemButtons() {
+    const list = currentPoemYear === 2026 ? POEMS_2026 : POEMS_2027;
+    const container = document.getElementById('poemButtonsContainer');
+    if(!container) return;
+    
+    container.innerHTML = "";
+    list.forEach((poem, index) => {
+        const btn = document.createElement('div');
+        btn.className = 'rp-btn-select';
+        btn.innerText = poem.title.split(" (")[0]; // Short title
+        btn.onclick = () => selectPoem(index, btn);
+        container.appendChild(btn);
+    });
+    // Select first by default
+    selectPoem(0, container.children[0]);
+}
+
 function selectPoem(index, btn) {
+    // Highlight button
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if(btn) btn.classList.add('active');
+    
     stopAudio(); 
     currentPoemIndex = index;
-    const p = POEMS[index];
+    const list = currentPoemYear === 2026 ? POEMS_2026 : POEMS_2027;
+    const p = list[index];
+    
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
     document.getElementById('poemAuthor').innerText = "le " + p.author;
@@ -220,9 +213,24 @@ function selectPoem(index, btn) {
 
 function playPoemAudio() {
     stopAudio();
-    const filename = `Poem${currentPoemIndex + 1}.mp3`;
+    let filename = "";
+    
+    if (currentPoemYear === 2026) {
+        // Usa tus archivos actuales: Poem1.mp3, Poem2.mp3...
+        filename = `Poem${currentPoemIndex + 1}.mp3`;
+    } else {
+        // Para 2027, usaremos un esquema diferente en el futuro
+        filename = `Poem2027_${currentPoemIndex + 1}.mp3`;
+    }
+    
     currentAudio = new Audio(filename);
-    currentAudio.onerror = function() { alert("⚠️ Níor aimsíodh: " + filename + ". Make sure the file exists in the 'ga' folder."); };
+    currentAudio.onerror = function() { 
+        if(currentPoemYear === 2027) {
+            alert("⚠️ Audio for 2027 poems coming soon! (File: " + filename + " not found)");
+        } else {
+            alert("⚠️ Níor aimsíodh: " + filename + ". Check file uploads.");
+        }
+    };
     currentAudio.play();
 }
 
@@ -318,4 +326,5 @@ function resetSraith() {
 window.onload = function() {
     initConv();
     initSraith();
+    setPoemYear(2026); // Cargar poemas 2026 por defecto
 };

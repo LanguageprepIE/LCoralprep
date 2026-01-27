@@ -17,11 +17,11 @@ function switchTab(tab) {
   document.getElementById('sectionPoetry').style.display = tab === 'poem' ? 'block' : 'none';
   document.getElementById('sectionSraith').style.display = tab === 'sraith' ? 'block' : 'none';
   
-  stopAudio();
+  stopAudio(); // Parar audio si cambiamos pestaña
 }
 
 // ===========================================
-// PARTE 1: COMHRÁ
+// PARTE 1: COMHRÁ (15 TEMAS - IGUAL QUE ESPAÑOL)
 // ===========================================
 let currentLevel = 'OL';
 let currentTopic = null;
@@ -41,7 +41,10 @@ const DATA = [
   { title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Cad is féidir linn a dhéanamh chun an Ghaeilge a chur chun cinn? Stádas na teanga." },
   { title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Drugaí, alcól, dífhostaíocht, agus tithíocht. Cad iad na dúshláin is mó?" },
   { title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht faoi láthair?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Labhair faoi scéal nuachta mór le déanaí." },
-  { title: "12. Ceol agus Cultúr", OL: "An maith leat ceol? Cén cineál ceoil is fearr leat?", HL: "Tábhacht an chultúir agus an cheoil do dhaoine óga. An dtéann tú chuig ceolchoirmeacha?" }
+  { title: "12. Ceol agus Cultúr", OL: "An maith leat ceol? Cén cineál ceoil is fearr leat?", HL: "Tábhacht an chultúir agus an cheoil do dhaoine óga. An dtéann tú chuig ceolchoirmeacha?" },
+  { title: "13. Teicneolaíocht", OL: "An bhfuil fón póca agat? An úsáideann tú Snapchat/TikTok?", HL: "An bhfuilimid ró-spleách ar an teicneolaíocht? Buntáistí agus míbhuntáistí an idirlín." },
+  { title: "14. Sláinte & Spórt", OL: "An imríonn tú aon spórt? An bhfuil tú sláintiúil?", HL: "An bhfuil fadhb na raimhre againn in Éirinn? Cén fáth a bhfuil sláinte intinne tábhachtach?" },
+  { title: "15. Daoine Cáiliúla", OL: "Cé hé/hí an duine is fearr leat? (Aisteoir, ceoltóir)", HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?" }
 ];
 
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
@@ -149,7 +152,7 @@ function readMyInput() {
 }
 
 // ===========================================
-// PARTE 2: FILÍOCHT (POEMAS)
+// PARTE 2: FILÍOCHT (AUDIO MP3 CORRECTO)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
@@ -179,17 +182,23 @@ function selectPoem(index, btn) {
 
 function playPoemAudio() {
     stopAudio();
-    // Nombres exactos de tus archivos: Poem1.mp3, Poem2.mp3 ... Poem6.mp3
+    // Intenta cargar el archivo Poem1.mp3, Poem2.mp3, etc.
+    // IMPORTANTE: Los archivos deben estar en la carpeta 'ga' y llamarse exactamente así.
     const filename = `Poem${currentPoemIndex + 1}.mp3`;
     
     currentAudio = new Audio(filename);
     
-    // Si hay error, avisamos para saber qué pasa
+    // Si hay error, mostrar alerta para depurar
     currentAudio.onerror = function() {
-        alert("⚠️ Níor aimsíodh an comhad (File not found): " + filename + "\nCheck if the file is uploaded to the 'ga' folder.");
+        console.log("Error cargando audio: " + filename);
+        // Intentamos ruta relativa por si acaso
+        const altFilename = `./Poem${currentPoemIndex + 1}.mp3`;
+        const altAudio = new Audio(altFilename);
+        altAudio.play().catch(e => alert("Audio file not found: " + filename));
+        currentAudio = altAudio;
     };
     
-    currentAudio.play();
+    currentAudio.play().catch(e => console.log("Play error: ", e));
 }
 
 function stopAudio() {
@@ -200,7 +209,7 @@ function stopAudio() {
 }
 
 // ===========================================
-// PARTE 3: SRAITH PICTIÚR
+// PARTE 3: SRAITH PICTIÚR (20 TÍTULOS)
 // ===========================================
 let currentSraithTitle = "";
 

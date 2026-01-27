@@ -147,13 +147,12 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (COPYRIGHT SAFE)
+// 4. DATOS DE POEMAS (5 OFICIALES + AUDIO OK)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
 
 const POEMS = [
-  // POEMAS MODERNOS (SOLO INFO, SIN TEXTO ENTERO)
   { 
     title: "Geibheann", 
     author: "Caitlín Maude", 
@@ -174,7 +173,7 @@ const POEMS = [
     author: "Máirtín Ó Direáin", 
     text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic, peaceful life on the Aran Islands in Spring." 
   },
-  // POEMAS TRADICIONALES (TEXTO COMPLETO PERMITIDO)
+  // VERSIÓN CORRECTA STUDYCLIX (MUNSTER IRISH - 1798 REBELLION)
   { 
     title: "An Spailpín Fánach", 
     author: "Anaithnid (Traditional)", 
@@ -204,38 +203,6 @@ bodairí na tíre ag tíocht ar a gcapaill
 á fhiafraí an bhfuilim hireálta;
 'téanam chun siúil, tá an cúrsa fada' –
 siúd siúl ar an spailpín fánach.` 
-  },
-  { 
-    title: "Iníon an Bhaoilligh", 
-    author: "Amhrán Traidisiúnta", 
-    text: `Bhí mé oíche taobh istigh ‘Fhéil’ Bríde
-Ar faire thíos ar an Mhullach Mhór,
-Is tharla naí dom a dtug mé gnaoi dí
-Mar bhí sí caíúil lách álainn óg.
-
-Sí go cinnte a mhearaigh m’intinn,
-Agus lia na bhfiann, ó, ní leigheasfadh mé,
-Is tá mo chroí istigh ina mhíle píosa
-Mura bhfaighim cead síneadh lena brollach glégheal.
-
-Is fada an lá breá ó thug mé grá duit,
-Is mé i mo pháiste beag óg gan chiall,
-Is dá mbíodh mo mhuintir uilig i bhfeirg liom
-Nár chuma liom, a mhíle stór?
-
-A mhíle grá, tá cách ag rá liom
-Gur den ghrá ort a gheobhaidh mé bás,
-Is níl an lá margaidh dá mbeadh ins na Gearailtigh
-Nach mbeadh cúl fathmhainneach is mise ag ól.
-
-‘S a chailín donn deas a chuaigh i gcontúirt,
-Druid anall liom agus tabhair domh póg
-Is gur leatsa a shiúlfainn cnoic is gleanntáin,
-Is go Baile an Teampaill dá mbíodh sé romhainn;
-
-Ach anois ó tá mise curtha cráite,
-Is gur lig mé páirt mhór de mo rún le gaoth,\nA Rí atá i bParrthas, déan dom fáras,
-I ngleanntáin áilne lena taobh.` 
   }
 ];
 
@@ -255,7 +222,7 @@ function playPoemAudio() {
     stopAudio();
     const filename = `Poem${currentPoemIndex + 1}.mp3`;
     currentAudio = new Audio(filename);
-    currentAudio.onerror = function() { alert("⚠️ Níor aimsíodh: " + filename); };
+    currentAudio.onerror = function() { alert("⚠️ Níor aimsíodh: " + filename + ". Make sure the file exists in the 'ga' folder."); };
     currentAudio.play();
 }
 

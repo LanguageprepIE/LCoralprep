@@ -26,7 +26,7 @@ function switchTab(tab) {
 }
 
 // ===========================================
-// 1. COMHRÁ (15 TEMAS)
+// 1. COMHRÁ (15 TEMAS - LISTA COMPLETA)
 // ===========================================
 const DATA = [
   { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
@@ -147,7 +147,7 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (5 OFICIALES + AUDIO OK)
+// 4. DATOS DE POEMAS (5 OFICIALES + AUDIO FUNCIONAL)
 // ===========================================
 let currentPoemIndex = 0;
 let currentAudio = null;
@@ -173,7 +173,7 @@ const POEMS = [
     author: "Máirtín Ó Direáin", 
     text: "⚠️ Copyright Protected Text.\n\nOpen your textbook to read the full poem.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic, peaceful life on the Aran Islands in Spring." 
   },
-  // VERSIÓN CORRECTA STUDYCLIX (MUNSTER IRISH - 1798 REBELLION)
+  // POEMA TRADICIONAL 2026 (LEITURA COMPLETA - STUDYCLIX VERSION)
   { 
     title: "An Spailpín Fánach", 
     author: "Anaithnid (Traditional)", 

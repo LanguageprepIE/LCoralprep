@@ -102,6 +102,51 @@
       <div class="poem-card" id="poemText"></div>
     </div>
   </div>
+  <div id="sectionSraith" style="display:none;">
+    
+    <div class="info-box" style="display:block; background:#fff7ed; border-color:#fdba74; color:#9a3412;">
+      <strong>🖼️ Instructions / Treoracha:</strong>
+      <p style="margin:5px 0 0;">
+        We cannot show the official images due to copyright. <br>
+        <strong>Open your textbook or exam papers</strong> to the Sraith Pictiúr selected below. 
+        Describe what is happening in the pictures to the AI.
+      </p>
+    </div>
+
+    <div class="poem-selector">
+      <div class="poem-btn" onclick="selectSraith(0, this)">1. An Timpiste</div>
+      <div class="poem-btn" onclick="selectSraith(1, this)">2. Staidéar</div>
+      <div class="poem-btn" onclick="selectSraith(2, this)">3. Gadaíocht</div>
+      <div class="poem-btn" onclick="selectSraith(3, this)">4. Cluiche Ceannais</div>
+      <div class="poem-btn" onclick="selectSraith(4, this)">5. Drochaimsir</div>
+      <div class="poem-btn" onclick="selectSraith(5, this)">6. Ceolchoirm</div>
+      </div>
+
+    <div id="sraithArea" style="display:none;">
+      <div class="question-card" style="border-left-color:#ea580c;">
+        <h3 id="sraithTitle" style="margin-top:0; color:#ea580c;"></h3>
+        <p style="font-weight:600;">Examiner:</p>
+        <div id="sraithQuestion" style="font-size:1.1rem;">Inis dom an scéal. Cad atá ag tarlú sna pictiúir? (Tell me the story).</div>
+        <button class="audio-btn" onclick="speakSraith()">🔊 Éist (Listen)</button>
+      </div>
+      
+      <p style="text-align:center; font-weight:bold; color:#475569;">Déan cur síos ar na pictiúir (Describe the pictures):</p>
+      <textarea id="userInputSraith" placeholder="Sa chéad phictiúr feicim... (In the first picture I see...)"></textarea>
+      <button class="btn-main" id="btnActionSraith" onclick="analyzeSraith()">✨ Evaluate / Ceartaigh</button>
+    </div>
+
+    <div id="resultSraith" style="display:none; margin-top:30px;">
+      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseTextSraith"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplaySraith" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbGASraith" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbENSraith" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsListSraith"></div>
+      </div>
+      <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetSraith()">🔄 Pick another Sraith</button>
+    </div>
+  </div>
 
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">

@@ -32,11 +32,11 @@ let mockIndex = 0;
 const DATA = [
   { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
   { title: "2. Mo Theaghlach", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu." },
-  { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar?" },
-  { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais in Éirinn?" },
-  { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga?" },
-  { title: "6. An tSamhradh", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort." },
-  { title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil?" },
+  { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht, coiriúlacht)" },
+  { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais in Éirinn? An bhfuil an iomarca brú ann?" },
+  { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga? An bhfuil sé sláintiúil?" },
+  { title: "6. An tSamhradh", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort. An maith leat taisteal?" },
+  { title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?" },
   { title: "8. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Cad iad na dúshláin is mó atá roimh dhaoine óga sa lá atá inniu ann?" }
 ];
 
@@ -122,7 +122,6 @@ async function analyze() {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
     const d = await r.json(); 
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-    
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
     document.getElementById('userResponseText').innerText = t;
@@ -131,7 +130,6 @@ async function analyze() {
     document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
     document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
-
     const btnReset = document.getElementById('btnReset');
     if (isMockExam && mockIndex < 4) { btnReset.innerText = "➡️ An Chéad Cheist Eile"; btnReset.onclick = resetApp; } else { btnReset.innerText = "🔄 Topaic Eile"; btnReset.onclick = () => { isMockExam=false; resetApp(); }; }
   } catch (e) { console.error(e); alert("Earráid."); } finally { b.disabled = false; b.innerText = "✨ Ceartaigh"; }
@@ -165,7 +163,6 @@ const POEMS = [
 function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
     const p = POEMS[index];
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
@@ -174,18 +171,31 @@ function selectPoem(index, btn) {
 }
 
 // ===========================================
-// PARTE 3: SRAITH PICTIÚR
+// PARTE 3: SRAITH PICTIÚR (SEGÚN PDF OFICIAL)
 // ===========================================
 let currentSraithTitle = "";
 
 const SRAITH_TITLES = [
-  "1. An Timpiste (The Accident)", "2. Staidéar vs Caitheamh Aimsire", "3. Gadaíocht ar an Traein", 
-  "4. Cluiche Ceannais na hÉireann", "5. Drochaimsir / Tuilte", "6. Ceolchoirm / Ticéid", 
-  "7. An Tionscadal Scoile", "8. Cúrsa Gaeilge sa Ghaeltacht", "9. Obair Bhaile vs Glanadh", 
-  "10. Saoire sa Spáinn", "11. Ag Campáil / An Phicnic", "12. An tAgallamh Poist", 
-  "13. Fadhbanna leis an bhFón", "14. An Cóisir / Breithlá", "15. Tinneas / An tOspidéal", 
-  "16. Madra ar Strae", "17. Ag cailleadh an bhus", "18. An Bhialann / Bia Míshláintiúil", 
-  "19. Glanadh na hÁite", "20. Robáil sa Bhanc"
+  "1. Cuairt ar Aintín i Nua-Eabhrac",
+  "2. Imreoir Gortaithe",
+  "3. Bua sa chomórtas díospóireachta",
+  "4. Ná húsáid an cárta creidmheasa gan chead",
+  "5. Ag toghadh scoláire na bliana",
+  "6. An Ghaeilge - seoid luachmhar agus cuid dár gcultúr",
+  "7. Obair dhian: torthaí maithe san Ardteistiméireacht",
+  "8. Comhoibriú an Phobail",
+  "9. Samhradh Iontach",
+  "10. Drochaimsir an Gheimhridh - Athrú Aeráide",
+  "11. Timpiste sa Choláiste Samhraidh",
+  "12. Sláinte na nóg - Seachtain na Sláinte",
+  "13. Bua ag Cór na Scoile",
+  "14. Teip sa Scrúdú Tiomána",
+  "15. Breoite ar Scoil",
+  "16. Agallamh do nuacht TG4@7",
+  "17. Madra ar Strae",
+  "18. Na Déagóirí Cróga",
+  "19. Rialacha na Scoile",
+  "20. Gaeilge: Teanga Bheo"
 ];
 
 function initSraith() {

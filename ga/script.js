@@ -29,21 +29,21 @@ function switchTab(tab) {
 // 1. COMHRÁ (15 TEMAS)
 // ===========================================
 const DATA = [
-  { title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
-  { title: "2. Mo Theaghlach", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu." },
-  { title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht)" },
-  { title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais? An bhfuil an iomarca brú ann?" },
-  { title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga?" },
-  { title: "6. Laethanta Saoire", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort." },
-  { title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?" },
-  { title: "8. Obair Pháirtaimseartha", OL: "An bhfuil post agat? Cén sórt oibre a dhéanann tú?", HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu?" },
-  { title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Stádas na Gaeilge. Cad is féidir linn a dhéanamh chun í a chur chun cinn?" },
-  { title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Alcól, drugaí, agus tithíocht. Cad iad na dúshláin is mó?" },
-  { title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Scéal mór le déanaí." },
-  { title: "12. Ceol & Cultúr", OL: "An maith leat ceol? Cén cineál ceoil?", HL: "Tábhacht an chultúir agus an cheoil. An dtéann tú chuig ceolchoirmeacha?" },
-  { title: "13. Teicneolaíocht", OL: "An bhfuil fón póca agat? An úsáideann tú TikTok?", HL: "Buntáistí agus míbhuntáistí an idirlín agus na meáin shóisialta." },
-  { title: "14. Sláinte", OL: "An itheann tú bia sláintiúil? An ndéanann tú aclaíocht?", HL: "Fadhb na raimhre in Éirinn. Cén fáth a bhfuil sláinte intinne tábhachtach?" },
-  { title: "15. Daoine Cáiliúla", OL: "Cé hé/hí an duine is fearr leat?", HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?" }
+  { id: 1, title: "1. Mé Féin", OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?" },
+  { id: 2, title: "2. Mo Theaghlach", OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu." },
+  { id: 3, title: "3. Mo Cheantar", OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht)" },
+  { id: 4, title: "4. An Scoil", OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", HL: "Cad a cheapann tú faoin gcóras oideachais? An bhfuil an iomarca brú ann?" },
+  { id: 5, title: "5. Caitheamh Aimsire", OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga?" },
+  { id: 6, title: "6. Laethanta Saoire", OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort." },
+  { id: 7, title: "7. An Todhchaí", OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?" },
+  { id: 8, title: "8. Obair Pháirtaimseartha", OL: "An bhfuil post agat? Cén sórt oibre a dhéanann tú?", HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu?" },
+  { id: 9, title: "9. An Ghaeilge", OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", HL: "Stádas na Gaeilge. Cad is féidir linn a dhéanamh chun í a chur chun cinn?" },
+  { id: 10, title: "10. Fadhbanna Sóisialta", OL: "An bhfuil fadhbanna ag daoine óga inniu?", HL: "Alcól, drugaí, agus tithíocht. Cad iad na dúshláin is mó?" },
+  { id: 11, title: "11. Cúrsaí Reatha", OL: "An léann tú an nuacht? Cad atá sa nuacht?", HL: "Cogadh, athrú aeráide, nó polaitíocht. Scéal mór le déanaí." },
+  { id: 12, title: "12. Ceol & Cultúr", OL: "An maith leat ceol? Cén cineál ceoil?", HL: "Tábhacht an chultúir agus an cheoil. An dtéann tú chuig ceolchoirmeacha?" },
+  { id: 13, title: "13. Teicneolaíocht", OL: "An bhfuil fón póca agat? An úsáideann tú TikTok?", HL: "Buntáistí agus míbhuntáistí an idirlín agus na meáin shóisialta." },
+  { id: 14, title: "14. Sláinte", OL: "An itheann tú bia sláintiúil? An ndéanann tú aclaíocht?", HL: "Fadhb na raimhre in Éirinn. Cén fáth a bhfuil sláinte intinne tábhachtach?" },
+  { id: 15, title: "15. Daoine Cáiliúla", OL: "Cé hé/hí an duine is fearr leat?", HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?" }
 ];
 
 let currentLevel = 'OL';
@@ -51,6 +51,9 @@ let currentTopic = null;
 let isMockExam = false; 
 let mockQuestions = []; 
 let mockIndex = 0; 
+let currentAudio = null;
+
+// Preguntas Mock
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
 const FUT_Q = ["Cad a dhéanfaidh tú amárach?", "Cá rachaidh tú?", "Cad a dhéanfaidh tú tar éis na scrúduithe?"];
 
@@ -101,9 +104,49 @@ function showMockQuestion() {
     document.getElementById('userInput').value = "";
 }
 
+// 🔊 LÓGICA DE AUDIO HÍBRIDA (ELEVENLABS + FALLBACK)
 function speakText() { 
-    const t = document.getElementById('qDisplay').innerText; 
-    if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.rate = 0.9; window.speechSynthesis.speak(u); } 
+    stopAudio();
+    if(isMockExam) {
+        // En mock exam usamos voz robótica porque es random
+        const t = document.getElementById('qDisplay').innerText; 
+        speakRobot(t);
+        return;
+    }
+
+    // Nombre del archivo que esperamos (Ej: q_t1_ol.mp3)
+    // t1 = tema 1, ol = ordinary level
+    const filename = `audio/q_t${currentTopic.id}_${currentLevel.toLowerCase()}.mp3`;
+    
+    // Intentar reproducir el MP3
+    currentAudio = new Audio(filename);
+    
+    // Si falla (no existe el archivo aún), usar Robot
+    currentAudio.onerror = function() {
+        console.log("Audio file not found ("+filename+"), using fallback.");
+        speakRobot(document.getElementById('qDisplay').innerText);
+    };
+    
+    currentAudio.play();
+}
+
+function speakRobot(text) {
+    if ('speechSynthesis' in window) { 
+        window.speechSynthesis.cancel(); 
+        const u = new SpeechSynthesisUtterance(text); 
+        // Intentar forzar voz irlandesa si existe, sino inglesa
+        u.lang = 'ga-IE'; 
+        u.rate = 0.9; 
+        window.speechSynthesis.speak(u); 
+    }
+}
+
+function stopAudio() {
+    if(currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+    window.speechSynthesis.cancel();
 }
 
 function resetApp() { 
@@ -118,7 +161,19 @@ async function analyze() {
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Ag ceartú...";
   const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  const prompt = `ACT AS: Irish Examiner. QUESTION: "${q}". STUDENT: "${t}". OUTPUT JSON: { "score": (0-100), "feedback_ga": "Irish feedback", "feedback_en": "English feedback", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
+  
+  // PROMPT MODIFICADO: ENFOQUE EN GRAMÁTICA Y ESCRITURA
+  const prompt = `
+  ACT AS: Irish Grammar Teacher. 
+  QUESTION: "${q}". 
+  STUDENT WROTE: "${t}". 
+  TASK: Check grammar (Tuiseal Ginideach, verbs), spelling and structure.
+  OUTPUT JSON ONLY: { 
+    "score": (0-100), 
+    "feedback_ga": "Moladh (Praise) & Comhairle (Advice) i nGaeilge", 
+    "feedback_en": "Explain the grammar mistakes simply in English", 
+    "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
+  }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
@@ -127,23 +182,21 @@ async function analyze() {
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
     document.getElementById('userResponseText').innerText = t;
-    document.getElementById('scoreDisplay').innerText = `Scór: ${j.score}%`;
+    document.getElementById('scoreDisplay').innerText = `Scór Gramadaí: ${j.score}%`;
     document.getElementById('scoreDisplay').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
     document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
-    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
+    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Gramadach foirfe!";
+    
     const btnReset = document.getElementById('btnReset');
     if (isMockExam && mockIndex < 4) { btnReset.innerText = "➡️ An Chéad Cheist Eile"; btnReset.onclick = resetApp; } else { btnReset.innerText = "🔄 Topaic Eile"; btnReset.onclick = () => { isMockExam=false; resetApp(); }; }
-  } catch (e) { console.error(e); alert("Earráid."); } finally { b.disabled = false; b.innerText = "✨ Ceartaigh"; }
+  } catch (e) { console.error(e); alert("Earráid."); } finally { b.disabled = false; b.innerText = "✨ Ceartaigh (Correct)"; }
 }
 
 function readMyInput() {
     const text = document.getElementById("userInput").value;
     if (!text) return; 
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.9;
-    window.speechSynthesis.speak(u);
+    speakRobot(text); // Usamos el robot para leer lo que escribe el alumno
 }
 
 // ===========================================
@@ -151,7 +204,6 @@ function readMyInput() {
 // ===========================================
 let currentPoemYear = 2026;
 let currentPoemIndex = 0;
-let currentAudio = null;
 
 // SYLLABUS 2026 (ACTUAL 6th YEAR)
 const POEMS_2026 = [
@@ -162,13 +214,13 @@ const POEMS_2026 = [
   { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
 ];
 
-// SYLLABUS 2027 (NEW FOR 5th YEAR) - Circular 0070/2024
+// SYLLABUS 2027 (NEW FOR 5th YEAR)
 const POEMS_2027 = [
   { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
   { title: "Iníon", author: "Áine Durkin", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
   { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
   { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
-  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón,\n'S le héirí na maidne tháinig ainnir fá mo dhéin le póg,\nBhí gríosghrua daite aici is bhí loinnir ina céibh mar ór,\n'S b'é íocshláinte an domhain a bheith ag amharc ar an ríon óg.\n\n"A fhialfhir charthannaigh, ná caitear thusa i néalta bróin,\nAch éirigh go tapa is aistrigh liom siar sa ród,\nGo tír dheas na meala nach bhfuair Gallaibh inti réim go fóill,\n'S gheobhair aoibhneas ar hallaí á mealladh le siamsa ceoil."\n\n"A ríon is deise, an tú Héilean fár tréigeadh slóigh,\nNó an oiread de na naoi mná deasa Parnassus tú a bhí déanta i gcló?\nCén tír ins an chruinne inar hoileadh tú, a réalt gan cheo,\nLe gur mian leat mo shamhailse bheith ag cogarnaigh leat siar sa ród?"\n\n"Ná fiafraigh díomsa ceist, ní chodlaím ar an taobh seo den Bhóinn,\nIs síogaí beag linbh mé a hoileadh le taobh Ghráinne Óige;\nI mbruíon Cheart an Chruacháin is i dTuaim a bhím gach tráthnóna,\nIs ar na stiallacha seo de mhaidin bím ag taisteal go bruach Loch Éirne."` }
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
 ];
 
 function setPoemYear(year) {
@@ -187,16 +239,14 @@ function renderPoemButtons() {
     list.forEach((poem, index) => {
         const btn = document.createElement('div');
         btn.className = 'rp-btn-select';
-        btn.innerText = poem.title.split(" (")[0]; // Short title
+        btn.innerText = poem.title.split(" (")[0]; 
         btn.onclick = () => selectPoem(index, btn);
         container.appendChild(btn);
     });
-    // Select first by default
     selectPoem(0, container.children[0]);
 }
 
 function selectPoem(index, btn) {
-    // Highlight button
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     if(btn) btn.classList.add('active');
     
@@ -214,35 +264,20 @@ function selectPoem(index, btn) {
 function playPoemAudio() {
     stopAudio();
     let filename = "";
-    
     if (currentPoemYear === 2026) {
-        // Usa tus archivos actuales: Poem1.mp3, Poem2.mp3...
         filename = `Poem${currentPoemIndex + 1}.mp3`;
     } else {
-        // Para 2027, usaremos un esquema diferente en el futuro
         filename = `Poem2027_${currentPoemIndex + 1}.mp3`;
     }
-    
     currentAudio = new Audio(filename);
     currentAudio.onerror = function() { 
-        if(currentPoemYear === 2027) {
-            alert("⚠️ Audio for 2027 poems coming soon! (File: " + filename + " not found)");
-        } else {
-            alert("⚠️ Níor aimsíodh: " + filename + ". Check file uploads.");
-        }
+        alert("⚠️ Audio file not found: " + filename);
     };
     currentAudio.play();
 }
 
-function stopAudio() {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
-}
-
 // ===========================================
-// 5. DATOS SRAITH PICTIÚR (20 TÍTULOS OFICIALES)
+// 5. DATOS SRAITH PICTIÚR
 // ===========================================
 let currentSraithTitle = "";
 const SRAITH_TITLES = [
@@ -279,17 +314,13 @@ function selectSraith(index, btn) {
 }
 
 function speakSraithPrompt() {
-    const text = "Inis dom an scéal. Cad atá ag tarlú sna pictiúir?";
-    if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 0.9; window.speechSynthesis.speak(u); }
+    speakRobot("Inis dom an scéal. Cad atá ag tarlú sna pictiúir?");
 }
 
 function readMySraithInput() {
     const text = document.getElementById("userInputSraith").value;
     if (!text) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.9;
-    window.speechSynthesis.speak(u);
+    speakRobot(text);
 }
 
 async function analyzeSraith() {
@@ -297,7 +328,7 @@ async function analyzeSraith() {
   if(t.length < 5) return alert("Scríobh níos mó le do thoil...");
   const b = document.getElementById('btnActionSraith'); 
   b.disabled = true; b.innerText = "⏳ Ag ceartú...";
-  const prompt = `ACT AS: Irish Examiner. TASK: Sraith Pictiúr "${currentSraithTitle}". STUDENT: "${t}". OUTPUT JSON: { "score": (0-100), "feedback_ga": "Irish feedback", "feedback_en": "English feedback", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
+  const prompt = `ACT AS: Irish Examiner. TASK: Sraith Pictiúr "${currentSraithTitle}". STUDENT WROTE: "${t}". CHECK GRAMMAR. OUTPUT JSON: { "score": (0-100), "feedback_ga": "Irish feedback", "feedback_en": "English feedback", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
@@ -306,7 +337,7 @@ async function analyzeSraith() {
     document.getElementById('sraithArea').style.display = 'none'; 
     document.getElementById('resultSraith').style.display = 'block';
     document.getElementById('userResponseTextSraith').innerText = t;
-    document.getElementById('scoreDisplaySraith').innerText = `Scór: ${j.score}%`;
+    document.getElementById('scoreDisplaySraith').innerText = `Scór Gramadaí: ${j.score}%`;
     document.getElementById('scoreDisplaySraith').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
     document.getElementById('fbGASraith').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbENSraith').innerText = "🇬🇧 " + j.feedback_en;
@@ -320,11 +351,8 @@ function resetSraith() {
     document.getElementById('userInputSraith').value = "";
 }
 
-// ===========================================
-// ¡ARRANCAR MOTOR!
-// ===========================================
 window.onload = function() {
     initConv();
     initSraith();
-    setPoemYear(2026); // Cargar 2026 por defecto
+    setPoemYear(2026);
 };

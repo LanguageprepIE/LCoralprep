@@ -13,48 +13,56 @@
 <div class="container">
   
   <header>
-    <h1>English Support (EAL)</h1>
-    <p class="subtitle">English for Newcomers & School Life</p>
-  </header>
+    <h1>
+      <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
+        LanguagePrep Ireland
+      </a>
+    </h1>
+    <p class="subtitle">Module: English Support (EAL)</p>
 
-  <div class="lang-select-container">
-    <label for="nativeLang" class="lang-label">🗣️ I speak / Je parle / Я розмовляю:</label>
-    <select id="nativeLang" class="lang-select" onchange="updateInterfaceLang()">
-      <option value="English">Select your language...</option>
-      <option value="Ukrainian">🇺🇦 Ukrainian (Українська)</option>
-      <option value="Russian">🏳️ Russian (Русский)</option>
-      <option value="Arabic">🇸🇾 Arabic (العربية)</option>
-      <option value="Spanish">🇪🇸 Spanish (Español)</option>
-      <option value="Portuguese">🇧🇷 Portuguese (Português)</option>
-      <option value="French">🇫🇷 French (Français)</option>
-      <option value="Polish">🇵🇱 Polish (Polski)</option>
-      <option value="Romanian">🇷🇴 Romanian (Română)</option>
-      <option value="Chinese">🇨🇳 Chinese (中文)</option>
-      <option value="Pashto">🇦🇫 Pashto (پښتو)</option>
-    </select>
-  </div>
+    <div class="lang-select-container">
+      <label for="nativeLang" class="lang-label">🗣️ I speak / Je parle / Я розмовляю:</label>
+      <select id="nativeLang" class="lang-select" onchange="updateInterfaceLang()">
+        <option value="English">Select your language...</option>
+        <option value="Ukrainian">🇺🇦 Ukrainian (Українська)</option>
+        <option value="Russian">🏳️ Russian (Русский)</option>
+        <option value="Arabic">🇸🇾 Arabic (العربية)</option>
+        <option value="Spanish">🇪🇸 Spanish (Español)</option>
+        <option value="Portuguese">🇧🇷 Portuguese (Português)</option>
+        <option value="French">🇫🇷 French (Français)</option>
+        <option value="Polish">🇵🇱 Polish (Polski)</option>
+        <option value="Romanian">🇷🇴 Romanian (Română)</option>
+        <option value="Chinese">🇨🇳 Chinese (中文)</option>
+        <option value="Pashto">🇦🇫 Pashto (پښتو)</option>
+        <option value="Urdu">🇵🇰 Urdu (اردو)</option>
+      </select>
+    </div>
+  </header>
 
   <div class="level-selector">
     <button class="level-btn active" onclick="setTopic('newcomer')">🐣 Newcomer (Survival)</button>
     <button class="level-btn" onclick="setTopic('social')">🗣️ Social & School</button>
   </div>
 
-  <div class="topic-grid" id="topicGrid"></div>
+  <div class="topic-grid" id="topicGrid">
+    </div>
 
   <div id="exerciseArea" style="display:none; margin-top:20px;">
     <div class="question-card">
       <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
+      
       <div id="qDisplay" style="font-size:1.2rem; font-weight:700; margin-bottom:5px;"></div>
       
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
         <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
         <button class="translate-btn" onclick="translateQuestion()">🌍 Translate Question</button>
       </div>
+
       <div id="qTranslation" class="translation-box"></div>
     </div>
 
     <button onclick="toggleHelpers()" style="width:100%; margin-bottom:10px; padding:10px; background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; color:#92400e; font-weight:700; cursor:pointer;">
-      💡 Need help? Click for Example Sentences
+      💡 Need help? Click for Sentences
     </button>
     
     <div id="helperArea" style="display:none; background:#fff; border:1px solid #e2e8f0; padding:15px; border-radius:10px; margin-bottom:15px;">
@@ -85,11 +93,39 @@
   </div>
 
   <div class="footer-section">
-    <a href="../" class="revolut-btn">🏠 Back to Home</a>
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    
+    <h3 style="margin: 0 0 5px 0;">David Martín</h3>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="bio-text">
+      <p><em>Supporting students with free, innovative tools for language learning.</em></p>
+    </div>
+
+    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
+    
+    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
+      <p>All resources are 100% free.</p>
+    </div>
+
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback (Anonymous)
+        </button>
+      </form>
+    </div>
   </div>
 
 </div>
 
 <script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,297 @@
+/* =========================================
+   STYLE.CSS (LanguagePrep Polish)
+   ========================================= */
+
+:root {
+    --primary: #2563eb;       /* Azul estándar */
+    --primary-hover: #1d4ed8;
+    --bg: #f8fafc;            /* Fondo claro */
+    --surface: #ffffff;       /* Tarjetas blancas */
+    --text: #0f172a;          /* Texto oscuro */
+    --text-light: #64748b;    /* Texto secundario */
+    --border: #e2e8f0;        /* Bordes suaves */
+    --success: #166534;       /* Verde éxito */
+    --accent: #ef4444;        /* Rojo acento (polaco) */
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  
+  /* Contenedor Principal (Mobile First) */
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--surface);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  h1 {
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  
+  .subtitle {
+    color: var(--text-light);
+    margin-top: 5px;
+    font-size: 0.95rem;
+  }
+  
+  /* Botón de Info (Instrucciones) */
+  .info-toggle {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-decoration: underline;
+  }
+  
+  .info-box {
+    display: none;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-top: 15px;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  
+  /* Navegación (Tabs) */
+  .tabs-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+  }
+  
+  .tab-btn.active {
+    background: #eff6ff;
+    color: var(--primary);
+  }
+  
+  /* Selectores de Nivel */
+  .level-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .level-btn {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .level-btn.active {
+    background: var(--text); /* Negro para Ordinary/General */
+    color: white;
+    border-color: var(--text);
+  }
+  
+  .level-btn.hl.active {
+    background: var(--primary); /* Azul para Higher/Advanced */
+    border-color: var(--primary);
+  }
+  
+  /* Botón Mock Exam */
+  .mock-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    transition: transform 0.2s;
+  }
+  
+  .mock-btn:active {
+    transform: scale(0.98);
+  }
+  
+  /* Grid de Temas */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .topic-btn {
+    padding: 15px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  
+  .topic-btn:hover {
+    border-color: var(--primary);
+  }
+  
+  .topic-btn.active {
+    background: #eff6ff;
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  
+  /* Área de Ejercicio */
+  .question-card {
+    background: #fffbeb; /* Un tono crema suave para destacar la pregunta */
+    border: 1px solid #fcd34d;
+    padding: 20px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+  
+  .audio-btn {
+    margin-top: 10px;
+    background: #fff;
+    border: 1px solid #fbbf24;
+    padding: 5px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+  
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  
+  .btn-main {
+    width: 100%;
+    padding: 15px;
+    background: var(--text);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .btn-main:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  /* Resultados y Feedback */
+  .student-response-box {
+    background: var(--bg);
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    font-style: italic;
+    color: var(--text-light);
+    border-left: 4px solid var(--border);
+  }
+  
+  .feedback-box {
+    background: #f0fdf4; /* Verde muy claro */
+    border: 1px solid #bbf7d0;
+    padding: 20px;
+    border-radius: var(--radius);
+  }
+  
+  .error-item {
+    background: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+  
+  /* Footer */
+  .footer-section {
+    margin-top: 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 30px;
+  }
+  
+  .revolut-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 400px) {
+    .topic-grid {
+      grid-template-columns: 1fr;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+  }

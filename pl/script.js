@@ -1,50 +1,71 @@
 // ===========================================
-// CONFIGURACIÓN (Usa tu misma API Key)
+// CONFIGURACIÓN
 // ===========================================
 const parteA = "AIzaSyASf_PIq7es0iPVt"; 
 const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS EXAMEN POLACO 2026
-// Temas basados en Circular S48/25
+// DATOS EXAMEN POLACO 2026 (EXPANDED)
 // ===========================================
 const DATA = [
-  // TEMA 1: VIDA COTIDIANA (Set Topic 2026)
+  // --- SET TOPICS 2026 (MANDATORY) ---
   { 
-    title: "1. Życie codzienne", 
+    title: "⭐ 1. Życie codzienne", 
     General: "Opowiedz mi, jak wygląda Twój typowy dzień. O której wstajesz i co robisz po szkole?", 
-    Advanced: "Czym różni się Twoje życie w tygodniu od tego w weekendy? Co lubisz robić najbardziej?" 
+    Advanced: "Jak wygląda podział obowiązków w Twoim domu? Czy uważasz, że masz wystarczająco dużo czasu wolnego?" 
   },
-  // TEMA 2: MI CIUDAD/REGION (Set Topic 2026)
   { 
-    title: "2. Moje miasto/region", 
-    General: "Gdzie mieszkasz? Opowiedz mi trochę o swojej okolicy.", 
-    Advanced: "Jakie są zalety i wady mieszkania w Twoim mieście? Czy chciałbyś tu zostać w przyszłości?" 
+    title: "⭐ 2. Moje miasto", 
+    General: "Gdzie mieszkasz? Opowiedz mi trochę o swojej okolicy i sąsiadach.", 
+    Advanced: "Porównaj życie na wsi i w mieście. Gdzie wolałbyś mieszkać w przyszłości i dlaczego?" 
   },
-  // TEMA 3: FUTURO (Set Topic 2026)
   { 
-    title: "3. Plany na przyszłość", 
+    title: "⭐ 3. Przyszłość", 
     General: "Co zamierzasz robić po maturze? Czy planujesz iść na studia?", 
-    Advanced: "Jak wyobrażasz sobie swoją przyszłość za 10 lat? Czy chciałbyś pracować w Polsce czy w Irlandii?" 
+    Advanced: "Czy chciałbyś pracować w Polsce czy w Irlandii? Jak wyobrażasz sobie swoją karierę zawodową?" 
   },
-  // TEMA 4: PORTFOLIO (Obligatorio)
+  
+  // --- GENERAL CONVERSATION (WIDER VARIETY) ---
   { 
-    title: "4. Portfolio Językowe", 
-    General: "Opowiedz mi o jednym tekście z Twojego Portfolio, który Ci się podobał.", 
-    Advanced: "Dlaczego wybrałeś ten tekst do swojego Portfolio? Czego się z niego nauczyłeś o polskiej kulturze?" 
-  },
-  // TEMA 5: FAMILIA Y AMIGOS (Wider variety)
-  { 
-    title: "5. Rodzina i Przyjaciele", 
+    title: "4. Rodzina", 
     General: "Opowiedz mi o swojej rodzinie. Czy masz rodzeństwo?", 
-    Advanced: "Kto jest Twoim najlepszym przyjacielem i dlaczego? Jakie cechy cenisz u ludzi?" 
+    Advanced: "Konflikt pokoleń – czy często kłócisz się z rodzicami? Jakie są relacje w Twojej rodzinie?" 
   },
-  // TEMA 6: HOBBIES (Wider variety)
   { 
-    title: "6. Zainteresowania", 
-    General: "Co lubisz robić w wolnym czasie? Czy uprawiasz jakiś sport?", 
-    Advanced: "Dlaczego warto mieć hobby? Jak spędzasz czas ze znajomymi?" 
+    title: "5. Szkoła (PL vs IE)", 
+    General: "Jakie przedmioty lubisz najbardziej? Co sądzisz o mundurkach szkolnych?", 
+    Advanced: "Porównaj system edukacji w Polsce i w Irlandii. Który wolisz i dlaczego?" 
+  },
+  { 
+    title: "6. Hobby i Sport", 
+    General: "Co robisz w wolnym czasie? Czy uprawiasz jakiś sport?", 
+    Advanced: "Dlaczego aktywność fizyczna jest ważna dla młodzieży? Czy masz jakieś pasje?" 
+  },
+  { 
+    title: "7. Wakacje", 
+    General: "Gdzie byłeś na ostatnich wakacjach? Czy lubisz podróżować?", 
+    Advanced: "Czy wolisz wakacje zorganizowane czy na własną rękę? Opowiedz o podróży marzeń." 
+  },
+  { 
+    title: "8. Tradycje", 
+    General: "Jak obchodzisz Święta Bożego Narodzenia? Jakie polskie tradycje lubisz?", 
+    Advanced: "Różnice w obchodzeniu świąt w Polsce i w Irlandii. Czy kultywujesz polskie tradycje na emigracji?" 
+  },
+  { 
+    title: "9. Problemy Społeczne", 
+    General: "Jakie problemy ma dzisiaj młodzież? (stres, szkoła)", 
+    Advanced: "Uzależnienia (alkohol, narkotyki, internet) wśród młodych ludzi. Jak im zapobiegać?" 
+  },
+  { 
+    title: "10. Technologia", 
+    General: "Czy często używasz telefonu? Do czego służy Ci internet?", 
+    Advanced: "Czy media społecznościowe to szansa czy zagrożenie? Wpływ technologii na relacje międzyludzkie." 
+  },
+  { 
+    title: "11. Portfolio", 
+    General: "Opowiedz mi o jednym tekście ze swojego Portfolio Językowego.", 
+    Advanced: "Dlaczego wybrałeś ten tekst do Portfolio? Czego nauczył Cię o kulturze polskiej?" 
   }
 ];
 
@@ -54,10 +75,7 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0; 
 
-function toggleInfo() { 
-  const b = document.getElementById('infoBox'); 
-  b.style.display = b.style.display === 'block' ? 'none' : 'block'; 
-}
+function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
@@ -91,18 +109,16 @@ function updateQuestion() {
     document.getElementById('qDisplay').innerText = currentTopic[currentLevel]; 
 }
 
-// LÓGICA TTS (Text-to-Speech) PARA POLACO
+// TTS Polaco
 function speakText() { 
     const t = document.getElementById('qDisplay').innerText; 
     if ('speechSynthesis' in window) { 
         window.speechSynthesis.cancel(); 
         const u = new SpeechSynthesisUtterance(t); 
-        u.lang = 'pl-PL'; // Forzamos polaco
+        u.lang = 'pl-PL'; 
         u.rate = 0.9; 
         window.speechSynthesis.speak(u); 
-    } else {
-        alert("Twoja przeglądarka nie obsługuje dźwięku.");
-    }
+    } else { alert("Audio not supported."); }
 }
 
 function readMyInput() {
@@ -110,23 +126,21 @@ function readMyInput() {
     if (!text) return; 
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'pl-PL'; // Forzamos polaco
+    u.lang = 'pl-PL';
     u.rate = 0.9;
     window.speechSynthesis.speak(u);
 }
 
-// LÓGICA IA (Gemini)
+// IA Polaco
 async function analyze() {
   const t = document.getElementById('userInput').value; 
-  if(t.length < 5) return alert("Napisz więcej proszę... (Write more please)");
-  
+  if(t.length < 5) return alert("Write more please / Napisz więcej...");
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Sprawdzanie...";
-  
   const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  // Prompt adaptado para corrección en POLACO
-  const prompt = `ACT AS: Polish Language Examiner. QUESTION: "${q}". STUDENT ANSWER: "${t}". 
-  TASK: Correct the student's Polish. 
+  
+  const prompt = `ACT AS: Polish Leaving Cert Examiner. QUESTION: "${q}". STUDENT ANSWER: "${t}". 
+  TASK: Correct the Polish grammar and vocabulary suitable for a high school student.
   OUTPUT JSON: { "score": (0-100), "feedback_pl": "Feedback in Polish", "feedback_en": "Feedback in English", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
 
   try {
@@ -137,37 +151,27 @@ async function analyze() {
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
     document.getElementById('userResponseText').innerText = t;
-    
     document.getElementById('scoreDisplay').innerText = `Wynik: ${j.score}%`;
     document.getElementById('scoreDisplay').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
-    
     document.getElementById('fbPL').innerText = "🇵🇱 " + j.feedback_pl; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
-    
-    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Świetnie! (Perfect!)";
+    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Świetnie!";
     
     const btnReset = document.getElementById('btnReset');
-    if (isMockExam && mockIndex < 4) { 
-        btnReset.innerText = "➡️ Następne pytanie (Next)"; 
-        btnReset.onclick = resetApp; 
-    } else { 
-        btnReset.innerText = "🔄 Inny temat (Another Topic)"; 
-        btnReset.onclick = () => { isMockExam=false; resetApp(); }; 
-    }
-  } catch (e) { console.error(e); alert("Błąd połączenia."); } finally { b.disabled = false; b.innerText = "✨ Sprawdź"; }
+    if (isMockExam && mockIndex < 4) { btnReset.innerText = "➡️ Następne pytanie"; btnReset.onclick = resetApp; } else { btnReset.innerText = "🔄 Inny temat"; btnReset.onclick = () => { isMockExam=false; resetApp(); }; }
+  } catch (e) { console.error(e); alert("Error."); } finally { b.disabled = false; b.innerText = "✨ Sprawdź"; }
 }
 
 function startMockExam() { 
     isMockExam = true; mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
-    // Seleccionamos 5 preguntas al azar de los datos
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
     mockQuestions = [
         DATA[i[0]][currentLevel], 
         DATA[i[1]][currentLevel], 
         DATA[i[2]][currentLevel], 
-        "Opowiedz mi o tym, co robiłeś wczoraj? (Past Tense)", 
-        "Jakie masz plany na wakacje? (Future Tense)"
+        "Co robiłeś wczoraj? (Czas przeszły)", 
+        "Jakie masz plany na wakacje? (Czas przyszły)"
     ];
     showMockQuestion();
 }
@@ -182,14 +186,7 @@ function showMockQuestion() {
 function resetApp() { 
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('exerciseArea').style.display = 'block'; 
-    if(isMockExam && mockIndex < 4) { 
-        mockIndex++; showMockQuestion(); 
-    } else { 
-        isMockExam = false; 
-        document.getElementById('userInput').value = ""; 
-        document.getElementById('qDisplay').innerText = "Wybierz temat... (Select a topic)"; 
-    }
+    if(isMockExam && mockIndex < 4) { mockIndex++; showMockQuestion(); } else { isMockExam = false; document.getElementById('userInput').value = ""; document.getElementById('qDisplay').innerText = "Wybierz temat..."; }
 }
 
-// Arrancar
 window.onload = initConv;

@@ -6,7 +6,6 @@
   <title>LanguagePrep Ireland - French</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,10 +24,9 @@
     <div id="infoBox" class="info-box">
       <strong>Instructions:</strong>
       <ul>
-        <li>🗣️ <strong>General Conversation:</strong> Select a topic to practice common exam questions.</li>
-        <li>📄 <strong>Le Document:</strong> Practice the Option 2 (Photo/Document) with AI questions.</li>
-        <li>🎲 <strong>Mock Exam:</strong> Click "Start Mock Exam" to get 5 random questions.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Always use the French keyboard on your phone.</li>
+        <li>🗣️ <strong>Conversation:</strong> Practice the 15 most common oral topics.</li>
+        <li>📄 <strong>Le Document:</strong> Select Option 2 to generate questions for your document.</li>
+        <li>⌨️ <strong>Keyboard:</strong> Use a French keyboard (é, è, à, ç).</li>
       </ul>
     </div>
   </header>
@@ -53,17 +51,17 @@
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Écouter (Listen)</button>
       </div>
-      <textarea id="userInput" placeholder="Type or use your microphone (French keyboard)..."></textarea>
+      <textarea id="userInput" placeholder="Écrivez votre réponse ici..."></textarea>
       
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
-        👂 Listen to my text / Écouter mon texte
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
+        👂 Écouter ma prononciation
       </button>
 
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate Answer</button>
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Vérifier (Evaluate)</button>
     </div>
 
-    <div id="result">
-      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseText"></span></div>
+    <div id="result" style="display:none;">
+      <div class="student-response-box"><strong>Vous avez dit:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbFR" style="margin-bottom:10px; font-weight:500;"></div>
@@ -71,14 +69,14 @@
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsList"></div>
       </div>
-      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Try another topic</button>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Nouveau sujet</button>
     </div>
   </div>
 
   <div id="sectionDocument" style="display:none;">
     <div class="info-box" style="display:block; background:#eff6ff; border-color:#bfdbfe; color:#1e40af;">
       <strong>ℹ️ Comment ça marche ?</strong>
-      <p style="margin:5px 0 0;">Since I cannot see your photo, tell me what it is about. I will generate 5 typical exam questions for you.</p>
+      <p style="margin:5px 0 0;">Describe your document/photo briefly, and I will generate 5 typical exam questions for you to practice.</p>
     </div>
 
     <div id="docStep1" class="doc-step">
@@ -95,19 +93,19 @@
     <div id="docStep2" class="doc-step" style="display:none;">
       <h3 style="color:#475569;">2. Describe it briefly (in French or English):</h3>
       <textarea id="docDescription" placeholder="Ex: C'est une photo de mon équipe de basket. Nous avons gagné la finale..." style="min-height:80px;"></textarea>
-      <button class="mock-btn" onclick="generateDocQuestions()" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">🔮 Generate Exam Questions</button>
+      <button class="mock-btn" onclick="generateDocQuestions()">🔮 Générer Questions</button>
     </div>
 
     <div id="docStep3" class="doc-step" style="display:none;">
-      <div class="question-card" style="border-left-color:#2563eb; background:#eff6ff;">
-        <h3 style="margin-top:0; color:#1e40af;">Questions probables :</h3>
+      <div class="question-card">
+        <h3 style="margin-top:0; color:var(--primary);">Questions probables :</h3>
         <div id="aiQuestions" style="white-space: pre-line; line-height:1.6; font-weight:600;"></div>
         <button class="audio-btn" onclick="speakQuestions()">🔊 Écouter</button>
       </div>
       
       <p style="text-align:center; font-weight:bold; color:#475569;">Maintenant, réponds à l'une de ces questions :</p>
       <textarea id="userInputDoc" placeholder="Répondez ici..."></textarea>
-      <button class="btn-main" id="btnActionDoc" onclick="analyzeDoc()">✨ Evaluate Answer</button>
+      <button class="btn-main" id="btnActionDoc" onclick="analyzeDoc()">✨ Vérifier (Evaluate)</button>
     </div>
 
     <div id="resultDoc" style="display:none; margin-top:30px;">
@@ -126,11 +124,11 @@
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Spanish Teacher at <strong>Ardgillan Community College</strong>.</p>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="bio-text">
-      <p><em>As a teacher, my goal is to create innovative tools like <strong>LanguagePrep Ireland</strong> to help students excel in their Leaving Cert exams using technology responsibly and effectively.</em></p>
-      <p><em>Mon objectif est de créer des ressources innovantes qui favorisent une utilisation responsable et efficace de la technologie pour la préparation du Leaving Cert.</em></p>
+      <p><em>Supporting students with free, innovative tools for the Leaving Certificate.</em></p>
+      <p><em>J'espère que cet outil t'aidera à réussir ton examen oral de français !</em></p>
     </div>
 
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
@@ -141,8 +139,13 @@
 
     <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
       <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
+        Found a bug? Have an idea? Let me know!<br>
+        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
+      </p>
+      
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
                   style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" 
                 style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">

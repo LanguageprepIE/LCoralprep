@@ -84,6 +84,29 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
     font-weight: 600;
 }
 
+/* HELPER SENTENCES STYLES (LO NUEVO) */
+.helper-grid {
+    display: grid;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.helper-item {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.helper-item:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    transform: translateX(5px);
+}
+
 /* SHARED */
 .audio-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-right: 10px; }
 textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }

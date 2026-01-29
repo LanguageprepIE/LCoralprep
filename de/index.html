@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>LanguagePrep - German</title>
+  <title>LanguagePrep Ireland - German</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -18,115 +18,104 @@
         LanguagePrep Ireland
       </a>
     </h1>
-    <p class="subtitle">Module: Leaving Cert German (Oral)</p>
+    <p class="subtitle">Module: Leaving Cert German</p>
     
-    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions / Hinweise</button>
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
     <div id="infoBox" class="info-box">
-      <strong>Hinweise:</strong>
+      <strong>Anleitung:</strong>
       <ul>
-        <li>🗣️ <strong>Allgemeine Konversation:</strong> Practice general topics.</li>
-        <li>🎭 <strong>Rollenspiele:</strong> Practice the 5 official roleplays.</li>
-        <li>🖼️ <strong>Bildergeschichten:</strong> Describe the 5 official picture sequences.</li>
-        <li>⚠️ <strong>2026 Exam:</strong> You only need to prepare 3 of the 5, but all are available here.</li>
+        <li>🗣️ <strong>Allgemeine Fragen:</strong> Practice the 12 most common oral topics.</li>
+        <li>🎭 <strong>Rollenspiele:</strong> Simulate the 5 exam roleplay cards with AI.</li>
+        <li>⌨️ <strong>Keyboard:</strong> Use a German keyboard for correct spelling (Ä, Ö, Ü, ß).</li>
       </ul>
     </div>
   </header>
 
   <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Konversation</button>
-    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Rollenspiele</button>
-    <button class="tab-btn" onclick="switchTab('story')" id="tabStory">🖼️ Bilder</button>
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Fragen (Conversation)</button>
+    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Rollenspiele (Roleplays)</button>
   </div>
 
   <div id="sectionConversation">
+    <div class="level-selector">
+      <button class="level-btn active" id="btnOL" onclick="setLevel('General')">Grundlegend (Ordinary)</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('Advanced')">Erweitert (Higher)</button>
+    </div>
+
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
-        <h3 id="qDisplay" style="margin:0;">Select a topic...</h3>
-        <button class="audio-btn" onclick="speakText()">🔊 Frage anhören</button>
+        <div id="qDisplay" style="font-weight: 700;"></div>
+        <button class="audio-btn" onclick="speakText()">🔊 Anhören (Listen)</button>
       </div>
-      <textarea id="userInput" placeholder="Antworte hier (German keyboard recommended)..."></textarea>
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">👂 Meine Antwort anhören</button>
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Bewerten</button>
+      <textarea id="userInput" placeholder="Schreib deine Antwort hier..."></textarea>
+      
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
+        👂 Check my pronunciation
+      </button>
+
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Prüfen (Evaluate)</button>
     </div>
 
-    <div id="result">
-      <div class="student-response-box"><strong>Du hast gesagt:</strong> <span id="userResponseText"></span></div>
+    <div id="result" style="display:none;">
+      <div class="student-response-box"><strong>Deine Antwort:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbDE" style="margin-bottom:10px; font-weight:500;"></div>
-        <div id="fbEN" style="color:#6b7280; font-style:italic;"></div>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e5e7eb;">
+        <div id="fbEN" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsList"></div>
       </div>
-      <button class="btn-main" style="margin-top:20px; background:#e5e7eb; color:var(--text);" onclick="resetApp()">🔄 Neues Thema</button>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Anderes Thema</button>
     </div>
   </div>
 
   <div id="sectionRoleplay" style="display:none;">
-    <div class="rp-selector">
-      <div class="rp-btn-select" onclick="selectRP(1, this)">🐕 1. Hund</div>
-      <div class="rp-btn-select" onclick="selectRP(2, this)">📰 2. Redaktion</div>
-      <div class="rp-btn-select" onclick="selectRP(3, this)">📺 3. TV Interview</div>
-      <div class="rp-btn-select" onclick="selectRP(4, this)">🎉 4. Festival</div>
-      <div class="rp-btn-select" onclick="selectRP(5, this)">🚌 5. Tourist</div>
-    </div>
-
-    <div id="rpArea" style="display:none;">
-      <div class="rp-context" id="rpContext"></div>
-      <div class="chat-container" id="rpChat"></div>
-      
-      <button class="next-audio-btn" id="nextAudioBtn" onclick="nextStep()">🔊 Audio abspielen</button>
-      
-      <div class="rp-controls">
-        <input type="text" id="rpInput" class="rp-input" placeholder="..." disabled>
-        <button class="btn-send" id="rpSendBtn" onclick="sendRP()" disabled>➤</button>
-      </div>
-      <button class="model-answer-btn" onclick="showHint()" id="hintBtn" style="display:none; margin-top:10px;">💡 Hilfe anzeigen</button>
-    </div>
-  </div>
-
-  <div id="sectionStory" style="display:none;">
-    <div class="rp-selector">
-      <div class="rp-btn-select" onclick="selectStory(0, this)">📱 1. Mobbing</div>
-      <div class="rp-btn-select" onclick="selectStory(1, this)">💼 2. Chancen</div>
-      <div class="rp-btn-select" onclick="selectStory(2, this)">✈️ 3. Abi-Tour</div>
-      <div class="rp-btn-select" onclick="selectStory(3, this)">🎂 4. Geburtstag</div>
-      <div class="rp-btn-select" onclick="selectStory(4, this)">🌬️ 5. Windkraft</div>
-    </div>
-
-    <div id="storyArea" style="display:none;">
-      <div class="question-card">
-        <h3 id="storyTitle" style="margin-top:0;"></h3>
-        <p>Examiner: "Erzählen Sie mir, was auf den Bildern passiert."</p>
-        <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Anhören</button>
-      </div>
-      <textarea id="userInputStory" placeholder="Auf dem ersten Bild sehe ich..."></textarea>
-      <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">👂 Meine Beschreibung anhören</button>
-      <button class="btn-main" id="btnActionStory" onclick="analyzeStory()">✨ Bewerten</button>
-    </div>
-
-    <div id="resultStory" style="display:none;">
-      <div class="student-response-box"><strong>Beschreibung:</strong> <span id="userResponseTextStory"></span></div>
-      <div class="feedback-box">
-        <div id="scoreDisplayStory" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
-        <div id="fbDEStory" style="margin-bottom:10px; font-weight:500;"></div>
-        <div id="fbENStory" style="color:#6b7280; font-style:italic;"></div>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e5e7eb;">
-        <div id="errorsListStory"></div>
-      </div>
-      <button class="btn-main" style="margin-top:20px; background:#e5e7eb; color:var(--text);" onclick="resetStory()">🔄 Andere Geschichte</button>
+    <div class="rp-selector"></div> <div id="rpArea" style="display:none;">
+        <div class="rp-context" id="rpContext"></div>
+        <div class="chat-container" id="rpChat"></div>
+        
+        <div class="rp-controls">
+            <input type="text" id="rpInput" class="rp-input" placeholder="Antwort schreiben..." disabled>
+            <button class="btn-send" id="rpSendBtn" onclick="sendRP()" disabled>➤</button>
+        </div>
     </div>
   </div>
 
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #6b7280;">Teacher at <strong>Ardgillan Community College</strong>.</p>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="bio-text">
+      <p><em>Supporting students with free, innovative tools for the Leaving Certificate.</em></p>
+      <p><em>Unterstützung für Schüler bei der Vorbereitung auf das Leaving Certificate.</em></p>
+    </div>
+
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
-    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #6b7280;">
-      <p>All resources are 100% free.</p>
+    
+    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
+      <p>All resources are 100% free. If this tool helps you, consider supporting the project.</p>
+    </div>
+
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
+        Found a bug? Have an idea? Let me know!<br>
+        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
+      </p>
+      
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback (Anonymous)
+        </button>
+      </form>
     </div>
   </div>
 

@@ -1,81 +1,86 @@
-/* === ESTILO ITALIANO: ROJO, VERDE Y BLANCO === */
+/* =========================================
+   STYLE.CSS (ITALIAN MODULE)
+   ========================================= */
+
 :root { 
-  --primary: #D32F2F; /* Rojo Intenso (Principal) */
-  --primary-dark: #B71C1C; /* Rojo Oscuro (Hover) */
-  --secondary: #008C45; /* Verde Bandera (Secundario) */
-  --bg: #fff5f5; /* Fondo ligeramente rosado muy suave */
-  --text: #1e293b; 
-}
-
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
-.container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 90vh; display: flex; flex-direction: column; }
-
-/* HEADER */
-header { text-align: center; margin-bottom: 20px; }
-h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; }
-.subtitle { color: var(--secondary); margin-top: 5px; font-size: 0.95rem; font-weight: 700; }
-
-.info-toggle { background: #ffe4e6; color: var(--primary-dark); border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; gap: 5px; }
-.info-box { display: none; background: #fff1f2; border: 1px solid #fecdd3; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; color: #334155; }
-
-/* TABS SYSTEM */
-.tabs-container { display: flex; gap: 10px; margin-bottom: 25px; padding: 5px; background: #f1f5f9; border-radius: 15px; }
-.tab-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.2s; color: #64748b; background: transparent; }
-.tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-
-/* SECTION: CONVERSATION STYLES */
-.level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-.level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
-.level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.level-btn.hl.active { color: var(--secondary); }
-
-/* BOTÓN MOCK EXAM EN ROJO FERRARI */
-.mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); transition: transform 0.2s; }
-.mock-btn:hover { transform: scale(1.02); }
-
-.topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 25px; }
-.topic-btn { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; text-align: center; color: #475569; transition: 0.2s; }
-.topic-btn:hover { background: #f1f5f9; }
-.topic-btn.active { border-color: var(--primary); background: #fef2f2; color: var(--primary); transform: scale(1.02); }
-
-.question-card { background: #fef2f2; border-left: 5px solid var(--secondary); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
-
-/* SECTION: ROLEPLAY STYLES */
-.rp-selector { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-.rp-btn-select { min-width: 130px; padding: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #475569; text-align: center; }
-.rp-btn-select.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-.chat-container { flex-grow: 1; background: #f8fafc; border-radius: 15px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; border: 1px solid #e2e8f0; max-height: 500px; min-height: 300px; margin-bottom: 15px; }
-.bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
-.ex { align-self: flex-start; background: white; border: 1px solid #e2e8f0; color: #334155; border-bottom-left-radius: 4px; }
-.st { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-.rp-context { font-size: 0.85rem; color: #64748b; margin-bottom: 10px; font-style: italic; text-align: center; }
-
-.rp-controls { display: flex; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-.rp-input { flex: 1; padding: 12px 20px; border-radius: 50px; border: 2px solid #e2e8f0; background: white; font-size: 1rem; outline: none; }
-.rp-input:focus { border-color: var(--primary); }
-.btn-send { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-.btn-send:disabled { background: #cbd5e1; }
-
-.next-audio-btn { width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: none; }
-.feedback-rp { font-size: 0.9em; background: #fffbeb; color: #92400e; padding: 10px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 5px; }
-.model-answer-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline; display: block; margin: 0 auto; }
-
-/* SHARED COMPONENTS */
-.audio-btn { margin-top: 15px; background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); }
-textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
-textarea:focus { border-color: var(--secondary); outline: none; }
-.btn-main { width: 100%; padding: 16px; background: var(--text); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
-.btn-main:disabled { opacity: 0.5; cursor: wait; }
-
-/* RESULT & FOOTER */
-#result { margin-top: 30px; display: none; }
-.student-response-box { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #94a3b8; font-style: italic; color: #475569; }
-.feedback-box { padding: 25px; border-radius: 15px; background: #fff; border: 1px solid #e2e8f0; }
-.error-item { margin-bottom: 15px; padding: 15px; background: #fff1f2; border-radius: 10px; border-left: 4px solid #ef4444; }
-
-.footer-section { margin-top: auto; padding: 40px 20px 20px; border-top: 1px solid #e2e8f0; background: #fafafa; border-radius: 20px; text-align: center; }
-.profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 15px; }
-.bio-text { max-width: 600px; margin: 0 auto 25px auto; font-size: 0.95rem; line-height: 1.6; color: #475569; text-align: justify; }
-.revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.2s; }
-.revolut-btn:hover { transform: translateY(-2px); }
+    --primary: #D32F2F;       /* Rojo Ferrari */
+    --primary-dark: #B71C1C;  /* Rojo Oscuro */
+    --secondary: #008C45;     /* Verde Bandera */
+    --bg: #fff5f5;            /* Fondo blanco con toque rosado muy sutil */
+    --text: #1e293b; 
+  }
+  
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+  
+  /* Container */
+  .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 90vh; display: flex; flex-direction: column; }
+  
+  /* HEADER */
+  header { text-align: center; margin-bottom: 20px; }
+  h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; }
+  .subtitle { color: var(--secondary); margin-top: 5px; font-size: 0.95rem; font-weight: 700; }
+  
+  .info-toggle { background: #ffe4e6; color: var(--primary-dark); border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; gap: 5px; }
+  .info-box { display: none; background: #fff1f2; border: 1px solid #fecdd3; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: left; font-size: 0.9rem; color: #334155; }
+  
+  /* TABS SYSTEM (Estilo Moderno Unificado) */
+  .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; padding: 5px; background: #f1f5f9; border-radius: 15px; }
+  .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.2s; color: #64748b; background: transparent; }
+  .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-bottom: 3px solid var(--secondary); }
+  
+  /* LEVEL SELECTOR */
+  .level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+  .level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
+  .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .level-btn.hl.active { color: var(--secondary); }
+  
+  /* MOCK EXAM BUTTON */
+  .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); transition: transform 0.2s; }
+  .mock-btn:hover { transform: scale(1.02); }
+  
+  /* TOPIC GRID */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 25px; }
+  .topic-btn { padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; text-align: center; color: #475569; transition: 0.2s; }
+  .topic-btn:hover { background: #fef2f2; border-color: var(--primary); }
+  .topic-btn.active { border-color: var(--primary); background: #fef2f2; color: var(--primary); transform: scale(1.02); font-weight: 800; }
+  
+  .question-card { background: #fef2f2; border-left: 5px solid var(--secondary); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+  
+  /* ROLEPLAY STYLES */
+  .rp-selector { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+  .rp-btn-select { min-width: 130px; padding: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #475569; text-align: center; }
+  .rp-btn-select.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+  
+  .chat-container { flex-grow: 1; background: #f8fafc; border-radius: 15px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; border: 1px solid #e2e8f0; max-height: 500px; min-height: 300px; margin-bottom: 15px; }
+  .bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
+  .ex { align-self: flex-start; background: white; border: 1px solid #e2e8f0; color: #334155; border-bottom-left-radius: 4px; }
+  .st { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+  .rp-context { font-size: 0.85rem; color: #64748b; margin-bottom: 10px; font-style: italic; text-align: center; }
+  
+  .rp-controls { display: flex; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+  .rp-input { flex: 1; padding: 12px 20px; border-radius: 50px; border: 2px solid #e2e8f0; background: white; font-size: 1rem; outline: none; }
+  .btn-send { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+  .btn-send:disabled { background: #cbd5e1; }
+  
+  .next-audio-btn { width: 100%; padding: 12px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: none; }
+  .feedback-rp { font-size: 0.9em; background: #fffbeb; color: #92400e; padding: 10px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 5px; }
+  .model-answer-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline; display: block; margin: 0 auto; }
+  
+  /* SHARED */
+  .audio-btn { margin-top: 15px; background: white; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); }
+  textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
+  textarea:focus { border-color: var(--primary); outline: none; }
+  .btn-main { width: 100%; padding: 16px; background: var(--text); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
+  .btn-main:disabled { opacity: 0.5; cursor: wait; }
+  
+  /* FEEDBACK */
+  .student-response-box { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #94a3b8; font-style: italic; color: #475569; }
+  .feedback-box { padding: 25px; border-radius: 15px; background: #fff; border: 1px solid #e2e8f0; }
+  .error-item { margin-bottom: 15px; padding: 15px; background: #fff1f2; border-radius: 10px; border-left: 4px solid var(--primary); }
+  
+  /* FOOTER */
+  .footer-section { margin-top: auto; padding: 40px 20px 20px; border-top: 1px solid #e2e8f0; background: #fafafa; border-radius: 20px; text-align: center; }
+  .profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 15px; }
+  .bio-text { max-width: 600px; margin: 0 auto 25px auto; font-size: 0.95rem; line-height: 1.6; color: #475569; text-align: justify; }
+  .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.2s; }
+  .revolut-btn:hover { transform: translateY(-2px); }

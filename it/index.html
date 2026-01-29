@@ -6,7 +6,6 @@
   <title>LanguagePrep Ireland - Italian</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇹</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,18 +24,19 @@
     <div id="infoBox" class="info-box">
       <strong>Instructions:</strong>
       <ul>
-        <li>🗣️ <strong>General Conversation:</strong> Use the "Conversation" tab to practice Italian topics.</li>
-        <li>🎭 <strong>Roleplays:</strong> The AI will act as the examiner (reading the lines for you).</li>
-        <li>⌨️ <strong>Keyboard:</strong> Please use the Italian keyboard on your device for accurate voice typing.</li>
+        <li>🗣️ <strong>Conversation:</strong> Use the "Conversation" tab to practice Italian topics.</li>
+        <li>🎭 <strong>Roleplays:</strong> The AI acts as the examiner. You read your part.</li>
+        <li>🖼️ <strong>Storie:</strong> Describe the picture sequence and get feedback.</li>
+        <li>⌨️ <strong>Keyboard:</strong> Please use the Italian keyboard on your device.</li>
       </ul>
     </div>
   </header>
 
   <div class="tabs-container">
-  <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
-  <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
-  <button class="tab-btn" onclick="switchTab('story')" id="tabStory">🖼️ Storie (Pictures)</button>
-</div>
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
+    <button class="tab-btn" onclick="switchTab('story')" id="tabStory">🖼️ Storie (Pictures)</button>
+  </div>
 
   <div id="sectionConversation">
     <div class="level-selector">
@@ -55,7 +55,7 @@
       </div>
       <textarea id="userInput" placeholder="Type or use your microphone..."></textarea>
       
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Listen to my answer
       </button>
 
@@ -97,90 +97,94 @@
       <button class="model-answer-btn" onclick="mostrarSugerencia()" id="hintBtn" style="display:none; margin-top:10px;">💡 Show Model Answer</button>
     </div>
   </div>
-<div id="sectionStory" style="display:none;">
-  <div class="info-box" style="display:block; border-color:#008C45; background:#f0fdf4; color:#14532d;">
-    <strong>🖼️ Istruzioni:</strong>
-    <p style="margin:5px 0 0;">
-      Open your textbook or exam papers to the Picture Sequence. 
-      Describe what is happening in the pictures. The AI will correct your Italian.
-    </p>
-  </div>
 
-  <div class="rp-selector">
-    <div class="rp-btn-select" onclick="selectStory(0, this)">🛒 1. La Spesa</div>
-    <div class="rp-btn-select" onclick="selectStory(1, this)">🤕 2. L'Incidente</div>
-    <div class="rp-btn-select" onclick="selectStory(2, this)">👛 3. Il Portafoglio</div>
-    <div class="rp-btn-select" onclick="selectStory(3, this)">🎉 4. La Festa</div>
-    <div class="rp-btn-select" onclick="selectStory(4, this)">🚌 5. La Gita</div>
-  </div>
+  <div id="sectionStory" style="display:none;">
+    <div class="info-box" style="display:block; border-color:#008C45; background:#f0fdf4; color:#14532d;">
+      <strong>🖼️ Istruzioni:</strong>
+      <p style="margin:5px 0 0;">
+        Open your textbook or exam papers to the Picture Sequence. 
+        Describe what is happening in the pictures. The AI will correct your Italian.
+      </p>
+    </div>
 
-  <div id="storyArea" style="display:none;">
-    <div class="question-card" style="border-left-color:#008C45;">
-      <h3 id="storyTitle" style="margin-top:0; color:#008C45;"></h3>
-      <p style="font-weight:600;">Examiner:</p>
-      <div style="font-size:1.1rem; margin-bottom:10px;">
-        "Guardiamo questa storia. Descrivi ciò che vedi nelle immagini." <br>
-        (Let's look at this story. Describe what you see.)
+    <div class="rp-selector">
+      <div class="rp-btn-select" onclick="selectStory(0, this)">🛒 1. La Spesa</div>
+      <div class="rp-btn-select" onclick="selectStory(1, this)">🤕 2. L'Incidente</div>
+      <div class="rp-btn-select" onclick="selectStory(2, this)">👛 3. Il Portafoglio</div>
+      <div class="rp-btn-select" onclick="selectStory(3, this)">🎉 4. La Festa</div>
+      <div class="rp-btn-select" onclick="selectStory(4, this)">🚌 5. La Gita</div>
+    </div>
+
+    <div id="storyArea" style="display:none;">
+      <div class="question-card" style="border-left-color:#008C45; background:#f0fdf4;">
+        <h3 id="storyTitle" style="margin-top:0; color:#008C45;"></h3>
+        <p style="font-weight:600;">Examiner:</p>
+        <div style="font-size:1.1rem; margin-bottom:10px;">
+          "Guardiamo questa storia. Descrivi ciò che vedi nelle immagini." <br>
+          (Let's look at this story. Describe what you see.)
+        </div>
+        <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Ascolta (Listen)</button>
       </div>
-      <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Ascolta (Listen)</button>
+
+      <textarea id="userInputStory" placeholder="Nella prima immagine vedo... (In the first picture I see...)"></textarea>
+
+      <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
+         👂 Listen to my description
+      </button>
+
+      <button class="btn-main" id="btnActionStory" onclick="analyzeStory()">✨ Evaluate Description</button>
     </div>
 
-    <textarea id="userInputStory" placeholder="Nella prima immagine vedo... (In the first picture I see...)"></textarea>
-
-    <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
-       👂 Listen to my description
-    </button>
-
-    <button class="btn-main" id="btnActionStory" onclick="analyzeStory()">✨ Evaluate Description</button>
-  </div>
-
-  <div id="resultStory" style="display:none; margin-top:30px;">
-    <div class="student-response-box"><strong>You said:</strong> <span id="userResponseTextStory"></span></div>
-    <div class="feedback-box">
-      <div id="scoreDisplayStory" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
-      <div id="fbITStory" style="margin-bottom:10px; font-weight:500;"></div>
-      <div id="fbENStory" style="color:#64748b; font-style:italic;"></div>
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
-      <div id="errorsListStory"></div>
+    <div id="resultStory" style="display:none; margin-top:30px;">
+      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseTextStory"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplayStory" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbITStory" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbENStory" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsListStory"></div>
+      </div>
+      <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetStory()">🔄 Pick another Story</button>
     </div>
-    <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetStory()">🔄 Pick another Story</button>
   </div>
-</div>
+
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="bio-text">
-      <p><em>As a teacher, my goal is to create innovative tools like <strong>LanguagePrep Ireland</strong> to help students excel in their Leaving Cert exams using technology responsibly and effectively.</em></p>
-      <p><em>Il mio obiettivo è creare risorse innovative che incoraggino un uso responsabile ed efficiente della tecnologia nella preparazione degli esami.</em></p>
+      <p><em>Supporting students with free, innovative tools for the Leaving Certificate.</em></p>
+      <p><em>In bocca al lupo per l'esame!</em></p>
     </div>
 
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
     
     <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
-      <p>All resources are 100% free.</p>
+      <p>All resources are 100% free. If this tool helps you, consider supporting the project.</p>
     </div>
 
     <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
-      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
+        Found a bug? Have an idea? Let me know!<br>
+        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
+      </p>
+      
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
                   style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" 
                 style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
-          Send Feedback
+          Send Feedback (Anonymous)
         </button>
       </form>
     </div>
-
   </div>
 
 </div>
 
 <script src="script.js"></script>
-<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
 </body>
 </html>

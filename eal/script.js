@@ -6,7 +6,7 @@ const parteB = "VUMt8Kn1Ll3qSpQQxg";
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS EAL (COMPLETO CON BANCO DE FRASES)
+// DATOS EAL (COMPLETO: 11 TEMAS)
 // ===========================================
 const TOPICS = {
   newcomer: [
@@ -104,7 +104,7 @@ const TOPICS = {
 };
 
 let currentCat = 'newcomer';
-let currentItem = null; // Guardamos el objeto completo actual
+let currentItem = null;
 let userLanguage = "English"; 
 
 function updateInterfaceLang() {
@@ -141,7 +141,7 @@ function loadQ(item) {
   // Resetear interfaz
   document.getElementById('qTranslation').style.display = 'none';
   document.getElementById('qTranslation').innerText = "";
-  document.getElementById('helperArea').style.display = 'none'; // Ocultar ayudas
+  document.getElementById('helperArea').style.display = 'none'; 
   
   document.getElementById('exerciseArea').style.display = 'block';
   document.getElementById('result').style.display = 'none';
@@ -156,7 +156,6 @@ function toggleHelpers() {
     return;
   }
   
-  // Generar contenido dinámico
   area.style.display = 'block';
   const basicList = document.getElementById('basicSentences');
   const advList = document.getElementById('advSentences');
@@ -165,18 +164,19 @@ function toggleHelpers() {
   advList.innerHTML = "";
 
   currentItem.sentences.basic.forEach(s => {
-    basicList.innerHTML += `<div class="helper-item" onclick="useHelper('${s.replace(/'/g, "\\'")}')">🟢 ${s}</div>`;
+    // Escapar comillas simples para que no rompa el onclick
+    const safeText = s.replace(/'/g, "\\'");
+    basicList.innerHTML += `<div class="helper-item" onclick="useHelper('${safeText}')">🟢 ${s}</div>`;
   });
 
   currentItem.sentences.advanced.forEach(s => {
-    advList.innerHTML += `<div class="helper-item" onclick="useHelper('${s.replace(/'/g, "\\'")}')">🔵 ${s}</div>`;
+    const safeText = s.replace(/'/g, "\\'");
+    advList.innerHTML += `<div class="helper-item" onclick="useHelper('${safeText}')">🔵 ${s}</div>`;
   });
 }
 
 function useHelper(text) {
-  // Poner el texto en el input
   document.getElementById('userInput').value = text;
-  // Leerlo para que sepan cómo suena
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-IE';
   window.speechSynthesis.speak(u);
@@ -215,7 +215,7 @@ async function translateQuestion() {
   } catch(e) { box.innerText = "Error translating."; }
 }
 
-// Corrección Inteligente
+// Corrección Inteligente (EAL)
 async function analyze() {
   const t = document.getElementById('userInput').value;
   if(t.length < 2) return alert("Please write an answer first.");

@@ -6,7 +6,7 @@ const parteB = "VUMt8Kn1Ll3qSpQQxg";
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS EAL (CON BANCO DE FRASES)
+// DATOS EAL (COMPLETO CON BANCO DE FRASES)
 // ===========================================
 const TOPICS = {
   newcomer: [
@@ -35,11 +35,27 @@ const TOPICS = {
       }
     },
     { 
+      t: "🚽 Toilet", 
+      q: "Ask the teacher if you can go to the toilet.",
+      sentences: {
+        basic: ["Toilet, please?", "Can I go?", "Emergency."],
+        advanced: ["Excuse me, may I go to the bathroom?", "Is it okay if I step out for a minute?", "Where are the toilets located?"]
+      }
+    },
+    { 
       t: "🛒 Shopping", 
       q: "You are in a shop. Ask how much a sandwich costs.",
       sentences: {
         basic: ["How much is this?", "Chicken sandwich, please.", "Here is 5 euro."],
         advanced: ["Excuse me, how much does this sandwich cost?", "Do you take card or cash only?", "Could I have a receipt, please?"]
+      }
+    },
+    { 
+      t: "🗺️ Directions", 
+      q: "You are lost in the corridor. Ask where Room 23 is.",
+      sentences: {
+        basic: ["Where is Room 23?", "I am lost.", "Library?"],
+        advanced: ["Excuse me, I'm looking for the Maths room.", "Could you show me the way to the office?", "I think I'm in the wrong building."]
       }
     }
   ],
@@ -66,6 +82,14 @@ const TOPICS = {
       sentences: {
         basic: ["Can I sit here?", "Is this free?", "My name is [Name]."],
         advanced: ["Hi! Is this seat taken?", "Do you mind if I sit with you?", "What are you eating? It looks good!"]
+      }
+    },
+    { 
+      t: "🎮 Weekend", 
+      q: "What are you going to do this weekend?",
+      sentences: {
+        basic: ["I sleep.", "I play football.", "I watch TV."],
+        advanced: ["I'm planning to go to the cinema with friends.", "I have a match on Saturday morning.", "Just relaxing and doing some homework."]
       }
     },
     { 
@@ -124,7 +148,7 @@ function loadQ(item) {
   document.getElementById('userInput').value = "";
 }
 
-// --- FUNCIÓN NUEVA: MOSTRAR FRASES DE AYUDA ---
+// --- FUNCIÓN DE FRASES DE AYUDA ---
 function toggleHelpers() {
   const area = document.getElementById('helperArea');
   if(area.style.display === 'block') {

@@ -39,23 +39,34 @@
     <button class="level-btn" onclick="setTopic('social')">🗣️ Social & School</button>
   </div>
 
-  <div class="topic-grid" id="topicGrid">
-    </div>
+  <div class="topic-grid" id="topicGrid"></div>
 
   <div id="exerciseArea" style="display:none; margin-top:20px;">
     <div class="question-card">
       <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
-      
       <div id="qDisplay" style="font-size:1.2rem; font-weight:700; margin-bottom:5px;"></div>
       
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
         <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
         <button class="translate-btn" onclick="translateQuestion()">🌍 Translate Question</button>
       </div>
-
       <div id="qTranslation" class="translation-box"></div>
     </div>
 
+    <button onclick="toggleHelpers()" style="width:100%; margin-bottom:10px; padding:10px; background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; color:#92400e; font-weight:700; cursor:pointer;">
+      💡 Need help? Click for Example Sentences
+    </button>
+    
+    <div id="helperArea" style="display:none; background:#fff; border:1px solid #e2e8f0; padding:15px; border-radius:10px; margin-bottom:15px;">
+      <p style="margin-top:0; font-size:0.85rem; color:#64748b;">Click a sentence to copy & listen:</p>
+      
+      <strong style="color:#16a34a;">🟢 Basic (Simple):</strong>
+      <div id="basicSentences" class="helper-grid"></div>
+      
+      <div style="margin-top:10px;"></div>
+      <strong style="color:#2563eb;">🔵 Advanced (Polite):</strong>
+      <div id="advSentences" class="helper-grid"></div>
+    </div>
     <textarea id="userInput" placeholder="Type your answer in English..."></textarea>
     
     <button onclick="readInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; width:100%; cursor:pointer; color:#475569; font-weight:600;">

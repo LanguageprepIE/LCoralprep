@@ -82,20 +82,19 @@ function speakText() {
     if ('speechSynthesis' in window) { 
         window.speechSynthesis.cancel(); 
         const u = new SpeechSynthesisUtterance(t); 
-        u.lang = 'fr-FR'; // Voz en Francés
+        u.lang = 'fr-FR'; 
         u.rate = 0.9; 
         window.speechSynthesis.speak(u); 
     } 
 }
 
-// === LÓGICA DEL MOCK EXAM SECUENCIAL (FRANCÉS) ===
+// === LÓGICA DEL MOCK EXAM SECUENCIAL ===
 
 function startMockExam() { 
     isMockExam = true; 
     mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     
-    // Seleccionamos 5 preguntas: 3 temas random + 1 Pasado + 1 Futuro
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
     mockQuestions = [
         DATA[i[0]][currentLevel],
@@ -104,7 +103,6 @@ function startMockExam() {
         PAST_Q[Math.floor(Math.random()*3)] + " (PASSÉ)",
         FUT_Q[Math.floor(Math.random()*3)] + " (FUTUR)"
     ];
-    
     showMockQuestion();
 }
 
@@ -148,33 +146,19 @@ async function analyze() {
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
-  // 🔥 PROMPT ACTUALIZADO PARA FRANCÉS 🔥
-  const prompt = `
-    ACT AS: Sympathetic French Leaving Cert Oral Examiner (Ireland).
-    CONTEXT: The input is RAW VOICE TRANSCRIPTION. It has NO PUNCTUATION and NO CAPITALIZATION.
-    
+  const prompt = `ACT AS: French Leaving Cert Oral Examiner.
     QUESTION ASKED: "${questionContext}"
-    
-    CRITICAL INSTRUCTIONS:
-    1. IGNORE completely the lack of punctuation.
-    2. IGNORE run-on sentences. 
-    3. CURRENT LEVEL: ${currentLevel}.
-       - If Ordinary Level (OL): Be VERY GENEROUS. If the French is understandable, score HIGH (80-100%).
-       - If Higher Level (HL): Look for vocabulary/tenses, but still ignore writing mechanics.
-    
-    TASK:
-    Evaluate the student's answer: "${t}"
-    
+    STUDENT ANSWER: "${t}"
+    TASK: Evaluate the student's answer.
     OUTPUT JSON ONLY:
     {
-      "score": (0-100 based on communication),
-      "feedback_fr": "Brief motivating feedback in French",
-      "feedback_en": "Brief feedback in English",
+      "score": (0-100),
+      "feedback_fr": "Feedback in French",
+      "feedback_en": "Feedback in English",
       "errors": [
         { "original": "error", "correction": "fix", "explanation_en": "reason" }
       ]
-    }
-  `;
+    }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
@@ -200,16 +184,12 @@ async function analyze() {
     
     const l = document.getElementById('errorsList'); 
     l.innerHTML = "";
-    
     if(j.errors && j.errors.length > 0) {
-        j.errors.forEach(e => { 
-            l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; 
-        });
+        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; });
     } else {
-        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Très bien ! (Very Good! No significant errors found).</div>";
+        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Très bien !</div>";
     }
 
-    // --- LÓGICA DEL BOTÓN SIGUIENTE EN MOCK EXAM ---
     const btnReset = document.getElementById('btnReset');
     if (isMockExam) {
         if (mockIndex < 4) {
@@ -220,17 +200,11 @@ async function analyze() {
             btnReset.onclick = resetApp; 
         }
     } else {
-        btnReset.innerText = "🔄 Try another topic";
+        btnReset.innerText = "🔄 Nouveau sujet";
         btnReset.onclick = resetApp;
     }
 
-  } catch (e) { 
-    console.error(e);
-    alert("Error communicating with AI evaluator. Please try again."); 
-  } finally { 
-    b.disabled = false; 
-    b.innerText = "✨ Evaluate Answer"; 
-  }
+  } catch (e) { console.error(e); alert("Erreur."); } finally { b.disabled = false; b.innerText = "✨ Vérifier"; }
 }
 
 // === LÓGICA DEL DOCUMENT (Option 2) ===
@@ -245,18 +219,11 @@ function setDocType(type) {
 
 async function generateDocQuestions() {
   const desc = document.getElementById('docDescription').value;
-  if(desc.length < 5) return alert("Please describe your document a little bit.");
-  
-  const b = document.querySelector('#docStep2 button');
-  b.disabled = true; b.innerText = "🤔 Génération...";
+  if(desc.length < 5) return alert("Please describe your document.");
+  const b = document.querySelector('#docStep2 button'); b.disabled = true; b.innerText = "🤔 Génération...";
 
-  const prompt = `ACT AS: Leaving Cert French Examiner.
-  CONTEXT: The student has brought a DOCUMENT about: "${currentDocType}".
-  DESCRIPTION: "${desc}".
-  TASK: Generate 5 questions in French.
-  - Questions 1-3: Specific to the description provided.
-  - Questions 4-5: General/Abstract questions linking the topic to broader themes (e.g., sport in general, travel importance).
-  OUTPUT: Just the list of 5 questions numbered 1-5.`;
+  const prompt = `ACT AS: Leaving Cert French Examiner. CONTEXT: Document about "${currentDocType}". DESC: "${desc}".
+  TASK: Generate 5 questions. 1-3 specific, 4-5 general themes. OUTPUT: List 1-5.`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
@@ -265,14 +232,11 @@ async function generateDocQuestions() {
     });
     const d = await r.json();
     currentQuestionsText = d.candidates[0].content.parts[0].text;
-    
     document.getElementById('docStep1').style.display = 'none';
     document.getElementById('docStep2').style.display = 'none';
     document.getElementById('docStep3').style.display = 'block';
     document.getElementById('aiQuestions').innerText = currentQuestionsText;
-    
-  } catch(e) { console.error(e); alert("Error generating questions"); }
-  finally { b.disabled = false; b.innerText = "🔮 Generate Exam Questions"; }
+  } catch(e) { console.error(e); } finally { b.disabled = false; b.innerText = "🔮 Générer Questions"; }
 }
 
 function speakQuestions() {
@@ -285,14 +249,10 @@ function speakQuestions() {
 async function analyzeDoc() {
   const t = document.getElementById('userInputDoc').value;
   if(t.length < 3) return alert("Répondez s'il vous plaît.");
-  
   const b = document.getElementById('btnActionDoc'); b.disabled = true; b.innerText = "⏳ Correction...";
 
-  const prompt = `ACT AS: French Examiner.
-  CONTEXT: Questions asked: ${currentQuestionsText}
-  STUDENT ANSWER: "${t}"
-  TASK: Evaluate the answer. Did they answer one of the questions well?
-  OUTPUT JSON: { "score": (0-100), "feedback_fr": "Feedback in French", "feedback_en": "English advice", "errors": [{"original":"x","correction":"y","explanation_en":"z"}] }`;
+  const prompt = `ACT AS: French Examiner. CONTEXT: Questions: ${currentQuestionsText}. ANSWER: "${t}".
+  OUTPUT JSON: { "score": (0-100), "feedback_fr": "Feedback", "feedback_en": "Advice", "errors": [{"original":"x","correction":"y","explanation_en":"z"}] }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
@@ -301,15 +261,13 @@ async function analyzeDoc() {
 
     document.getElementById('docStep3').style.display='none';
     document.getElementById('resultDoc').style.display='block';
-    
     document.getElementById('userResponseTextDoc').innerText = t;
     document.getElementById('scoreDisplayDoc').innerText = `Note: ${j.score}%`;
-    document.getElementById('scoreDisplayDoc').style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    document.getElementById('scoreDisplayDoc').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
     document.getElementById('fbFRDoc').innerText = "🇫🇷 " + j.feedback_fr;
     document.getElementById('fbENDoc').innerText = "🇬🇧 " + j.feedback_en;
     document.getElementById('errorsListDoc').innerHTML = j.errors?.map(e=>`<div class="error-item"><span style="text-decoration:line-through">${e.original}</span> ➡️ <b>${e.correction}</b> (${e.explanation_en})</div>`).join('') || "✅ Très bien!";
-
-  } catch(e) { console.error(e); } finally { b.disabled=false; b.innerText="✨ Evaluate Answer"; }
+  } catch(e) { console.error(e); } finally { b.disabled=false; b.innerText="✨ Vérifier"; }
 }
 
 function resetDoc() {
@@ -321,16 +279,14 @@ function resetDoc() {
   document.getElementById('userInputDoc').value = "";
 }
 
-// Función para leer lo que escribo (FRANCÉS)
 function readMyInput() {
     const text = document.getElementById("userInput").value;
     if (!text) return; 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'fr-FR'; 
-    utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR'; u.rate = 0.9;
+    window.speechSynthesis.speak(u);
 }
 
 // Inicialización
-initConv();
+window.onload = initConv;

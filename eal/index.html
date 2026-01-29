@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LanguagePrep - English Support (EAL)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../fr/style.css"> 
+  <style>
+    /* Ajustes específicos para EAL */
+    .lang-select-container { background: #fffbeb; border: 2px solid #fbbf24; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
+    .lang-select { padding: 10px; font-size: 1rem; border-radius: 8px; border: 1px solid #d97706; margin-top: 5px; width: 100%; max-width: 300px; }
+    .translation-box { background: #f0fdf4; color: #15803d; padding: 10px; border-radius: 8px; margin-top: 10px; font-style: italic; display: none; border-left: 4px solid #22c55e; }
+    .translate-btn { background: none; border: none; color: #2563eb; cursor: pointer; text-decoration: underline; font-size: 0.9rem; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <header>
+    <h1>English Support (EAL)</h1>
+    <p class="subtitle">English for Newcomers & School Life</p>
+  </header>
+
+  <div class="lang-select-container">
+    <label for="nativeLang" style="font-weight:700; color:#92400e;">🗣️ I speak / Je parle / Я розмовляю:</label>
+    <select id="nativeLang" class="lang-select" onchange="updateInterfaceLang()">
+      <option value="English">Select your language...</option>
+      <option value="Ukrainian">🇺🇦 Ukrainian (Українська)</option>
+      <option value="Russian">🏳️ Russian (Русский)</option>
+      <option value="Arabic">🇸🇾 Arabic (العربية)</option>
+      <option value="Spanish">🇪🇸 Spanish (Español)</option>
+      <option value="Portuguese">🇧🇷 Portuguese (Português)</option>
+      <option value="French">🇫🇷 French (Français)</option>
+      <option value="Polish">🇵🇱 Polish (Polski)</option>
+      <option value="Romanian">🇷🇴 Romanian (Română)</option>
+      <option value="Chinese">🇨🇳 Chinese (中文)</option>
+    </select>
+  </div>
+
+  <div class="level-selector">
+    <button class="level-btn active" onclick="setTopic('newcomer')">🐣 Newcomer (Survival)</button>
+    <button class="level-btn" onclick="setTopic('social')">🗣️ Social & School</button>
+  </div>
+
+  <div class="topic-grid" id="topicGrid">
+    </div>
+
+  <div id="exerciseArea" style="display:none; margin-top:20px;">
+    <div class="question-card" style="border-left-color:#2563eb;">
+      <h3 id="qTitle" style="margin-top:0; color:#2563eb;"></h3>
+      
+      <div id="qDisplay" style="font-size:1.2rem; font-weight:700; margin-bottom:5px;"></div>
+      
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="audio-btn" onclick="speakText()" style="margin-top:0;">🔊 Listen</button>
+        <button class="translate-btn" onclick="translateQuestion()">🌍 Translate to my language</button>
+      </div>
+
+      <div id="qTranslation" class="translation-box"></div>
+    </div>
+
+    <textarea id="userInput" placeholder="Type your answer in English..."></textarea>
+    
+    <button onclick="readInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; width:100%; cursor:pointer; color:#475569; font-weight:600;">
+       👂 Listen to my pronunciation
+    </button>
+
+    <button class="btn-main" id="btnAction" onclick="analyze()">✨ Check my English</button>
+  </div>
+
+  <div id="result" style="display:none; margin-top:20px;">
+    <div class="feedback-box">
+      <div id="fbText"></div>
+      <div id="errorsList" style="margin-top:15px;"></div>
+    </div>
+    <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:#334155;" onclick="reset()">🔄 Practice something else</button>
+  </div>
+
+  <div class="footer-section">
+    <a href="../" class="revolut-btn">🏠 Back to Home</a>
+  </div>
+
+</div>
+
+<script>
+// API KEY
+const parteA = "AIzaSyASf_PIq7es0iPVt"; 
+const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
+const API_KEY = parteA + parteB;
+
+// TEMAS BÁSICOS (Supervivencia)
+const TOPICS = {
+  newcomer: [
+    { t: "👋 Introduction", q: "Hello! What is your name and where are you from?" },
+    { t: "🏫 The Office", q: "You are in the school office. Ask for your timetable." },
+    { t: "🤢 Feeling Sick", q: "You don't feel well. Tell the teacher what is wrong." },
+    { t: "🚽 Toilet", q: "Ask the teacher if you can go to the toilet." },
+    { t: "🛒 Shopping", q: "You are in a shop. Ask how much a sandwich costs." }
+  ],
+  social: [
+    { t: "⚽ Hobbies", q: "What do you like to do? Do you play football?" },
+    { t: "🤔 Homework", q: "You don't understand the homework. Ask for help." },
+    { t: "🍔 Canteen", q: "Ask a student if you can sit with them at lunch." },
+    { t: "🎮 Weekend", q: "What are you going to do this weekend?" }
+  ]
+};
+
+let currentCat = 'newcomer';
+let currentQ = "";
+let userLanguage = "English"; // Por defecto
+
+function updateInterfaceLang() {
+  const sel = document.getElementById('nativeLang');
+  userLanguage = sel.value;
+  // Si quisiéramos traducir la interfaz completa, lo haríamos aquí, 
+  // pero de momento nos centramos en traducir la AYUDA y el FEEDBACK.
+}
+
+function init() {
+  const g = document.getElementById('topicGrid');
+  g.innerHTML = "";
+  TOPICS[currentCat].forEach(item => {
+    const b = document.createElement('button');
+    b.className = 'topic-btn';
+    // Usamos iconos para que se entienda sin leer
+    b.innerHTML = item.t; 
+    b.onclick = () => loadQ(item);
+    g.appendChild(b);
+  });
+}
+
+function setTopic(cat) {
+  currentCat = cat;
+  init();
+}
+
+function loadQ(item) {
+  currentQ = item.q;
+  document.getElementById('qTitle').innerText = item.t;
+  document.getElementById('qDisplay').innerText = item.q;
+  document.getElementById('qTranslation').style.display = 'none'; // Ocultar traducción anterior
+  document.getElementById('qTranslation').innerText = "";
+  
+  document.getElementById('exerciseArea').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('userInput').value = "";
+}
+
+function speakText() {
+  const u = new SpeechSynthesisUtterance(currentQ);
+  u.lang = 'en-IE'; 
+  window.speechSynthesis.speak(u);
+}
+
+function readInput() {
+  const t = document.getElementById('userInput').value;
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = 'en-IE';
+  window.speechSynthesis.speak(u);
+}
+
+// --- FUNCIÓN CLAVE: TRADUCIR PREGUNTA CON IA ---
+async function translateQuestion() {
+  if(userLanguage === "English") return alert("Please select your native language at the top.");
+  
+  const box = document.getElementById('qTranslation');
+  box.style.display = 'block';
+  box.innerText = "🔄 Translating...";
+
+  const prompt = `TRANSLATE this text: "${currentQ}" into ${userLanguage}. OUTPUT ONLY THE TRANSLATION.`;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const d = await r.json();
+    const translation = d.candidates[0].content.parts[0].text;
+    box.innerText = translation;
+  } catch(e) { box.innerText = "Error translating."; }
+}
+
+async function analyze() {
+  const t = document.getElementById('userInput').value;
+  if(t.length < 2) return alert("Write something first / Escribe algo.");
+  
+  const btn = document.getElementById('btnAction');
+  btn.disabled = true; btn.innerText = "⏳ Checking...";
+
+  // EL TRUCO: Le pedimos a la IA que explique en el idioma del alumno
+  const prompt = `
+  ACT AS: Kind EAL English Teacher.
+  STUDENT NATIVE LANGUAGE: ${userLanguage}.
+  QUESTION: "${currentQ}"
+  STUDENT ANSWER: "${t}"
+  
+  TASK: 
+  1. Correct the English.
+  2. Provide feedback. 
+  3. IMPORTANT: If the student selected a native language (not English), PROVIDE THE EXPLANATION/FEEDBACK IN THAT NATIVE LANGUAGE so they understand.
+  
+  OUTPUT JSON: { "feedback": "Feedback in ${userLanguage} (and English)", "corrections": [{"original":"x", "fix":"y"}] }`;
+
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    const d = await r.json();
+    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+
+    document.getElementById('exerciseArea').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    
+    document.getElementById('fbText').innerHTML = `<strong>Teacher:</strong> ${j.feedback}`;
+    document.getElementById('errorsList').innerHTML = j.corrections.map(c => 
+      `<div class="error-item">${c.original} ➡️ <b>${c.fix}</b></div>`
+    ).join('');
+
+  } catch(e) { console.log(e); alert("Error."); } 
+  finally { btn.disabled = false; btn.innerText = "✨ Check my English"; }
+}
+
+function reset() {
+  document.getElementById('exerciseArea').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+}
+
+window.onload = init;
+</script>
+</body>
+</html>

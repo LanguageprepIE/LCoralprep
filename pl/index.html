@@ -25,8 +25,8 @@
       <strong>Instrukcja:</strong>
       <ul>
         <li>🗣️ <strong>Rozmowa (Interview):</strong> Includes the 3 Set Topics for 2026 and General Conversation.</li>
-        <li>📂 <strong>Portfolio:</strong> Select "Portfolio" to practice discussing your texts.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Please use a Polish keyboard.</li>
+        <li>📂 <strong>Portfolio:</strong> Select Topic 12 to practice discussing your texts.</li>
+        <li>⌨️ <strong>Keyboard:</strong> Please use a Polish keyboard for accurate correction.</li>
       </ul>
     </div>
   </header>
@@ -36,9 +36,10 @@
   </div>
 
   <div id="sectionConversation">
+    
     <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('General')">General Questions</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('Advanced')">Advanced / Discussion</button>
+      <button class="level-btn active" id="btnOL" onclick="setLevel('General')">General (Ordinary)</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('Advanced')">Discussion (Higher)</button>
     </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
@@ -75,17 +76,41 @@
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer</p>
+    <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="bio-text">
-      <p><em>Supporting Polish students in Ireland with free, accessible tools for the Leaving Certificate.</em></p>
+      <p><em>Supporting students with free, innovative tools for the Leaving Certificate.</em></p>
+      <p><em>Wspieranie uczniów w przygotowaniach do matury za pomocą nowoczesnych technologii.</em></p>
     </div>
 
-    <a href="../" class="revolut-btn">🏠 Back to Home</a>
+    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
+    
+    <div style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6; color: #475569;">
+      <p>All resources are 100% free. If this tool helps you, consider supporting the project.</p>
+    </div>
+
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">💡 Anonymous Suggestion Box</p>
+      <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 15px;">
+        Found a bug? Have an idea? Let me know!<br>
+        <span style="color:#ef4444;">Please DO NOT include your name or personal details.</span>
+      </p>
+      
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion or report a bug here..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback (Anonymous)
+        </button>
+      </form>
+    </div>
   </div>
 
 </div>
 
 <script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>

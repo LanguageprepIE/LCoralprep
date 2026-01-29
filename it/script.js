@@ -5,27 +5,22 @@ const parteA = "AIzaSyASf_PIq7es0iPVt";
 const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
 const API_KEY = parteA + parteB;
 
-// --- NAVEGACIÓN (CON LAS 3 PESTAÑAS) ---
+// --- NAVEGACIÓN ---
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function switchTab(tab) {
-  // Botones
   document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabRole').className = tab === 'role' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabStory').className = tab === 'story' ? 'tab-btn active' : 'tab-btn';
   
-  // Secciones
   document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
   document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
-  // Si no existe la sección story en el HTML (por si acaso), esto evita errores
   const sectionStory = document.getElementById('sectionStory');
-  if (sectionStory) {
-      sectionStory.style.display = tab === 'story' ? 'block' : 'none';
-  }
+  if (sectionStory) sectionStory.style.display = tab === 'story' ? 'block' : 'none';
 }
 
 // ===========================================
-// PARTE 1: CONVERSATION (General)
+// PARTE 1: CONVERSATION
 // ===========================================
 let currentLevel = 'OL';
 let currentTopic = null;
@@ -63,7 +58,7 @@ function setLevel(lvl) {
 
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
-    g.innerHTML = ""; // Limpiar por si acaso
+    g.innerHTML = ""; 
     DATA.forEach((item) => { 
         const b = document.createElement('button'); 
         b.className = 'topic-btn'; 
@@ -81,7 +76,8 @@ function initConv() {
 
 function speakText() { 
     const rawHTML = document.getElementById('qDisplay').innerHTML;
-    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
+    // Limpieza de texto para el TTS (Mejorado)
+    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASSATO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
     
     if ('speechSynthesis' in window) { 
         window.speechSynthesis.cancel(); 
@@ -292,7 +288,7 @@ function mostrarSugerencia() {
 }
 
 // ===========================================
-// LÓGICA DE STORIE ILLUSTRATE (PICTURE SEQUENCES)
+// LÓGICA DE STORIE ILLUSTRATE
 // ===========================================
 let currentStoryTitle = "";
 
@@ -386,5 +382,5 @@ function readMyInput() {
     window.speechSynthesis.speak(utterance);
 }
 
-// === ¡ESTA TIENE QUE SER LA ÚLTIMA LÍNEA! ===
-initConv();
+// Inicialización
+window.onload = initConv;

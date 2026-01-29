@@ -7,6 +7,11 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
 
@@ -20,13 +25,23 @@
     </h1>
     <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
     
+    <div class="tech-alert">
+      <strong>⚠️ Technical Note / Nóta Tábhachtach:</strong>
+      <p style="margin: 5px 0 0;">
+        Current voice recognition technology does not understand spoken Irish well. 
+        <br><br>
+        For this module, please <strong>TYPE your answers</strong>. This is excellent practice for your 
+        <strong>Grammar (Tuiseal Ginideach, Verbs)</strong> which is essential for both the Oral and Written exams.
+      </p>
+    </div>
+
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
     <div id="infoBox" class="info-box">
       <strong>Treoracha:</strong>
       <ul>
-        <li>🗣️ <strong>Comhrá:</strong> General conversation (15 Topics).</li>
-        <li>📜 <strong>Filíocht:</strong> Poems for LC 2026 & New Syllabus 2027.</li>
-        <li>🖼️ <strong>Sraith Pictiúr:</strong> The 20 Official Picture Sequences.</li>
+        <li>✍️ <strong>Comhrá:</strong> Select a topic and write your answer to check your grammar.</li>
+        <li>📜 <strong>Filíocht:</strong> Listen to the poems (Copyright restrictions apply to text).</li>
+        <li>🖼️ <strong>Sraith Pictiúr:</strong> Write the story to practice your verbs and vocabulary.</li>
       </ul>
     </div>
   </header>
@@ -52,17 +67,17 @@
         <div id="qDisplay" style="font-weight: 700;">Select a topic...</div>
         <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
-      <textarea id="userInput" placeholder="Scríobh anseo..."></textarea>
+      <textarea id="userInput" placeholder="Scríobh do fhreagra anseo (Write your answer here)..."></textarea>
       
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
-        👂 Éist le mo fhreagra
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f0fdf4; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; color:#166534; font-weight:600;">
+        👂 Listen to what I wrote
       </button>
 
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate Answer</button>
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Ceartaigh (Check Grammar)</button>
     </div>
 
     <div id="result">
-      <div class="student-response-box"><strong>Dúirt tú:</strong> <span id="userResponseText"></span></div>
+      <div class="student-response-box"><strong>Scríobh tú:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbGA" style="margin-bottom:10px; font-weight:500;"></div>
@@ -99,7 +114,7 @@
   <div id="sectionSraith" style="display:none;">
     <div class="info-box" style="display:block; border-color:#ea580c; background:#fff7ed; color:#c2410c;">
       <strong>🖼️ Instructions:</strong>
-      <p style="margin:5px 0 0;">Open your exam papers to the Sraith Pictiúr selected below.</p>
+      <p style="margin:5px 0 0;">Open your exam papers to the Sraith Pictiúr selected below. Write the story to check your verbs.</p>
     </div>
     <div class="rp-selector" id="sraithSelector"></div>
 
@@ -110,12 +125,12 @@
         <button class="audio-btn" onclick="speakSraithPrompt()">🔊 Listen</button>
       </div>
       <textarea id="userInputSraith" placeholder="Sa chéad phictiúr..."></textarea>
-      <button onclick="readMySraithInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">👂 Listen to me</button>
-      <button class="btn-main" id="btnActionSraith" onclick="analyzeSraith()">✨ Evaluate</button>
+      <button onclick="readMySraithInput()" style="margin: 10px 0; background: #fff7ed; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; color:#c2410c; font-weight:600;">👂 Listen to what I wrote</button>
+      <button class="btn-main" id="btnActionSraith" onclick="analyzeSraith()">✨ Ceartaigh (Check Grammar)</button>
     </div>
 
     <div id="resultSraith" style="display:none; margin-top:30px;">
-      <div class="student-response-box"><strong>Dúirt tú:</strong> <span id="userResponseTextSraith"></span></div>
+      <div class="student-response-box"><strong>Scríobh tú:</strong> <span id="userResponseTextSraith"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplaySraith" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbGASraith" style="margin-bottom:10px; font-weight:500;"></div>
@@ -131,6 +146,11 @@
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #64748b;">Teacher at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="bio-text">
+      <p><em>Supporting students with free, innovative tools for language learning.</em></p>
+    </div>
+
     <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">☕ Support this Project</a>
     
     <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">

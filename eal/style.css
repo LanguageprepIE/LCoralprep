@@ -1,0 +1,100 @@
+/* =========================================
+   STYLE.CSS (EAL - ENGLISH SUPPORT)
+   ========================================= */
+
+:root { 
+    --primary: #2563eb;       /* Azul Estándar */
+    --primary-dark: #1e40af;
+    --secondary: #16a34a;     /* Verde Esperanza (Growth) */
+    --accent: #f59e0b;        /* Amarillo/Naranja (Help) */
+    --bg: #f8fafc; 
+    --text: #0f172a; 
+}
+
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+
+/* Container */
+.container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 90vh; display: flex; flex-direction: column; }
+
+/* HEADER */
+header { text-align: center; margin-bottom: 20px; }
+h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; }
+.subtitle { color: #64748b; margin-top: 5px; font-size: 0.95rem; font-weight: 700; }
+
+/* SELECTOR DE IDIOMA (Específico EAL) */
+.lang-select-container { 
+    background: #fffbeb; 
+    border: 2px solid #fbbf24; 
+    padding: 15px; 
+    border-radius: 12px; 
+    margin-bottom: 25px; 
+    text-align: center; 
+}
+
+.lang-label {
+    display: block;
+    font-weight: 700; 
+    color: #92400e;
+    margin-bottom: 8px;
+}
+
+.lang-select { 
+    padding: 10px; 
+    font-size: 1rem; 
+    border-radius: 8px; 
+    border: 1px solid #d97706; 
+    width: 100%; 
+    max-width: 300px; 
+    background: white;
+}
+
+/* LEVEL SELECTOR */
+.level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+.level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
+.level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+/* GRID TEMAS */
+.topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 25px; }
+.topic-btn { padding: 15px 10px; border: 1px solid #e2e8f0; border-radius: 10px; background: white; cursor: pointer; font-size: 0.9rem; font-weight: 600; text-align: center; color: #475569; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.topic-btn:hover { background: #eff6ff; border-color: var(--primary); }
+
+/* EJERCICIO */
+.question-card { background: #eff6ff; border-left: 5px solid var(--primary); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 20px; }
+
+.translation-box { 
+    background: #f0fdf4; 
+    color: #15803d; 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-top: 15px; 
+    font-style: italic; 
+    display: none; 
+    border-left: 4px solid #22c55e; 
+    font-weight: 500;
+}
+
+.translate-btn { 
+    background: white; 
+    border: 1px solid #bae6fd; 
+    color: #0284c7; 
+    cursor: pointer; 
+    font-size: 0.85rem; 
+    padding: 5px 10px; 
+    border-radius: 20px; 
+    font-weight: 600;
+}
+
+/* SHARED */
+.audio-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-right: 10px; }
+textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 120px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
+textarea:focus { border-color: var(--primary); outline: none; }
+.btn-main { width: 100%; padding: 16px; background: var(--text); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
+.btn-main:disabled { opacity: 0.5; cursor: wait; }
+
+/* FEEDBACK */
+.feedback-box { padding: 25px; border-radius: 15px; background: #fff; border: 1px solid #e2e8f0; }
+.error-item { margin-bottom: 10px; padding: 10px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #ef4444; }
+
+/* FOOTER */
+.footer-section { margin-top: auto; padding: 20px; border-top: 1px solid #e2e8f0; text-align: center; }
+.revolut-btn { background: #000; color: white; text-decoration: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; display: inline-block; }

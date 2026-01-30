@@ -76,3 +76,29 @@
   .footer-section { margin-top: auto; padding: 40px 20px 20px; border-top: 1px solid #e2e8f0; background: #fafafa; border-radius: 20px; text-align: center; }
   .profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary); margin-bottom: 15px; }
   .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+
+/* SUPPORT BOX STYLES */
+.support-box {
+    background: #fffbeb; /* Fondo amarillo muy suave */
+    border: 1px solid #fcd34d; /* Borde dorado */
+    border-radius: 12px;
+    padding: 15px;
+    margin: 20px auto 15px auto; /* Centrado */
+    max-width: 90%;
+    text-align: center;
+}
+
+.support-title {
+    font-weight: 800;
+    color: #92400e;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.support-text {
+    font-size: 0.85rem;
+    color: #78350f;
+    line-height: 1.5;
+    margin: 0;
+}

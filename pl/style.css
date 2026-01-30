@@ -69,3 +69,28 @@
     .topic-grid { grid-template-columns: 1fr; }
     h1 { font-size: 1.5rem; }
   }
+/* SUPPORT BOX STYLES */
+.support-box {
+    background: #fffbeb; /* Fondo amarillo muy suave */
+    border: 1px solid #fcd34d; /* Borde dorado */
+    border-radius: 12px;
+    padding: 15px;
+    margin: 20px auto 15px auto; /* Centrado */
+    max-width: 90%;
+    text-align: center;
+}
+
+.support-title {
+    font-weight: 800;
+    color: #92400e;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.support-text {
+    font-size: 0.85rem;
+    color: #78350f;
+    line-height: 1.5;
+    margin: 0;
+}

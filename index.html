@@ -31,7 +31,23 @@
     .it:hover { border-top: 5px solid #dc2626; } 
     .de:hover { border-top: 5px solid #FFCE00; } 
     .pl:hover { border-top: 5px solid #dc2626; } 
-    .eal:hover { border-top: 5px solid #0d9488; } /* Turquesa para EAL */
+    .eal:hover { border-top: 5px solid #0d9488; }
+
+    /* ESTILOS NUEVOS PARA EL CAJETÍN DE SOPORTE EN HOME */
+    .support-box {
+        background: #fffbeb;
+        border: 1px solid #fcd34d;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 40px auto 20px auto;
+        max-width: 600px;
+        text-align: center;
+    }
+    .support-title { font-weight: 800; color: #92400e; margin-bottom: 10px; display: block; font-size: 1rem; }
+    .support-text { font-size: 0.9rem; color: #78350f; line-height: 1.5; margin: 0; }
+    
+    .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; transition: 0.2s; }
+    .revolut-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
     footer { margin-top: 60px; padding: 40px; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; }
   </style>
@@ -98,18 +114,30 @@
     </div>
   </div>
 
-  <div style="text-align: center; margin: 50px 20px; padding-top: 20px; border-top: 1px solid #eee;">
+  <div class="support-box">
+    <span class="support-title">🚀 A Student-Focused Project</span>
+    <p class="support-text">
+        I created LanguagePrep to help you feel confident in your oral exams. 
+        It's a free tool driven by passion, but running advanced AI does come with monthly costs.
+        <br><br>
+        If you find it useful, your support means the world. It helps keep the site running and allows me to 
+        <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
+    </p>
+  </div>
+
+  <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">
+    ☕ Support the Project
+  </a>
+
+  <div style="text-align: center; margin: 20px 20px; padding-top: 20px; border-top: 1px solid #eee;">
     <h3>🐛 Report a Bug / Feedback</h3>
-    <p style="font-size: 0.9em; color: #666;">Did you find an issue? Let me know!</p>
+    <p style="font-size: 0.9em; color: #666;">Did you find an issue? Let me know! (Anonymous)</p>
     
     <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 400px; margin: 20px auto; text-align: left;">
-      <label style="display: block; margin-bottom: 5px;">Your Email (Optional):</label>
-      <input type="email" name="email" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-      
       <label style="display: block; margin-bottom: 5px;">Message:</label>
-      <textarea name="message" required style="width: 100%; height: 100px; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+      <textarea name="message" required placeholder="Type your suggestion here..." style="width: 100%; height: 100px; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 0.9rem;"></textarea>
       
-      <button type="submit" style="background-color: #333; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Send Report</button>
+      <button type="submit" style="width: 100%; background-color: #333; color: white; padding: 10px 20px; border: none; border-radius: 50px; cursor: pointer; font-weight: 700;">Send Feedback</button>
     </form>
   </div>
 

@@ -46,18 +46,25 @@
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     <div class="topic-grid" id="topicGrid"></div>
 
-    <div id="exerciseArea" style="display:none;">
+        <div id="exerciseArea" style="display:none;">
       <div class="question-card">
-        <div id="qDisplay" style="font-weight: 700;"></div>
-        <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
+        <div id="qDisplay" style="font-weight: 700;">Selecciona un tema...</div>
+        <button class="audio-btn" onclick="speakText()">🔊 Escuchar Pregunta</button>
       </div>
-      <textarea id="userInput" placeholder="Type or use your microphone..."></textarea>
+
+      <button id="btnHint" onclick="toggleHint()" style="background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600;">
+        💡 ¿Qué debo incluir en mi respuesta? (Ver Puntos Clave)
+      </button>
+      
+      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;">
+        </div>
+      <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
-        👂 Listen to my text
+        👂 Escuchar mi respuesta
       </button>
 
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Evaluate Answer</button>
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Corregir Respuesta</button>
     </div>
 
     <div id="result">

@@ -2,12 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>LanguagePrep Ireland - Spanish</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LanguagePrep - Spanish</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
 
@@ -21,43 +25,41 @@
     </h1>
     <p class="subtitle">Module: Leaving Cert Spanish (Oral)</p>
     
-    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
     <div id="infoBox" class="info-box">
-      <strong>Instructions / Instrucciones:</strong>
+      <strong>Instrucciones:</strong>
       <ul>
-        <li>🗣️ <strong>General Conversation:</strong> Use the "Conversation" tab to practice topics with AI feedback.</li>
-        <li>🎭 <strong>Roleplays:</strong> Use the "Roleplays" tab to simulate the 5 exam cards.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Always use the Spanish keyboard on your phone for voice typing.</li>
+        <li>🗣️ <strong>Conversation:</strong> Select a topic. Answer the question aloud or type it to check your grammar.</li>
+        <li>🎭 <strong>Roleplays:</strong> Listen to the examiner and reply. Complete the 5 steps.</li>
       </ul>
     </div>
   </header>
 
   <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation Topics</button>
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
     <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
   </div>
 
   <div id="sectionConversation">
     <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
+      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
     </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    
     <div class="topic-grid" id="topicGrid"></div>
 
-        <div id="exerciseArea" style="display:none;">
+    <div id="exerciseArea" style="display:none;">
       <div class="question-card">
         <div id="qDisplay" style="font-weight: 700;">Selecciona un tema...</div>
         <button class="audio-btn" onclick="speakText()">🔊 Escuchar Pregunta</button>
       </div>
-
-      <button id="btnHint" onclick="toggleHint()" style="background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600;">
+      
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
         💡 ¿Qué debo incluir en mi respuesta? (Ver Puntos Clave)
       </button>
-      
-      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;">
-        </div>
+      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
       <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
@@ -68,7 +70,7 @@
     </div>
 
     <div id="result">
-      <div class="student-response-box"><strong>You said:</strong> <span id="userResponseText"></span></div>
+      <div class="student-response-box"><strong>Dijiste:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbES" style="margin-bottom:10px; font-weight:500;"></div>
@@ -76,35 +78,39 @@
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
         <div id="errorsList"></div>
       </div>
-      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Try another topic</button>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Otro Tema</button>
     </div>
   </div>
 
   <div id="sectionRoleplay" style="display:none;">
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">🏠 1. Alojamiento</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">💻 2. Portátil</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">🚐 3. Camper</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">♻️ 4. Plásticos</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">🚗 5. Avería</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">RP 1 (Erasmus)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">RP 2 (Laptop)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">RP 3 (Camper)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">RP 4 (Plastics)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">RP 5 (Breakdown)</div>
     </div>
 
     <div id="rpArea" style="display:none;">
-      <div class="rp-context" id="rpContext"></div>
-      <div class="chat-container" id="rpChat"></div>
+      <div id="rpContext" class="question-card" style="margin-bottom:15px; font-weight:700;"></div>
       
-      <button class="next-audio-btn" id="nextAudioBtn" onclick="proximaIntervencion()">🔊 Play Examiner Audio</button>
+      <div id="rpChat" class="rp-chat-window"></div>
       
       <div class="rp-controls">
-        <input type="text" id="rpInput" class="rp-input" placeholder="Select a roleplay above..." disabled>
-        <button class="btn-send" id="rpSendBtn" onclick="enviarRespuestaRP()" disabled>➤</button>
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="proximaIntervencion()">▶️ Play Examiner Audio</button>
+        
+        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        
+        <div style="display:flex; gap:10px;">
+          <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fef3c7; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Ver Sugerencia</button>
+          <button id="rpSendBtn" class="btn-main" style="flex:1; margin:0;" onclick="enviarRespuestaRP()" disabled>Enviar 📤</button>
+        </div>
       </div>
-      <button class="model-answer-btn" onclick="mostrarSugerencia()" id="hintBtn" style="display:none; margin-top:10px;">💡 Show Model Answer</button>
     </div>
   </div>
 
   <div class="footer-section">
-        <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
@@ -126,8 +132,12 @@
     <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
       <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
-        <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
+        <textarea name="message" placeholder="Type your suggestion..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback
+        </button>
       </form>
     </div>
   </div>

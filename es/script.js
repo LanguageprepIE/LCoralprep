@@ -24,97 +24,97 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// Base de datos de Conversación (15 Temas) + CRITERIOS HL (check_HL)
+// Base de datos de Conversación (15 Temas) + CRITERIOS BILINGÜES
 const DATA = [
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
     HL: "Háblame de ti. Describe tu personalidad y tu físico.",
-    check_HL: "Nombre, Edad, Cumpleaños (fecha completa), Descripción física (ojos/pelo/altura) y Personalidad (mínimo 3 adjetivos)."
+    check_HL: "Nombre (Name), Edad (Age), Cumpleaños (Birthday), Descripción física (Physical desc. - eyes/hair/height), Personalidad (Personality - 3 adjectives)."
   },
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
     HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
-    check_HL: "Número de personas, Profesión de los padres, Descripción de hermanos, Relación (llevarse bien/mal) y Mascotas."
+    check_HL: "Cuántos sois (Number of people), Profesión de padres (Parents' jobs), Descripción de hermanos (Siblings), Relación (Relationship - get on well/badly), Mascotas (Pets)."
   },
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
     HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?",
-    check_HL: "Nombre del mejor amigo/a, Descripción física/personalidad, Gustos en común y Por qué es un buen amigo."
+    check_HL: "Nombre (Best friend's name), Descripción física/personalidad (Physical/Personality), Gustos en común (Shared interests), Por qué es buen amigo (Why special)."
   },
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
     HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
-    check_HL: "Tipo de vivienda, Ubicación, Descripción del dormitorio propio, Opinión (lo que más/menos te gusta) y Tareas."
+    check_HL: "Tipo de vivienda (House/Apartment), Ubicación (Location), Mi dormitorio (My bedroom), Lo que más/menos me gusta (Likes/Dislikes), Tareas (Chores)."
   },
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
     HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?",
-    check_HL: "Instalaciones (tiendas/deportes), Ventajas y Desventajas (ruido/tráfico/seguridad), Opinión personal."
+    check_HL: "Instalaciones (Facilities - shops/parks), Ventajas/Desventajas (Pros/Cons - noise/traffic), Opinión personal (Opinion)."
   },
   { 
     title: "6. Mi pueblo/ciudad", 
     OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", 
     HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?",
-    check_HL: "Ubicación geográfica, Comparación Campo vs Ciudad (ventajas/desventajas), Preferencia personal justificada."
+    check_HL: "Ubicación (Location), Campo vs Ciudad (Rural vs Urban), Ventajas/Desventajas (Pros/Cons), Preferencia (Preference)."
   },
   { 
     title: "7. Mi colegio", 
     OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", 
     HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?",
-    check_HL: "Tipo de colegio (mixto/público), Instalaciones, Descripción del uniforme, Opinión sobre las normas (estrictas/justas)."
+    check_HL: "Tipo de colegio (Type - Mixed/Public), Instalaciones (Facilities), Uniforme (Description), Normas (Rules - strict/fair)."
   },
   { 
     title: "8. Mis asignaturas", 
     OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", 
     HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?",
-    check_HL: "Lista de asignaturas, Asignatura favorita vs difícil, Opinión del sistema (puntos/estrés)."
+    check_HL: "Lista de asignaturas (Subjects list), Favorita vs Difícil (Fav vs Hard), Opinión del sistema (Points system/Stress)."
   },
   { 
     title: "9. Rutina diaria", 
     OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", 
     HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?",
-    check_HL: "Horarios (levantarse/acostarse), Comidas, Transporte, Actividades extraescolares y Tiempo de estudio."
+    check_HL: "Horarios (Times - wake up/sleep), Comidas (Meals), Transporte (Transport), Extraescolares (After-school activities), Estudio (Study time)."
   },
   { 
     title: "10. Pasatiempos", 
     OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", 
     HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?",
-    check_HL: "Deporte específico, Música/Cine/Lectura, Frecuencia (cuándo lo haces), Importancia del ocio (desconexión)."
+    check_HL: "Deporte (Specific sport), Música/Cine (Music/Movies), Frecuencia (How often), Importancia (Importance for mental health)."
   },
   { 
     title: "11. Tareas domésticas", 
     OL: "¿Ayudas en casa? ¿Haces tu cama?", 
     HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?",
-    check_HL: "Tareas específicas que haces, Paga semanal (si recibes), Opinión sobre el reparto de tareas (justo/injusto)."
+    check_HL: "Tareas que hago (Tasks I do), Paga (Pocket money), Reparto justo/injusto (Fair/Unfair division)."
   },
   { 
     title: "12. Vacaciones", 
     OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", 
     HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?",
-    check_HL: "Uso del Pasado (dónde fuiste), Alojamiento/Comida, El tiempo, Preferencias de viaje."
+    check_HL: "Pasado: Dónde fuiste (Past: Where you went), Alojamiento/Comida (Accommodation/Food), El tiempo (Weather), Preferencias (Travel vs Staycation)."
   },
   { 
     title: "13. Planes de Futuro", 
     OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", 
     HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?",
-    check_HL: "Uso del Futuro/Condicional, Universidad/Carrera deseada, Posibilidad de año sabático (Gap Year) o viajar."
+    check_HL: "Futuro/Condicional (Future/Conditional tense), Universidad/Carrera (College/Course), Año sabático/Viajes (Gap Year/Travel)."
   },
   { 
     title: "14. Fin de semana pasado", 
     OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", 
     HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?",
-    check_HL: "Uso consistente del Pretérito (Indefinido/Imperfecto), Actividades sociales, Estudio/Descanso."
+    check_HL: "Uso del Pretérito (Past Tenses), Actividades sociales (Socializing), Estudio/Descanso (Study/Rest)."
   },
   { 
     title: "15. Próximo fin de semana", 
     OL: "¿Qué harás el próximo fin de semana?", 
     HL: "Háblame de tus planes para el próximo fin de semana.",
-    check_HL: "Uso consistente del Futuro (Iré/Haré), Planes específicos (sociales/deportivos/estudio)."
+    check_HL: "Uso del Futuro (Future Tense), Planes específicos (Specific plans - friends/sport/study)."
   }
 ];
 
@@ -146,7 +146,7 @@ function initConv() {
     }); 
 }
 
-// --- NUEVA FUNCIÓN: MOSTRAR/OCULTAR PISTAS ---
+// --- FUNCIÓN: MOSTRAR/OCULTAR PISTAS ---
 function toggleHint() {
     const box = document.getElementById('hintBox');
     if (box.style.display === 'none') {
@@ -158,7 +158,6 @@ function toggleHint() {
 
 function speakText() { 
     const rawHTML = document.getElementById('qDisplay').innerHTML;
-    // Limpiamos etiquetas HTML para que no las lea el robot
     const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
     
     if ('speechSynthesis' in window) { 
@@ -171,7 +170,6 @@ function speakText() {
 }
 
 // === LÓGICA DEL MOCK EXAM SECUENCIAL ===
-
 function startMockExam() { 
     isMockExam = true; 
     mockIndex = 0; 
@@ -185,7 +183,6 @@ function startMockExam() {
         PAST_Q[Math.floor(Math.random()*3)] + " (PASADO)",
         FUT_Q[Math.floor(Math.random()*3)] + " (FUTURO)"
     ];
-    
     showMockQuestion();
 }
 
@@ -195,7 +192,7 @@ function showMockQuestion() {
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
     
-    // En Mock Exam no mostramos pistas
+    // En Mock Exam NO mostramos pistas
     const btnHint = document.getElementById('btnHint');
     const hintBox = document.getElementById('hintBox');
     if(btnHint) btnHint.style.display = 'none';
@@ -213,7 +210,7 @@ function updateQuestion() {
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
     document.getElementById('userInput').value = "";
 
-    // LÓGICA DE PISTAS (SCAFFOLDING)
+    // LÓGICA DE PISTAS (SCAFFOLDING) BILINGÜE
     const hintBox = document.getElementById('hintBox');
     const btnHint = document.getElementById('btnHint');
     
@@ -223,7 +220,8 @@ function updateQuestion() {
         // Solo mostramos el botón si es HL y hay pistas definidas
         if (currentLevel === 'HL' && currentTopic.check_HL) {
             btnHint.style.display = 'inline-block';
-            hintBox.innerHTML = "<strong>📝 Para nota alta (HL), intenta mencionar:</strong><br>" + currentTopic.check_HL;
+            // Texto de cabecera bilingüe en la caja
+            hintBox.innerHTML = "<strong>📝 Puntos clave / Key Points (HL):</strong><br>" + currentTopic.check_HL;
         } else {
             btnHint.style.display = 'none'; 
         }
@@ -237,7 +235,6 @@ function resetApp() {
         isMockExam = false;
         document.getElementById('userInput').value = "";
         document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
-        // Ocultar pistas al resetear
         const btnHint = document.getElementById('btnHint');
         if(btnHint) btnHint.style.display = 'none';
     } else {
@@ -255,7 +252,7 @@ async function analyze() {
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
-  // Recogemos criterios si estamos en HL
+  // Recogemos criterios HL si existen
   let criteria = "Gramática y vocabulario correctos."; 
   if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
       criteria = currentTopic.check_HL;
@@ -336,7 +333,6 @@ async function analyze() {
 
   } catch (e) { 
     console.error(e);
-    // MENSAJE DE ERROR AMABLE ("HIGH TRAFFIC")
     alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(La IA está ocupada, espera 10 segundos)."); 
   } finally { 
     b.disabled = false; 

@@ -24,23 +24,98 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// Base de datos de Conversación (15 Temas)
+// Base de datos de Conversación (15 Temas) + CRITERIOS HL (check_HL)
 const DATA = [
-  { title: "1. Yo mismo", OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", HL: "Háblame de ti. Describe tu personalidad y tu físico." },
-  { title: "2. Mi familia", OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?" },
-  { title: "3. Mis amigos", OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?" },
-  { title: "4. Mi casa", OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?" },
-  { title: "5. Mi barrio", OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?" },
-  { title: "6. Mi pueblo/ciudad", OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?" },
-  { title: "7. Mi colegio", OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?" },
-  { title: "8. Mis asignaturas", OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?" },
-  { title: "9. Rutina diaria", OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?" },
-  { title: "10. Pasatiempos", OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?" },
-  { title: "11. Tareas domésticas", OL: "¿Ayudas en casa? ¿Haces tu cama?", HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?" },
-  { title: "12. Vacaciones", OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?" },
-  { title: "13. Planes de Futuro", OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?" },
-  { title: "14. Fin de semana pasado", OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?" },
-  { title: "15. Próximo fin de semana", OL: "¿Qué harás el próximo fin de semana?", HL: "Háblame de tus planes para el próximo fin de semana." }
+  { 
+    title: "1. Yo mismo", 
+    OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
+    HL: "Háblame de ti. Describe tu personalidad y tu físico.",
+    check_HL: "Nombre, Edad, Cumpleaños (fecha completa), Descripción física (ojos/pelo/altura) y Personalidad (mínimo 3 adjetivos)."
+  },
+  { 
+    title: "2. Mi familia", 
+    OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
+    HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
+    check_HL: "Número de personas, Profesión de los padres, Descripción de hermanos, Relación (llevarse bien/mal) y Mascotas."
+  },
+  { 
+    title: "3. Mis amigos", 
+    OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
+    HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?",
+    check_HL: "Nombre del mejor amigo/a, Descripción física/personalidad, Gustos en común y Por qué es un buen amigo."
+  },
+  { 
+    title: "4. Mi casa", 
+    OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
+    HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
+    check_HL: "Tipo de vivienda, Ubicación, Descripción del dormitorio propio, Opinión (lo que más/menos te gusta) y Tareas."
+  },
+  { 
+    title: "5. Mi barrio", 
+    OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
+    HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?",
+    check_HL: "Instalaciones (tiendas/deportes), Ventajas y Desventajas (ruido/tráfico/seguridad), Opinión personal."
+  },
+  { 
+    title: "6. Mi pueblo/ciudad", 
+    OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", 
+    HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?",
+    check_HL: "Ubicación geográfica, Comparación Campo vs Ciudad (ventajas/desventajas), Preferencia personal justificada."
+  },
+  { 
+    title: "7. Mi colegio", 
+    OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", 
+    HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?",
+    check_HL: "Tipo de colegio (mixto/público), Instalaciones, Descripción del uniforme, Opinión sobre las normas (estrictas/justas)."
+  },
+  { 
+    title: "8. Mis asignaturas", 
+    OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", 
+    HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?",
+    check_HL: "Lista de asignaturas, Asignatura favorita vs difícil, Opinión del sistema (puntos/estrés)."
+  },
+  { 
+    title: "9. Rutina diaria", 
+    OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", 
+    HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?",
+    check_HL: "Horarios (levantarse/acostarse), Comidas, Transporte, Actividades extraescolares y Tiempo de estudio."
+  },
+  { 
+    title: "10. Pasatiempos", 
+    OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", 
+    HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?",
+    check_HL: "Deporte específico, Música/Cine/Lectura, Frecuencia (cuándo lo haces), Importancia del ocio (desconexión)."
+  },
+  { 
+    title: "11. Tareas domésticas", 
+    OL: "¿Ayudas en casa? ¿Haces tu cama?", 
+    HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?",
+    check_HL: "Tareas específicas que haces, Paga semanal (si recibes), Opinión sobre el reparto de tareas (justo/injusto)."
+  },
+  { 
+    title: "12. Vacaciones", 
+    OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", 
+    HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?",
+    check_HL: "Uso del Pasado (dónde fuiste), Alojamiento/Comida, El tiempo, Preferencias de viaje."
+  },
+  { 
+    title: "13. Planes de Futuro", 
+    OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", 
+    HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?",
+    check_HL: "Uso del Futuro/Condicional, Universidad/Carrera deseada, Posibilidad de año sabático (Gap Year) o viajar."
+  },
+  { 
+    title: "14. Fin de semana pasado", 
+    OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", 
+    HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?",
+    check_HL: "Uso consistente del Pretérito (Indefinido/Imperfecto), Actividades sociales, Estudio/Descanso."
+  },
+  { 
+    title: "15. Próximo fin de semana", 
+    OL: "¿Qué harás el próximo fin de semana?", 
+    HL: "Háblame de tus planes para el próximo fin de semana.",
+    check_HL: "Uso consistente del Futuro (Iré/Haré), Planes específicos (sociales/deportivos/estudio)."
+  }
 ];
 
 const PAST_Q = ["¿Qué hiciste el fin de semana pasado?", "¿Adónde fuiste el verano pasado?", "¿Qué hiciste ayer?"];
@@ -55,6 +130,7 @@ function setLevel(lvl) {
 
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
+    g.innerHTML = "";
     DATA.forEach((item) => { 
         const b = document.createElement('button'); 
         b.className = 'topic-btn'; 
@@ -70,8 +146,19 @@ function initConv() {
     }); 
 }
 
+// --- NUEVA FUNCIÓN: MOSTRAR/OCULTAR PISTAS ---
+function toggleHint() {
+    const box = document.getElementById('hintBox');
+    if (box.style.display === 'none') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
 function speakText() { 
     const rawHTML = document.getElementById('qDisplay').innerHTML;
+    // Limpiamos etiquetas HTML para que no las lea el robot
     const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
     
     if ('speechSynthesis' in window) { 
@@ -107,6 +194,12 @@ function showMockQuestion() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
+    
+    // En Mock Exam no mostramos pistas
+    const btnHint = document.getElementById('btnHint');
+    const hintBox = document.getElementById('hintBox');
+    if(btnHint) btnHint.style.display = 'none';
+    if(hintBox) hintBox.style.display = 'none';
 }
 
 function nextMockQuestion() {
@@ -118,6 +211,23 @@ function updateQuestion() {
     document.getElementById('exerciseArea').style.display = 'block'; 
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
+    document.getElementById('userInput').value = "";
+
+    // LÓGICA DE PISTAS (SCAFFOLDING)
+    const hintBox = document.getElementById('hintBox');
+    const btnHint = document.getElementById('btnHint');
+    
+    if (hintBox && btnHint) {
+        hintBox.style.display = 'none'; // Siempre oculta al empezar
+        
+        // Solo mostramos el botón si es HL y hay pistas definidas
+        if (currentLevel === 'HL' && currentTopic.check_HL) {
+            btnHint.style.display = 'inline-block';
+            hintBox.innerHTML = "<strong>📝 Para nota alta (HL), intenta mencionar:</strong><br>" + currentTopic.check_HL;
+        } else {
+            btnHint.style.display = 'none'; 
+        }
+    }
 }
 
 function resetApp() { 
@@ -127,6 +237,9 @@ function resetApp() {
         isMockExam = false;
         document.getElementById('userInput').value = "";
         document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
+        // Ocultar pistas al resetear
+        const btnHint = document.getElementById('btnHint');
+        if(btnHint) btnHint.style.display = 'none';
     } else {
         document.getElementById('userInput').value = "";
     }
@@ -142,27 +255,32 @@ async function analyze() {
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
+  // Recogemos criterios si estamos en HL
+  let criteria = "Gramática y vocabulario correctos."; 
+  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
+      criteria = currentTopic.check_HL;
+  }
+
   const prompt = `
     ACT AS: Sympathetic Leaving Cert Spanish Oral Examiner (Ireland).
     CONTEXT: The input is RAW VOICE TRANSCRIPTION. It has NO PUNCTUATION and NO CAPITALIZATION.
     
     QUESTION ASKED: "${questionContext}"
+    STUDENT ANSWER: "${t}"
     
     CRITICAL INSTRUCTIONS:
     1. IGNORE completely the lack of punctuation.
     2. IGNORE run-on sentences. 
     3. CURRENT LEVEL: ${currentLevel}.
-       - If Ordinary Level (OL): Be VERY GENEROUS. If the Spanish is understandable, score HIGH (80-100%).
-       - If Higher Level (HL): Look for vocabulary/tenses, but still ignore writing mechanics.
-    
-    TASK:
-    Evaluate the student's answer: "${t}"
+    4. CHECK CONTENT: The student MUST mention these points: [ ${criteria} ].
+       - If Ordinary Level (OL): Be VERY GENEROUS.
+       - If Higher Level (HL): Be stricter. If they miss points from the checklist, TELL THEM explicitly.
     
     OUTPUT JSON ONLY:
     {
-      "score": (0-100 based on communication),
-      "feedback_es": "Brief motivating feedback in Spanish",
-      "feedback_en": "Brief feedback in English",
+      "score": (0-100 based on grammar AND content completeness),
+      "feedback_es": "Feedback in Spanish. If they missed points from the checklist, mention what is missing.",
+      "feedback_en": "Feedback in English explaining mistakes and missing content.",
       "errors": [
         { "original": "error", "correction": "fix", "explanation_en": "reason" }
       ]
@@ -188,7 +306,7 @@ async function analyze() {
     s.innerText = `Score: ${j.score}%`;
     s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
 
-    document.getElementById('fbES').innerText = "🇪🇸 " + j.feedback_es; 
+    document.getElementById('fbES').innerHTML = "🇪🇸 " + j.feedback_es; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
     
     const l = document.getElementById('errorsList'); 
@@ -213,12 +331,13 @@ async function analyze() {
         }
     } else {
         btnReset.innerText = "🔄 Try another topic";
-        btnReset.onclick = resetApp;
+        btnReset.onclick = resetApp; 
     }
 
   } catch (e) { 
     console.error(e);
-    alert("Error communicating with AI evaluator. Please try again."); 
+    // MENSAJE DE ERROR AMABLE ("HIGH TRAFFIC")
+    alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(La IA está ocupada, espera 10 segundos)."); 
   } finally { 
     b.disabled = false; 
     b.innerText = "✨ Evaluate Answer"; 

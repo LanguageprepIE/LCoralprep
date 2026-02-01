@@ -24,97 +24,97 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// Base de datos de Conversación (15 Temas) + CRITERIOS BILINGÜES
+// Base de datos de Conversación (15 Temas) + CRITERIOS GRAMATICALES ESPECÍFICOS
 const DATA = [
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
     HL: "Háblame de ti. Describe tu personalidad y tu físico.",
-    check_HL: "Nombre (Name), Edad (Age), Cumpleaños (Birthday), Descripción física (Physical desc. - eyes/hair/height), Personalidad (Personality - 3 adjectives)."
+    check_HL: "Nombre, Edad, Cumpleaños, Físico (Ser + Adjetivos), Personalidad (Ser + 3 adjetivos: simpático, trabajador...)."
   },
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
     HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
-    check_HL: "Cuántos sois (Number of people), Profesión de padres (Parents' jobs), Descripción de hermanos (Siblings), Relación (Relationship - get on well/badly), Mascotas (Pets)."
+    check_HL: "Cuántos sois, Profesiones (Mi padre es...), Descripción física/carácter, Verbos de relación (Me llevo bien/mal, Discutimos, Me apoya)."
   },
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
     HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?",
-    check_HL: "Nombre (Best friend's name), Descripción física/personalidad (Physical/Personality), Gustos en común (Shared interests), Por qué es buen amigo (Why special)."
+    check_HL: "Nombre, Descripción, Gustos en común (Nos gusta + Infinitivo), Por qué es buen amigo (Es leal, me escucha)."
   },
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
     HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
-    check_HL: "Tipo de vivienda (House/Apartment), Ubicación (Location), Mi dormitorio (My bedroom), Lo que más/menos me gusta (Likes/Dislikes), Tareas (Chores)."
+    check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión (Lo que más me gusta es...), Tareas (Tengo que + infinitivo)."
   },
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
     HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?",
-    check_HL: "Instalaciones (Facilities - shops/parks), Ventajas/Desventajas (Pros/Cons - noise/traffic), Opinión personal (Opinion)."
+    check_HL: "Instalaciones (Hay...), Lo bueno/malo (Lo mejor es...), Problemas (Hay mucho ruido/tráfico), Opinión personal."
   },
   { 
     title: "6. Mi pueblo/ciudad", 
     OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", 
     HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?",
-    check_HL: "Ubicación (Location), Campo vs Ciudad (Rural vs Urban), Ventajas/Desventajas (Pros/Cons), Preferencia (Preference)."
+    check_HL: "Ubicación, Comparativos (Más tranquilo que...), Ventajas/Desventajas, Preferencia (Prefiero vivir en... porque...)."
   },
   { 
     title: "7. Mi colegio", 
     OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", 
     HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?",
-    check_HL: "Tipo de colegio (Type - Mixed/Public), Instalaciones (Facilities), Uniforme (Description), Normas (Rules - strict/fair)."
+    check_HL: "Tipo (Mixto/Público), Instalaciones (Hay un gimnasio...), Uniforme (Llevo...), Opinión (Es cómodo/anticuado), Normas (Se debe/No se permite)."
   },
   { 
     title: "8. Mis asignaturas", 
     OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", 
     HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?",
-    check_HL: "Lista de asignaturas (Subjects list), Favorita vs Difícil (Fav vs Hard), Opinión del sistema (Points system/Stress)."
+    check_HL: "Asignaturas, Favorita (Me encanta porque es...), Difícil (Me cuesta...), Opinión Sistema (Mucho estrés, Puntos)."
   },
   { 
     title: "9. Rutina diaria", 
     OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", 
     HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?",
-    check_HL: "Horarios (Times - wake up/sleep), Comidas (Meals), Transporte (Transport), Extraescolares (After-school activities), Estudio (Study time)."
+    check_HL: "Verbos Reflexivos (Me levanto, Me ducho...), Horarios (A las ocho...), Conectores (Primero, Luego, Después), Estudio vs Tiempo libre."
   },
   { 
     title: "10. Pasatiempos", 
     OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", 
     HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?",
-    check_HL: "Deporte (Specific sport), Música/Cine (Music/Movies), Frecuencia (How often), Importancia (Importance for mental health)."
+    check_HL: "Deporte (Juego al...), Frecuencia (Dos veces a la semana), Importancia (Para desconectar, Para estar en forma)."
   },
   { 
     title: "11. Tareas domésticas", 
     OL: "¿Ayudas en casa? ¿Haces tu cama?", 
     HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?",
-    check_HL: "Tareas que hago (Tasks I do), Paga (Pocket money), Reparto justo/injusto (Fair/Unfair division)."
+    check_HL: "Tareas (Pongo la mesa, Paso la aspiradora), Frecuencia (A veces, Siempre), Opinión (Es justo/injusto, Todos ayudamos)."
   },
   { 
     title: "12. Vacaciones", 
     OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", 
     HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?",
-    check_HL: "Pasado: Dónde fuiste (Past: Where you went), Alojamiento/Comida (Accommodation/Food), El tiempo (Weather), Preferencias (Travel vs Staycation)."
+    check_HL: "Pretérito Indefinido (Fui, Visité, Comí), Imperfecto (Hacía sol, Era bonito), Alojamiento, Opinión."
   },
   { 
     title: "13. Planes de Futuro", 
     OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", 
     HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?",
-    check_HL: "Futuro/Condicional (Future/Conditional tense), Universidad/Carrera (College/Course), Año sabático/Viajes (Gap Year/Travel)."
+    check_HL: "Futuro Simple (Estudiaré, Viajaré) O 'Ir a + Infinitivo', Condicional (Me gustaría ser...), Universidad/Carrera, Por qué (Porque me interesa...)."
   },
   { 
     title: "14. Fin de semana pasado", 
     OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", 
     HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?",
-    check_HL: "Uso del Pretérito (Past Tenses), Actividades sociales (Socializing), Estudio/Descanso (Study/Rest)."
+    check_HL: "Pretérito Indefinido (Fui al cine, Estudié, Salí con amigos), Imperfecto (Estaba cansado), Conectores temporales (El sábado por la tarde...)."
   },
   { 
     title: "15. Próximo fin de semana", 
     OL: "¿Qué harás el próximo fin de semana?", 
     HL: "Háblame de tus planes para el próximo fin de semana.",
-    check_HL: "Uso del Futuro (Future Tense), Planes específicos (Specific plans - friends/sport/study)."
+    check_HL: "Perífrasis 'Ir a + Infinitivo' (Voy a estudiar, Voy a ir...), Futuro Simple (Jugaré un partido), Planes concretos."
   }
 ];
 

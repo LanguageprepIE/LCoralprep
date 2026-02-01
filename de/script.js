@@ -6,21 +6,100 @@ const parteB = "VUMt8Kn1Ll3qSpQQxg";
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS CONVERSACIÓN (12 TEMAS)
+// DATOS CONVERSACIÓN (15 TEMAS - COMPLETO)
 // ===========================================
 const DATA_CONV = [
-  { title: "1. Sich vorstellen", General: "Wie heißt du und wie alt bist du? Wann hast du Geburtstag?", Advanced: "Erzähl mir ein bisschen über dich selbst. Wie würdest du deinen Charakter beschreiben?" },
-  { title: "2. Familie", General: "Hast du Geschwister? Wie heißen sie?", Advanced: "Verstehst du dich gut mit deinen Eltern? Gibt es oft Streit zu Hause?" },
-  { title: "3. Wohnort", General: "Wo wohnst du? Wohnst du gern dort?", Advanced: "Beschreibe deine Gegend. Was sind die Vor- und Nachteile vom Leben auf dem Land/in der Stadt?" },
-  { title: "4. Schule", General: "Wie viele Fächer lernst du? Was ist dein Lieblingsfach?", Advanced: "Was hältst du vom irischen Schulsystem? Ist der Druck für das Leaving Cert zu hoch?" },
-  { title: "5. Freizeit & Hobbys", General: "Was machst du in deiner Freizeit? Spielst du ein Instrument?", Advanced: "Warum ist Sport wichtig für Jugendliche? Erzähl mir von deinen Interessen." },
-  { title: "6. Alltag", General: "Wann stehst du auf? Was isst du zum Frühstück?", Advanced: "Wie sieht ein typischer Samstag bei dir aus? Hilfst du im Haushalt?" },
-  { title: "7. Ferien & Reisen", General: "Was hast du letzten Sommer gemacht? Warst du im Ausland?", Advanced: "Fährst du lieber mit der Familie oder mit Freunden in den Urlaub? Warum?" },
-  { title: "8. Zukunftspläne", General: "Was möchtest du nach der Schule machen? Willst du studieren?", Advanced: "Welchen Beruf möchtest du später ausüben? Ist es schwer, heutzutage einen Job zu finden?" },
-  { title: "9. Arbeit (Nebenjob)", General: "Hast du einen Nebenjob? Wo arbeitest du?", Advanced: "Sollten Schüler neben der Schule arbeiten? Was sind die Vor- und Nachteile?" },
-  { title: "10. Deutsch & Sprachen", General: "Warum lernst du Deutsch? Warst du schon mal in Deutschland?", Advanced: "Warum ist es wichtig, Fremdsprachen zu lernen? Was gefällt dir an der deutschen Kultur?" },
-  { title: "11. Soziale Probleme", General: "Ist das Leben für Jugendliche heute schwer?", Advanced: "Alkohol, Drogen und Obdachlosigkeit. Was sind die größten Probleme in Irland heute?" },
-  { title: "12. Technologie", General: "Hast du ein Handy? Wie oft benutzt du das Internet?", Advanced: "Welche Rolle spielen soziale Medien in deinem Leben? Fluch oder Segen?" }
+  { 
+    title: "1. Sich vorstellen", 
+    General: "Wie heißt du und wie alt bist du? Wann hast du Geburtstag?", 
+    Advanced: "Erzähl mir ein bisschen über dich selbst. Wie würdest du deinen Charakter beschreiben?",
+    check_HL: "Name, Alter, Geburtstag (Datum), Aussehen (Ich habe... Augen/Haare), Charakter (Ich bin... + 3 Adjektive)."
+  },
+  { 
+    title: "2. Familie", 
+    General: "Hast du Geschwister? Wie heißen sie?", 
+    Advanced: "Verstehst du dich gut mit deinen Eltern? Gibt es oft Streit zu Hause?",
+    check_HL: "Personenzahl (Wir sind... Personen), Berufe der Eltern, Geschwister (Beschreibung), Verhältnis (Ich verstehe mich gut/schlecht mit...), Streitgründe."
+  },
+  { 
+    title: "3. Wohnort", 
+    General: "Wo wohnst du? Wohnst du gern dort?", 
+    Advanced: "Beschreibe deine Gegend. Was sind die Vor- und Nachteile vom Leben auf dem Land/in der Stadt?",
+    check_HL: "Wohnort (Ich wohne in...), Beschreibung (Es gibt...), Vorteile/Nachteile (Es ist ruhig/langweilig), Stadt vs Land Vergleich."
+  },
+  { 
+    title: "4. Schule", 
+    General: "Wie viele Fächer lernst du? Was ist dein Lieblingsfach?", 
+    Advanced: "Was hältst du vom irischen Schulsystem? Ist der Druck für das Leaving Cert zu hoch?",
+    check_HL: "Schulart, Fächer (Ich lerne...), Lieblingsfach (Mein Lieblingsfach ist... weil...), Meinung zum System (Punkte, Druck, Uniform)."
+  },
+  { 
+    title: "5. Freizeit & Hobbys", 
+    General: "Was machst du in deiner Freizeit? Spielst du ein Instrument?", 
+    Advanced: "Warum ist Sport wichtig für Jugendliche? Erzähl mir von deinen Interessen.",
+    check_HL: "Sportart (Ich spiele...), Musik/Lesen, Häufigkeit (Oft, Jeden Tag), Wichtigkeit (Gesundheit, Stressabbau), Wortstellung (In meiner Freizeit spiele ich...)."
+  },
+  { 
+    title: "6. Alltag", 
+    General: "Wann stehst du auf? Was isst du zum Frühstück?", 
+    Advanced: "Wie sieht ein typischer Samstag bei dir aus? Hilfst du im Haushalt?",
+    check_HL: "Trennbare Verben (Ich stehe... auf, Ich sehe... fern), Uhrzeiten (Um acht Uhr), Mahlzeiten, Hausarbeit (Ich muss...)."
+  },
+  { 
+    title: "7. Ferien & Reisen", 
+    General: "Was hast du letzten Sommer gemacht? Warst du im Ausland?", 
+    Advanced: "Fährst du lieber mit der Familie oder mit Freunden in den Urlaub? Warum?",
+    check_HL: "Perfekt Form (Ich bin... gefahren, Ich habe... gesehen), Reiseziel, Wetter (Es war...), Präferenz (Lieber mit Freunden, weil...)."
+  },
+  { 
+    title: "8. Zukunftspläne", 
+    General: "Was möchtest du nach der Schule machen? Willst du studieren?", 
+    Advanced: "Welchen Beruf möchtest du später ausüben? Ist es schwer, heutzutage einen Job zu finden?",
+    check_HL: "Futur I (Ich werde...), Modalverben (Ich möchte/will...), Studium/Ausbildung, Gap Year, Berufswunsch."
+  },
+  { 
+    title: "9. Arbeit (Nebenjob)", 
+    General: "Hast du einen Nebenjob? Wo arbeitest du?", 
+    Advanced: "Sollten Schüler neben der Schule arbeiten? Was sind die Vor- und Nachteile?",
+    check_HL: "Jobbeschreibung (Ich arbeite als...), Stundenlohn/Zeiten, Meinung (Geld vs Zeit für Schule), Vor-/Nachteile."
+  },
+  { 
+    title: "10. Deutsch & Sprachen", 
+    General: "Warum lernst du Deutsch? Warst du schon mal in Deutschland?", 
+    Advanced: "Warum ist es wichtig, Fremdsprachen zu lernen? Was gefällt dir an der deutschen Kultur?",
+    check_HL: "Gründe (Jobchancen, Reisen), Erfahrung in Deutschland, Meinung (Deutsch ist schwer/logisch), Nebensätze mit 'dass' oder 'weil'."
+  },
+  { 
+    title: "11. Soziale Probleme", 
+    General: "Ist das Leben für Jugendliche heute schwer?", 
+    Advanced: "Alkohol, Drogen und Obdachlosigkeit. Was sind die größten Probleme in Irland heute?",
+    check_HL: "Spezifisches Problem (Obdachlosigkeit, Alkohol), Ursachen, Lösungen (Die Regierung sollte...), Eigene Meinung (Ich finde es traurig, dass...)."
+  },
+  { 
+    title: "12. Technologie", 
+    General: "Hast du ein Handy? Wie oft benutzt du das Internet?", 
+    Advanced: "Welche Rolle spielen soziale Medien in deinem Leben? Fluch oder Segen?",
+    check_HL: "Nutzung (Ich benutze...), Soziale Medien (Instagram/TikTok), Gefahren (Cybermobbing), Vorteile (Kontakt bleiben)."
+  },
+  // --- TEMAS AÑADIDOS PARA COMPLETAR 15 ---
+  { 
+    title: "13. Letztes Wochenende", 
+    General: "Was hast du letztes Wochenende gemacht? Bist du ausgegangen?", 
+    Advanced: "Erzähl mir genau, was du letztes Wochenende gemacht hast. War es ein typisches Wochenende?",
+    check_HL: "Perfekt (Ich habe gelernt, Ich bin ins Kino gegangen), Präteritum (Es war lustig), Zeitangaben (Am Samstagmorgen...)."
+  },
+  { 
+    title: "14. Nächstes Wochenende", 
+    General: "Was wirst du nächstes Wochenende machen?", 
+    Advanced: "Was sind deine Pläne für das nächste Wochenende? Wirst du lernen oder dich entspannen?",
+    check_HL: "Futur I (Ich werde... gehen), Pläne (Ich habe vor, zu...), Modalverben (Ich möchte/muss...), Aktivitäten."
+  },
+  { 
+    title: "15. Feste & Feiern", 
+    General: "Wie feierst du deinen Geburtstag? Was machst du an Weihnachten?", 
+    Advanced: "Welches ist dein Lieblingsfest? Wie feiern die Iren im Vergleich zu den Deutschen?",
+    check_HL: "Feiertage (Weihnachten/Geburtstag), Traditionen (Geschenke, Essen), Vergleich (In Irland...), Meinung."
+  }
 ];
 
 // ===========================================
@@ -85,10 +164,37 @@ function setLevel(lvl) {
     if(currentTopic && !isMockExam) updateQuestion(); 
 }
 
+// --- FUNCIÓN: PISTAS (SCAFFOLDING) ---
+function toggleHint() {
+    const box = document.getElementById('hintBox');
+    if (box.style.display === 'none') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
 function updateQuestion() { 
     document.getElementById('exerciseArea').style.display = 'block'; 
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerText = currentTopic[currentLevel]; 
+    document.getElementById('userInput').value = "";
+
+    // LÓGICA DE PISTAS (GERMAN)
+    const hintBox = document.getElementById('hintBox');
+    const btnHint = document.getElementById('btnHint');
+    
+    if (hintBox && btnHint) {
+        hintBox.style.display = 'none'; 
+        
+        // Mostrar pista solo en HL/Advanced y si existe
+        if (currentLevel === 'Advanced' && currentTopic.check_HL) {
+            btnHint.style.display = 'inline-block';
+            hintBox.innerHTML = "<strong>📝 Wichtige Punkte / Key Points (HL):</strong><br>" + currentTopic.check_HL;
+        } else {
+            btnHint.style.display = 'none'; 
+        }
+    }
 }
 
 function speakText(text = null) { 
@@ -116,8 +222,32 @@ async function analyze() {
   b.disabled = true; b.innerText = "⏳ Wird korrigiert...";
   
   const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  const prompt = `ACT AS: German Examiner. QUESTION: "${q}". STUDENT ANSWER: "${t}". 
-  TASK: Correct the German. OUTPUT JSON: { "score": (0-100), "feedback_de": "Feedback in German", "feedback_en": "Feedback in English", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
+
+  // Recoger criterios HL
+  let criteria = "Correct grammar (Wortstellung!) and vocabulary."; 
+  if (currentLevel === 'Advanced' && currentTopic && currentTopic.check_HL && !isMockExam) {
+      criteria = currentTopic.check_HL;
+  }
+
+  const prompt = `
+    ACT AS: Strict Leaving Cert German Oral Examiner (Ireland).
+    QUESTION: "${q}". 
+    STUDENT ANSWER: "${t}". 
+    
+    CRITICAL INSTRUCTIONS:
+    1. IGNORE punctuation/capitalization errors (Voice input).
+    2. CHECK GRAMMAR: Focus on Word Order (Verb position), Cases (Accusative/Dative), and Tenses.
+    3. CHECK CONTENT: Student MUST mention: [ ${criteria} ].
+       - If General Level: Be lenient.
+       - If Advanced Level: Be strict. If they miss content points or mess up word order, TELL THEM.
+    
+    OUTPUT JSON ONLY: 
+    { 
+      "score": (0-100), 
+      "feedback_de": "Feedback in German", 
+      "feedback_en": "Feedback in English (Explain word order mistakes clearly)", 
+      "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
+    }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
@@ -135,7 +265,10 @@ async function analyze() {
     
     const btnReset = document.getElementById('btnReset');
     if (isMockExam && mockIndex < 4) { btnReset.innerText = "➡️ Nächste Frage"; btnReset.onclick = resetApp; } else { btnReset.innerText = "🔄 Anderes Thema"; btnReset.onclick = () => { isMockExam=false; resetApp(); }; }
-  } catch (e) { console.error(e); alert("Verbindungsfehler."); } finally { b.disabled = false; b.innerText = "✨ Prüfen"; }
+  } catch (e) { 
+      console.error(e); 
+      alert("⚠️ The AI is busy (High Traffic). Please try again in 10s."); 
+  } finally { b.disabled = false; b.innerText = "✨ Prüfen"; }
 }
 
 // ROLEPLAY LOGIC
@@ -191,11 +324,26 @@ function showMockQuestion() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = `<strong>Frage ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
+    
+    // Ocultar pistas en Mock
+    const btnHint = document.getElementById('btnHint');
+    const hintBox = document.getElementById('hintBox');
+    if(btnHint) btnHint.style.display = 'none';
+    if(hintBox) hintBox.style.display = 'none';
 }
 function resetApp() { 
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('exerciseArea').style.display = 'block'; 
-    if(isMockExam && mockIndex < 4) { mockIndex++; showMockQuestion(); } else { isMockExam = false; document.getElementById('userInput').value = ""; document.getElementById('qDisplay').innerText = "Wähle ein Thema..."; }
+    if(isMockExam && mockIndex < 4) { 
+        mockIndex++; showMockQuestion(); 
+    } else { 
+        isMockExam = false; 
+        document.getElementById('userInput').value = ""; 
+        document.getElementById('qDisplay').innerText = "Wähle ein Thema..."; 
+        // Ocultar botón al resetear
+        const btnHint = document.getElementById('btnHint');
+        if(btnHint) btnHint.style.display = 'none';
+    }
 }
 
 window.onload = init;

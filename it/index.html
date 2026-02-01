@@ -53,6 +53,10 @@
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
+  💡 Cosa devo dire? / What to include? (Key Points)
+</button>
+<div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
       <textarea id="userInput" placeholder="Type or use your microphone..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">

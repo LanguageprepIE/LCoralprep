@@ -28,22 +28,98 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
+// DATA CON CRITERIOS HL (check_HL) AÑADIDOS
 const DATA = [
-  { title: "1. Mi presento", OL: "Come ti chiami? Quanti anni hai? Quando è il tuo compleanno?", HL: "Parlami di te. Descrivi la tua personalità e i tuoi interessi." },
-  { title: "2. La mia famiglia", OL: "Quante persone ci sono nella tua famiglia? Hai fratelli o sorelle?", HL: "Parlami della tua famiglia. Vai d'accordo con i tuoi genitori e fratelli?" },
-  { title: "3. La mia casa", OL: "Vivi in una casa o in un appartamento? Descrivi la tua camera.", HL: "Descrivi la tua casa ideale. Cosa ti piace di più della tua casa attuale?" },
-  { title: "4. Il mio quartiere", OL: "Cosa c'è nel tuo quartiere? C'è un parco o un cinema?", HL: "Parlami della tua zona. Quali sono i vantaggi e gli svantaggi di vivere lì?" },
-  { title: "5. La scuola", OL: "Ti piace la scuola? Qual è la tua materia preferita?", HL: "Parlami della tua scuola. Cosa ne pensi del sistema scolastico irlandese?" },
-  { title: "6. Passatempi", OL: "Cosa fai nel tempo libero? Ti piace lo sport?", HL: "Parlami dei tuoi hobby. Perché è importante avere interessi fuori dalla scuola?" },
-  { title: "7. Il lavoro", OL: "Hai un lavoro part-time? Cosa fai?", HL: "Parlami della tua esperienza lavorativa. Pensi che gli studenti dovrebbero lavorare?" },
-  { title: "8. Le vacanze", OL: "Dove sei andato in vacanza l'anno scorso? Ti piace l'Italia?", HL: "Parlami delle tue vacanze. Preferisci il mare o la montagna? Perché?" },
-  { title: "9. Il futuro", OL: "Cosa farai l'anno prossimo? Vuoi andare all'università?", HL: "Quali sono i tuoi progetti per il futuro? Che lavoro ti piacerebbe fare?" },
-  { title: "10. Fine settimana scorso", OL: "Cosa hai fatto il fine settimana scorso?", HL: "Raccontami come hai trascorso lo scorso weekend. Hai fatto qualcosa di speciale?" },
-  { title: "11. Prossimo weekend", OL: "Cosa farai il prossimo fine settimana?", HL: "Quali sono i tuoi programmi per il prossimo weekend?" },
-  { title: "12. Cibo italiano", OL: "Ti piace il cibo italiano? Qual è il tuo piatto preferito?", HL: "Cosa ne pensi della cucina italiana? Sai cucinare qualche piatto?" },
-  { title: "13. La routine", OL: "A che ora ti svegli la mattina? Cosa fai dopo scuola?", HL: "Descrivi la tua giornata tipica. È stressante la vita di uno studente?" },
-  { title: "14. La moda", OL: "Ti piace fare shopping? Cosa indossi di solito?", HL: "Segui la moda? Pensi che i vestiti firmati siano importanti per i giovani?" },
-  { title: "15. Tecnologia", OL: "Hai un telefono nuovo? Usi molto i social media?", HL: "Qual è il ruolo della tecnologia nella tua vita? Pensi che siamo dipendenti dai telefoni?" }
+  { 
+    title: "1. Mi presento", 
+    OL: "Come ti chiami? Quanti anni hai? Quando è il tuo compleanno?", 
+    HL: "Parlami di te. Descrivi la tua personalità e i tuoi interessi.",
+    check_HL: "Nome, Età, Compleanno (Il mio compleanno è il...), Descrizione fisica (Occhi/Capelli), Personalità (Sono simpatico/a, aperto/a...)."
+  },
+  { 
+    title: "2. La mia famiglia", 
+    OL: "Quante persone ci sono nella tua famiglia? Hai fratelli o sorelle?", 
+    HL: "Parlami della tua famiglia. Vai d'accordo con i tuoi genitori e fratelli?",
+    check_HL: "Numero persone (Siamo in...), Lavoro genitori (Mio padre fa...), Fratelli/Sorelle, Rapporti (Vado d'accordo con..., Litighiamo spesso)."
+  },
+  { 
+    title: "3. La mia casa", 
+    OL: "Vivi in una casa o in un appartamento? Descrivi la tua camera.", 
+    HL: "Descrivi la tua casa ideale. Cosa ti piace di più della tua casa attuale?",
+    check_HL: "Tipo (Villetta/Appartamento), Stanze (C'è/Ci sono...), La mia camera (Ho un letto...), Opinione (Mi piace perché...), Casa ideale (Vorrei una piscina...)."
+  },
+  { 
+    title: "4. Il mio quartiere", 
+    OL: "Cosa c'è nel tuo quartiere? C'è un parco o un cinema?", 
+    HL: "Parlami della tua zona. Quali sono i vantaggi e gli svantaggi di vivere lì?",
+    check_HL: "Strutture (C'è un parco...), Vantaggi (È tranquillo), Svantaggi (Non c'è niente da fare), Mezzi di trasporto."
+  },
+  { 
+    title: "5. La scuola", 
+    OL: "Ti piace la scuola? Qual è la tua materia preferita?", 
+    HL: "Parlami della tua scuola. Cosa ne pensi del sistema scolastico irlandese?",
+    check_HL: "Tipo (Mista/Maschile/Femminile), Materie (Studio...), Materia preferita vs Odiata, Opinione sistema (Punti Leaving Cert, Stress)."
+  },
+  { 
+    title: "6. Passatempi", 
+    OL: "Cosa fai nel tempo libero? Ti piace lo sport?", 
+    HL: "Parlami dei tuoi hobby. Perché è importante avere interessi fuori dalla scuola?",
+    check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importanza (Per rilassarmi, Salute mentale)."
+  },
+  { 
+    title: "7. Il lavoro", 
+    OL: "Hai un lavoro part-time? Cosa fai?", 
+    HL: "Parlami della tua esperienza lavorativa. Pensi che gli studenti dovrebbero lavorare?",
+    check_HL: "Lavoro attuale (Faccio il cameriere...), Mansioni (Devo pulire...), Opinione (Indipendenza economica vs Tempo per studiare)."
+  },
+  { 
+    title: "8. Le vacanze", 
+    OL: "Dove sei andato in vacanza l'anno scorso? Ti piace l'Italia?", 
+    HL: "Parlami delle tue vacanze. Preferisci il mare o la montagna? Perché?",
+    check_HL: "Passato Prossimo (Sono andato/a in...), Imperfetto (Faceva caldo, Era bello), Alloggio, Preferenze (Preferisco il mare)."
+  },
+  { 
+    title: "9. Il futuro", 
+    OL: "Cosa farai l'anno prossimo? Vuoi andare all'università?", 
+    HL: "Quali sono i tuoi progetti per il futuro? Che lavoro ti piacerebbe fare?",
+    check_HL: "Futuro Semplice (Andrò, Studierò...), Condizionale (Vorrei diventare...), Università/Corso di laurea, Anno sabbatico."
+  },
+  { 
+    title: "10. Fine settimana scorso", 
+    OL: "Cosa hai fatto il fine settimana scorso?", 
+    HL: "Raccontami come hai trascorso lo scorso weekend. Hai fatto qualcosa di speciale?",
+    check_HL: "Passato Prossimo AVERE (Ho guardato, Ho mangiato), Passato Prossimo ESSERE (Sono uscito/a, Sono andato/a), Amici/Famiglia."
+  },
+  { 
+    title: "11. Prossimo weekend", 
+    OL: "Cosa farai il prossimo fine settimana?", 
+    HL: "Quali sono i tuoi programmi per il prossimo weekend?",
+    check_HL: "Futuro Semplice (Andrò al cinema, Farò i compiti...), Piani specifici (Uscirò con gli amici)."
+  },
+  { 
+    title: "12. Cibo italiano", 
+    OL: "Ti piace il cibo italiano? Qual è il tuo piatto preferito?", 
+    HL: "Cosa ne pensi della cucina italiana? Sai cucinare qualche piatto?",
+    check_HL: "Piatto preferito (Adoro la pizza...), Cucinare (So cucinare la pasta...), Confronto Cibo Irlandese vs Italiano."
+  },
+  { 
+    title: "13. La routine", 
+    OL: "A che ora ti svegli la mattina? Cosa fai dopo scuola?", 
+    HL: "Descrivi la tua giornata tipica. È stressante la vita di uno studente?",
+    check_HL: "Verbi Riflessivi (Mi sveglio, Mi alzo, Mi vesto...), Orari (Alle otto...), Pasti, Studio vs Tempo libero."
+  },
+  { 
+    title: "14. La moda", 
+    OL: "Ti piace fare shopping? Cosa indossi di solito?", 
+    HL: "Segui la moda? Pensi che i vestiti firmati siano importanti per i giovani?",
+    check_HL: "Abbigliamento abituale (Di solito indosso...), Opinione marche (Sono troppo costose), Pressione sociale."
+  },
+  { 
+    title: "15. Tecnologia", 
+    OL: "Hai un telefono nuovo? Usi molto i social media?", 
+    HL: "Qual è il ruolo della tecnologia nella tua vita? Pensi che siamo dipendenti dai telefoni?",
+    check_HL: "Uso quotidiano (Uso Instagram per...), Vantaggi (Comunicazione), Svantaggi (Cyberbullismo, Dipendenza)."
+  }
 ];
 
 const PAST_Q = ["Cosa hai fatto ieri?", "Dove sei andato l'estate scorsa?", "Come hai festeggiato il tuo compleanno?"];
@@ -72,6 +148,16 @@ function initConv() {
         }; 
         g.appendChild(b); 
     }); 
+}
+
+// --- FUNZIONE: MOSTRA/NASCONDI SUGGERIMENTI (SCAFFOLDING) ---
+function toggleHint() {
+    const box = document.getElementById('hintBox');
+    if (box.style.display === 'none') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
 }
 
 function speakText() { 
@@ -109,6 +195,12 @@ function showMockQuestion() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
+    
+    // Nascondi suggerimenti nel Mock Exam
+    const btnHint = document.getElementById('btnHint');
+    const hintBox = document.getElementById('hintBox');
+    if(btnHint) btnHint.style.display = 'none';
+    if(hintBox) hintBox.style.display = 'none';
 }
 
 function nextMockQuestion() {
@@ -120,6 +212,23 @@ function updateQuestion() {
     document.getElementById('exerciseArea').style.display = 'block'; 
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
+    document.getElementById('userInput').value = "";
+
+    // LOGICA SUGGERIMENTI (ITALIANO)
+    const hintBox = document.getElementById('hintBox');
+    const btnHint = document.getElementById('btnHint');
+    
+    if (hintBox && btnHint) {
+        hintBox.style.display = 'none'; 
+        
+        // Mostra bottone solo se HL e esistono criteri
+        if (currentLevel === 'HL' && currentTopic.check_HL) {
+            btnHint.style.display = 'inline-block';
+            hintBox.innerHTML = "<strong>📝 Punti Chiave / Key Points (HL):</strong><br>" + currentTopic.check_HL;
+        } else {
+            btnHint.style.display = 'none'; 
+        }
+    }
 }
 
 function resetApp() { 
@@ -129,6 +238,9 @@ function resetApp() {
         isMockExam = false;
         document.getElementById('userInput').value = "";
         document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
+        // Nascondi bottone suggerimento al reset
+        const btnHint = document.getElementById('btnHint');
+        if(btnHint) btnHint.style.display = 'none';
     } else {
         document.getElementById('userInput').value = "";
     }
@@ -143,13 +255,31 @@ async function analyze() {
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
+  // Raccogli criteri HL
+  let criteria = "Correct grammar (accordance, tenses) and vocabulary."; 
+  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
+      criteria = currentTopic.check_HL;
+  }
+
   const prompt = `
-    ACT AS: Sympathetic Leaving Cert Italian Oral Examiner.
+    ACT AS: Strict Leaving Cert Italian Oral Examiner (Ireland).
     CONTEXT: RAW VOICE TRANSCRIPTION (No punctuation).
     QUESTION: "${questionContext}"
     LEVEL: ${currentLevel}.
     STUDENT ANSWER: "${t}"
-    OUTPUT JSON ONLY: { "score": (0-100), "feedback_it": "Italian feedback", "feedback_en": "English feedback", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }
+    
+    CRITICAL INSTRUCTIONS:
+    1. IGNORE punctuation/capitalization errors.
+    2. CHECK GRAMMAR: Gender agreement (o/a/i/e), Auxiliary verbs (Essere vs Avere in Passato Prossimo).
+    3. CHECK CONTENT: The student MUST mention: [ ${criteria} ].
+       - If HL: Be strict on content and grammar. Tell them if they missed key points.
+    
+    OUTPUT JSON ONLY: { 
+        "score": (0-100), 
+        "feedback_it": "Italian feedback. Mention missing points if any.", 
+        "feedback_en": "English feedback explaining grammar mistakes.", 
+        "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
+    }
   `;
 
   try {
@@ -177,11 +307,17 @@ async function analyze() {
         btnReset.innerText = "🔄 Try another topic";
         btnReset.onclick = resetApp; 
     }
-  } catch (e) { console.error(e); alert("Error communicating with AI evaluator."); } finally { b.disabled = false; b.innerText = "✨ Evaluate Answer"; }
+  } catch (e) { 
+      console.error(e); 
+      // Messaggio Cortese High Traffic
+      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
+  } finally { 
+      b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
+  }
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS
+// PARTE 2: ROLEPLAYS (INTATTA)
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
@@ -288,7 +424,7 @@ function mostrarSugerencia() {
 }
 
 // ===========================================
-// LÓGICA DE STORIE ILLUSTRATE
+// LÓGICA DE STORIE ILLUSTRATE (INTATTA)
 // ===========================================
 let currentStoryTitle = "";
 
@@ -362,7 +498,13 @@ async function analyzeStory() {
     document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en;
     document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Eccellente!";
 
-  } catch (e) { console.error(e); alert("Errore di connessione."); } finally { b.disabled = false; b.innerText = "✨ Evaluate Description"; }
+  } catch (e) { 
+      console.error(e); 
+      // ERROR AMABLE HIGH TRAFFIC
+      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
+  } finally { 
+      b.disabled = false; b.innerText = "✨ Evaluate Description"; 
+  }
 }
 
 function resetStory() {

@@ -6,21 +6,30 @@
   <title>LanguagePrep - English Support (EAL)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css"> <style>
+    /* COLORES ESPECÍFICOS PARA EAL (AZUL/VERDE) */
+    :root { 
+      --primary: #2563eb; 
+      --bg: #f8fafc; 
+    }
+    
+    /* Override para foto de perfil */
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
+    
+    /* SELECTOR DE IDIOMA */
+    .lang-select-container { 
+        background: #fffbeb; border: 2px solid #fbbf24; padding: 15px; 
+        border-radius: 12px; margin-bottom: 25px; text-align: center; 
+    }
+    .lang-select { padding: 10px; font-size: 1rem; border-radius: 8px; border: 1px solid #d97706; width: 100%; max-width: 300px; margin-top: 5px; }
 
-  <style>
-    .profile-img {
-        width: 90px !important;
-        height: 90px !important;
-        border-radius: 50% !important;
-        object-fit: cover !important;
-        border: 3px solid var(--primary) !important;
-        margin-bottom: 15px !important;
-    }
-    .bio-text {
-        max-width: 600px !important;
-        margin: 0 auto 25px auto !important;
-    }
+    /* CAJA DE TRADUCCIÓN */
+    .translation-box { background: #f0fdf4; color: #15803d; padding: 15px; border-radius: 8px; margin-top: 15px; font-style: italic; display: none; border-left: 4px solid #22c55e; font-weight: 500; text-align: left; }
+    
+    /* FRASES DE AYUDA */
+    .helper-grid { display: grid; gap: 8px; margin-top: 5px; text-align: left; }
+    .helper-item { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .helper-item:hover { background: #e2e8f0; transform: translateX(5px); }
   </style>
 
 </head>
@@ -37,9 +46,9 @@
     <p class="subtitle">Module: English Support (EAL)</p>
 
     <div class="lang-select-container">
-      <label for="nativeLang" class="lang-label">🗣️ I speak / Je parle / Я розмовляю:</label>
+      <label for="nativeLang" style="font-weight:700; color:#92400e; display:block;">🗣️ I speak / Je parle / Я розмовляю:</label>
       <select id="nativeLang" class="lang-select" onchange="updateInterfaceLang()">
-        <option value="English">Select your language...</option>
+        <option value="English">Select your native language...</option>
         <option value="Ukrainian">🇺🇦 Ukrainian (Українська)</option>
         <option value="Russian">🏳️ Russian (Русский)</option>
         <option value="Arabic">🇸🇾 Arabic (العربية)</option>
@@ -51,47 +60,48 @@
         <option value="Chinese">🇨🇳 Chinese (中文)</option>
         <option value="Pashto">🇦🇫 Pashto (پښتو)</option>
         <option value="Urdu">🇵🇰 Urdu (اردو)</option>
+        <option value="Somali">🇸🇴 Somali</option>
       </select>
     </div>
   </header>
 
   <div class="level-selector">
-    <button class="level-btn active" onclick="setTopic('newcomer')">🐣 Newcomer (Survival)</button>
-    <button class="level-btn" onclick="setTopic('social')">🗣️ Social & School</button>
+    <button class="level-btn active" id="btnNewcomer" onclick="setTopic('newcomer')">🐣 Newcomer (Survival)</button>
+    <button class="level-btn" id="btnSocial" onclick="setTopic('social')">🗣️ Social & School</button>
   </div>
 
-  <div class="topic-grid" id="topicGrid">
-    </div>
+  <div class="topic-grid" id="topicGrid"></div>
 
   <div id="exerciseArea" style="display:none; margin-top:20px;">
-    <div class="question-card">
+    <div class="question-card" style="border-left-color: var(--primary);">
       <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
       
-      <div id="qDisplay" style="font-size:1.2rem; font-weight:700; margin-bottom:5px;"></div>
+      <div id="qDisplay" style="font-size:1.2rem; font-weight:700; margin-bottom:15px;"></div>
       
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
-        <button class="translate-btn" onclick="translateQuestion()">🌍 Translate Question</button>
+        <button class="audio-btn" style="background:white; border:1px solid #bae6fd; color:#0284c7;" onclick="translateQuestion()">🌍 Translate Question</button>
       </div>
 
       <div id="qTranslation" class="translation-box"></div>
     </div>
 
-    <button onclick="toggleHelpers()" style="width:100%; margin-bottom:10px; padding:10px; background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; color:#92400e; font-weight:700; cursor:pointer;">
-      💡 Need help? Click for Sentences
+    <button onclick="toggleHelpers()" style="width:100%; margin-bottom:10px; padding:12px; background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; color:#92400e; font-weight:700; cursor:pointer;">
+      💡 Need help? Click here for ideas
     </button>
     
     <div id="helperArea" style="display:none; background:#fff; border:1px solid #e2e8f0; padding:15px; border-radius:10px; margin-bottom:15px;">
-      <p style="margin-top:0; font-size:0.85rem; color:#64748b;">Click a sentence to copy & listen:</p>
+      <p style="margin-top:0; font-size:0.85rem; color:#64748b; font-style:italic;">Click a sentence to copy & listen:</p>
       
-      <strong style="color:#16a34a;">🟢 Basic (Simple):</strong>
+      <strong style="color:#16a34a; display:block; margin-bottom:5px;">🟢 Simple:</strong>
       <div id="basicSentences" class="helper-grid"></div>
       
-      <div style="margin-top:10px;"></div>
-      <strong style="color:#2563eb;">🔵 Advanced (Polite):</strong>
+      <div style="margin-top:15px;"></div>
+      <strong style="color:#2563eb; display:block; margin-bottom:5px;">🔵 Advanced / Polite:</strong>
       <div id="advSentences" class="helper-grid"></div>
     </div>
-    <textarea id="userInput" placeholder="Type your answer in English..."></textarea>
+
+    <textarea id="userInput" placeholder="Type your answer in English here..."></textarea>
     
     <button onclick="readInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; width:100%; cursor:pointer; color:#475569; font-weight:600;">
        👂 Listen to my pronunciation
@@ -103,24 +113,25 @@
   <div id="result" style="display:none; margin-top:20px;">
     <div class="feedback-box">
       <div id="fbText"></div>
-      <div id="errorsList" style="margin-top:15px;"></div>
+      <hr style="margin: 15px 0; border:0; border-top:1px solid #eee;">
+      <div id="errorsList"></div>
     </div>
     <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:#334155;" onclick="reset()">🔄 Practice something else</button>
   </div>
 
   <div class="footer-section">
-        <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="support-box">
         <span class="support-title">🚀 A Student-Focused Project</span>
         <p class="support-text">
-            I created LanguagePrep to help you feel confident in your oral exams. 
+            I created LanguagePrep to help you feel confident. 
             It's a free tool driven by passion, but running advanced AI does come with monthly costs.
             <br><br>
             If you find it useful, your support means the world. It helps keep the site running and allows me to 
-            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
+            <strong>invest in better technology</strong> and improve the experience for everyone.
         </p>
     </div>
 

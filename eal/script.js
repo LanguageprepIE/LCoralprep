@@ -6,7 +6,7 @@ const parteB = "VUMt8Kn1Ll3qSpQQxg";
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS EAL (COMPLETO: 11 TEMAS)
+// DATOS EAL (11 TEMAS)
 // ===========================================
 const TOPICS = {
   newcomer: [
@@ -171,7 +171,6 @@ function toggleHelpers() {
   advList.innerHTML = "";
 
   currentItem.sentences.basic.forEach(s => {
-    // Escapar comillas simples para que no rompa el onclick
     const safeText = s.replace(/'/g, "\\'");
     basicList.innerHTML += `<div class="helper-item" onclick="useHelper('${safeText}')">🟢 ${s}</div>`;
   });
@@ -221,7 +220,7 @@ async function translateQuestion() {
     box.innerText = d.candidates[0].content.parts[0].text;
   } catch(e) { 
       console.error(e);
-      box.innerText = "⚠️ Service busy. Please try again."; 
+      box.innerText = "⚠️ The AI is a bit busy. Please try again."; 
   }
 }
 

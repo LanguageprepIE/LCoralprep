@@ -6,129 +6,7 @@
   <title>LanguagePrep - English Support (EAL)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css">
-
-  <style>
-    /* === ESTILOS ESPECÍFICOS PARA EAL (Para arreglar el diseño) === */
-    
-    :root { --primary: #2563eb; --bg: #f8fafc; }
-
-    /* Arreglo de la foto de perfil */
-    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
-
-    /* 1. Selector de Idioma (Más limpio y profesional) */
-    .lang-select-container { 
-        background: #ffffff; 
-        border: 1px solid #e2e8f0; 
-        padding: 15px; 
-        border-radius: 12px; 
-        margin-bottom: 25px; 
-        text-align: center; 
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .lang-label { 
-        display: block; 
-        font-weight: 700; 
-        color: #334155; 
-        margin-bottom: 8px; 
-        font-size: 0.95rem;
-    }
-    .lang-select { 
-        padding: 10px; 
-        font-size: 1rem; 
-        border-radius: 8px; 
-        border: 2px solid #cbd5e1; 
-        width: 100%; 
-        max-width: 350px; 
-        background: #f8fafc;
-        cursor: pointer;
-    }
-
-    /* 2. Selector de Nivel (Botones grandes y claros) */
-    .level-selector { 
-        display: flex; 
-        gap: 10px;
-        background: #f1f5f9; 
-        padding: 5px; 
-        border-radius: 12px; 
-        margin-bottom: 20px; 
-    }
-    .level-btn { 
-        flex: 1; 
-        padding: 12px; 
-        border: none; 
-        border-radius: 8px; 
-        cursor: pointer; 
-        font-weight: 700; 
-        font-size: 0.95rem; 
-        color: #64748b; 
-        background: transparent; 
-        transition: 0.2s;
-    }
-    .level-btn.active { 
-        background: white; 
-        color: var(--primary); 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-    }
-
-    /* 3. Cuadrícula de Temas (GRID) - Esto es lo que fallaba antes */
-    .topic-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-        gap: 12px; 
-        margin-bottom: 30px; 
-    }
-    .topic-btn { 
-        padding: 15px; 
-        border: 1px solid #e2e8f0; 
-        border-radius: 12px; 
-        background: white; 
-        cursor: pointer; 
-        font-size: 0.95rem; 
-        font-weight: 600; 
-        color: #475569; 
-        transition: 0.2s; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center;
-        min-height: 80px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .topic-btn:hover { 
-        background: #eff6ff; 
-        border-color: var(--primary); 
-        transform: translateY(-2px);
-    }
-
-    /* 4. Área de Ejercicio y Traducción */
-    .question-card { 
-        background: #eff6ff; 
-        border-left: 5px solid var(--primary); 
-        padding: 20px; 
-        border-radius: 0 12px 12px 0; 
-        margin-bottom: 20px; 
-        text-align: left;
-    }
-    .translation-box { 
-        background: #f0fdf4; 
-        color: #15803d; 
-        padding: 15px; 
-        border-radius: 8px; 
-        margin-top: 15px; 
-        font-style: italic; 
-        display: none; 
-        border-left: 4px solid #22c55e; 
-        font-weight: 500; 
-        text-align: left;
-    }
-    
-    /* Frases de Ayuda */
-    .helper-grid { display: grid; gap: 8px; margin-top: 5px; text-align: left; }
-    .helper-item { background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
-    .helper-item:hover { background: #e2e8f0; transform: translateX(5px); }
-  </style>
-
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -173,34 +51,34 @@
     <div class="question-card">
       <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
       
-      <div id="qDisplay" style="font-size:1.3rem; font-weight:700; margin-bottom:15px; color:#1e293b;"></div>
+      <div id="qDisplay"></div>
       
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <div class="action-buttons">
         <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
-        <button class="audio-btn" style="background:white; border:1px solid #bae6fd; color:#0284c7;" onclick="translateQuestion()">🌍 Translate Question</button>
+        <button class="translate-btn" onclick="translateQuestion()">🌍 Translate Question</button>
       </div>
 
       <div id="qTranslation" class="translation-box"></div>
     </div>
 
-    <button onclick="toggleHelpers()" style="width:100%; margin-bottom:15px; padding:12px; background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; color:#92400e; font-weight:700; cursor:pointer; text-align: center;">
+    <button onclick="toggleHelpers()" class="hint-btn">
       💡 Need help? Click here for sentences
     </button>
     
-    <div id="helperArea" style="display:none; background:#fff; border:1px solid #e2e8f0; padding:15px; border-radius:10px; margin-bottom:15px;">
-      <p style="margin-top:0; font-size:0.85rem; color:#64748b; font-style:italic;">Click a sentence to copy & listen:</p>
+    <div id="helperArea" style="display:none;" class="helper-box">
+      <p style="margin-top:0; font-size:0.85rem; color:#64748b;">Click a sentence to copy & listen:</p>
       
       <strong style="color:#16a34a; display:block; margin-bottom:5px;">🟢 Simple:</strong>
       <div id="basicSentences" class="helper-grid"></div>
       
       <div style="margin-top:15px;"></div>
-      <strong style="color:#2563eb; display:block; margin-bottom:5px;">🔵 Advanced / Polite:</strong>
+      <strong style="color:#2563eb; display:block; margin-bottom:5px;">🔵 Polite / Advanced:</strong>
       <div id="advSentences" class="helper-grid"></div>
     </div>
 
     <textarea id="userInput" placeholder="Type your answer in English here..."></textarea>
     
-    <button onclick="readInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 12px; border-radius: 8px; width:100%; cursor:pointer; color:#475569; font-weight:600;">
+    <button onclick="readInput()" class="listen-self-btn">
        👂 Listen to my pronunciation
     </button>
 
@@ -224,11 +102,11 @@
     <div class="support-box">
         <span class="support-title">🚀 A Student-Focused Project</span>
         <p class="support-text">
-            I created LanguagePrep to help you feel confident. 
+            I created LanguagePrep to help you feel confident in your oral exams. 
             It's a free tool driven by passion, but running advanced AI does come with monthly costs.
             <br><br>
             If you find it useful, your support means the world. It helps keep the site running and allows me to 
-            <strong>invest in better technology</strong> and improve the experience for everyone.
+            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
         </p>
     </div>
 

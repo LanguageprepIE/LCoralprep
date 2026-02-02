@@ -127,9 +127,16 @@ function init() {
 
 function setTopic(cat) {
   currentCat = cat;
-  const btns = document.querySelectorAll('.level-btn');
-  btns[0].className = cat === 'newcomer' ? 'level-btn active' : 'level-btn';
-  btns[1].className = cat === 'social' ? 'level-btn active' : 'level-btn';
+  const btnNewcomer = document.getElementById('btnNewcomer');
+  const btnSocial = document.getElementById('btnSocial');
+  
+  if (cat === 'newcomer') {
+      btnNewcomer.classList.add('active');
+      btnSocial.classList.remove('active');
+  } else {
+      btnSocial.classList.add('active');
+      btnNewcomer.classList.remove('active');
+  }
   init();
 }
 
@@ -212,7 +219,10 @@ async function translateQuestion() {
     });
     const d = await r.json();
     box.innerText = d.candidates[0].content.parts[0].text;
-  } catch(e) { box.innerText = "Error translating."; }
+  } catch(e) { 
+      console.error(e);
+      box.innerText = "⚠️ Service busy. Please try again."; 
+  }
 }
 
 // Corrección Inteligente (EAL)
@@ -228,8 +238,8 @@ async function analyze() {
   QUESTION: "${currentItem.q}"
   STUDENT ANSWER: "${t}"
   TASK: Correct the English grammar/vocabulary. Provide simple feedback. 
-  IMPORTANT: If native language is not English, PROVIDE FEEDBACK IN THAT LANGUAGE.
-  OUTPUT JSON ONLY: { "feedback": "Feedback string", "corrections": [{"original":"x", "fix":"y"}] }`;
+  IMPORTANT: If the student's native language is NOT English, PROVIDE THE MAIN FEEDBACK IN THAT NATIVE LANGUAGE (${userLanguage}) so they understand.
+  OUTPUT JSON ONLY: { "feedback": "Feedback string (in native lang if possible)", "corrections": [{"original":"x", "fix":"y"}] }`;
 
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
@@ -242,7 +252,10 @@ async function analyze() {
     document.getElementById('result').style.display = 'block';
     document.getElementById('fbText').innerHTML = `<strong>Teacher:</strong> ${j.feedback}`;
     document.getElementById('errorsList').innerHTML = j.corrections.map(c => `<div class="error-item">${c.original} ➡️ <b>${c.fix}</b></div>`).join('');
-  } catch(e) { console.log(e); alert("Error."); } 
+  } catch(e) { 
+      console.log(e); 
+      alert("⚠️ The AI is a bit busy right now (High Traffic). Please wait 10 seconds and try again!"); 
+  } 
   finally { btn.disabled = false; btn.innerText = "✨ Check my English"; }
 }
 

@@ -6,11 +6,30 @@
   <title>LanguagePrep - Gaeilge</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  
-  <style>
+  <link rel="stylesheet" href="../style.css"> <style>
+    /* Ajustes específicos para Gaeilge */
+    :root { --primary: #16a34a; --bg: #f8fafc; }
+    
     .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
     .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+
+    /* ESTILO NUEVO PARA LA CAJA DE BIENVENIDA (NO ALERTA) */
+    .welcome-box {
+        background: #f0f9ff; /* Azul muy suave */
+        border: 1px solid #bae6fd; /* Borde azul cielo */
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+    }
+    .welcome-title {
+        color: #0369a1;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
   </style>
 </head>
 <body>
@@ -23,20 +42,21 @@
         LanguagePrep Ireland
       </a>
     </h1>
-    <p class="subtitle">Module: Leaving Cert Irish (Oral)</p>
+    <p class="subtitle">Module: Leaving Cert Irish (Gaeilge)</p>
     
-    <div class="tech-alert">
-      <strong>⚠️ Technical Note / Nóta Tábhachtach:</strong>
-      <p style="margin: 5px 0 0;">
-        Current voice recognition technology does not understand spoken Irish well. 
+    <div class="welcome-box">
+      <div class="welcome-title">🇮🇪 Fáilte chuig Gaeilge Prep</div>
+      <p style="margin: 0; color: #334155; line-height: 1.6; font-size: 0.95rem;">
+        Welcome! This tool is designed to help you master your <strong>Grammar, Sraith Pictiúr, and Poetry</strong>.
         <br><br>
-        For this module, please <strong>TYPE your answers</strong>. This is excellent practice for your 
-        <strong>Grammar (Tuiseal Ginideach, Verbs)</strong> which is essential for both the Oral and Written exams.
+        🎤 <strong>Voice Note:</strong> Irish speech recognition is tricky for browsers right now. While I work on improving this technology, please <strong>TYPE your answers</strong>.
+        <br><br>
+        ✍️ <strong>Why type?</strong> It's actually the best way to practice your spelling, <em>Tuiseal Ginideach</em>, and mutations (Séimhiú/Urú) for the written exam!
       </p>
     </div>
 
     <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
-    <div id="infoBox" class="info-box">
+    <div id="infoBox" class="info-box" style="display:none;">
       <strong>Treoracha:</strong>
       <ul>
         <li>✍️ <strong>Comhrá:</strong> Select a topic and write your answer to check your grammar.</li>
@@ -67,10 +87,12 @@
         <div id="qDisplay" style="font-weight: 700;">Select a topic...</div>
         <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
+
       <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#16a34a; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
-  💡 Cad ba cheart dom a rá? / What to include? (Key Points)
-</button>
-<div id="hintBox" style="display:none; background:#dcfce7; border-left:4px solid #16a34a; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#14532d;"></div>
+        💡 Cad ba cheart dom a rá? / What to include? (Key Points)
+      </button>
+      <div id="hintBox" style="display:none; background:#dcfce7; border-left:4px solid #16a34a; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#14532d;"></div>
+      
       <textarea id="userInput" placeholder="Scríobh do fhreagra anseo (Write your answer here)..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f0fdf4; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; color:#166534; font-weight:600;">
@@ -80,7 +102,7 @@
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Ceartaigh (Check Grammar)</button>
     </div>
 
-    <div id="result">
+    <div id="result" style="display:none;">
       <div class="student-response-box"><strong>Scríobh tú:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
@@ -146,8 +168,8 @@
     </div>
   </div>
 
-    <div class="footer-section">
-        <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+  <div class="footer-section">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 5px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
@@ -180,6 +202,9 @@
   </div>
 
 </div>
+
 <script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>

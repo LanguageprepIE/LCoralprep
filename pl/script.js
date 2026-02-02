@@ -6,7 +6,7 @@ const parteB = "VUMt8Kn1Ll3qSpQQxg";
 const API_KEY = parteA + parteB;
 
 // ===========================================
-// DATOS EXAMEN POLACO 2026 (AMPLIADO + CRITERIOS HL)
+// DATOS EXAMEN POLACO 2026 (15 TEMAS - COMPLETO)
 // ===========================================
 const DATA = [
   // --- TEMAS OBLIGATORIOS 2026 ---
@@ -83,6 +83,25 @@ const DATA = [
     General: "Opowiedz mi o jednym tekście ze swojego Portfolio, który Ci się podobał.", 
     Advanced: "Dlaczego wybrałeś ten konkretny tekst do Portfolio? Czego nauczył Cię on o polskiej kulturze lub historii?",
     check_HL: "Czas przeszły (Past tense: wybrałem, przeczytałem), Analiza tekstu (Text analysis: bohater, temat), Kultura/Historia (Cultural reference), Uzasadnienie."
+  },
+  // --- TEMAS NUEVOS (13-15) ---
+  { 
+    title: "13. Zeszły weekend", 
+    General: "Co robiłeś w zeszły weekend? Czy odpocząłeś?", 
+    Advanced: "Opisz dokładnie miniony weekend. Czy udało Ci się zrealizować wszystkie plany?",
+    check_HL: "Czas przeszły (Past verbs: byłem, robiłem), Aspekt dokonany/niedokonany (Aspect), Czasowniki ruchu (Motion verbs)."
+  },
+  { 
+    title: "14. Przyszły weekend", 
+    General: "Jakie masz plany na następny weekend?", 
+    Advanced: "Co będziesz robić w przyszły weekend? Wolisz spędzać czas aktywnie czy pasywnie?",
+    check_HL: "Czas przyszły (Future: będę robić / zrobię), Plany i zamiary (Intentions: zamierzam, planuję), Tryb przypuszczający (Chciałbym...)."
+  },
+  { 
+    title: "15. Kultura i Media", 
+    General: "Jaki jest Twój ulubiony film lub książka? Dlaczego?", 
+    Advanced: "Czy uważasz, że młodzi ludzie czytają teraz mniej książek? Jaka jest rola kultury w życiu człowieka?",
+    check_HL: "Słownictwo (Genres: komedia, dramat), Opis (Plot/Characters), Opinia i Argumentacja (Reading habits)."
   }
 ];
 

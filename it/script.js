@@ -64,7 +64,7 @@ const DATA = [
     title: "6. Passatempi", 
     OL: "Cosa fai nel tempo libero? Ti piace lo sport?", 
     HL: "Parlami dei tuoi hobby. Perché è importante avere interessi fuori dalla scuola?",
-    check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importanza (Per rilassarmi, Salute mentale)."
+    check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importancia (Per rilassarmi, Salute mentale)."
   },
   { 
     title: "7. Il lavoro", 
@@ -317,7 +317,7 @@ async function analyze() {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (INTATTA)
+// PARTE 2: ROLEPLAYS (CON BOTÓN MANUAL PARA IPAD)
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
@@ -357,10 +357,40 @@ function seleccionarRP(id, btn) {
     btn.classList.add('active');
     document.getElementById('rpArea').style.display = "block";
     document.getElementById('rpContext').innerHTML = "Situation: " + RP_DB[id].context;
-    document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Play Examiner Audio" to start.</div>`;
-    document.getElementById('nextAudioBtn').style.display = "block";
-    document.getElementById('rpInput').disabled = true; document.getElementById('rpSendBtn').disabled = true;
+    
+    // 1. Mensaje inicial del sistema
+    document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Start Examiner" to begin.</div>`;
+    
+    // 2. Mostrar botón de inicio (Manual para evitar conflicto de audio)
+    const nextBtn = document.getElementById('nextAudioBtn');
+    nextBtn.style.display = "block";
+    nextBtn.innerText = "▶️ Start Examiner";
+    nextBtn.onclick = reproducirInterventoExaminer; // Vinculamos la función
+    
+    document.getElementById('rpInput').disabled = true; 
+    document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
+}
+
+function reproducirInterventoExaminer() {
+    // 1. Ocultar botón (ya lo has pulsado)
+    document.getElementById('nextAudioBtn').style.display = "none";
+    
+    if (pasoActual >= 5) {
+        document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
+        return;
+    }
+
+    let dialogText = RP_DB[rpActual].dialogs[pasoActual];
+    if (Array.isArray(dialogText)) dialogText = dialogText[Math.floor(Math.random() * dialogText.length)];
+
+    // 2. Mostrar texto en el chat
+    const chat = document.getElementById('rpChat');
+    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+    
+    // 3. Reproducir audio (Seguro porque viene de un click)
+    reproducirAudio(dialogText);
 }
 
 function reproducirAudio(texto) {
@@ -381,36 +411,29 @@ function habilitarInput() {
     }
 }
 
-function proximaIntervencion() {
-    if (!rpActual || speaking) return;
-    document.getElementById('nextAudioBtn').style.display = "none";
-    speaking = true;
-    
-    if (pasoActual >= 5) {
-        document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
-        return;
-    }
-
-    let dialogText = RP_DB[rpActual].dialogs[pasoActual];
-    if (Array.isArray(dialogText)) dialogText = dialogText[Math.floor(Math.random() * dialogText.length)];
-
-    const chat = document.getElementById('rpChat');
-    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-    reproducirAudio(dialogText);
-}
-
 function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput');
     const txt = inp.value.trim(); if(!txt) return;
+    
     const chat = document.getElementById('rpChat');
     chat.innerHTML += `<div class="bubble st">${txt}</div>`;
     chat.scrollTop = chat.scrollHeight;
+    
     inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
+    
     pasoActual++;
+    
     setTimeout(() => { 
-        if(pasoActual < 5) { document.getElementById('nextAudioBtn').style.display = "block"; } else { document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; }
+        if(pasoActual < 5) { 
+            // AQUÍ EL CAMBIO CLAVE: Volver a mostrar el botón
+            const nextBtn = document.getElementById('nextAudioBtn');
+            nextBtn.style.display = "block";
+            nextBtn.innerText = "🔊 Ascolta / Listen";
+            nextBtn.onclick = reproducirInterventoExaminer;
+        } else { 
+            document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
+        }
     }, 500);
 }
 

@@ -28,7 +28,6 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// DATA CON CRITERIOS HL (check_HL) AÑADIDOS
 const DATA = [
   { 
     title: "1. Mi presento", 
@@ -64,7 +63,7 @@ const DATA = [
     title: "6. Passatempi", 
     OL: "Cosa fai nel tempo libero? Ti piace lo sport?", 
     HL: "Parlami dei tuoi hobby. Perché è importante avere interessi fuori dalla scuola?",
-    check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importancia (Per rilassarmi, Salute mentale)."
+    check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importanza (Per rilassarmi, Salute mentale)."
   },
   { 
     title: "7. Il lavoro", 
@@ -150,7 +149,7 @@ function initConv() {
     }); 
 }
 
-// --- FUNZIONE: MOSTRA/NASCONDI SUGGERIMENTI (SCAFFOLDING) ---
+// --- FUNZIONE: MOSTRA/NASCONDI SUGGERIMENTI ---
 function toggleHint() {
     const box = document.getElementById('hintBox');
     if (box.style.display === 'none') {
@@ -162,7 +161,6 @@ function toggleHint() {
 
 function speakText() { 
     const rawHTML = document.getElementById('qDisplay').innerHTML;
-    // Limpieza de texto para el TTS (Mejorado)
     const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASSATO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
     
     if ('speechSynthesis' in window) { 
@@ -196,7 +194,6 @@ function showMockQuestion() {
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
     
-    // Nascondi suggerimenti nel Mock Exam
     const btnHint = document.getElementById('btnHint');
     const hintBox = document.getElementById('hintBox');
     if(btnHint) btnHint.style.display = 'none';
@@ -214,14 +211,11 @@ function updateQuestion() {
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
     document.getElementById('userInput').value = "";
 
-    // LOGICA SUGGERIMENTI (ITALIANO)
     const hintBox = document.getElementById('hintBox');
     const btnHint = document.getElementById('btnHint');
     
     if (hintBox && btnHint) {
         hintBox.style.display = 'none'; 
-        
-        // Mostra bottone solo se HL e esistono criteri
         if (currentLevel === 'HL' && currentTopic.check_HL) {
             btnHint.style.display = 'inline-block';
             hintBox.innerHTML = "<strong>📝 Punti Chiave / Key Points (HL):</strong><br>" + currentTopic.check_HL;
@@ -238,7 +232,6 @@ function resetApp() {
         isMockExam = false;
         document.getElementById('userInput').value = "";
         document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
-        // Nascondi bottone suggerimento al reset
         const btnHint = document.getElementById('btnHint');
         if(btnHint) btnHint.style.display = 'none';
     } else {
@@ -255,7 +248,6 @@ async function analyze() {
 
   const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
 
-  // Raccogli criteri HL
   let criteria = "Correct grammar (accordance, tenses) and vocabulary."; 
   if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
       criteria = currentTopic.check_HL;
@@ -309,7 +301,6 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      // Messaggio Cortese High Traffic
       alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
@@ -317,7 +308,7 @@ async function analyze() {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (CON BOTÓN MANUAL PARA IPAD)
+// PARTE 2: ROLEPLAYS (CON TEXTOS HL RECONSTRUIDOS Y BOTÓN MANUAL)
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
@@ -325,29 +316,89 @@ let speaking = false;
 
 const RP_DB = {
     1: { 
-        context: "Un problema in albergo.", 
-        dialogs: ["Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione.", "Capisco che è arrabbiato, ma siamo al completo.", "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami?", ["Ho chiamato l'Hotel Stella e hanno una camera libera.", "È tutto risolto. L'Hotel Stella la aspetta."]], 
-        sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho una prenotazione.", "Non è possibile! Ho la conferma qui.", "È un disastro! Devo stare in questa zona.", "Sì, per favore. Sarebbe molto gentile.", "Grazie mille per il suo aiuto. Arrivederci."] 
+        context: "Un problema in albergo. You booked a room but the receptionist has no record.", 
+        dialogs: [
+            "Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", 
+            "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a questo nome.", 
+            "Capisco che è arrabbiato, ma purtroppo siamo al completo questa settimana.", 
+            "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", 
+            ["Ho chiamato l'Hotel Stella e fortunatamente hanno una camera libera.", "È tutto risolto. L'Hotel Stella la aspetta."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Mi chiamo [Nome] e ho prenotato una camera singola per tre notti. Ecco la mia conferma.", 
+            "Non è possibile! Ho fatto la prenotazione su internet un mese fa. Sono molto sorpreso e preoccupato.", 
+            "Guardi, è un disastro per me. Ho assolutamente bisogno di un alloggio in questa zona perché ho una conferenza importante qui vicino.", 
+            "Sì, per favore. Sarebbe molto gentile da parte sua. Non conosco bene la città e non saprei dove andare.", 
+            "Grazie mille per il suo aiuto. Apprezzo molto la sua disponibilità. Arrivederci."
+        ] 
     },
     2: { 
-        context: "Una multa sul treno.", 
-        dialogs: ["Buongiorno. Biglietto, prego.", "Signore, questo biglietto non è convalidato. Devo farle la multa.", "La multa è di cinquanta euro. Deve pagare ora.", "Se non ha contanti, posso darle un bollettino. Ha domande?", ["Sì, deve convalidare il biglietto ogni volta che cambia treno.", "Ricordi sempre di timbrare prima di salire."]], 
-        sugerencias: ["Buongiorno. Ecco il mio biglietto.", "Mi scusi! Non l'ho convalidato perché ero in ritardo.", "Non ho abbastanza soldi. Posso pagare con la carta?", "Devo convalidare anche a Bologna?", "Ho capito, grazie. Arrivederci."] 
+        context: "Una multa sul treno. You didn't validate your ticket.", 
+        dialogs: [
+            "Buongiorno. Biglietto, prego.", 
+            "Signore, vedo che ha il biglietto ma non è stato convalidato. Devo farle la multa.", 
+            "Mi dispiace, ma la regola è chiara. La multa è di cinquanta euro. Deve pagare ora.", 
+            "Se non ha contanti, posso darle un bollettino postale. Ha domande su come funziona?", 
+            ["Sì, deve convalidare il biglietto ogni volta che cambia treno, anche a Bologna.", "Ricordi sempre di timbrare alle macchinette gialle prima di salire."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Ecco il mio biglietto, sto andando a Venezia.", 
+            "Mi scusi tanto! Sono arrivato in ritardo alla stazione e sono salito di corsa sul treno. Non l'ho fatto apposta, per favore non mi faccia la multa.", 
+            "Cinquanta euro?! Purtroppo non ho abbastanza contanti con me in questo momento. Sono uno studente.", 
+            "Va bene, accetto il bollettino. Posso chiedere se devo convalidare di nuovo il biglietto quando cambio treno a Bologna?", 
+            "Ho capito, starò più attento la prossima volta. Grazie per l'informazione. Arrivederci."
+        ] 
     },
     3: { 
-        context: "In farmacia.", 
-        dialogs: ["Buongiorno. Dimmi, cosa c'è che non va?", "Da quanto tempo ti senti così? Hai mangiato qualcosa di strano?", "Ti consiglio di prendere queste compresse due volte al giorno.", "Che lavoro farai quest'estate?", ["Non preoccuparti. Con questa medicina starai meglio.", "Bevi molta acqua. Arrivederci."]], 
-        sugerencias: ["Non mi sento bene. Ho mal di stomaco.", "Sto male da ieri sera. Forse ho mangiato pesce non fresco.", "Grazie. Per quanti giorni devo prenderle?", "Lavoro come cameriere.", "Va bene, grazie dottore."] 
+        context: "In farmacia. You feel sick and need advice.", 
+        dialogs: [
+            "Buongiorno. Dimmi, cosa c'è che non va?", 
+            "Da quanto tempo ti senti così? Hai mangiato qualcosa di strano recentemente?", 
+            "Capisco. Ti consiglio di prendere queste compresse due volte al giorno dopo i pasti.", 
+            "Che lavoro farai quest'estate qui in Italia?", 
+            ["Non preoccuparti. Con questa medicina starai meglio in un paio di giorni.", "Bevi molta acqua e riposati. Arrivederci."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Non mi sento molto bene. Ho mal di stomaco e un po' di febbre.", 
+            "Sto male da ieri sera. Penso di aver mangiato del pesce che non era fresco in un ristorante del centro.", 
+            "Grazie dottore. Per quanti giorni devo prenderle? E ci sono cibi che dovrei evitare?", 
+            "Lavorerò come cameriere in un ristorante, per questo è molto importante che io guarisca presto.", 
+            "Grazie mille per il consiglio. Spero di rimettermi presto. Arrivederci."
+        ] 
     },
     4: { 
-        context: "Dov'è il passaporto?", 
-        dialogs: ["Pronto, casa Rossi. Chi parla?", "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", "Aspetta... Sì! L'ho trovato! Era proprio lì.", "Prendo un taxi e te lo porto all'aeroporto.", ["Non preoccuparti per il taxi.", "Corro subito. A dopo!"]], 
-        sugerencias: ["Pronto Maria? Sono io. Sono all'aeroporto e ho perso il passaporto!", "Stamattina era sul comodino.", "Che sollievo! Devo tornare in Irlanda oggi.", "Grazie mille! Ti pago il taxi.", "Grazie infinite Maria!"] 
+        context: "Dov'è il passaporto? You left it at your host family's house.", 
+        dialogs: [
+            "Pronto, casa Rossi. Chi parla?", 
+            "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", 
+            "Aspetta un attimo, vado a controllare... Sì! L'ho trovato! Era proprio lì.", 
+            "Ascolta, non preoccuparti. Prendo un taxi e te lo porto subito all'aeroporto.", 
+            ["Non preoccuparti per il taxi, mi fa piacere aiutarti.", "Sto uscendo ora. Ci vediamo agli arrivi tra mezz'ora!"]
+        ], 
+        sugerencias: [
+            "Pronto Maria? Sono io. Sono disperato! Sono in fila al check-in all'aeroporto e mi sono accorto di non avere il passaporto.", 
+            "L'ultima volta l'ho visto stamattina sul comodino accanto al letto, o forse sulla scrivania. Potresti controllare per favore?", 
+            "Che sollievo! Grazie mille! Devo assolutamente tornare in Irlanda oggi per un esame domani.", 
+            "Sei un angelo! Grazie infinite. Ovviamente ti pagherò io il taxi quando arrivi.", 
+            "Grazie ancora Maria, non so cosa avrei fatto senza di te. A tra poco!"
+        ] 
     },
     5: { 
-        context: "Un colloquio di lavoro.", 
-        dialogs: ["Buongiorno. Come si chiama e quanti anni ha?", "Mi parli del suo lavoro in Irlanda.", "Parla bene l'italiano! Dove l'ha studiato?", "Perché pensa di essere il candidato ideale?", ["Ha qualche domanda?", "Le faremo sapere domani. Arrivederci."]], 
-        sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho 18 anni.", "Lavoravo in un campo estivo con i bambini.", "Studio italiano a scuola da 5 anni.", "Sono affidabile e socievole.", "Quali sono gli orari di lavoro?"] 
+        context: "Un colloquio di lavoro. Summer job in a tourist village.", 
+        dialogs: [
+            "Buongiorno. Prego, si accomodi. Come si chiama e quanti anni ha?", 
+            "Molto bene. Mi parli delle sue esperienze lavorative precedenti.", 
+            "Parla molto bene l'italiano! Dove l'ha studiato e per quanto tempo?", 
+            "Perché pensa di essere il candidato ideale per questo lavoro nel nostro villaggio?", 
+            ["Ha qualche domanda da farmi sugli orari o sullo stipendio?", "Le faremo sapere la nostra decisione domani. Arrivederci."]
+        ], 
+        sugerencias: [
+            "Buongiorno. Mi chiamo [Nome], ho 18 anni e vengo dall'Irlanda.", 
+            "L'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo attività sportive per i bambini e aiutavo in cucina.", 
+            "Studio italiano a scuola da cinque anni e guardo molti film italiani per migliorare la pronuncia.", 
+            "Sono una persona molto socievole, affidabile e gran lavoratore. Mi piace stare a contatto con la gente e imparo in fretta.", 
+            "Sì, vorrei sapere quali sono i turni di lavoro e se l'alloggio è compreso. Grazie."
+        ] 
     }
 };
 
@@ -358,14 +409,12 @@ function seleccionarRP(id, btn) {
     document.getElementById('rpArea').style.display = "block";
     document.getElementById('rpContext').innerHTML = "Situation: " + RP_DB[id].context;
     
-    // 1. Mensaje inicial del sistema
     document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Start Examiner" to begin.</div>`;
     
-    // 2. Mostrar botón de inicio (Manual para evitar conflicto de audio)
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "block";
     nextBtn.innerText = "▶️ Start Examiner";
-    nextBtn.onclick = reproducirInterventoExaminer; // Vinculamos la función
+    nextBtn.onclick = reproducirInterventoExaminer; 
     
     document.getElementById('rpInput').disabled = true; 
     document.getElementById('rpSendBtn').disabled = true;
@@ -373,7 +422,6 @@ function seleccionarRP(id, btn) {
 }
 
 function reproducirInterventoExaminer() {
-    // 1. Ocultar botón (ya lo has pulsado)
     document.getElementById('nextAudioBtn').style.display = "none";
     
     if (pasoActual >= 5) {
@@ -384,12 +432,10 @@ function reproducirInterventoExaminer() {
     let dialogText = RP_DB[rpActual].dialogs[pasoActual];
     if (Array.isArray(dialogText)) dialogText = dialogText[Math.floor(Math.random() * dialogText.length)];
 
-    // 2. Mostrar texto en el chat
     const chat = document.getElementById('rpChat');
     chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
     chat.scrollTop = chat.scrollHeight;
     
-    // 3. Reproducir audio (Seguro porque viene de un click)
     reproducirAudio(dialogText);
 }
 
@@ -426,7 +472,6 @@ function enviarRespuestaRP() {
     
     setTimeout(() => { 
         if(pasoActual < 5) { 
-            // AQUÍ EL CAMBIO CLAVE: Volver a mostrar el botón
             const nextBtn = document.getElementById('nextAudioBtn');
             nextBtn.style.display = "block";
             nextBtn.innerText = "🔊 Ascolta / Listen";
@@ -523,7 +568,6 @@ async function analyzeStory() {
 
   } catch (e) { 
       console.error(e); 
-      // ERROR AMABLE HIGH TRAFFIC
       alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Evaluate Description"; 
@@ -536,7 +580,6 @@ function resetStory() {
     document.getElementById('userInputStory').value = "";
 }
 
-// Función para escuchar lo que el alumno escribe (general)
 function readMyInput() {
     const text = document.getElementById("userInput").value;
     if (!text) return; 

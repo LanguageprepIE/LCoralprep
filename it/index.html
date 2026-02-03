@@ -7,6 +7,11 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇹</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin: 0 auto 15px auto !important; display: block; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
 
@@ -89,16 +94,20 @@
     </div>
 
     <div id="rpArea" style="display:none;">
-      <div class="rp-context" id="rpContext"></div>
-      <div class="chat-container" id="rpChat"></div>
+      <div id="rpContext" class="question-card" style="margin-bottom:15px; font-weight:700;"></div>
       
-      <button class="next-audio-btn" id="nextAudioBtn" onclick="proximaIntervencion()">🔊 Play Examiner Audio</button>
+      <div id="rpChat" class="rp-chat-window"></div>
       
       <div class="rp-controls">
-        <input type="text" id="rpInput" class="rp-input" placeholder="Select a roleplay above..." disabled>
-        <button class="btn-send" id="rpSendBtn" onclick="enviarRespuestaRP()" disabled>➤</button>
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirInterventoExaminer()">▶️ Play Examiner Audio</button>
+        
+        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        
+        <div style="display:flex; gap:10px;">
+          <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fef3c7; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Suggerimento</button>
+          <button id="rpSendBtn" class="btn-main" style="flex:1; margin:0;" onclick="enviarRespuestaRP()" disabled>Invia 📤</button>
+        </div>
       </div>
-      <button class="model-answer-btn" onclick="mostrarSugerencia()" id="hintBtn" style="display:none; margin-top:10px;">💡 Show Model Answer</button>
     </div>
   </div>
 
@@ -153,7 +162,7 @@
   </div>
 
   <div class="footer-section">
-        <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
@@ -184,5 +193,7 @@
 </div>
 
 <script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>

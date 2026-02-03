@@ -345,7 +345,6 @@ async function analyze() {
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
-let speaking = false;
 
 // Base de Datos RP (Tus audios)
 const RP_DB = {
@@ -357,45 +356,28 @@ const RP_DB = {
 };
 
 function seleccionarRP(id, btn) {
-    rpActual = id; pasoActual = 0; speaking = false;
+    rpActual = id; pasoActual = 0; 
     document.querySelectorAll('.rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('rpArea').style.display = "block";
     document.getElementById('rpContext').innerHTML = "Situation: " + RP_DB[id].context;
-    document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Play Examiner Audio" to start.</div>`;
-    document.getElementById('nextAudioBtn').style.display = "block";
+    
+    // MENSAJE INICIAL DEL SISTEMA
+    document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Start Examiner" to begin.</div>`;
+    
+    // BOTÓN DE "NEXT AUDIO" (LO USAMOS PARA EMPEZAR TAMBIÉN)
+    const nextBtn = document.getElementById('nextAudioBtn');
+    nextBtn.style.display = "block";
+    nextBtn.innerText = "▶️ Start Examiner";
+    nextBtn.onclick = reproducirSiguienteAudio; // Vinculamos la nueva función
+    
     document.getElementById('rpInput').disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
 }
 
-function reproducirAudio(path, fallbackText) {
-    const audio = new Audio(path);
-    audio.onerror = () => {
-        console.log("Audio no encontrado, usando TTS de reserva: " + path);
-        const u = new SpeechSynthesisUtterance(fallbackText);
-        u.lang = 'es-ES';
-        u.onend = habilitarInput;
-        window.speechSynthesis.speak(u);
-    };
-    audio.onended = habilitarInput;
-    audio.play().catch(e => { console.log("Error play:", e); audio.onerror(); });
-}
-
-function habilitarInput() {
-    speaking = false;
-    if(pasoActual < RP_DB[rpActual].dialogs.length) { 
-        document.getElementById('rpInput').disabled = false;
-        document.getElementById('rpSendBtn').disabled = false;
-        document.getElementById('rpInput').focus();
-        document.getElementById('hintBtn').style.display = "block";
-        document.getElementById('rpInput').placeholder = "Type your reply...";
-    }
-}
-
-function proximaIntervencion() {
-    if (!rpActual || speaking) return;
+function reproducirSiguienteAudio() {
+    // 1. Ocultar botón de audio (ya lo has pulsado)
     document.getElementById('nextAudioBtn').style.display = "none";
-    speaking = true;
     
     if (pasoActual >= 5) {
         document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed! Well done.</div>`;
@@ -405,6 +387,7 @@ function proximaIntervencion() {
     let dialogText = RP_DB[rpActual].dialogs[pasoActual];
     let audioFile = "";
 
+    // Lógica para elegir audio (aleatorio en el paso 5)
     if (Array.isArray(dialogText)) {
         const randomIndex = Math.floor(Math.random() * dialogText.length);
         dialogText = dialogText[randomIndex];
@@ -414,23 +397,59 @@ function proximaIntervencion() {
         audioFile = `rp${rpActual}_${pasoActual + 1}.mp3`;
     }
 
+    // 2. Mostrar burbuja de texto
     const chat = document.getElementById('rpChat');
     chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
     chat.scrollTop = chat.scrollHeight;
-    reproducirAudio(audioFile, dialogText);
+
+    // 3. Reproducir audio (AQUÍ ES SEGURO PORQUE FUE INICIADO POR UN CLICK)
+    const audio = new Audio(audioFile);
+    audio.onerror = () => {
+        // Fallback TTS si falla el archivo
+        const u = new SpeechSynthesisUtterance(dialogText);
+        u.lang = 'es-ES';
+        u.onend = habilitarInput;
+        window.speechSynthesis.speak(u);
+    };
+    audio.onended = habilitarInput;
+    audio.play().catch(e => { console.log("Error play:", e); audio.onerror(); });
+}
+
+function habilitarInput() {
+    if(pasoActual < 5) { 
+        document.getElementById('rpInput').disabled = false;
+        document.getElementById('rpSendBtn').disabled = false;
+        document.getElementById('rpInput').focus();
+        document.getElementById('hintBtn').style.display = "block";
+        document.getElementById('rpInput').placeholder = "Type your reply...";
+    }
 }
 
 function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput');
     const txt = inp.value.trim(); if(!txt) return;
+    
     const chat = document.getElementById('rpChat');
     chat.innerHTML += `<div class="bubble st">${txt}</div>`;
     chat.scrollTop = chat.scrollHeight;
+    
     inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
+    
     pasoActual++;
+    
     setTimeout(() => { 
-        if(pasoActual < 5) { document.getElementById('nextAudioBtn').style.display = "block"; } else { document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; }
+        if(pasoActual < 5) { 
+            // AQUÍ ESTÁ EL CAMBIO CLAVE:
+            // En vez de llamar a proximaIntervencion() directamente,
+            // volvemos a mostrar el botón para que el usuario haga click.
+            const nextBtn = document.getElementById('nextAudioBtn');
+            nextBtn.style.display = "block";
+            nextBtn.innerText = "🔊 Listen to Examiner";
+            nextBtn.onclick = reproducirSiguienteAudio;
+        } else { 
+            document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
+        }
     }, 500);
 }
 

@@ -9,24 +9,21 @@ const API_KEY = parteA + parteB;
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function switchTab(tab) {
-  // Ajustamos clases para pestaña activa
   document.getElementById('tabConv').className = tab === 'conv' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabRole').className = tab === 'role' ? 'tab-btn active' : 'tab-btn';
   document.getElementById('tabStory').className = tab === 'story' ? 'tab-btn active' : 'tab-btn';
   
-  // Mostramos secciones
   document.getElementById('sectionConversation').style.display = tab === 'conv' ? 'block' : 'none';
   document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
   
-  // Verificamos si existe la sección de historias en el HTML (cuando me pases el index)
   const sectionStory = document.getElementById('sectionStory');
   if (sectionStory) sectionStory.style.display = tab === 'story' ? 'block' : 'none';
 }
 
 // ===========================================
-// PARTE 1: CONVERSATION (TUS DATOS ORIGINALES)
+// PARTE 1: CONVERSATION
 // ===========================================
-let currentLevel = 'OL'; // Usamos OL/HL para consistencia con los otros idiomas
+let currentLevel = 'OL';
 let currentTopic = null;
 let isMockExam = false; 
 let mockQuestions = []; 
@@ -181,7 +178,6 @@ function startMockExam() {
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     
     let i = [...Array(DATA_CONV.length).keys()].sort(() => Math.random() - 0.5); 
-    // Mezclamos preguntas OL y HL si está en modo Mock, o usamos el nivel seleccionado
     mockQuestions = [
         DATA_CONV[i[0]][currentLevel],
         DATA_CONV[i[1]][currentLevel],
@@ -312,13 +308,13 @@ async function analyze() {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (OFFICIAL 2024-2028 + BOTÓN INTELIGENTE)
+// PARTE 2: ROLEPLAYS
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
 let speaking = false;
 
-[cite_start]// Datos extraídos de los PDFs oficiales [cite: 129-161, 174-207, 208-231, 232-247, 248-274]
+// Datos limpios y corregidos
 const RP_DATA = {
     1: { 
         context: "Hund verloren (Missing Dog). You are staying with the Vogler family in Berlin. You lost their dog Otto in Grunewald after seeing a wild boar. You are at the police station.", 
@@ -414,13 +410,14 @@ function seleccionarRP(id, btn) {
     document.getElementById('rpArea').style.display = "block";
     document.getElementById('rpContext').innerHTML = "Situation: " + RP_DATA[id].context;
     
+    // Aquí es donde se generaba el error si la data no cargaba. Ahora debería funcionar.
     document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Start Examiner" to begin.</div>`;
     
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "block";
     nextBtn.innerText = "▶️ Start Examiner";
     nextBtn.className = "audio-btn"; 
-    nextBtn.style.background = "#D32F2F"; // Color rojo tudesco
+    nextBtn.style.background = "#D32F2F"; 
     nextBtn.style.color = "white";
     nextBtn.onclick = reproducirInterventoExaminer; 
     
@@ -449,7 +446,6 @@ function reproducirInterventoExaminer() {
 
     reproducirAudio(dialogText);
 
-    // CAMBIAR BOTÓN A REPLAY
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "block";
     nextBtn.innerText = "🔄 Noch einmal hören / Replay";
@@ -520,7 +516,6 @@ function mostrarSugerencia() {
 // ===========================================
 let currentStoryTitle = "";
 
-[cite_start]// Títulos basados en tus PDFs [cite: 275-282]
 const STORIE_DATA = [
   { title: "1. Handy Mobbing (Bullying)", context: "A girl gets bullied online because of a photo." },
   { title: "2. Chancen durch Deutsch (Careers)", context: "Students visit a career fair and learn about German." },

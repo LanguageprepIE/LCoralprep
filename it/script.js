@@ -149,7 +149,6 @@ function initConv() {
     }); 
 }
 
-// --- FUNZIONE: MOSTRA/NASCONDI SUGGERIMENTI ---
 function toggleHint() {
     const box = document.getElementById('hintBox');
     if (box.style.display === 'none') {
@@ -308,7 +307,7 @@ async function analyze() {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (CON TEXTOS HL RECONSTRUIDOS Y BOTÓN MANUAL)
+// PARTE 2: ROLEPLAYS (BOTÓN INTELIGENTE: LISTEN -> REPLAY)
 // ===========================================
 let rpActual = null; 
 let pasoActual = 0; 
@@ -414,6 +413,9 @@ function seleccionarRP(id, btn) {
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "block";
     nextBtn.innerText = "▶️ Start Examiner";
+    nextBtn.className = "audio-btn"; 
+    nextBtn.style.background = "var(--primary)";
+    nextBtn.style.color = "white";
     nextBtn.onclick = reproducirInterventoExaminer; 
     
     document.getElementById('rpInput').disabled = true; 
@@ -422,36 +424,58 @@ function seleccionarRP(id, btn) {
 }
 
 function reproducirInterventoExaminer() {
-    document.getElementById('nextAudioBtn').style.display = "none";
-    
-    if (pasoActual >= 5) {
-        document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
-        return;
-    }
-
+    // 1. Obtener texto del diálogo
     let dialogText = RP_DB[rpActual].dialogs[pasoActual];
     if (Array.isArray(dialogText)) dialogText = dialogText[Math.floor(Math.random() * dialogText.length)];
 
+    // 2. Comprobar si ya mostramos este texto (para no duplicar burbujas al re-escuchar)
+    // El truco es mirar si el último mensaje del chat es igual al actual.
     const chat = document.getElementById('rpChat');
-    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-    
+    const lastMsg = chat.lastElementChild;
+    const isReplay = lastMsg && lastMsg.classList.contains('ex') && lastMsg.innerText.includes(dialogText);
+
+    if (!isReplay) {
+        if (pasoActual >= 5) {
+            chat.innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
+            document.getElementById('nextAudioBtn').style.display = "none";
+            return;
+        }
+        chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    // 3. Reproducir Audio
     reproducirAudio(dialogText);
+
+    // 4. CAMBIAR EL BOTÓN A MODO "REPLAY" (NO OCULTARLO)
+    const nextBtn = document.getElementById('nextAudioBtn');
+    nextBtn.style.display = "block";
+    nextBtn.innerText = "🔄 Riascolta / Replay";
+    nextBtn.style.background = "#fbbf24"; // Color Amarillo (Warning) para diferenciarlo
+    nextBtn.style.color = "black";
+    
+    // Al hacer click ahora, simplemente repite el audio actual (sin avanzar)
+    nextBtn.onclick = () => reproducirAudio(dialogText);
 }
 
 function reproducirAudio(texto) {
     const u = new SpeechSynthesisUtterance(texto);
     u.lang = 'it-IT'; u.rate = 0.9;
+    
+    // Habilitar input SOLO si no está habilitado ya
     u.onend = habilitarInput;
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
 }
 
 function habilitarInput() {
     speaking = false;
-    if(pasoActual < RP_DB[rpActual].dialogs.length) { 
+    if(pasoActual < 5) { // 5 es el límite de pasos
         document.getElementById('rpInput').disabled = false;
         document.getElementById('rpSendBtn').disabled = false;
-        document.getElementById('rpInput').focus();
+        // No hacemos focus automático en iPad para evitar scroll saltarín, pero si en PC
+        if(!(/iPad|iPhone|iPod/.test(navigator.userAgent))) document.getElementById('rpInput').focus();
+        
         document.getElementById('hintBtn').style.display = "block";
         document.getElementById('rpInput').placeholder = "Type your reply...";
     }
@@ -461,21 +485,30 @@ function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput');
     const txt = inp.value.trim(); if(!txt) return;
     
+    // 1. Enviar mensaje usuario
     const chat = document.getElementById('rpChat');
     chat.innerHTML += `<div class="bubble st">${txt}</div>`;
     chat.scrollTop = chat.scrollHeight;
     
+    // 2. Deshabilitar controles
     inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
     
+    // 3. Ocultar el botón de Replay (ya hemos respondido)
+    const nextBtn = document.getElementById('nextAudioBtn');
+    nextBtn.style.display = "none";
+
+    // 4. Avanzar paso
     pasoActual++;
     
+    // 5. Preparar botón para el SIGUIENTE turno (Listen)
     setTimeout(() => { 
         if(pasoActual < 5) { 
-            const nextBtn = document.getElementById('nextAudioBtn');
             nextBtn.style.display = "block";
-            nextBtn.innerText = "🔊 Ascolta / Listen";
-            nextBtn.onclick = reproducirInterventoExaminer;
+            nextBtn.innerText = "🔊 Ascolta / Listen Next";
+            nextBtn.style.background = "var(--primary)"; // Vuelta al color Rojo/Verde
+            nextBtn.style.color = "white";
+            nextBtn.onclick = reproducirInterventoExaminer; // Volvemos a la función de avanzar
         } else { 
             document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
         }
@@ -572,12 +605,6 @@ async function analyzeStory() {
   } finally { 
       b.disabled = false; b.innerText = "✨ Evaluate Description"; 
   }
-}
-
-function resetStory() {
-    document.getElementById('resultStory').style.display = 'none';
-    document.getElementById('storyArea').style.display = 'block';
-    document.getElementById('userInputStory').value = "";
 }
 
 function readMyInput() {

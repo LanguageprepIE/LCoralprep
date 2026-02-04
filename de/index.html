@@ -7,6 +7,11 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin: 0 auto 15px auto !important; display: block; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
 
@@ -20,29 +25,32 @@
     </h1>
     <p class="subtitle">Module: Leaving Cert German</p>
     
-    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions & Tips</button>
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
     <div id="infoBox" class="info-box">
       <strong>Anleitung:</strong>
       <ul>
-        <li>🗣️ <strong>Allgemeine Fragen:</strong> Practice the 12 most common oral topics.</li>
-        <li>🎭 <strong>Rollenspiele:</strong> Simulate the 5 exam roleplay cards with AI.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Use a German keyboard for correct spelling (Ä, Ö, Ü, ß).</li>
+        <li>🗣️ <strong>Conversation:</strong> Practice the oral topics (General & Advanced).</li>
+        <li>🎭 <strong>Roleplays:</strong> The 5 Official Cards (2024-2028).</li>
+        <li>🖼️ <strong>Bilderserien:</strong> Picture Sequences (Stories).</li>
+        <li>⌨️ <strong>Keyboard:</strong> Please use a German keyboard (Ä, Ö, Ü, ß).</li>
       </ul>
     </div>
   </header>
 
   <div class="tabs-container">
-    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Fragen (Conversation)</button>
-    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Rollenspiele (Roleplays)</button>
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
+    <button class="tab-btn" onclick="switchTab('story')" id="tabStory">🖼️ Bilderserien</button>
   </div>
 
   <div id="sectionConversation">
     <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('General')">Grundlegend (Ordinary)</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('Advanced')">Erweitert (Higher)</button>
+      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Grundlegend (Ordinary)</button>
+      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Erweitert (Higher)</button>
     </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="exerciseArea" style="display:none;">
@@ -50,10 +58,12 @@
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Anhören (Listen)</button>
       </div>
-      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
-  💡 Was soll ich sagen? / What to include? (Key Points)
-</button>
-<div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+      
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#b45309; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
+        💡 Was soll ich sagen? / Key Points
+      </button>
+      <div id="hintBox" style="display:none; background:#fffbeb; border-left:4px solid #f59e0b; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#92400e;"></div>
+      
       <textarea id="userInput" placeholder="Schreib deine Antwort hier..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
@@ -63,7 +73,7 @@
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Prüfen (Evaluate)</button>
     </div>
 
-    <div id="result" style="display:none;">
+    <div id="result">
       <div class="student-response-box"><strong>Deine Antwort:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
@@ -77,30 +87,94 @@
   </div>
 
   <div id="sectionRoleplay" style="display:none;">
-    <div class="rp-selector"></div> <div id="rpArea" style="display:none;">
-        <div class="rp-context" id="rpContext"></div>
-        <div class="chat-container" id="rpChat"></div>
+    <div class="rp-selector">
+      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">🐕 1. Hund</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">📰 2. Redaktion</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">📺 3. Interview</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">👨‍👩‍👦 4. Eltern</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">💼 5. Ferienjob</div>
+    </div>
+
+    <div id="rpArea" style="display:none;">
+      <div id="rpContext" class="question-card" style="margin-bottom:15px; font-weight:700;"></div>
+      
+      <div id="rpChat" class="rp-chat-window"></div>
+      
+      <div class="rp-controls">
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirInterventoExaminer()">▶️ Play Examiner Audio</button>
         
-        <div class="rp-controls">
-            <input type="text" id="rpInput" class="rp-input" placeholder="Antwort schreiben..." disabled>
-            <button class="btn-send" id="rpSendBtn" onclick="sendRP()" disabled>➤</button>
+        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        
+        <div style="display:flex; gap:10px;">
+          <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fffbeb; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Tipp / Hint</button>
+          <button id="rpSendBtn" class="btn-main" style="flex:1; margin:0;" onclick="enviarRespuestaRP()" disabled>Senden 📤</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sectionStory" style="display:none;">
+    <div class="info-box" style="display:block; border-color:var(--primary); background:#fff5f5; color:var(--black);">
+      <strong>🖼️ Anleitung:</strong>
+      <p style="margin:5px 0 0;">
+        Open your exam papers to the Picture Sequence. 
+        Describe what is happening in the pictures. The AI will check your grammar.
+      </p>
+    </div>
+
+    <div class="rp-selector">
+      <div class="rp-btn-select" onclick="selectStory(0, this)">📱 1. Mobbing</div>
+      <div class="rp-btn-select" onclick="selectStory(1, this)">🎓 2. Chancen</div>
+      <div class="rp-btn-select" onclick="selectStory(2, this)">🚌 3. Abi-Tour</div>
+      <div class="rp-btn-select" onclick="selectStory(3, this)">🎁 4. Geburtstag</div>
+      <div class="rp-btn-select" onclick="selectStory(4, this)">🌬️ 5. Windkraft</div>
+    </div>
+
+    <div id="storyArea" style="display:none;">
+      <div class="question-card" style="border-left-color:var(--primary); background:#fff5f5;">
+        <h3 id="storyTitle" style="margin-top:0; color:var(--primary);"></h3>
+        <p style="font-weight:600;">Examiner:</p>
+        <div style="font-size:1.1rem; margin-bottom:10px;">
+          "Erzähl mir bitte, was hier passiert." <br>
+          (Tell me what is happening here.)
+        </div>
+        <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Anhören (Listen)</button>
+      </div>
+
+      <textarea id="userInputStory" placeholder="Auf dem ersten Bild sehe ich... (In the first picture I see...)"></textarea>
+
+      <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
+         👂 Check my pronunciation
+      </button>
+
+      <button class="btn-main" id="btnActionStory" onclick="analyzeStory()">✨ Prüfen (Evaluate)</button>
+    </div>
+
+    <div id="resultStory" style="display:none; margin-top:30px;">
+      <div class="student-response-box"><strong>Deine Beschreibung:</strong> <span id="userResponseTextStory"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplayStory" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbDEStory" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbENStory" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsListStory"></div>
+      </div>
+      <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetStory()">🔄 Andere Geschichte</button>
     </div>
   </div>
 
   <div class="footer-section">
-             <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h3 style="margin: 0 0 5px 0;">David Martín</h3>
     <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="support-box">
         <span class="support-title">🚀 A Student-Focused Project</span>
         <p class="support-text">
-            I created LanguagePrep to help you feel confident in your oral exams. 
-            It's a free tool driven by passion, but running advanced AI does come with monthly costs.
+            I created LanguagePrep to help you feel confident. 
+            It's a free tool, but AI costs money.
             <br><br>
-            If you find it useful, your support means the world. It helps keep the site running and allows me to 
-            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
+            If you find it useful, your support helps keep the site running!
         </p>
     </div>
 
@@ -120,5 +194,7 @@
 </div>
 
 <script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
 </body>
 </html>

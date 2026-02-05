@@ -184,3 +184,20 @@ textarea:focus { border-color: var(--primary); outline: none; }
     line-height: 1.5;
     margin: 0;
 }
+/* ESTILO PARA EL SELECTOR DE VELOCIDAD */
+.speed-selector {
+    background: white;
+    border: 1px solid #16a34a;
+    color: #166534;
+    font-size: 0.75rem;
+    padding: 2px 5px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    margin-right: 5px;
+}
+
+.speed-selector:hover {
+    background: #dcfce7;
+}

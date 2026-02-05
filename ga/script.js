@@ -21,7 +21,7 @@ function initVoiceCheck() {
     check();
 }
 
-// --- PLAYER DE AUDIO PRO (PARA POEMAS) ---
+// --- PLAYER DE AUDIO PRO (CON VELOCIDAD Y MANEJO DE ERRORES) ---
 let currentAudioPlayer = null; 
 
 function setupAudioPlayer(audioPath, containerId) {
@@ -31,7 +31,7 @@ function setupAudioPlayer(audioPath, containerId) {
     // Limpiamos reproductor anterior si existe
     if(currentAudioPlayer) { currentAudioPlayer.pause(); currentAudioPlayer = null; }
 
-    // HTML del reproductor
+    // HTML del reproductor (Con el selector de velocidad añadido)
     container.innerHTML = `
         <div class="custom-audio-player">
             <div class="player-controls">
@@ -40,7 +40,16 @@ function setupAudioPlayer(audioPath, containerId) {
                     <input type="range" class="audio-range" id="seekSlider" value="0" max="100" oninput="seekAudioPro()">
                     <div class="time-display">
                         <span id="currentTime">0:00</span>
-                        <span id="duration">...</span>
+                        
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <select id="speedSelect" onchange="changeSpeedPro()" class="speed-selector">
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1.0x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                            </select>
+                            <span id="duration">...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,11 +64,11 @@ function setupAudioPlayer(audioPath, containerId) {
     const currTimeText = document.getElementById('currentTime');
     const durTimeText = document.getElementById('duration');
 
-    // Manejo de errores
+    // Manejo de errores (TU CÓDIGO ORIGINAL - MANTENIDO)
     currentAudioPlayer.onerror = function() {
         console.error("Error cargando audio:", audioPath);
         durTimeText.innerText = "Error";
-        alert("⚠️ Audio file not found: " + audioPath + "\nCheck if the file is in the 'ga' folder.");
+        alert("⚠️ Audio file not found: " + audioPath + "\nCheck if the file is in the 'ga' folder and named correctly.");
     };
 
     // Actualizar barra y tiempo mientras reproduce
@@ -97,6 +106,14 @@ function setupAudioPlayer(audioPath, containerId) {
     window.seekAudioPro = () => {
         const seekTo = currentAudioPlayer.duration * (slider.value / 100);
         currentAudioPlayer.currentTime = seekTo;
+    };
+
+    // NUEVA FUNCIÓN: CAMBIAR VELOCIDAD
+    window.changeSpeedPro = () => {
+        const speed = document.getElementById('speedSelect').value;
+        if(currentAudioPlayer) {
+            currentAudioPlayer.playbackRate = parseFloat(speed);
+        }
     };
 }
 

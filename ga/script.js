@@ -13,9 +13,6 @@ function initVoiceCheck() {
         const voices = window.speechSynthesis.getVoices();
         // Buscamos 'ga', 'ga-IE' o 'Gaeilge'
         irishVoiceAvailable = voices.find(v => v.lang.includes('ga') || v.name.includes('Irish') || v.name.includes('Gaeilge'));
-        
-        // Si quieres habilitar un botón específico de TTS en el futuro, úsalo aquí.
-        // Por ahora, lo usamos internamente en speakRobot()
     };
 
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -25,7 +22,7 @@ function initVoiceCheck() {
 }
 
 // --- PLAYER DE AUDIO PRO (PARA POEMAS) ---
-let currentAudioPlayer = null; // Renombrado para evitar conflicto con la variable currentAudio de Conversation
+let currentAudioPlayer = null; 
 
 function setupAudioPlayer(audioPath, containerId) {
     const container = document.getElementById(containerId);
@@ -43,7 +40,7 @@ function setupAudioPlayer(audioPath, containerId) {
                     <input type="range" class="audio-range" id="seekSlider" value="0" max="100" oninput="seekAudioPro()">
                     <div class="time-display">
                         <span id="currentTime">0:00</span>
-                        <span id="duration">0:00</span>
+                        <span id="duration">...</span>
                     </div>
                 </div>
             </div>
@@ -57,6 +54,13 @@ function setupAudioPlayer(audioPath, containerId) {
     const slider = document.getElementById('seekSlider');
     const currTimeText = document.getElementById('currentTime');
     const durTimeText = document.getElementById('duration');
+
+    // Manejo de errores
+    currentAudioPlayer.onerror = function() {
+        console.error("Error cargando audio:", audioPath);
+        durTimeText.innerText = "Error";
+        alert("⚠️ Audio file not found: " + audioPath + "\nCheck if the file is in the 'ga' folder.");
+    };
 
     // Actualizar barra y tiempo mientras reproduce
     currentAudioPlayer.ontimeupdate = () => {
@@ -82,7 +86,7 @@ function setupAudioPlayer(audioPath, containerId) {
         if (currentAudioPlayer.paused) {
             currentAudioPlayer.play();
             playBtn.innerText = "⏸";
-            playBtn.style.background = "#ca8a04"; // Color pausa
+            playBtn.style.background = "#ca8a04"; 
         } else {
             currentAudioPlayer.pause();
             playBtn.innerText = "▶";
@@ -122,7 +126,7 @@ function switchTab(tab) {
   if(tab === 'sraith') document.getElementById('sectionSraith').style.display = 'block';
   
   stopAudio();
-  if(currentAudioPlayer) { currentAudioPlayer.pause(); } // Parar el reproductor Pro al cambiar de pestaña
+  if(currentAudioPlayer) { currentAudioPlayer.pause(); } 
 }
 
 // ===========================================
@@ -273,7 +277,6 @@ function setLevel(lvl) {
     if(currentTopic && !isMockExam) updateQuestion(); 
 }
 
-// --- FUNCIÓN: PISTAS (SCAFFOLDING) ---
 function toggleHint() {
     const box = document.getElementById('hintBox');
     if (box.style.display === 'none') {
@@ -289,14 +292,11 @@ function updateQuestion() {
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
     document.getElementById('userInput').value = "";
 
-    // LÓGICA DE PISTAS (IRISH)
     const hintBox = document.getElementById('hintBox');
     const btnHint = document.getElementById('btnHint');
     
     if (hintBox && btnHint) {
         hintBox.style.display = 'none'; 
-        
-        // Mostrar pista solo en HL
         if (currentLevel === 'HL' && currentTopic.check_HL) {
             btnHint.style.display = 'inline-block';
             hintBox.innerHTML = "<strong>📝 Pointí Tábhachtacha (HL):</strong><br>" + currentTopic.check_HL;
@@ -326,14 +326,12 @@ function showMockQuestion() {
     document.getElementById('qDisplay').innerHTML = `<strong>Ceist ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
     document.getElementById('userInput').value = "";
     
-    // Ocultar pistas en Mock
     const btnHint = document.getElementById('btnHint');
     const hintBox = document.getElementById('hintBox');
     if(btnHint) btnHint.style.display = 'none';
     if(hintBox) hintBox.style.display = 'none';
 }
 
-// 🔊 LÓGICA DE AUDIO HÍBRIDA (CONVERSATION)
 function speakText() { 
     stopAudio();
     if(isMockExam) {
@@ -347,7 +345,6 @@ function speakText() {
     currentAudio = new Audio(filename);
     
     currentAudio.onerror = function() {
-        // Fallback a TTS si no hay archivo de audio
         console.log("Audio file not found ("+filename+"), using TTS.");
         speakRobot(document.getElementById('qDisplay').innerText);
     };
@@ -357,7 +354,6 @@ function speakText() {
 
 function speakRobot(text) {
     if ('speechSynthesis' in window) { 
-        // Solo reproducir si hay voz irlandesa (o avisar)
         if (!irishVoiceAvailable) {
             alert("⚠️ No Irish voice detected on this device.\n(Níl guth Gaeilge ar fáil).");
             return;
@@ -390,7 +386,6 @@ function resetApp() {
         isMockExam = false; 
         document.getElementById('userInput').value = ""; 
         document.getElementById('qDisplay').innerHTML = "Roghnaigh topaic..."; 
-        // Resetear botón de pistas
         const btnHint = document.getElementById('btnHint');
         if(btnHint) btnHint.style.display = 'none';
     }
@@ -405,13 +400,11 @@ async function analyze() {
   
   const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
   
-  // Recoger criterios HL
   let criteria = "Gramadach cruinn (Accurate grammar) and vocabulary."; 
   if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
       criteria = currentTopic.check_HL;
   }
 
-  // PROMPT EXPERTO GAEILGE
   const prompt = `
   ACT AS: Strict Leaving Cert Irish (Gaeilge) Grammar Teacher. 
   QUESTION: "${q}". 
@@ -455,7 +448,6 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      // ERROR AMABLE HIGH TRAFFIC
       alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(Tá an córas gnóthach, fan 10 soicind)."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh (Correct)"; 
@@ -474,22 +466,21 @@ function readMyInput() {
 let currentPoemYear = 2026;
 let currentPoemIndex = 0;
 
-// SYLLABUS 2026 (ACTUAL 6th YEAR)
+// ⚠️ AQUÍ ESTÁ EL CAMBIO IMPORTANTE: NOMBRES DE ARCHIVO COINCIDENTES CON TU CAPTURA
 const POEMS_2026 = [
-  { title: "Geibheann", author: "Caitlín Maude", file: "geibheann.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
-  { title: "Colscaradh", author: "Pádraig Mac Suibhne", file: "colscaradh.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
-  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", file: "moghrasa.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
-  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", file: "earrach.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", file: "spailpin.mp3", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
+  { title: "Geibheann", author: "Caitlín Maude", file: "Poem1.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
+  { title: "Colscaradh", author: "Pádraig Mac Suibhne", file: "Poem2.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
+  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", file: "Poem3.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
+  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", file: "Poem4.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", file: "Poem5.mp3", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
 ];
 
-// SYLLABUS 2027 (NEW FOR 5th YEAR)
 const POEMS_2027 = [
-  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", file: "dinit.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
-  { title: "Iníon", author: "Áine Durkin", file: "inion.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
-  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", file: "glaoch.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
-  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", file: "deireadh.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
-  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", file: "uirchill.mp3", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
+  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", file: "Poem2027_1.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
+  { title: "Iníon", author: "Áine Durkin", file: "Poem2027_2.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
+  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", file: "Poem2027_3.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
+  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", file: "Poem2027_4.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", file: "Poem2027_5.mp3", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
 ];
 
 function setPoemYear(year) {
@@ -529,10 +520,7 @@ function selectPoem(index, btn) {
     document.getElementById('poemAuthor').innerText = "le " + p.author;
     document.getElementById('poemText').innerText = p.text;
 
-    // INICIAR REPRODUCTOR PRO CON EL ARCHIVO DEL POEMA
-    // Ajusta la ruta si tus audios están en otra subcarpeta
-    // He asumido que están en "ga/" o en la raíz junto al html
-    // Si están en "ga/audio/", cambia la ruta abajo a `audio/${p.file}`
+    // Cargar reproductor con nombre de archivo EXACTO
     setupAudioPlayer(p.file, 'audioPlayerContainer');
 }
 
@@ -589,7 +577,6 @@ async function analyzeSraith() {
   const b = document.getElementById('btnActionSraith'); 
   b.disabled = true; b.innerText = "⏳ Ag ceartú...";
   
-  // PROMPT PARA SRAITH PICTIÚR (MEJORADO)
   const prompt = `
   ACT AS: Irish Examiner. 
   TASK: Sraith Pictiúr "${currentSraithTitle}". 
@@ -616,7 +603,6 @@ async function analyzeSraith() {
     document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
   } catch (e) { 
       console.error(e); 
-      // ERROR AMABLE HIGH TRAFFIC
       alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(Tá an córas gnóthach, fan 10 soicind)."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
@@ -630,7 +616,7 @@ function resetSraith() {
 }
 
 window.onload = function() {
-    initVoiceCheck(); // <--- Chequea la voz irlandesa al cargar
+    initVoiceCheck(); 
     initConv();
     initSraith();
     setPoemYear(2026);

@@ -5,6 +5,105 @@ const parteA = "AIzaSyASf_PIq7es0iPVt";
 const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
 const API_KEY = parteA + parteB;
 
+// --- DETECCIÓN DE VOZ IRLANDESA (TTS) ---
+let irishVoiceAvailable = null;
+
+function initVoiceCheck() {
+    const check = () => {
+        const voices = window.speechSynthesis.getVoices();
+        // Buscamos 'ga', 'ga-IE' o 'Gaeilge'
+        irishVoiceAvailable = voices.find(v => v.lang.includes('ga') || v.name.includes('Irish') || v.name.includes('Gaeilge'));
+        
+        // Si quieres habilitar un botón específico de TTS en el futuro, úsalo aquí.
+        // Por ahora, lo usamos internamente en speakRobot()
+    };
+
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = check;
+    }
+    check();
+}
+
+// --- PLAYER DE AUDIO PRO (PARA POEMAS) ---
+let currentAudioPlayer = null; // Renombrado para evitar conflicto con la variable currentAudio de Conversation
+
+function setupAudioPlayer(audioPath, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Limpiamos reproductor anterior si existe
+    if(currentAudioPlayer) { currentAudioPlayer.pause(); currentAudioPlayer = null; }
+
+    // HTML del reproductor
+    container.innerHTML = `
+        <div class="custom-audio-player">
+            <div class="player-controls">
+                <button class="play-btn-circle" id="playPauseBtn" onclick="togglePlayPro()">▶</button>
+                <div class="timeline-container">
+                    <input type="range" class="audio-range" id="seekSlider" value="0" max="100" oninput="seekAudioPro()">
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    container.style.display = "block";
+
+    // Lógica del Audio
+    currentAudioPlayer = new Audio(audioPath);
+    const playBtn = document.getElementById('playPauseBtn');
+    const slider = document.getElementById('seekSlider');
+    const currTimeText = document.getElementById('currentTime');
+    const durTimeText = document.getElementById('duration');
+
+    // Actualizar barra y tiempo mientras reproduce
+    currentAudioPlayer.ontimeupdate = () => {
+        if(isNaN(currentAudioPlayer.duration)) return;
+        const p = (currentAudioPlayer.currentTime / currentAudioPlayer.duration) * 100;
+        slider.value = p || 0;
+        currTimeText.innerText = formatTime(currentAudioPlayer.currentTime);
+    };
+
+    // Cargar duración total al inicio
+    currentAudioPlayer.onloadedmetadata = () => {
+        durTimeText.innerText = formatTime(currentAudioPlayer.duration);
+    };
+
+    // Al terminar, resetear botón
+    currentAudioPlayer.onended = () => {
+        playBtn.innerText = "▶";
+        playBtn.style.background = "#16a34a";
+    };
+    
+    // Funciones globales para el reproductor Pro
+    window.togglePlayPro = () => {
+        if (currentAudioPlayer.paused) {
+            currentAudioPlayer.play();
+            playBtn.innerText = "⏸";
+            playBtn.style.background = "#ca8a04"; // Color pausa
+        } else {
+            currentAudioPlayer.pause();
+            playBtn.innerText = "▶";
+            playBtn.style.background = "#16a34a";
+        }
+    };
+
+    window.seekAudioPro = () => {
+        const seekTo = currentAudioPlayer.duration * (slider.value / 100);
+        currentAudioPlayer.currentTime = seekTo;
+    };
+}
+
+function formatTime(seconds) {
+    if(isNaN(seconds)) return "0:00";
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+}
+
+
 // ===========================================
 // NAVEGACIÓN
 // ===========================================
@@ -23,6 +122,7 @@ function switchTab(tab) {
   if(tab === 'sraith') document.getElementById('sectionSraith').style.display = 'block';
   
   stopAudio();
+  if(currentAudioPlayer) { currentAudioPlayer.pause(); } // Parar el reproductor Pro al cambiar de pestaña
 }
 
 // ===========================================
@@ -233,7 +333,7 @@ function showMockQuestion() {
     if(hintBox) hintBox.style.display = 'none';
 }
 
-// 🔊 LÓGICA DE AUDIO HÍBRIDA
+// 🔊 LÓGICA DE AUDIO HÍBRIDA (CONVERSATION)
 function speakText() { 
     stopAudio();
     if(isMockExam) {
@@ -247,7 +347,8 @@ function speakText() {
     currentAudio = new Audio(filename);
     
     currentAudio.onerror = function() {
-        console.log("Audio file not found ("+filename+"), using fallback.");
+        // Fallback a TTS si no hay archivo de audio
+        console.log("Audio file not found ("+filename+"), using TTS.");
         speakRobot(document.getElementById('qDisplay').innerText);
     };
     
@@ -256,9 +357,15 @@ function speakText() {
 
 function speakRobot(text) {
     if ('speechSynthesis' in window) { 
+        // Solo reproducir si hay voz irlandesa (o avisar)
+        if (!irishVoiceAvailable) {
+            alert("⚠️ No Irish voice detected on this device.\n(Níl guth Gaeilge ar fáil).");
+            return;
+        }
         window.speechSynthesis.cancel(); 
         const u = new SpeechSynthesisUtterance(text); 
         u.lang = 'ga-IE'; 
+        u.voice = irishVoiceAvailable;
         u.rate = 0.9; 
         window.speechSynthesis.speak(u); 
     }
@@ -362,27 +469,27 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (2026 & 2027) (SIN CAMBIOS)
+// 4. DATOS DE POEMAS (2026 & 2027)
 // ===========================================
 let currentPoemYear = 2026;
 let currentPoemIndex = 0;
 
 // SYLLABUS 2026 (ACTUAL 6th YEAR)
 const POEMS_2026 = [
-  { title: "Geibheann", author: "Caitlín Maude", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
-  { title: "Colscaradh", author: "Pádraig Mac Suibhne", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
-  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
-  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
+  { title: "Geibheann", author: "Caitlín Maude", file: "geibheann.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
+  { title: "Colscaradh", author: "Pádraig Mac Suibhne", file: "colscaradh.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
+  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", file: "moghrasa.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
+  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", file: "earrach.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", file: "spailpin.mp3", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
 ];
 
 // SYLLABUS 2027 (NEW FOR 5th YEAR)
 const POEMS_2027 = [
-  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
-  { title: "Iníon", author: "Áine Durkin", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
-  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
-  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
-  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
+  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", file: "dinit.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
+  { title: "Iníon", author: "Áine Durkin", file: "inion.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
+  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", file: "glaoch.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
+  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", file: "deireadh.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", file: "uirchill.mp3", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
 ];
 
 function setPoemYear(year) {
@@ -405,6 +512,7 @@ function renderPoemButtons() {
         btn.onclick = () => selectPoem(index, btn);
         container.appendChild(btn);
     });
+    // Autoseleccionar el primero
     selectPoem(0, container.children[0]);
 }
 
@@ -412,7 +520,6 @@ function selectPoem(index, btn) {
     document.querySelectorAll('#sectionPoetry .rp-btn-select').forEach(b => b.classList.remove('active'));
     if(btn) btn.classList.add('active');
     
-    stopAudio(); 
     currentPoemIndex = index;
     const list = currentPoemYear === 2026 ? POEMS_2026 : POEMS_2027;
     const p = list[index];
@@ -421,21 +528,12 @@ function selectPoem(index, btn) {
     document.getElementById('poemTitle').innerText = p.title;
     document.getElementById('poemAuthor').innerText = "le " + p.author;
     document.getElementById('poemText').innerText = p.text;
-}
 
-function playPoemAudio() {
-    stopAudio();
-    let filename = "";
-    if (currentPoemYear === 2026) {
-        filename = `Poem${currentPoemIndex + 1}.mp3`;
-    } else {
-        filename = `Poem2027_${currentPoemIndex + 1}.mp3`;
-    }
-    currentAudio = new Audio(filename);
-    currentAudio.onerror = function() { 
-        alert("⚠️ Audio file not found: " + filename);
-    };
-    currentAudio.play();
+    // INICIAR REPRODUCTOR PRO CON EL ARCHIVO DEL POEMA
+    // Ajusta la ruta si tus audios están en otra subcarpeta
+    // He asumido que están en "ga/" o en la raíz junto al html
+    // Si están en "ga/audio/", cambia la ruta abajo a `audio/${p.file}`
+    setupAudioPlayer(p.file, 'audioPlayerContainer');
 }
 
 // ===========================================
@@ -532,6 +630,7 @@ function resetSraith() {
 }
 
 window.onload = function() {
+    initVoiceCheck(); // <--- Chequea la voz irlandesa al cargar
     initConv();
     initSraith();
     setPoemYear(2026);

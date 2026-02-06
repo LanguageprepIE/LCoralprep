@@ -33,7 +33,7 @@
     <div class="welcome-box" style="margin-top: 20px;">
       <div class="welcome-title" style="font-weight: 800; color: var(--primary); margin-bottom: 10px;">🇮🇪 Fáilte chuig Gaeilge Prep</div>
       <p style="margin: 0; color: #334155; line-height: 1.6; font-size: 0.95rem;">
-        Welcome! This tool is designed to help you master your <strong>Grammar, Sraith Pictiúr, and Poetry</strong>.
+        Welcome! This tool is designed to help you master your <strong>Grammar and Sraith Pictiúr</strong>.
         <br><br>
         🎤 <strong>Voice Note:</strong> Irish speech recognition is tricky for browsers right now. While I work on improving this technology, please <strong>TYPE your answers</strong>.
         <br><br>
@@ -46,7 +46,6 @@
       <strong>Treoracha:</strong>
       <ul>
         <li>✍️ <strong>Comhrá:</strong> Select a topic and write your answer to check your grammar.</li>
-        <li>📜 <strong>Filíocht:</strong> Listen to the poems with the new <strong>Pro Player</strong>.</li>
         <li>🖼️ <strong>Sraith Pictiúr:</strong> Write the story to practice your verbs and vocabulary.</li>
       </ul>
     </div>
@@ -54,7 +53,7 @@
 
   <div class="tabs-container">
     <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Comhrá</button>
-    <button class="tab-btn" onclick="switchTab('poem')" id="tabPoem">📜 Filíocht</button>
+    
     <button class="tab-btn" onclick="switchTab('sraith')" id="tabSraith">🖼️ Sraith Pictiúr</button>
   </div>
 
@@ -98,30 +97,6 @@
         <div id="errorsList"></div>
       </div>
       <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Next Topic</button>
-    </div>
-  </div>
-
-  <div id="sectionPoetry" style="display:none;">
-    
-    <div class="level-selector" style="margin-bottom: 15px;">
-      <button class="level-btn active" id="btn2026" onclick="setPoemYear(2026)">📅 LC 2026 (6th Yr)</button>
-      <button class="level-btn" id="btn2027" onclick="setPoemYear(2027)">📅 LC 2027 (5th Yr)</button>
-    </div>
-
-    <div class="rp-selector" id="poemButtonsContainer"></div>
-
-    <div id="poemArea" style="display:none; text-align: left;">
-      <div class="question-card" style="background:#fff; border-left-color:#15803d; border: 1px solid #e2e8f0;">
-        <div style="text-align: center; margin-bottom: 15px;">
-            <h3 id="poemTitle" style="margin-top:0; color:#15803d;"></h3>
-            <p style="font-style:italic; color:#666; margin: 5px 0 0;" id="poemAuthor"></p>
-        </div>
-        
-        <div id="audioPlayerContainer"></div>
-        <hr style="border:0; border-top:1px dashed #ccc; margin:20px 0;">
-        
-        <div id="poemText" style="white-space: pre-wrap; line-height: 1.8; font-family: 'Georgia', serif; font-size: 1.1rem; color: #334155;"></div>
-      </div>
     </div>
   </div>
 

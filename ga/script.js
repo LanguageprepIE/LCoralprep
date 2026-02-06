@@ -11,7 +11,6 @@ let irishVoiceAvailable = null;
 function initVoiceCheck() {
     const check = () => {
         const voices = window.speechSynthesis.getVoices();
-        // Buscamos 'ga', 'ga-IE' o 'Gaeilge'
         irishVoiceAvailable = voices.find(v => v.lang.includes('ga') || v.name.includes('Irish') || v.name.includes('Gaeilge'));
     };
 
@@ -21,109 +20,30 @@ function initVoiceCheck() {
     check();
 }
 
-// --- PLAYER DE AUDIO PRO (CON VELOCIDAD Y MANEJO DE ERRORES) ---
-let currentAudioPlayer = null; 
-
-function setupAudioPlayer(audioPath, containerId) {
+// --- REPRODUCTOR DE YOUTUBE (MODO SEGURO) ---
+function setupYouTubePlayer(videoId, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Limpiamos reproductor anterior si existe
-    if(currentAudioPlayer) { currentAudioPlayer.pause(); currentAudioPlayer = null; }
-
-    // HTML del reproductor (Con el selector de velocidad añadido)
+    // Inyectamos iframe de YouTube (legal y externo)
     container.innerHTML = `
-        <div class="custom-audio-player">
-            <div class="player-controls">
-                <button class="play-btn-circle" id="playPauseBtn" onclick="togglePlayPro()">▶</button>
-                <div class="timeline-container">
-                    <input type="range" class="audio-range" id="seekSlider" value="0" max="100" oninput="seekAudioPro()">
-                    <div class="time-display">
-                        <span id="currentTime">0:00</span>
-                        
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <select id="speedSelect" onchange="changeSpeedPro()" class="speed-selector">
-                                <option value="0.75">0.75x</option>
-                                <option value="1" selected>1.0x</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                            </select>
-                            <span id="duration">...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; background: #000;">
+            <iframe 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                src="https://www.youtube.com/embed/${videoId}?rel=0" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
         </div>
+        <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 8px;">
+            ℹ️ Video sourced from YouTube (Educational Use). <br>
+            Please open your textbook to read the text.
+        </p>
     `;
     container.style.display = "block";
-
-    // Lógica del Audio
-    currentAudioPlayer = new Audio(audioPath);
-    const playBtn = document.getElementById('playPauseBtn');
-    const slider = document.getElementById('seekSlider');
-    const currTimeText = document.getElementById('currentTime');
-    const durTimeText = document.getElementById('duration');
-
-    // Manejo de errores (TU CÓDIGO ORIGINAL - MANTENIDO)
-    currentAudioPlayer.onerror = function() {
-        console.error("Error cargando audio:", audioPath);
-        durTimeText.innerText = "Error";
-        alert("⚠️ Audio file not found: " + audioPath + "\nCheck if the file is in the 'ga' folder and named correctly.");
-    };
-
-    // Actualizar barra y tiempo mientras reproduce
-    currentAudioPlayer.ontimeupdate = () => {
-        if(isNaN(currentAudioPlayer.duration)) return;
-        const p = (currentAudioPlayer.currentTime / currentAudioPlayer.duration) * 100;
-        slider.value = p || 0;
-        currTimeText.innerText = formatTime(currentAudioPlayer.currentTime);
-    };
-
-    // Cargar duración total al inicio
-    currentAudioPlayer.onloadedmetadata = () => {
-        durTimeText.innerText = formatTime(currentAudioPlayer.duration);
-    };
-
-    // Al terminar, resetear botón
-    currentAudioPlayer.onended = () => {
-        playBtn.innerText = "▶";
-        playBtn.style.background = "#16a34a";
-    };
-    
-    // Funciones globales para el reproductor Pro
-    window.togglePlayPro = () => {
-        if (currentAudioPlayer.paused) {
-            currentAudioPlayer.play();
-            playBtn.innerText = "⏸";
-            playBtn.style.background = "#ca8a04"; 
-        } else {
-            currentAudioPlayer.pause();
-            playBtn.innerText = "▶";
-            playBtn.style.background = "#16a34a";
-        }
-    };
-
-    window.seekAudioPro = () => {
-        const seekTo = currentAudioPlayer.duration * (slider.value / 100);
-        currentAudioPlayer.currentTime = seekTo;
-    };
-
-    // NUEVA FUNCIÓN: CAMBIAR VELOCIDAD
-    window.changeSpeedPro = () => {
-        const speed = document.getElementById('speedSelect').value;
-        if(currentAudioPlayer) {
-            currentAudioPlayer.playbackRate = parseFloat(speed);
-        }
-    };
 }
-
-function formatTime(seconds) {
-    if(isNaN(seconds)) return "0:00";
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-}
-
 
 // ===========================================
 // NAVEGACIÓN
@@ -142,12 +62,13 @@ function switchTab(tab) {
   if(tab === 'poem') document.getElementById('sectionPoetry').style.display = 'block';
   if(tab === 'sraith') document.getElementById('sectionSraith').style.display = 'block';
   
-  stopAudio();
-  if(currentAudioPlayer) { currentAudioPlayer.pause(); } 
+  // Limpiar YouTube al cambiar de pestaña para que no siga sonando
+  const player = document.getElementById('audioPlayerContainer');
+  if(player) player.innerHTML = "";
 }
 
 // ===========================================
-// 1. COMHRÁ (15 TEMAS + CRITERIOS HL)
+// 1. COMHRÁ (15 TEMAS)
 // ===========================================
 const DATA = [
   { 
@@ -264,7 +185,6 @@ let mockQuestions = [];
 let mockIndex = 0; 
 let currentAudio = null;
 
-// Preguntas Mock
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
 const FUT_Q = ["Cad a dhéanfaidh tú amárach?", "Cá rachaidh tú?", "Cad a dhéanfaidh tú tar éis na scrúduithe?"];
 
@@ -350,22 +270,21 @@ function showMockQuestion() {
 }
 
 function speakText() { 
-    stopAudio();
+    if(currentAudio) { currentAudio.pause(); }
+    
     if(isMockExam) {
-        const t = document.getElementById('qDisplay').innerText; 
-        speakRobot(t);
+        speakRobot(document.getElementById('qDisplay').innerText);
         return;
     }
 
     const filename = `audio/q_t${currentTopic.id}_${currentLevel.toLowerCase()}.mp3`;
     
+    // Intentamos reproducir archivo local, si falla usamos TTS
     currentAudio = new Audio(filename);
-    
     currentAudio.onerror = function() {
-        console.log("Audio file not found ("+filename+"), using TTS.");
+        console.log("Audio file not found, using TTS.");
         speakRobot(document.getElementById('qDisplay').innerText);
     };
-    
     currentAudio.play();
 }
 
@@ -382,14 +301,6 @@ function speakRobot(text) {
         u.rate = 0.9; 
         window.speechSynthesis.speak(u); 
     }
-}
-
-function stopAudio() {
-    if(currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
-    window.speechSynthesis.cancel();
 }
 
 function resetApp() { 
@@ -431,13 +342,11 @@ async function analyze() {
   CRITICAL INSTRUCTIONS:
   1. CHECK GRAMMAR STRICTLY: Focus on 'Tuiseal Ginideach' (Genitive Case), 'Séimhiú' (Lenition), 'Urú' (Eclipsis) and Verb Tenses.
   2. CHECK CONTENT: Student MUST mention: [ ${criteria} ].
-     - If OL: Be encouraging, fix basic mistakes.
-     - If HL: Be strict. If they miss the Genitive Case or Mutations, point it out clearly.
   
   OUTPUT JSON ONLY: { 
     "score": (0-100), 
     "feedback_ga": "Moladh (Praise) & Comhairle (Advice) i nGaeilge", 
-    "feedback_en": "Explain the grammar mistakes simply in English (e.g. 'You missed the Séimhiú here')", 
+    "feedback_en": "Explain the grammar mistakes simply in English", 
     "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
   }`;
 
@@ -465,7 +374,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(Tá an córas gnóthach, fan 10 soicind)."); 
+      alert("⚠️ The AI is a bit busy right now. Please wait."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh (Correct)"; 
   }
@@ -478,26 +387,25 @@ function readMyInput() {
 }
 
 // ===========================================
-// 4. DATOS DE POEMAS (2026 & 2027)
+// 4. DATOS DE POEMAS (YOUTUBE EDITION)
 // ===========================================
 let currentPoemYear = 2026;
 let currentPoemIndex = 0;
 
-// ⚠️ AQUÍ ESTÁ EL CAMBIO IMPORTANTE: NOMBRES DE ARCHIVO COINCIDENTES CON TU CAPTURA
 const POEMS_2026 = [
-  { title: "Geibheann", author: "Caitlín Maude", file: "Poem1.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Freedom vs. Captivity.\nThe poet compares her life to a wild animal in a zoo." },
-  { title: "Colscaradh", author: "Pádraig Mac Suibhne", file: "Poem2.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Separation/Divorce.\nA couple wants different things from life (Home vs. Travel)." },
-  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", file: "Poem3.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Realistic Love.\nA funny, satirical poem mocking traditional love songs." },
-  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", file: "Poem4.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Nostalgia.\nThe poet remembers the idyllic life on the Aran Islands." },
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", file: "Poem5.mp3", text: `Im spailpín fánach atáim le fada\nag seasamh ar mo shláinte,\nag siúl an drúchta go moch ar maidin\n's ag bailiú galair ráithe;\nach glacfad fees ó rí na gcroppies,\ncleith is píc chun sáite\n's go brách arís ní ghlaofar m'ainm\nsa tír seo, an spailpín fánach.\n\nBa mhinic mo thriall go Cluain gheal Meala\n's as san go Tiobraid Árann;\ni gCarraig na Siúire thíos do ghearrainn\ncúrsa leathan láidir;\ni gCallainn go dlúth 's mo shúiste im ghlaic\nag dul chun tosaigh ceard leo\n's nuair théim go Durlas 's é siúd bhíonn agam –\n'Sin chu'ibh an spailpín fánach!'\n\nGo deo deo arís ní raghad go Caiseal\nag díol ná ag reic mo shláinte\nná ar mhargadh na saoire im shuí cois balla,\nim scaoinse ar leataoibh sráide,\nbodairí na tíre ag tíocht ar a gcapaill\ná fhiafraí an bhfuilim hireálta;\n'téanam chun siúil, tá an cúrsa fada' –\nsiúd siúl ar an spailpín fánach.` }
+  { title: "Géibheann", author: "Caitlín Maude", youtubeId: "8t15UbhCYHo" }, // Teacher reading
+  { title: "Colscaradh", author: "Pádraig Mac Suibhne", youtubeId: "kJE3N7Z2pWw" }, // Leaving Cert Irish Channel
+  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", youtubeId: "m9AyCD7XLn4" }, // Irish Teacher
+  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", youtubeId: "eT1Y9tdZ898" }, // Leaving Cert Irish Channel
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", youtubeId: "hrUGsTFIO3w" } // Poetry Reading Section
 ];
 
 const POEMS_2027 = [
-  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", file: "Poem2027_1.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Dignity in Grief.\nTraditional mourning on the Aran Islands." },
-  { title: "Iníon", author: "Áine Durkin", file: "Poem2027_2.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Mother-Daughter relationship.\nGrowth and independence." },
-  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", file: "Poem2027_3.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Emigration & Communication.\nCalling home and the distance felt." },
-  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", file: "Poem2027_4.mp3", text: "⚠️ Copyright Protected Text.\n\nTheme: Language & Modernity.\nThe future of the Irish language." },
-  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", file: "Poem2027_5.mp3", text: `Ag Úirchill an Chreagáin chodail mé aréir faoi bhrón...` }
+  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", youtubeId: "7lQsS-EupoE" }, // Leaving Cert Irish Channel
+  { title: "Iníon", author: "Áine Durkin", youtubeId: "1vGv9aDxeoI" }, // Foghlaim TG4 (Canal Oficial)
+  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", youtubeId: "_eNdbzJdkmw" }, // Teacher Reading
+  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", youtubeId: "GnbBxuiuhNI" }, // Leaving Cert Irish Channel
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", youtubeId: "WaHQNmqj9g0" } // Traditional Song with Lyrics
 ];
 
 function setPoemYear(year) {
@@ -520,7 +428,6 @@ function renderPoemButtons() {
         btn.onclick = () => selectPoem(index, btn);
         container.appendChild(btn);
     });
-    // Autoseleccionar el primero
     selectPoem(0, container.children[0]);
 }
 
@@ -535,14 +442,16 @@ function selectPoem(index, btn) {
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
     document.getElementById('poemAuthor').innerText = "le " + p.author;
-    document.getElementById('poemText').innerText = p.text;
+    
+    // Mostramos aviso en lugar del texto
+    document.getElementById('poemText').innerHTML = "<em>Due to copyright restrictions, please follow the text in your official textbook or exam papers.</em>";
 
-    // Cargar reproductor con nombre de archivo EXACTO
-    setupAudioPlayer(p.file, 'audioPlayerContainer');
+    // Llamamos a YouTube
+    setupYouTubePlayer(p.youtubeId, 'audioPlayerContainer');
 }
 
 // ===========================================
-// 5. DATOS SRAITH PICTIÚR (SIN CAMBIOS)
+// 5. DATOS SRAITH PICTIÚR
 // ===========================================
 let currentSraithTitle = "";
 const SRAITH_TITLES = [
@@ -620,7 +529,7 @@ async function analyzeSraith() {
     document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(Tá an córas gnóthach, fan 10 soicind)."); 
+      alert("⚠️ The AI is a bit busy right now. Please wait."); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
   }

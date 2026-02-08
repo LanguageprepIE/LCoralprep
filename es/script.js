@@ -25,111 +25,51 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// BASE DE DATOS (DATA) - NO TOCADA (Se mantienen todos los temas)
-// ===========================================
-// BASE DE DATOS (DATA) - TEMAS 1 al 4
+// BASE DE DATOS (DATA) - NO TOCADA (Se mantienen todos los // ===========================================
+// BASE DE DATOS COMPLETA (1-15)
 // ===========================================
 const DATA = [
+  // --- TEMA 1: ACTUALIZADO ---
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
     HL: "Háblame de ti. Describe tu personalidad y tu físico con detalle.",
     check_HL: "Nombre, Edad, Cumpleaños, Celebración típica, Físico detallado, Personalidad, Conectores.",
-    
-    checkpoints_OL: [
-      "Datos Básicos (Nombre, Edad...)",
-      "El Cumpleaños (Fechas)",
-      "Descripción Física (Verbos)"
-    ],
-    
-    checkpoints_HL: [
-      "Personalidad (Adjetivos)",
-      "Ser (Rasgo) vs Estar (Estado)", // 👈 CORREGIDO: Para evitar el error de "permanente"
-      "Conectores (Sin embargo...)"
-    ],
-
-    checkpoints_TOP: [
-      "✨ Idiom: Tener don de gentes",
-      "✨ Structure: Soler + Infinitivo (Habits)",
-      "✨ Vocab: Virtudes y Defectos"
-    ]
+    checkpoints_OL: ["Datos Básicos (Nombre, Edad...)", "El Cumpleaños (Fechas)", "Descripción Física (Verbos)"],
+    checkpoints_HL: ["Personalidad (Adjetivos)", "Ser (Rasgo) vs Estar (Estado)", "Conectores (Sin embargo...)"],
+    checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo (Habits)", "✨ Vocab: Virtudes y Defectos"]
   },
+  // --- TEMA 2: ACTUALIZADO ---
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
     HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
     check_HL: "Cuántos sois, Profesiones (Mi padre es...), Descripción física/carácter, Verbos de relación (Me llevo bien/mal, Discutimos, Me apoya).",
-    
-    checkpoints_OL: [
-      "Cuántos somos (Hay... / Somos...)", // 👈 AÑADIDO: 'Hay'
-      "Tengo hermanos (Mayor/Menor)",
-      "Profesión padres (Mi madre es...)"
-    ],
-    
-    checkpoints_HL: [
-      "Llevarse bien/mal (Me llevo...)",
-      "Discutir (Discuto con...)",
-      "Descripción Carácter (Es trabajador...)"
-    ],
-
-    checkpoints_TOP: [
-      "✨ Idiom: Ser la oveja negra",
-      "✨ Idiom: Ser uña y carne",
-      "✨ Grammar: Ojalá tuviera... (Wish)"
-    ]
+    checkpoints_OL: ["Cuántos somos (Hay... / Somos...)", "Tengo hermanos (Mayor/Menor)", "Profesión padres (Mi madre es...)"],
+    checkpoints_HL: ["Llevarse bien/mal (Me llevo...)", "Discutir (Discuto con...)", "Descripción Carácter (Es trabajador...)"],
+    checkpoints_TOP: ["✨ Idiom: Ser la oveja negra", "✨ Idiom: Ser uña y carne", "✨ Grammar: Ojalá tuviera... (Wish)"]
   },
+  // --- TEMA 3: ACTUALIZADO ---
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
     HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?",
     check_HL: "Nombre, Descripción, Gustos en común (Nos gusta + Infinitivo), Por qué es buen amigo (Es leal, me escucha).",
-    
-    checkpoints_OL: [
-      "Mi mejor amigo (Se llama...)",
-      "Descripción física (Es alto...)",
-      "Qué hacemos (Jugamos...)"
-    ],
-    
-    checkpoints_HL: [
-      "Por qué es mi amigo (Es leal...)",
-      "Gustos en común (Nos gusta...)",
-      "Desde cuándo (Lo conozco desde...)"
-    ],
-
-    checkpoints_TOP: [
-      "✨ Idiom: Contar con alguien",
-      "✨ Grammar: Condicional (Hablaría...)",
-      "✨ Vocab: Inseparables"
-    ]
+    checkpoints_OL: ["Mi mejor amigo (Se llama...)", "Descripción física (Es alto...)", "Qué hacemos (Jugamos...)"],
+    checkpoints_HL: ["Por qué es mi amigo (Es leal...)", "Gustos en común (Nos gusta...)", "Desde cuándo (Lo conozco desde...)"],
+    checkpoints_TOP: ["✨ Idiom: Contar con alguien", "✨ Grammar: Condicional (Hablaría...)", "✨ Vocab: Inseparables"]
   },
+  // --- TEMA 4: ACTUALIZADO ---
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
     HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
     check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión (Lo que más me gusta es...), Tareas (Tengo que + infinitivo).",
-    
-    checkpoints_OL: [
-      "Dónde vivo (Vivo en...)",
-      "Mi dormitorio (Tengo...)",
-      "Opinión (Me gusta mi casa...)"
-    ],
-    
-    checkpoints_HL: [
-      "Mi rincón favorito (Lo que más...)",
-      "Tareas domésticas (Tengo que...)",
-      "Ubicación (Está cerca de...)"
-    ],
-
-    checkpoints_TOP: [
-      "✨ Idiom: Sentirse como en casa",
-      "✨ Grammar: Si ganara la lotería...",
-      "✨ Vocab: Chalet adosado"
-    ]
+    checkpoints_OL: ["Dónde vivo (Vivo en...)", "Mi dormitorio (Tengo...)", "Opinión (Me gusta mi casa...)"],
+    checkpoints_HL: ["Mi rincón favorito (Lo que más...)", "Tareas domésticas (Tengo que...)", "Ubicación (Está cerca de...)"],
+    checkpoints_TOP: ["✨ Idiom: Sentirse como en casa", "✨ Grammar: Si ganara la lotería...", "✨ Vocab: Chalet adosado"]
   },
-  // ... MANTÉN LOS DEMÁS TEMAS (5 al 15) COMO ESTABAN ...
-  { 
-    title: "5. Mi barrio", 
-    // ...
+  // --- TEMAS 5 al 15 (ORIGINALES RESTAURADOS) ---
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
@@ -197,7 +137,6 @@ const DATA = [
     check_HL: "Perífrasis 'Ir a + Infinitivo' (Voy a estudiar, Voy a ir...), Futuro Simple (Jugaré un partido), Planes concretos."
   }
 ];
-
 const PAST_Q = ["¿Qué hiciste el fin de semana pasado?", "¿Adónde fuiste el verano pasado?", "¿Qué hiciste ayer?"];
 const FUT_Q = ["¿Qué harás mañana?", "¿Qué planes tienes para el verano?", "¿Qué harás tras el colegio?"];
 

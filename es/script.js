@@ -592,8 +592,16 @@ function renderCheckpoints() {
 
 async function askAIConcept(concept) {
     const box = document.getElementById('aiExplanationBox');
-    box.style.display = 'block';
+    box.style.display = 'block'; 
     box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
+
+    // 1. DETECTAMOS SI ES LA PREGUNTA DE SER/ESTAR PARA CORREGIR A LA IA
+    const isSerEstar = concept.includes("Ser") || concept.includes("Estar");
+    
+    // 2. SI ES SER/ESTAR, LE DAMOS LA ORDEN "ANTI-PERMANENTE"
+    const pedagogicalNote = isSerEstar 
+        ? "CRITICAL RULE: DO NOT use the words 'permanent' or 'temporary'. Explain 'Ser' as Identity/Essence/Characteristics and 'Estar' as State/Condition/Location."
+        : "";
 
     const prompt = `
         ACT AS: Expert Leaving Cert Spanish Teacher.
@@ -606,6 +614,7 @@ async function askAIConcept(concept) {
         1. Explain the grammar/vocabulary rule briefly **IN ENGLISH**.
         2. Keep it under 50 words. Direct and simple.
         3. Provide 2 short examples in Spanish with English translations.
+        4. ${pedagogicalNote}  <-- AQUÍ INYECTAMOS LA REGLA CORRECTA
 
         OUTPUT FORMAT:
         <p><b>Explanation:</b> [English text]</p>

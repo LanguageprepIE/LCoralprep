@@ -160,3 +160,42 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     background: #fcd34d; /* Amarillo más intenso al pasar ratón */
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); /* Resplandor dorado */
 }
+/* === NUEVA FILA PARA LOS MODOS === */
+
+.mode-selector {
+    display: flex;
+    background: #f3f4f6; /* Un gris un poco diferente para distinguir */
+    padding: 5px;
+    border-radius: 12px;
+    margin-bottom: 25px; /* Espacio antes de empezar los ejercicios */
+    border: 1px solid #e5e7eb;
+    gap: 5px; /* Espacio entre los dos botones */
+}
+
+/* Estilo Base de los botones de Modo */
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #64748b;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.mode-btn:hover {
+    background: #ede9fe; /* Morado muy clarito */
+    color: #7c3aed;
+}
+
+/* ACTIVO (Seleccionado) */
+.mode-btn.active {
+    background: white;
+    color: #7c3aed; /* Morado intenso */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #ddd6fe;
+}

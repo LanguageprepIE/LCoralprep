@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LanguagePrep - Spanish</title>
+  <title>LCOrals - Spanish</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -20,7 +20,7 @@
   <header>
     <h1>
       <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
-        LanguagePrep Ireland
+        LCOrals Ireland
       </a>
     </h1>
     <p class="subtitle">Module: Leaving Cert Spanish (Oral)</p>
@@ -41,14 +41,20 @@
   </div>
 
   <div id="sectionConversation">
-    <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
-      <button onclick="toggleStudyMode()" class="action-btn" style="background: #4f46e5; margin-left: 10px;">
-   📚 Study Mode
-</button>
+    
+    <div class="controls-container">
+        <div class="control-row">
+            <span class="label-text">LEVEL:</span>
+            <button id="btnOL" class="level-btn active" onclick="setLevel('OL')">Ordinary Level</button>
+            <button id="btnHL" class="level-btn" onclick="setLevel('HL')">Higher Level</button>
+        </div>
+    
+        <div class="control-row">
+            <span class="label-text">MODE:</span>
+            <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
+            <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
+        </div>
     </div>
-
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
@@ -60,8 +66,8 @@
       </div>
       
       <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
-  💡 ¿Qué debo incluir? / What should I include? (Key Points)
-</button>
+        💡 ¿Qué debo incluir? / What should I include? (Key Points)
+      </button>
       <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
       <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
       

@@ -1,78 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico de API Gemini</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f9ff; }
-        .box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }
-        h2 { color: #0369a1; margin-top: 0; }
-        button { background: #0284c7; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 1rem; cursor: pointer; width: 100%; margin-bottom: 20px; }
-        button:hover { background: #0369a1; }
-        #log { font-family: monospace; white-space: pre-wrap; background: #1e293b; color: #4ade80; padding: 15px; border-radius: 8px; font-size: 0.9rem; min-height: 200px; }
-        .error { color: #f87171; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LCOrals - Spanish</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>🕵️‍♂️ Detector de Modelos</h2>
-    <p>Pulsa el botón para preguntar a Google qué modelos están activos para tu clave.</p>
-    <button onclick="checkModels()">🔍 VER MODELOS DISPONIBLES</button>
-    <div id="log">Esperando...</div>
+<div class="container">
+  
+  <header>
+    <h1>
+      <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
+        LCOrals Ireland
+      </a>
+    </h1>
+    <p class="subtitle">Module: Leaving Cert Spanish (Oral)</p>
+    
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
+    <div id="infoBox" class="info-box">
+      <strong>Instrucciones:</strong>
+      <ul>
+        <li>🗣️ <strong>Conversation:</strong> Select a topic. Answer the question aloud or type it to check your grammar.</li>
+        <li>🎭 <strong>Roleplays:</strong> Listen to the examiner and reply. Complete the 5 steps.</li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
+  </div>
+
+  <div id="sectionConversation">
+    
+  <div class="level-selector">
+    <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
+    <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
 </div>
 
-<script>
-    // TU CLAVE API (La he puesto aquí para que sea automático)
-    const API_KEY = "AIzaSyASf_PIq7es0iPVt" + "VUMt8Kn1Ll3qSpQQxg"; 
+<div class="mode-selector">
+    <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
+    <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
+</div>
+    </div>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    
+    <div class="topic-grid" id="topicGrid"></div>
 
-    function log(msg, isError = false) {
-        const logDiv = document.getElementById('log');
-        if (logDiv.innerHTML === "Esperando...") logDiv.innerHTML = "";
-        const color = isError ? "#f87171" : "#4ade80";
-        logDiv.innerHTML += `<div style="color:${color}; margin-bottom:5px;">> ${msg}</div>`;
-    }
+    <div id="exerciseArea" style="display:none;">
+      <div class="question-card">
+        <div id="qDisplay" style="font-weight: 700;">Selecciona un tema...</div>
+        <button class="audio-btn" onclick="speakText()">🔊 Escuchar Pregunta</button>
+      </div>
+      
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
+        💡 ¿Qué debo incluir? / What should I include? (Key Points)
+      </button>
+      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+      <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
+      
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
+        👂 Escuchar mi respuesta
+      </button>
 
-    async function checkModels() {
-        document.getElementById('log').innerHTML = "⏳ Conectando con Google...";
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Corregir Respuesta</button>
+    </div>
+
+    <div id="result">
+      <div class="student-response-box"><strong>Dijiste:</strong> <span id="userResponseText"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbES" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbEN" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsList"></div>
+      </div>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Otro Tema</button>
+    </div>
+  </div>
+
+  <div id="sectionRoleplay" style="display:none;">
+    <div class="rp-selector">
+      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">RP 1 (Erasmus)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">RP 2 (Laptop)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">RP 3 (Camper)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">RP 4 (Plastics)</div>
+      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">RP 5 (Breakdown)</div>
+    </div>
+
+    <div id="rpArea" style="display:none;">
+      <div id="rpContext" class="question-card" style="margin-bottom:15px; font-weight:700;"></div>
+      
+      <div id="rpChat" class="rp-chat-window"></div>
+      
+      <div class="rp-controls">
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="proximaIntervencion()">▶️ Play Examiner Audio</button>
         
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
-            
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`Error ${response.status}: ${errText}`);
-            }
+        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        
+        <div style="display:flex; gap:10px;">
+          <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fef3c7; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Ver Sugerencia</button>
+          <button id="rpSendBtn" class="btn-main" style="flex:1; margin:0;" onclick="enviarRespuestaRP()" disabled>Enviar 📤</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            const data = await response.json();
-            
-            if (data.models) {
-                log("✅ ¡CONEXIÓN ÉXITOSA! Estos son tus modelos:");
-                log("------------------------------------------------");
-                
-                let found = false;
-                data.models.forEach(m => {
-                    // Solo mostramos los que sirven para generar texto
-                    if(m.supportedGenerationMethods.includes("generateContent")) {
-                        const name = m.name.replace('models/', '');
-                        log(`🔹 ${name}`);
-                        found = true;
-                    }
-                });
+  <div class="footer-section">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <h3 style="margin: 0 0 5px 0;">David Martín</h3>
+    <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="support-box">
+        <span class="support-title">🚀 A Student-Focused Project</span>
+        <p class="support-text">
+            I created LanguagePrep to help you feel confident in your oral exams. 
+            It's a free tool driven by passion, but running advanced AI does come with monthly costs.
+            <br><br>
+            If you find it useful, your support means the world. It helps keep the site running and allows me to 
+            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
+        </p>
+    </div>
 
-                if(!found) log("⚠️ No se encontraron modelos de texto.");
-                log("------------------------------------------------");
-                log("CONCLUSIÓN: Usa uno de los nombres de arriba en tu código.");
+    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">
+       ☕ Support the Project
+    </a>
 
-            } else {
-                log("❌ La respuesta de Google no tiene lista de modelos.", true);
-            }
-        } catch (error) {
-            log(`❌ ERROR FATAL: ${error.message}`, true);
-        }
-    }
-</script>
+    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion..." required
+                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" 
+                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
+          Send Feedback
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>

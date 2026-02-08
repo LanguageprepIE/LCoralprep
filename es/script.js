@@ -25,12 +25,29 @@ let mockQuestions = [];
 let mockIndex = 0;      
 
 // Base de datos de Conversación (15 Temas) + CRITERIOS GRAMATICALES ESPECÍFICOS
+// ===========================================
+// BASE DE DATOS (DATA) - ACTUALIZADA TEMA 1
+// ===========================================
 const DATA = [
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
     HL: "Háblame de ti. Describe tu personalidad y tu físico.",
-    check_HL: "Nombre, Edad, Cumpleaños, Físico (Ser + Adjetivos), Personalidad (Ser + 3 adjetivos: simpático, trabajador...)."
+    check_HL: "Nombre, Edad, Cumpleaños, Físico (Ser + Adjetivos), Personalidad (Ser + 3 adjetivos: simpático, trabajador...).",
+    // --- NUEVO: CHECKPOINTS INTERACTIVOS ---
+    checkpoints_OL: [
+      "Say your name (Me llamo...)",
+      "Say your age (Tengo... años)",
+      "Birthday (Mi cumpleaños es...)",
+      "Physical description (Soy alto/bajo...)"
+    ],
+    checkpoints_HL: [
+      "Personality adjectives (Ser + adjetivo)",
+      "Ser vs Estar (Physical vs Mood)",
+      "Reflexive Verbs (Routine/Feelings)",
+      "Complex connectors (Sin embargo, Además...)",
+      "Idiom: Ser uña y carne (To be close)"
+    ]
   },
   { 
     title: "2. Mi familia", 
@@ -472,6 +489,117 @@ function readMyInput() {
     utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
 }
+// ===========================================
+// PARTE 3: MODO FORMACIÓN (STUDY MODE AI)
+// ===========================================
 
+function toggleStudyMode() {
+    const container = document.getElementById('studyContainer');
+    // Si no existe el contenedor, lo creamos dinámicamente
+    if (!container) {
+        initStudyHTML();
+        return; // Al crearlo ya se muestra
+    }
+    
+    if (container.style.display === 'none') {
+        renderCheckpoints();
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+// Genera el HTML necesario si no está en el index
+function initStudyHTML() {
+    const div = document.createElement('div');
+    div.id = 'studyContainer';
+    div.className = 'study-box';
+    div.style.display = 'none';
+    div.innerHTML = `
+        <h3>📚 Study Mode: ${currentTopic ? currentTopic.title : 'Select a topic'}</h3>
+        <p class="small-text">Click on a concept to get an instant explanation.</p>
+        <div id="checkpointsList" class="checklist-grid"></div>
+        <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
+    `;
+    // Lo insertamos antes del área de ejercicio
+    const parent = document.getElementById('exerciseArea');
+    parent.parentNode.insertBefore(div, parent);
+    
+    toggleStudyMode();
+}
+
+function renderCheckpoints() {
+    if (!currentTopic) return;
+    
+    const list = document.getElementById('checkpointsList');
+    list.innerHTML = "";
+    
+    // Seleccionamos la lista según el nivel actual (OL o HL)
+    // Si no he definido checkpoints para un tema, uso una lista vacía
+    const points = currentLevel === 'HL' 
+        ? (currentTopic.checkpoints_HL || ["No checklist availabe for this topic yet."]) 
+        : (currentTopic.checkpoints_OL || ["No checklist availabe for this topic yet."]);
+
+    points.forEach(point => {
+        const btn = document.createElement('button');
+        btn.className = 'check-btn';
+        btn.innerHTML = `❓ ${point}`;
+        btn.onclick = () => askAIConcept(point);
+        list.appendChild(btn);
+    });
+}
+
+async function askAIConcept(concept) {
+    const box = document.getElementById('aiExplanationBox');
+    box.style.display = 'block';
+    box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
+
+    const prompt = `
+        ACT AS: Expert Leaving Cert Spanish Teacher.
+        AUDIENCE: English-speaking students in Ireland.
+        
+        TOPIC: "${currentTopic.title}".
+        CONCEPT TO EXPLAIN: "${concept}".
+
+        INSTRUCTIONS:
+        1. Explain the grammar/vocabulary rule briefly **IN ENGLISH**.
+        2. Keep it under 50 words. Direct and simple.
+        3. Provide 2 short examples in Spanish with English translations.
+
+        OUTPUT FORMAT:
+        <p><b>Explanation:</b> [English text]</p>
+        <ul>
+            <li>🇪🇸 [Spanish example] <br> 🇬🇧 <i>(English translation)</i></li>
+            <li>🇪🇸 [Spanish example] <br> 🇬🇧 <i>(English translation)</i></li>
+        </ul>
+    `;
+
+    try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        const d = await r.json();
+        const text = d.candidates[0].content.parts[0].text;
+        
+        // Limpiamos formato markdown si la IA lo pone
+        const cleanText = text.replace(/```html|```/g, "").trim();
+        
+        box.innerHTML = `
+            <div style="display:flex; justify-content:space-between;">
+                <strong>💡 Concept: ${concept}</strong>
+                <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
+            </div>
+            <hr>
+            ${cleanText}
+        `;
+
+    } catch (e) {
+        console.error(e);
+        box.innerText = "⚠️ Error connecting to AI. Try again.";
+    }
+}
 // Inicialización
 initConv();

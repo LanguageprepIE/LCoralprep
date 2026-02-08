@@ -595,28 +595,27 @@ async function askAIConcept(concept) {
     box.style.display = 'block'; 
     box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
 
-    // 1. DETECTAMOS SI ES LA PREGUNTA DE SER/ESTAR
+    // Detectamos si es Ser/Estar
     const isSerEstar = concept.includes("Ser") || concept.includes("Estar");
     
-    // 2. INSTRUCCIÓN "SUAVE" (Mejor aceptada por la IA)
-    // En lugar de "CRITICAL DO NOT", usamos "Note: Please focus on..."
-    let extraInstruction = "";
+    // Instrucción específica para corregir el error pedagógico
+    let specialInstruction = "";
     if (isSerEstar) {
-        extraInstruction = "Note: Define 'Ser' as Identity/Characteristics and 'Estar' as State/Condition. Avoid the 'permanent/temporary' simplification as it is inaccurate.";
+        specialInstruction = "IMPORTANT: Explain 'Ser' as Identity/Characteristics and 'Estar' as State/Condition. Do NOT use the terms 'permanent' or 'temporary'.";
     }
 
     const prompt = `
         ACT AS: Expert Leaving Cert Spanish Teacher.
         AUDIENCE: English-speaking students in Ireland.
         
-        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
+        TOPIC: "${currentTopic ? currentTopic.title : 'General Grammar'}".
         CONCEPT TO EXPLAIN: "${concept}".
 
         INSTRUCTIONS:
         1. Explain the grammar/vocabulary rule briefly **IN ENGLISH**.
         2. Keep it under 50 words. Direct and simple.
         3. Provide 2 short examples in Spanish with English translations.
-        ${extraInstruction}
+        4. ${specialInstruction}
 
         OUTPUT FORMAT:
         <p><b>Explanation:</b> [English text]</p>
@@ -633,18 +632,14 @@ async function askAIConcept(concept) {
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
 
-        // Verificamos si la respuesta de la red es correcta
+        // SI FALLA, TE DIRÁ EL CÓDIGO EXACTO
         if (!r.ok) {
+            if(r.status === 429) throw new Error("Too fast! (Rate Limit 429). Wait 1 min.");
+            if(r.status === 503) throw new Error("AI is Overloaded (503). Try again.");
             throw new Error(`API Error: ${r.status}`);
         }
 
         const d = await r.json();
-        
-        // Verificamos si la IA nos ha dado una respuesta válida
-        if (!d.candidates || d.candidates.length === 0) {
-             throw new Error("AI returned no content");
-        }
-
         const text = d.candidates[0].content.parts[0].text;
         const cleanText = text.replace(/```html|```/g, "").trim();
         
@@ -658,8 +653,9 @@ async function askAIConcept(concept) {
         `;
 
     } catch (e) {
-        console.error("Detalle del error:", e); // Esto nos ayudará a ver qué pasa en la consola
-        box.innerHTML = `<div style="color:#b91c1c; font-weight:bold;">⚠️ Error: ${e.message || "Connection failed"}. <br><span style="font-size:0.8rem; font-weight:normal;">Try clicking again in a few seconds.</span></div>`;
+        console.error(e);
+        // Mostramos el error en rojo para que sepas qué pasa
+        box.innerHTML = `<p style="color:#dc2626; font-weight:bold;">⚠️ ${e.message}</p>`;
     }
 }
 // Inicialización

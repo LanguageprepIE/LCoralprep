@@ -100,3 +100,52 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     line-height: 1.5;
     margin: 0;
 }
+/* MODO ESTUDIO */
+.study-box {
+    background: #f0fdf4; /* Verde muy clarito */
+    border: 2px solid #16a34a;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.check-btn {
+    background: white;
+    border: 1px solid #16a34a;
+    color: #15803d;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    text-align: left;
+}
+
+.check-btn:hover {
+    background: #dcfce7;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ai-box {
+    margin-top: 15px;
+    background: white;
+    border-left: 4px solid #9333ea; /* Borde morado para diferenciar IA */
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-size: 0.95rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

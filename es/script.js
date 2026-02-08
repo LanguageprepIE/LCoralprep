@@ -32,21 +32,28 @@ const DATA = [
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
-    HL: "Háblame de ti. Describe tu personalidad y tu físico.",
-    check_HL: "Nombre, Edad, Cumpleaños, Físico (Ser + Adjetivos), Personalidad (Ser + 3 adjetivos: simpático, trabajador...).",
-    // --- NUEVO: CHECKPOINTS INTERACTIVOS ---
+    HL: "Háblame de ti. Describe tu personalidad y tu físico con detalle.",
+    check_HL: "Nombre, Edad, Cumpleaños, Celebración típica, Físico detallado, Personalidad, Conectores.",
+    
+    // BÁSICO (OL)
     checkpoints_OL: [
-      "Say your name (Me llamo...)",
-      "Say your age (Tengo... años)",
-      "Birthday (Mi cumpleaños es...)",
-      "Physical description (Soy alto/bajo...)"
+      "Datos Básicos (Nombre, Edad...)",
+      "El Cumpleaños (Fechas)",
+      "Descripción Física (Verbos)"
     ],
+    
+    // AVANZADO (HL)
     checkpoints_HL: [
-      "Personality adjectives (Ser + adjetivo)",
-      "Ser vs Estar (Physical vs Mood)",
-      "Reflexive Verbs (Routine/Feelings)",
-      "Complex connectors (Sin embargo, Además...)",
-      "Idiom: Ser uña y carne (To be close)"
+      "Personalidad (Adjetivos)",
+      "Ser vs Estar (Matices)",
+      "Conectores (Sin embargo...)"
+    ],
+
+    // 🚀 NIVEL TOP (H1 / NATIVE)
+    checkpoints_TOP: [
+      "✨ Idiom: Tener don de gentes",
+      "✨ Structure: Soler + Infinitivo (Habits)",
+      "✨ Vocab: Virtudes y Defectos"
     ]
   },
   { 
@@ -534,19 +541,47 @@ function renderCheckpoints() {
     const list = document.getElementById('checkpointsList');
     list.innerHTML = "";
     
-    // Seleccionamos la lista según el nivel actual (OL o HL)
-    // Si no he definido checkpoints para un tema, uso una lista vacía
-    const points = currentLevel === 'HL' 
-        ? (currentTopic.checkpoints_HL || ["No checklist availabe for this topic yet."]) 
-        : (currentTopic.checkpoints_OL || ["No checklist availabe for this topic yet."]);
+    // Función auxiliar para pintar secciones
+    const createSection = (title, items, cssClass) => {
+        if(!items || items.length === 0) return;
+        
+        const h = document.createElement('h4');
+        h.innerText = title;
+        h.style.margin = "15px 0 5px 0";
+        h.style.color = "#374151";
+        h.style.borderBottom = "1px solid #e5e7eb";
+        h.style.paddingBottom = "5px";
+        list.appendChild(h);
+        
+        const grid = document.createElement('div');
+        grid.className = 'checklist-grid';
+        
+        items.forEach(point => {
+            const btn = document.createElement('button');
+            btn.className = `check-btn ${cssClass}`; 
+            // Si es TOP ponemos estrellitas, si no interrogación
+            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
+            btn.onclick = () => askAIConcept(point);
+            grid.appendChild(btn);
+        });
+        list.appendChild(grid);
+    };
 
-    points.forEach(point => {
-        const btn = document.createElement('button');
-        btn.className = 'check-btn';
-        btn.innerHTML = `❓ ${point}`;
-        btn.onclick = () => askAIConcept(point);
-        list.appendChild(btn);
-    });
+    // LÓGICA DE CASCADA (AQUÍ ESTÁ LA CORRECCIÓN)
+    
+    // 1. Siempre mostramos los básicos (tanto para OL como para HL)
+    // Porque un alumno de HL también necesita saber decir su edad y nombre.
+    createSection("🧱 Cimientos (Lo Básico)", currentTopic.checkpoints_OL, "btn-ol");
+
+    // 2. Si es HL, añadimos las capas extra
+    if (currentLevel === 'HL') {
+        createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
+        
+        // 3. Y si tenemos cosas TOP, las mostramos al final como "Bonus"
+        if(currentTopic.checkpoints_TOP) {
+            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
+        }
+    }
 }
 
 async function askAIConcept(concept) {

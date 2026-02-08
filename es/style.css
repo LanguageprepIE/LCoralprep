@@ -21,21 +21,20 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
 /* SECTION: CONVERSATION STYLES */
-/* Contenedor principal de botones (Nivel + Modo) */
-.level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; align-items: stretch; }
 
-/* Botones de Nivel (OL/HL) */
+/* FILA 1: Botones de Nivel (OL/HL) */
+.level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; align-items: stretch; }
+
 .level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
 .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .level-btn.hl.active { color: var(--secondary); }
 
-/* SEPARADOR VERTICAL (Nuevo) */
-.separator { width: 1px; background: #cbd5e1; margin: 5px 8px; }
+/* FILA 2: Botones de Modo (Exam/Study) - NUEVO */
+.mode-selector { display: flex; background: #f3f4f6; padding: 5px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e5e7eb; gap: 5px; }
 
-/* BOTONES DE MODO (Exam/Study) - Estilo Morado */
-.mode-btn { flex: 1; padding: 10px 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
-.mode-btn:hover { background: #f3e8ff; color: #7c3aed; }
-.mode-btn.active { background: white; color: #7c3aed; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #f3e8ff; }
+.mode-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.9rem; color: #64748b; background: transparent; transition: all 0.2s ease; }
+.mode-btn:hover { background: #ede9fe; color: #7c3aed; }
+.mode-btn.active { background: white; color: #7c3aed; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #ddd6fe; }
 
 
 .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); transition: transform 0.2s; }
@@ -88,14 +87,14 @@ textarea:focus { border-color: var(--secondary); outline: none; }
 .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.2s; }
 .revolut-btn:hover { transform: translateY(-2px); }
 
-/* SUPPORT BOX STYLES */
+/* SUPPORT BOX STYLES (CORREGIDO) */
 .support-box {
-    background: #fffbeb; /* Fondo amarillo muy suave */
-    border: 1px solid #fcd34d; /* Borde dorado */
+    background: #fffbeb; 
+    border: 1px solid #fcd34d; 
     border-radius: 12px;
     padding: 15px;
-    margin: 20px auto 15px auto; /* Centrado */
-    max-width: 90%;
+    margin: 20px auto 15px auto; 
+    max-width: 500px; /* ⬅️ ESTE FUE EL CAMBIO CLAVE PARA EL CUADRO AMARILLO */
     text-align: center;
 }
 
@@ -111,6 +110,7 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     margin-bottom: 20px;
 }
 
+/* Nota: .checklist-grid ahora se usa solo dentro de las secciones, no en el contenedor principal */
 .checklist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -159,43 +159,4 @@ textarea:focus { border-color: var(--secondary); outline: none; }
 .btn-top:hover {
     background: #fcd34d; /* Amarillo más intenso al pasar ratón */
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); /* Resplandor dorado */
-}
-/* === NUEVA FILA PARA LOS MODOS === */
-
-.mode-selector {
-    display: flex;
-    background: #f3f4f6; /* Un gris un poco diferente para distinguir */
-    padding: 5px;
-    border-radius: 12px;
-    margin-bottom: 25px; /* Espacio antes de empezar los ejercicios */
-    border: 1px solid #e5e7eb;
-    gap: 5px; /* Espacio entre los dos botones */
-}
-
-/* Estilo Base de los botones de Modo */
-.mode-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #64748b;
-    background: transparent;
-    transition: all 0.2s ease;
-}
-
-/* Hover */
-.mode-btn:hover {
-    background: #ede9fe; /* Morado muy clarito */
-    color: #7c3aed;
-}
-
-/* ACTIVO (Seleccionado) */
-.mode-btn.active {
-    background: white;
-    color: #7c3aed; /* Morado intenso */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border: 1px solid #ddd6fe;
 }

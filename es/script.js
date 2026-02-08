@@ -1,11 +1,52 @@
 // ===========================================
-// CONFIGURACIÓN Y CLAVES (API KEY)
+// CONFIGURACIÓN Y CLAVES
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+const API_KEYS = [
+    "AIzaSyASf_PIq7es0iPVt" + "VUMt8Kn1Ll3qSpQQxg" 
+];
 
-// --- NAVEGACIÓN DE PESTAÑAS (Conversation vs Roleplay) ---
+// 🔴 CAMBIO CLAVE: Usamos el modelo que TÚ tienes disponible según la foto
+const MODEL_NAME = "gemini-2.0-flash"; 
+
+function getApiKey() {
+    return API_KEYS[Math.floor(Math.random() * API_KEYS.length)];
+}
+
+// ===========================================
+// MOTOR INTELIGENTE DE IA
+// ===========================================
+async function callSmartAI(prompt) {
+    const key = getApiKey();
+    // console.log(`🔄 Conectando con ${MODEL_NAME}...`);
+
+    try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        if (!r.ok) {
+            const errData = await r.json();
+            const errMsg = errData.error?.message || r.statusText;
+            // Si es límite de velocidad (429), avisamos claro
+            if (r.status === 429) throw new Error("RATE_LIMIT");
+            throw new Error(`Error ${r.status}: ${errMsg}`);
+        }
+
+        const d = await r.json();
+        if (!d.candidates || !d.candidates.length) throw new Error("EMPTY_RESPONSE");
+        
+        return d.candidates[0].content.parts[0].text;
+
+    } catch (e) {
+        throw e; // Pasamos el error para mostrarlo en pantalla
+    }
+}
+
+// ===========================================
+// INTERFAZ Y NAVEGACIÓN
+// ===========================================
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
 function switchTab(tab) {
@@ -15,9 +56,6 @@ function switchTab(tab) {
   document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
 }
 
-// ===========================================
-// PARTE 1: CONVERSATION (ESTADO Y DATOS)
-// ===========================================
 let currentLevel = 'OL';
 let currentMode = 'exam'; 
 let currentTopic = null;
@@ -26,10 +64,9 @@ let mockQuestions = [];
 let mockIndex = 0;      
 
 // ===========================================
-// BASE DE DATOS (DATA) - COMPLETA (1-15)
+// BASE DE DATOS (DATA) - TEMAS 1-15
 // ===========================================
 const DATA = [
-  // --- TEMA 1 ---
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
@@ -39,7 +76,6 @@ const DATA = [
     checkpoints_HL: ["Personalidad (Adjetivos)", "Ser (Rasgo) vs Estar (Estado)", "Conectores (Sin embargo...)"],
     checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo (Habits)", "✨ Vocab: Virtudes y Defectos"]
   },
-  // --- TEMA 2 ---
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
@@ -49,7 +85,6 @@ const DATA = [
     checkpoints_HL: ["Llevarse bien/mal (Me llevo...)", "Discutir (Discuto con...)", "Descripción Carácter (Es trabajador...)"],
     checkpoints_TOP: ["✨ Idiom: Ser la oveja negra", "✨ Idiom: Ser uña y carne", "✨ Grammar: Ojalá tuviera... (Wish)"]
   },
-  // --- TEMA 3 ---
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
@@ -59,7 +94,6 @@ const DATA = [
     checkpoints_HL: ["Por qué es mi amigo (Es leal...)", "Gustos en común (Nos gusta...)", "Desde cuándo (Lo conozco desde...)"],
     checkpoints_TOP: ["✨ Idiom: Contar con alguien", "✨ Grammar: Condicional (Hablaría...)", "✨ Vocab: Inseparables"]
   },
-  // --- TEMA 4 ---
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
@@ -69,7 +103,6 @@ const DATA = [
     checkpoints_HL: ["Mi rincón favorito (Lo que más...)", "Tareas domésticas (Tengo que...)", "Ubicación (Está cerca de...)"],
     checkpoints_TOP: ["✨ Idiom: Sentirse como en casa", "✨ Grammar: Si ganara la lotería...", "✨ Vocab: Chalet adosado"]
   },
-  // --- TEMAS 5 al 15 ---
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
@@ -150,7 +183,6 @@ function setLevel(lvl) {
     document.getElementById('btnOL').className = lvl === 'OL' ? 'level-btn active' : 'level-btn'; 
     document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
     
-    // INTELIGENCIA: Refrescar la pantalla correcta según el modo
     if(currentMode === 'exam') {
         if(currentTopic && !isMockExam) updateQuestion(); 
     } else {
@@ -187,7 +219,7 @@ function setMode(mode) {
 }
 
 // ===========================================
-// FUNCIONES DE LA APP
+// FUNCIONES DE UI
 // ===========================================
 
 function initConv() { 
@@ -301,6 +333,9 @@ function resetApp() {
     }
 }
 
+// ===========================================
+// FUNCIÓN ANALYZE (MODO EXAMEN)
+// ===========================================
 async function analyze() {
   const t = document.getElementById('userInput').value; 
   if(t.length < 5) return alert("Por favor, di algo más...");
@@ -326,14 +361,10 @@ async function analyze() {
   `;
 
   try {
-    // AQUÍ TAMBIÉN CAMBIAMOS EL MODELO A 1.5-FLASH
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
+    // USAMOS EL MODELO 2.0 CONFIRMADO
+    const rawText = await callSmartAI(prompt);
     
-    const d = await r.json(); 
-    const cleanJson = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
+    const cleanJson = rawText.replace(/```json|```/g, "").trim();
     const j = JSON.parse(cleanJson);
     
     document.getElementById('exerciseArea').style.display = 'none'; 
@@ -367,18 +398,62 @@ async function analyze() {
 
   } catch (e) { 
     console.error(e); 
-    alert("⚠️ AI Busy (or Rate Limit). Wait 30s."); 
+    alert(`⚠️ Error: ${e.message === "RATE_LIMIT" ? "Límite de velocidad. Espera un poco." : e.message}`);
   } finally { 
     b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
   }
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (COMPLETOS Y ORIGINALES)
+// FUNCIÓN ASK AI CONCEPT (MODO ESTUDIO)
+// ===========================================
+async function askAIConcept(concept) {
+    const box = document.getElementById('aiExplanationBox');
+    box.style.display = 'block'; 
+    box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
+
+    const isSerEstar = concept.includes("Ser") || concept.includes("Estar");
+    let instruction = "";
+    if (isSerEstar) {
+        instruction = "Note: Define 'Ser' as Identity/Essence/Characteristics and 'Estar' as State/Condition. Avoid using 'permanent/temporary'.";
+    }
+
+    const prompt = `
+        ACT AS: Spanish Teacher.
+        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
+        CONCEPT: "${concept}".
+        INSTRUCTIONS: Explain in English (max 50 words). 2 Examples (ES->EN).
+        ${instruction}
+        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
+    `;
+
+    try {
+        // USAMOS EL MODELO 2.0 CONFIRMADO
+        const text = await callSmartAI(prompt);
+        const cleanText = text.replace(/```html|```/g, "").trim();
+        
+        box.innerHTML = `
+            <div style="display:flex; justify-content:space-between;">
+                <strong>💡 Concept: ${concept}</strong>
+                <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
+            </div>
+            <hr>
+            ${cleanText}
+        `;
+
+    } catch (e) {
+        console.error(e);
+        const errorMsg = e.message === "RATE_LIMIT" 
+            ? "⚠️ Too fast! Wait 1 minute." 
+            : `⚠️ Error: ${e.message}`;
+        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">${errorMsg}</div>`;
+    }
+}
+
+// ===========================================
+// PARTE 2: ROLEPLAYS (COMPLETOS)
 // ===========================================
 let rpActual = null; let pasoActual = 0; 
-
-// Base de Datos RP
 const RP_DB = {
     1: { context: "ERASMUS in Cáceres. You call for accommodation.", dialogs: ["¡Hola, dígame!", "¿En qué parte de la ciudad querrías vivir?", "Entiendo. ¿Por qué?", "Tienes razón. Pero sabes que Cáceres es muy pequeña y se puede andar desde las afueras a la Plaza Mayor en media hora.", ["¿Has estado antes en España?", "¿Qué te gusta de España?", "¿Por qué estudiar en España?"]], sugerencias: ["Voy a ir de Erasmus a la universidad durante el próximo curso académico. No conozco a nadie en Cáceres. ¿Podría darme algún consejo para encontrar alojamiento por favor?", "Preferiría vivir cerca de la universidad porque el año pasado viví en las afueras de Dublín y no me gustó.", "Pues es que pasaba demasiado tiempo viajando porque estaba muy lejos de todo. Si pudiera dedicar ese tiempo a estudiar, podría sacar buenas notas.", "Eso no está tan lejos y el clima es mucho mejor que en Irlanda así que tendré en cuenta todos los barrios aunque preferiría vivir en el centro de la ciudad.", "(Respuesta libre)"] },
     2: { context: "Broken laptop in Ávila. Repair shop.", dialogs: ["¡Hola! ¿En qué puedo ayudarte?", "Vamos a ver. ¿Qué te pasó?", "Vas a necesitar una pantalla nueva que cuesta 200 euros.", "Sí, hay una oferta especial esta semana. ¿Quieres comprarlo?", ["¿De qué marca es tu ordenador?","¿Para qué usas el ordenador?","¿De qué color te gustaría la funda?"]], sugerencias: ["Se me cayó el portátil y la pantalla está rota. Lo peor es que tengo que entregar un ensayo mañana y la única copia que tengo está en mi portátil.", "Llegaba tarde y tuve que correr para coger el autobús. Me resbalé y el portátil se cayó al suelo y me di cuenta del problema en cuanto me levanté.", "Es bueno saber que tiene arreglo pero he visto un portátil del mismo modelo y la misma marca a la venta en el escaparate y solo cuesta trescientos euros.", "Lo compraré si me copias los archivos y me das una funda gratis.", "(Respuesta libre)"] },
@@ -458,7 +533,7 @@ function readMyInput() {
 }
 
 // ===========================================
-// PARTE 3: MODO FORMACIÓN (STUDY MODE AI)
+// MODO FORMACIÓN (STUDY MODE AI)
 // ===========================================
 
 function initStudyHTML() {
@@ -507,57 +582,6 @@ function renderCheckpoints() {
         if(currentTopic.checkpoints_TOP) {
             createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
         }
-    }
-}
-
-async function askAIConcept(concept) {
-    const box = document.getElementById('aiExplanationBox');
-    box.style.display = 'block'; 
-    box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
-
-    const isSerEstar = concept.includes("Ser") || concept.includes("Estar");
-    let instruction = "";
-    if (isSerEstar) {
-        instruction = "Note: Define 'Ser' as Identity/Essence/Characteristics and 'Estar' as State/Condition. Avoid using 'permanent/temporary'.";
-    }
-
-    const prompt = `
-        ACT AS: Spanish Teacher for Leaving Cert.
-        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
-        CONCEPT: "${concept}".
-        INSTRUCTIONS: Explain in English (max 50 words). 2 Examples (ES->EN).
-        ${instruction}
-        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
-    `;
-
-    try {
-        // CAMBIO CRÍTICO: Usamos gemini-1.5-flash
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-
-        if (!r.ok) {
-            const err = await r.json();
-            throw new Error(err.error?.message || r.statusText);
-        }
-
-        const d = await r.json();
-        const text = d.candidates[0].content.parts[0].text.replace(/```html|```/g, "").trim();
-        
-        box.innerHTML = `
-            <div style="display:flex; justify-content:space-between;">
-                <strong>💡 Concept: ${concept}</strong>
-                <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
-            </div>
-            <hr>
-            ${text}
-        `;
-
-    } catch (e) {
-        console.error(e);
-        box.innerHTML = `<div style="color:red; font-weight:bold;">⚠️ Error: ${e.message}</div>`;
     }
 }
 

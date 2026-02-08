@@ -29,7 +29,7 @@ let mockIndex = 0;
 // BASE DE DATOS (DATA) - COMPLETA (1-15)
 // ===========================================
 const DATA = [
-  // --- TEMA 1: ACTUALIZADO ---
+  // --- TEMA 1 ---
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
@@ -39,7 +39,7 @@ const DATA = [
     checkpoints_HL: ["Personalidad (Adjetivos)", "Ser (Rasgo) vs Estar (Estado)", "Conectores (Sin embargo...)"],
     checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo (Habits)", "✨ Vocab: Virtudes y Defectos"]
   },
-  // --- TEMA 2: ACTUALIZADO ---
+  // --- TEMA 2 ---
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
@@ -49,7 +49,7 @@ const DATA = [
     checkpoints_HL: ["Llevarse bien/mal (Me llevo...)", "Discutir (Discuto con...)", "Descripción Carácter (Es trabajador...)"],
     checkpoints_TOP: ["✨ Idiom: Ser la oveja negra", "✨ Idiom: Ser uña y carne", "✨ Grammar: Ojalá tuviera... (Wish)"]
   },
-  // --- TEMA 3: ACTUALIZADO ---
+  // --- TEMA 3 ---
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
@@ -59,7 +59,7 @@ const DATA = [
     checkpoints_HL: ["Por qué es mi amigo (Es leal...)", "Gustos en común (Nos gusta...)", "Desde cuándo (Lo conozco desde...)"],
     checkpoints_TOP: ["✨ Idiom: Contar con alguien", "✨ Grammar: Condicional (Hablaría...)", "✨ Vocab: Inseparables"]
   },
-  // --- TEMA 4: ACTUALIZADO ---
+  // --- TEMA 4 ---
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
@@ -69,7 +69,7 @@ const DATA = [
     checkpoints_HL: ["Mi rincón favorito (Lo que más...)", "Tareas domésticas (Tengo que...)", "Ubicación (Está cerca de...)"],
     checkpoints_TOP: ["✨ Idiom: Sentirse como en casa", "✨ Grammar: Si ganara la lotería...", "✨ Vocab: Chalet adosado"]
   },
-  // --- TEMAS 5 al 15 (ORIGINALES RESTAURADOS) ---
+  // --- TEMAS 5 al 15 ---
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
@@ -147,8 +147,6 @@ const FUT_Q = ["¿Qué harás mañana?", "¿Qué planes tienes para el verano?",
 
 function setLevel(lvl) { 
     currentLevel = lvl; 
-    
-    // Actualizar botones
     document.getElementById('btnOL').className = lvl === 'OL' ? 'level-btn active' : 'level-btn'; 
     document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
     
@@ -156,30 +154,23 @@ function setLevel(lvl) {
     if(currentMode === 'exam') {
         if(currentTopic && !isMockExam) updateQuestion(); 
     } else {
-        renderCheckpoints(); // Si estamos en estudio, refrescar lista
+        renderCheckpoints(); 
     }
 }
 
 function setMode(mode) {
     currentMode = mode;
-
-    // 1. Actualizar botones visualmente
     document.getElementById('modeExam').className = mode === 'exam' ? 'mode-btn active' : 'mode-btn';
     document.getElementById('modeStudy').className = mode === 'study' ? 'mode-btn active' : 'mode-btn';
 
-    // 2. Controlar visibilidad
     const exerciseArea = document.getElementById('exerciseArea');
     const resultArea = document.getElementById('result'); 
     
-    // Asegurar que el contenedor de estudio existe
     let studyContainer = document.getElementById('studyContainer');
     if (!studyContainer) { initStudyHTML(); studyContainer = document.getElementById('studyContainer'); }
 
     if (mode === 'exam') {
-        // --- MODO EXAMEN ---
         studyContainer.style.display = 'none';
-        
-        // Si hay resultados previos, mostrarlos, si no, mostrar pregunta
         if (document.getElementById('scoreDisplay').innerText !== "") {
              resultArea.style.display = 'block';
              exerciseArea.style.display = 'none';
@@ -188,11 +179,10 @@ function setMode(mode) {
              resultArea.style.display = 'none';
         }
     } else {
-        // --- MODO ESTUDIO ---
         studyContainer.style.display = 'block';
         exerciseArea.style.display = 'none';
         resultArea.style.display = 'none';
-        renderCheckpoints(); // Pintar la lista
+        renderCheckpoints(); 
     }
 }
 
@@ -213,9 +203,7 @@ function initConv() {
             b.classList.add('active'); 
             currentTopic = item; 
             
-            // Al hacer clic, decidimos qué mostrar según el modo
             if(currentMode === 'study') {
-                // Actualizar título y lista
                 const titleEl = document.querySelector('#studyContainer h3');
                 if(titleEl) titleEl.innerText = "📚 Study Mode: " + item.title;
                 renderCheckpoints();
@@ -247,9 +235,7 @@ function speakText() {
 
 // === MOCK EXAM ===
 function startMockExam() { 
-    // Si estamos en modo estudio, forzamos cambio a modo examen
     setMode('exam');
-    
     isMockExam = true; 
     mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
@@ -280,10 +266,9 @@ function showMockQuestion() {
 function nextMockQuestion() { mockIndex++; showMockQuestion(); }
 
 function updateQuestion() { 
-    // Aseguramos visualización
     document.getElementById('exerciseArea').style.display = 'block'; 
     document.getElementById('result').style.display = 'none'; 
-    document.getElementById('studyContainer').style.display = 'none'; // Ocultar estudio si se activa esto
+    document.getElementById('studyContainer').style.display = 'none'; 
     
     document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
     document.getElementById('userInput').value = "";
@@ -341,7 +326,8 @@ async function analyze() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // AQUÍ TAMBIÉN CAMBIAMOS EL MODELO A 1.5-FLASH
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
@@ -379,8 +365,12 @@ async function analyze() {
         btnReset.innerText = "🔄 Try another topic"; btnReset.onclick = resetApp; 
     }
 
-  } catch (e) { console.error(e); alert("⚠️ AI Busy. Please wait 10s."); } 
-  finally { b.disabled = false; b.innerText = "✨ Evaluate Answer"; }
+  } catch (e) { 
+    console.error(e); 
+    alert("⚠️ AI Busy (or Rate Limit). Wait 30s."); 
+  } finally { 
+    b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
+  }
 }
 
 // ===========================================
@@ -388,7 +378,7 @@ async function analyze() {
 // ===========================================
 let rpActual = null; let pasoActual = 0; 
 
-// Base de Datos RP (Tus audios)
+// Base de Datos RP
 const RP_DB = {
     1: { context: "ERASMUS in Cáceres. You call for accommodation.", dialogs: ["¡Hola, dígame!", "¿En qué parte de la ciudad querrías vivir?", "Entiendo. ¿Por qué?", "Tienes razón. Pero sabes que Cáceres es muy pequeña y se puede andar desde las afueras a la Plaza Mayor en media hora.", ["¿Has estado antes en España?", "¿Qué te gusta de España?", "¿Por qué estudiar en España?"]], sugerencias: ["Voy a ir de Erasmus a la universidad durante el próximo curso académico. No conozco a nadie en Cáceres. ¿Podría darme algún consejo para encontrar alojamiento por favor?", "Preferiría vivir cerca de la universidad porque el año pasado viví en las afueras de Dublín y no me gustó.", "Pues es que pasaba demasiado tiempo viajando porque estaba muy lejos de todo. Si pudiera dedicar ese tiempo a estudiar, podría sacar buenas notas.", "Eso no está tan lejos y el clima es mucho mejor que en Irlanda así que tendré en cuenta todos los barrios aunque preferiría vivir en el centro de la ciudad.", "(Respuesta libre)"] },
     2: { context: "Broken laptop in Ávila. Repair shop.", dialogs: ["¡Hola! ¿En qué puedo ayudarte?", "Vamos a ver. ¿Qué te pasó?", "Vas a necesitar una pantalla nueva que cuesta 200 euros.", "Sí, hay una oferta especial esta semana. ¿Quieres comprarlo?", ["¿De qué marca es tu ordenador?","¿Para qué usas el ordenador?","¿De qué color te gustaría la funda?"]], sugerencias: ["Se me cayó el portátil y la pantalla está rota. Lo peor es que tengo que entregar un ensayo mañana y la única copia que tengo está en mi portátil.", "Llegaba tarde y tuve que correr para coger el autobús. Me resbalé y el portátil se cayó al suelo y me di cuenta del problema en cuanto me levanté.", "Es bueno saber que tiene arreglo pero he visto un portátil del mismo modelo y la misma marca a la venta en el escaparate y solo cuesta trescientos euros.", "Lo compraré si me copias los archivos y me das una funda gratis.", "(Respuesta libre)"] },
@@ -403,95 +393,52 @@ function seleccionarRP(id, btn) {
     btn.classList.add('active');
     document.getElementById('rpArea').style.display = "block";
     document.getElementById('rpContext').innerHTML = "Situation: " + RP_DB[id].context;
-    
-    // MENSAJE INICIAL DEL SISTEMA
     document.getElementById('rpChat').innerHTML = `<div class="bubble ex"><b>System:</b> Press "Start Examiner" to begin.</div>`;
-    
-    // BOTÓN DE "NEXT AUDIO" (LO USAMOS PARA EMPEZAR TAMBIÉN)
     const nextBtn = document.getElementById('nextAudioBtn');
-    nextBtn.style.display = "block";
-    nextBtn.innerText = "▶️ Start Examiner";
-    nextBtn.onclick = reproducirSiguienteAudio; // Vinculamos la nueva función
-    
+    nextBtn.style.display = "block"; nextBtn.innerText = "▶️ Start Examiner"; nextBtn.onclick = reproducirSiguienteAudio;
     document.getElementById('rpInput').disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
 }
 
 function reproducirSiguienteAudio() {
-    // 1. Ocultar botón de audio (ya lo has pulsado)
     document.getElementById('nextAudioBtn').style.display = "none";
-    
     if (pasoActual >= 5) {
-        document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed! Well done.</div>`;
+        document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
         return;
     }
-
     let dialogText = RP_DB[rpActual].dialogs[pasoActual];
     let audioFile = "";
-
-    // Lógica para elegir audio (aleatorio en el paso 5)
     if (Array.isArray(dialogText)) {
         const randomIndex = Math.floor(Math.random() * dialogText.length);
         dialogText = dialogText[randomIndex];
-        const letter = ['a','b','c'][randomIndex]; 
-        audioFile = `rp${rpActual}_5${letter}.mp3`;
-    } else {
-        audioFile = `rp${rpActual}_${pasoActual + 1}.mp3`;
-    }
+        audioFile = `rp${rpActual}_5${['a','b','c'][randomIndex]}.mp3`;
+    } else { audioFile = `rp${rpActual}_${pasoActual + 1}.mp3`; }
 
-    // 2. Mostrar burbuja de texto
     const chat = document.getElementById('rpChat');
-    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-
-    // 3. Reproducir audio (AQUÍ ES SEGURO PORQUE FUE INICIADO POR UN CLICK)
+    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`; chat.scrollTop = chat.scrollHeight;
     const audio = new Audio(audioFile);
-    audio.onerror = () => {
-        // Fallback TTS si falla el archivo
-        const u = new SpeechSynthesisUtterance(dialogText);
-        u.lang = 'es-ES';
-        u.onend = habilitarInput;
-        window.speechSynthesis.speak(u);
-    };
-    audio.onended = habilitarInput;
-    audio.play().catch(e => { console.log("Error play:", e); audio.onerror(); });
+    audio.onerror = () => { const u = new SpeechSynthesisUtterance(dialogText); u.lang = 'es-ES'; u.onend = habilitarInput; window.speechSynthesis.speak(u); };
+    audio.onended = habilitarInput; audio.play().catch(e => { audio.onerror(); });
 }
 
 function habilitarInput() {
     if(pasoActual < 5) { 
-        document.getElementById('rpInput').disabled = false;
-        document.getElementById('rpSendBtn').disabled = false;
-        document.getElementById('rpInput').focus();
-        document.getElementById('hintBtn').style.display = "block";
+        document.getElementById('rpInput').disabled = false; document.getElementById('rpSendBtn').disabled = false;
+        document.getElementById('rpInput').focus(); document.getElementById('hintBtn').style.display = "block";
         document.getElementById('rpInput').placeholder = "Type your reply...";
     }
 }
 
 function enviarRespuestaRP() {
-    const inp = document.getElementById('rpInput');
-    const txt = inp.value.trim(); if(!txt) return;
-    
-    const chat = document.getElementById('rpChat');
-    chat.innerHTML += `<div class="bubble st">${txt}</div>`;
-    chat.scrollTop = chat.scrollHeight;
-    
-    inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true;
-    document.getElementById('hintBtn').style.display = "none";
-    
+    const inp = document.getElementById('rpInput'); const txt = inp.value.trim(); if(!txt) return;
+    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${txt}</div>`; chat.scrollTop = chat.scrollHeight;
+    inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true; document.getElementById('hintBtn').style.display = "none";
     pasoActual++;
-    
     setTimeout(() => { 
         if(pasoActual < 5) { 
-            // AQUÍ ESTÁ EL CAMBIO CLAVE:
-            // En vez de llamar a proximaIntervencion() directamente,
-            // volvemos a mostrar el botón para que el usuario haga click.
             const nextBtn = document.getElementById('nextAudioBtn');
-            nextBtn.style.display = "block";
-            nextBtn.innerText = "🔊 Listen to Examiner";
-            nextBtn.onclick = reproducirSiguienteAudio;
-        } else { 
-            document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
-        }
+            nextBtn.style.display = "block"; nextBtn.innerText = "🔊 Listen to Examiner"; nextBtn.onclick = reproducirSiguienteAudio;
+        } else { document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; }
     }, 500);
 }
 
@@ -499,19 +446,14 @@ function mostrarSugerencia() {
     const sug = RP_DB[rpActual].sugerencias[pasoActual];
     if(sug) {
         const chat = document.getElementById('rpChat');
-        chat.innerHTML += `<div class="feedback-rp">💡 <b>Model Answer:</b> ${sug}</div>`;
-        chat.scrollTop = chat.scrollHeight;
+        chat.innerHTML += `<div class="feedback-rp">💡 <b>Model Answer:</b> ${sug}</div>`; chat.scrollTop = chat.scrollHeight;
     }
 }
 
-// Función para leer lo que escribo (ESPAÑOL)
 function readMyInput() {
-    const text = document.getElementById("userInput").value;
-    if (!text) return; 
+    const text = document.getElementById("userInput").value; if (!text) return; 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES'; 
-    utterance.rate = 0.9;
+    const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-ES'; utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
 }
 
@@ -531,8 +473,6 @@ function initStudyHTML() {
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
-    
-    // Lo insertamos antes del área de ejercicio
     const parent = document.getElementById('exerciseArea');
     parent.parentNode.insertBefore(div, parent);
 }
@@ -541,31 +481,19 @@ function renderCheckpoints() {
     const list = document.getElementById('checkpointsList');
     list.innerHTML = "";
     
-    // --- SEGURIDAD: SI NO HAY TEMA, AVISAR ---
     if (!currentTopic) {
         list.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
         return;
     }
     
-    // Función auxiliar para pintar secciones
     const createSection = (title, items, cssClass) => {
         if(!items || items.length === 0) return;
-        
         const h = document.createElement('h4');
-        h.innerText = title;
-        h.style.margin = "15px 0 5px 0";
-        h.style.color = "#374151";
-        h.style.borderBottom = "1px solid #e5e7eb";
-        h.style.paddingBottom = "5px";
+        h.innerText = title; h.style.margin = "15px 0 5px 0"; h.style.color = "#374151"; h.style.borderBottom = "1px solid #e5e7eb"; h.style.paddingBottom = "5px";
         list.appendChild(h);
-        
-        const grid = document.createElement('div');
-        grid.className = 'checklist-grid';
-        
+        const grid = document.createElement('div'); grid.className = 'checklist-grid';
         items.forEach(point => {
-            const btn = document.createElement('button');
-            btn.className = `check-btn ${cssClass}`; 
-            // Si es TOP ponemos estrellitas, si no interrogación
+            const btn = document.createElement('button'); btn.className = `check-btn ${cssClass}`; 
             btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
             btn.onclick = () => askAIConcept(point);
             grid.appendChild(btn);
@@ -573,17 +501,9 @@ function renderCheckpoints() {
         list.appendChild(grid);
     };
 
-    // LÓGICA DE CASCADA (AQUÍ ESTÁ LA CORRECCIÓN)
-    
-    // 1. Siempre mostramos los básicos (tanto para OL como para HL)
-    // Porque un alumno de HL también necesita saber decir su edad y nombre.
     createSection("🧱 Cimientos (Lo Básico)", currentTopic.checkpoints_OL, "btn-ol");
-
-    // 2. Si es HL, añadimos las capas extra
     if (currentLevel === 'HL') {
         createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
-        
-        // 3. Y si tenemos cosas TOP, las mostramos al final como "Bonus"
         if(currentTopic.checkpoints_TOP) {
             createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
         }
@@ -595,53 +515,36 @@ async function askAIConcept(concept) {
     box.style.display = 'block'; 
     box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
 
-    // Detectamos si es Ser/Estar
     const isSerEstar = concept.includes("Ser") || concept.includes("Estar");
-    
-    // Instrucción específica para corregir el error pedagógico
-    let specialInstruction = "";
+    let instruction = "";
     if (isSerEstar) {
-        specialInstruction = "IMPORTANT: Explain 'Ser' as Identity/Characteristics and 'Estar' as State/Condition. Do NOT use the terms 'permanent' or 'temporary'.";
+        instruction = "Note: Define 'Ser' as Identity/Essence/Characteristics and 'Estar' as State/Condition. Avoid using 'permanent/temporary'.";
     }
 
     const prompt = `
-        ACT AS: Expert Leaving Cert Spanish Teacher.
-        AUDIENCE: English-speaking students in Ireland.
-        
-        TOPIC: "${currentTopic ? currentTopic.title : 'General Grammar'}".
-        CONCEPT TO EXPLAIN: "${concept}".
-
-        INSTRUCTIONS:
-        1. Explain the grammar/vocabulary rule briefly **IN ENGLISH**.
-        2. Keep it under 50 words. Direct and simple.
-        3. Provide 2 short examples in Spanish with English translations.
-        4. ${specialInstruction}
-
-        OUTPUT FORMAT:
-        <p><b>Explanation:</b> [English text]</p>
-        <ul>
-            <li>🇪🇸 [Spanish example] <br> 🇬🇧 <i>(English translation)</i></li>
-            <li>🇪🇸 [Spanish example] <br> 🇬🇧 <i>(English translation)</i></li>
-        </ul>
+        ACT AS: Spanish Teacher for Leaving Cert.
+        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
+        CONCEPT: "${concept}".
+        INSTRUCTIONS: Explain in English (max 50 words). 2 Examples (ES->EN).
+        ${instruction}
+        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
     `;
 
     try {
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+        // CAMBIO CRÍTICO: Usamos gemini-1.5-flash
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
 
-        // SI FALLA, TE DIRÁ EL CÓDIGO EXACTO
         if (!r.ok) {
-            if(r.status === 429) throw new Error("Too fast! (Rate Limit 429). Wait 1 min.");
-            if(r.status === 503) throw new Error("AI is Overloaded (503). Try again.");
-            throw new Error(`API Error: ${r.status}`);
+            const err = await r.json();
+            throw new Error(err.error?.message || r.statusText);
         }
 
         const d = await r.json();
-        const text = d.candidates[0].content.parts[0].text;
-        const cleanText = text.replace(/```html|```/g, "").trim();
+        const text = d.candidates[0].content.parts[0].text.replace(/```html|```/g, "").trim();
         
         box.innerHTML = `
             <div style="display:flex; justify-content:space-between;">
@@ -649,14 +552,14 @@ async function askAIConcept(concept) {
                 <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
             </div>
             <hr>
-            ${cleanText}
+            ${text}
         `;
 
     } catch (e) {
         console.error(e);
-        // Mostramos el error en rojo para que sepas qué pasa
-        box.innerHTML = `<p style="color:#dc2626; font-weight:bold;">⚠️ ${e.message}</p>`;
+        box.innerHTML = `<div style="color:red; font-weight:bold;">⚠️ Error: ${e.message}</div>`;
     }
 }
+
 // Inicialización
 initConv();

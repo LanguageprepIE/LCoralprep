@@ -460,15 +460,21 @@ function readMyInput() {
 // PARTE 3: MODO FORMACIÓN (STUDY MODE AI)
 // ===========================================
 
+// CORRECCIÓN: Quitamos la clase 'checklist-grid' de aquí dentro
 function initStudyHTML() {
     const div = document.createElement('div');
-    div.id = 'studyContainer'; div.className = 'study-box'; div.style.display = 'none';
+    div.id = 'studyContainer';
+    div.className = 'study-box';
+    div.style.display = 'none';
+    
     div.innerHTML = `
         <h3>📚 Study Mode: ${currentTopic ? currentTopic.title : 'Select a topic'}</h3>
         <p class="small-text">Click on a concept to get an instant explanation.</p>
-        <div id="checkpointsList" class="checklist-grid"></div>
+        <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
+    
+    // Lo insertamos antes del área de ejercicio
     const parent = document.getElementById('exerciseArea');
     parent.parentNode.insertBefore(div, parent);
 }

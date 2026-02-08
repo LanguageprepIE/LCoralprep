@@ -42,18 +42,15 @@
 
   <div id="sectionConversation">
     
-    <div class="controls-container">
-        <div class="control-row">
-            <span class="label-text">LEVEL:</span>
-            <button id="btnOL" class="level-btn active" onclick="setLevel('OL')">Ordinary Level</button>
-            <button id="btnHL" class="level-btn" onclick="setLevel('HL')">Higher Level</button>
-        </div>
+    <div class="level-selector">
+    <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">OL</button>
+    <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">HL</button>
     
-        <div class="control-row">
-            <span class="label-text">MODE:</span>
-            <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
-            <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
-        </div>
+    <div style="width:1px; background:#cbd5e1; margin:0 10px;"></div>
+
+    <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam</button>
+    <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study</button>
+</div>
     </div>
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     

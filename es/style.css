@@ -149,3 +149,15 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+/* Estilo para botones TOP */
+.btn-top {
+    background: #fffbeb; /* Fondo amarillo muy claro */
+    border: 1px solid #f59e0b; /* Borde dorado */
+    color: #b45309;
+    font-weight: bold;
+}
+
+.btn-top:hover {
+    background: #fcd34d; /* Amarillo más intenso al pasar ratón */
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); /* Resplandor dorado */
+}

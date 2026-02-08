@@ -26,37 +26,110 @@ let mockQuestions = [];
 let mockIndex = 0;      
 
 // BASE DE DATOS (DATA) - NO TOCADA (Se mantienen todos los temas)
+// ===========================================
+// BASE DE DATOS (DATA) - TEMAS 1 al 4
+// ===========================================
 const DATA = [
   { 
     title: "1. Yo mismo", 
     OL: "¿Cómo te llamas? ¿Cuándo es tu cumpleaños? ¿Puedes describirte físicamente?", 
     HL: "Háblame de ti. Describe tu personalidad y tu físico con detalle.",
     check_HL: "Nombre, Edad, Cumpleaños, Celebración típica, Físico detallado, Personalidad, Conectores.",
-    // BÁSICO (OL)
-    checkpoints_OL: ["Datos Básicos (Nombre, Edad...)", "El Cumpleaños (Fechas)", "Descripción Física (Verbos)"],
-    // AVANZADO (HL)
-    checkpoints_HL: ["Personalidad (Adjetivos)", "Ser vs Estar (Matices)", "Conectores (Sin embargo...)"],
-    // 🚀 NIVEL TOP
-    checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo (Habits)", "✨ Vocab: Virtudes y Defectos"]
+    
+    checkpoints_OL: [
+      "Datos Básicos (Nombre, Edad...)",
+      "El Cumpleaños (Fechas)",
+      "Descripción Física (Verbos)"
+    ],
+    
+    checkpoints_HL: [
+      "Personalidad (Adjetivos)",
+      "Ser (Rasgo) vs Estar (Estado)", // 👈 CORREGIDO: Para evitar el error de "permanente"
+      "Conectores (Sin embargo...)"
+    ],
+
+    checkpoints_TOP: [
+      "✨ Idiom: Tener don de gentes",
+      "✨ Structure: Soler + Infinitivo (Habits)",
+      "✨ Vocab: Virtudes y Defectos"
+    ]
   },
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
     HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
-    check_HL: "Cuántos sois, Profesiones (Mi padre es...), Descripción física/carácter, Verbos de relación (Me llevo bien/mal, Discutimos, Me apoya)."
+    check_HL: "Cuántos sois, Profesiones (Mi padre es...), Descripción física/carácter, Verbos de relación (Me llevo bien/mal, Discutimos, Me apoya).",
+    
+    checkpoints_OL: [
+      "Cuántos somos (Hay... / Somos...)", // 👈 AÑADIDO: 'Hay'
+      "Tengo hermanos (Mayor/Menor)",
+      "Profesión padres (Mi madre es...)"
+    ],
+    
+    checkpoints_HL: [
+      "Llevarse bien/mal (Me llevo...)",
+      "Discutir (Discuto con...)",
+      "Descripción Carácter (Es trabajador...)"
+    ],
+
+    checkpoints_TOP: [
+      "✨ Idiom: Ser la oveja negra",
+      "✨ Idiom: Ser uña y carne",
+      "✨ Grammar: Ojalá tuviera... (Wish)"
+    ]
   },
   { 
     title: "3. Mis amigos", 
     OL: "¿Tienes muchos amigos? ¿Cómo se llama tu mejor amigo?", 
     HL: "Háblame de tu mejor amigo. ¿Tenéis los mismos intereses? ¿Por qué es especial?",
-    check_HL: "Nombre, Descripción, Gustos en común (Nos gusta + Infinitivo), Por qué es buen amigo (Es leal, me escucha)."
+    check_HL: "Nombre, Descripción, Gustos en común (Nos gusta + Infinitivo), Por qué es buen amigo (Es leal, me escucha).",
+    
+    checkpoints_OL: [
+      "Mi mejor amigo (Se llama...)",
+      "Descripción física (Es alto...)",
+      "Qué hacemos (Jugamos...)"
+    ],
+    
+    checkpoints_HL: [
+      "Por qué es mi amigo (Es leal...)",
+      "Gustos en común (Nos gusta...)",
+      "Desde cuándo (Lo conozco desde...)"
+    ],
+
+    checkpoints_TOP: [
+      "✨ Idiom: Contar con alguien",
+      "✨ Grammar: Condicional (Hablaría...)",
+      "✨ Vocab: Inseparables"
+    ]
   },
   { 
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
     HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
-    check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión (Lo que más me gusta es...), Tareas (Tengo que + infinitivo)."
+    check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión (Lo que más me gusta es...), Tareas (Tengo que + infinitivo).",
+    
+    checkpoints_OL: [
+      "Dónde vivo (Vivo en...)",
+      "Mi dormitorio (Tengo...)",
+      "Opinión (Me gusta mi casa...)"
+    ],
+    
+    checkpoints_HL: [
+      "Mi rincón favorito (Lo que más...)",
+      "Tareas domésticas (Tengo que...)",
+      "Ubicación (Está cerca de...)"
+    ],
+
+    checkpoints_TOP: [
+      "✨ Idiom: Sentirse como en casa",
+      "✨ Grammar: Si ganara la lotería...",
+      "✨ Vocab: Chalet adosado"
+    ]
   },
+  // ... MANTÉN LOS DEMÁS TEMAS (5 al 15) COMO ESTABAN ...
+  { 
+    title: "5. Mi barrio", 
+    // ...
   { 
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 

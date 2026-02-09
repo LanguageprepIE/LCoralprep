@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // --- DETECCIÓN DE VOZ IRLANDESA (TTS) ---
 let irishVoiceAvailable = null;
@@ -351,8 +350,16 @@ async function analyze() {
   }`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    if (!r.ok) throw new Error("Earráid Backend");
     const d = await r.json(); 
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('exerciseArea').style.display = 'none'; 
@@ -374,7 +381,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now. Please wait."); 
+      alert("⚠️ The AI is a bit busy right now. Please wait. (Earráid: " + e.message + ")"); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh (Correct)"; 
   }
@@ -516,8 +523,16 @@ async function analyzeSraith() {
   }`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    if (!r.ok) throw new Error("Earráid Backend");
     const d = await r.json(); 
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     document.getElementById('sraithArea').style.display = 'none'; 
     document.getElementById('resultSraith').style.display = 'block';
@@ -529,7 +544,7 @@ async function analyzeSraith() {
     document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now. Please wait."); 
+      alert("⚠️ The AI is a bit busy right now. Please wait. (" + e.message + ")"); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
   }

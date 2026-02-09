@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN Y CLAVES
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // --- NAVEGACIÓN ---
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
@@ -275,11 +274,15 @@ async function analyze() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
-    const d = await r.json(); 
+    if (!r.ok) throw new Error("Backend Fehler");
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('exerciseArea').style.display = 'none'; 
@@ -301,7 +304,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now.\nPlease wait 10 seconds and try again!"); 
+      alert("⚠️ Fehler: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Prüfen"; 
   }
@@ -569,12 +572,15 @@ async function analyzeStory() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
-    
-    const d = await r.json(); 
+    if (!r.ok) throw new Error("Backend Fehler");
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('storyArea').style.display = 'none'; 
@@ -588,7 +594,7 @@ async function analyzeStory() {
 
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ Fehler. Bitte versuche es später noch einmal."); 
+      alert("⚠️ Fehler: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Prüfen"; 
   }

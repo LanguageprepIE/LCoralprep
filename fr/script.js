@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN Y CLAVES (API KEY)
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // --- NAVEGACIÓN ---
 function toggleInfo() { 
@@ -289,13 +288,19 @@ async function analyze() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
     
+    if (!r.ok) throw new Error("Erreur Backend");
+    
     const d = await r.json(); 
+    // Verificamos si Google devolvió un error a través del backend
+    if (d.error) throw new Error(d.error.message || "Erreur IA");
+
     const cleanJson = d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim();
     const j = JSON.parse(cleanJson);
     
@@ -334,8 +339,7 @@ async function analyze() {
 
   } catch (e) { 
     console.error(e); 
-    // ERROR AMABLE (High Traffic)
-    alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA est occupée, attends 10 secondes)."); 
+    alert("⚠️ Erreur: " + e.message); 
   } finally { 
     b.disabled = false; 
     b.innerText = "✨ Vérifier"; 
@@ -361,11 +365,15 @@ async function generateDocQuestions() {
   TASK: Generate 5 questions. 1-3 specific, 4-5 general themes. OUTPUT: List 1-5.`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
+    if (!r.ok) throw new Error("Erreur Backend");
     const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     currentQuestionsText = d.candidates[0].content.parts[0].text;
     document.getElementById('docStep1').style.display = 'none';
     document.getElementById('docStep2').style.display = 'none';
@@ -373,7 +381,7 @@ async function generateDocQuestions() {
     document.getElementById('aiQuestions').innerText = currentQuestionsText;
   } catch(e) { 
       console.error(e); 
-      alert("⚠️ The AI is busy (High Traffic). Please try again in 10s.");
+      alert("⚠️ Erreur: " + e.message);
   } finally { b.disabled = false; b.innerText = "🔮 Générer Questions"; }
 }
 
@@ -393,8 +401,12 @@ async function analyzeDoc() {
   OUTPUT JSON: { "score": (0-100), "feedback_fr": "Feedback", "feedback_en": "Advice", "errors": [{"original":"x","correction":"y","explanation_en":"z"}] }`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+    if (!r.ok) throw new Error("Erreur Backend");
     const d = await r.json(); 
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
 
     document.getElementById('docStep3').style.display='none';
@@ -407,7 +419,7 @@ async function analyzeDoc() {
     document.getElementById('errorsListDoc').innerHTML = j.errors?.map(e=>`<div class="error-item"><span style="text-decoration:line-through">${e.original}</span> ➡️ <b>${e.correction}</b> (${e.explanation_en})</div>`).join('') || "✅ Très bien!";
   } catch(e) { 
       console.error(e); 
-      alert("⚠️ The AI is busy (High Traffic). Please try again in 10s.");
+      alert("⚠️ Erreur: " + e.message);
   } finally { b.disabled=false; b.innerText="✨ Vérifier"; }
 }
 

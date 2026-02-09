@@ -1,46 +1,46 @@
 // ===========================================
-// CONFIGURACIÓN Y CLAVES
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const API_KEYS = [
-    "AIzaSyASf_PIq7es0iPVt" + "VUMt8Kn1Ll3qSpQQxg" 
-];
-
-// 🔴 CAMBIO CLAVE: Usamos el modelo que TÚ tienes disponible según la foto
-const MODEL_NAME = "gemini-2.0-flash"; 
-
-function getApiKey() {
-    return API_KEYS[Math.floor(Math.random() * API_KEYS.length)];
-}
+// Ya no necesitamos poner claves aquí. 
+// El archivo 'script.js' llamará a '/.netlify/functions/gemini'
+// y Netlify usará la clave que guardaste en la "Caja Fuerte".
 
 // ===========================================
-// MOTOR INTELIGENTE DE IA
+// MOTOR INTELIGENTE DE IA (CONECTADO AL BACKEND)
 // ===========================================
 async function callSmartAI(prompt) {
-    const key = getApiKey();
-    // console.log(`🔄 Conectando con ${MODEL_NAME}...`);
-
     try {
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${key}`, {
+        // LLAMADA AL BACKEND (TU CAMARERO)
+        const response = await fetch('/.netlify/functions/gemini', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            body: JSON.stringify({ 
+                contents: [{ parts: [{ text: prompt }] }] 
+            })
         });
 
-        if (!r.ok) {
-            const errData = await r.json();
-            const errMsg = errData.error?.message || r.statusText;
-            // Si es límite de velocidad (429), avisamos claro
-            if (r.status === 429) throw new Error("RATE_LIMIT");
-            throw new Error(`Error ${r.status}: ${errMsg}`);
+        if (!response.ok) {
+            throw new Error(`Error de conexión con Netlify: ${response.statusText}`);
         }
 
-        const d = await r.json();
-        if (!d.candidates || !d.candidates.length) throw new Error("EMPTY_RESPONSE");
+        const data = await response.json();
+
+        // Verificamos si Google devolvió un error a través del backend
+        if (data.error) {
+            throw new Error(data.error.message || "Error desconocido de la IA");
+        }
+
+        // Verificamos que haya respuesta válida
+        if (!data.candidates || !data.candidates.length) {
+            throw new Error("La IA no devolvió ninguna respuesta (EMPTY_RESPONSE).");
+        }
         
-        return d.candidates[0].content.parts[0].text;
+        // Devolvemos el texto limpio
+        return data.candidates[0].content.parts[0].text;
 
     } catch (e) {
-        throw e; // Pasamos el error para mostrarlo en pantalla
+        console.error("Fallo en la llamada a la IA:", e);
+        throw e; // Pasamos el error para que la pantalla muestre la alerta
     }
 }
 
@@ -361,7 +361,7 @@ async function analyze() {
   `;
 
   try {
-    // USAMOS EL MODELO 2.0 CONFIRMADO
+    // LLAMADA AL BACKEND
     const rawText = await callSmartAI(prompt);
     
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
@@ -398,7 +398,7 @@ async function analyze() {
 
   } catch (e) { 
     console.error(e); 
-    alert(`⚠️ Error: ${e.message === "RATE_LIMIT" ? "Límite de velocidad. Espera un poco." : e.message}`);
+    alert(`⚠️ Error: ${e.message}`);
   } finally { 
     b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
   }
@@ -428,7 +428,7 @@ async function askAIConcept(concept) {
     `;
 
     try {
-        // USAMOS EL MODELO 2.0 CONFIRMADO
+        // LLAMADA AL BACKEND
         const text = await callSmartAI(prompt);
         const cleanText = text.replace(/```html|```/g, "").trim();
         
@@ -443,10 +443,7 @@ async function askAIConcept(concept) {
 
     } catch (e) {
         console.error(e);
-        const errorMsg = e.message === "RATE_LIMIT" 
-            ? "⚠️ Too fast! Wait 1 minute." 
-            : `⚠️ Error: ${e.message}`;
-        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">${errorMsg}</div>`;
+        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
     }
 }
 

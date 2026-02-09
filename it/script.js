@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN Y CLAVES (API KEY)
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // --- NAVEGACIÓN ---
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
@@ -274,11 +273,16 @@ async function analyze() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
-    const d = await r.json(); 
+    
+    if (!r.ok) throw new Error("Errore Backend");
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('exerciseArea').style.display = 'none'; 
@@ -300,7 +304,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
+      alert("⚠️ Errore: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
   }
@@ -429,7 +433,6 @@ function reproducirInterventoExaminer() {
     if (Array.isArray(dialogText)) dialogText = dialogText[Math.floor(Math.random() * dialogText.length)];
 
     // 2. Comprobar si ya mostramos este texto (para no duplicar burbujas al re-escuchar)
-    // El truco es mirar si el último mensaje del chat es igual al actual.
     const chat = document.getElementById('rpChat');
     const lastMsg = chat.lastElementChild;
     const isReplay = lastMsg && lastMsg.classList.contains('ex') && lastMsg.innerText.includes(dialogText);
@@ -447,14 +450,13 @@ function reproducirInterventoExaminer() {
     // 3. Reproducir Audio
     reproducirAudio(dialogText);
 
-    // 4. CAMBIAR EL BOTÓN A MODO "REPLAY" (NO OCULTARLO)
+    // 4. CAMBIAR EL BOTÓN A MODO "REPLAY"
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "block";
     nextBtn.innerText = "🔄 Riascolta / Replay";
-    nextBtn.style.background = "#fbbf24"; // Color Amarillo (Warning) para diferenciarlo
+    nextBtn.style.background = "#fbbf24"; 
     nextBtn.style.color = "black";
     
-    // Al hacer click ahora, simplemente repite el audio actual (sin avanzar)
     nextBtn.onclick = () => reproducirAudio(dialogText);
 }
 
@@ -473,7 +475,6 @@ function habilitarInput() {
     if(pasoActual < 5) { // 5 es el límite de pasos
         document.getElementById('rpInput').disabled = false;
         document.getElementById('rpSendBtn').disabled = false;
-        // No hacemos focus automático en iPad para evitar scroll saltarín, pero si en PC
         if(!(/iPad|iPhone|iPod/.test(navigator.userAgent))) document.getElementById('rpInput').focus();
         
         document.getElementById('hintBtn').style.display = "block";
@@ -494,7 +495,7 @@ function enviarRespuestaRP() {
     inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true;
     document.getElementById('hintBtn').style.display = "none";
     
-    // 3. Ocultar el botón de Replay (ya hemos respondido)
+    // 3. Ocultar el botón de Replay
     const nextBtn = document.getElementById('nextAudioBtn');
     nextBtn.style.display = "none";
 
@@ -506,9 +507,9 @@ function enviarRespuestaRP() {
         if(pasoActual < 5) { 
             nextBtn.style.display = "block";
             nextBtn.innerText = "🔊 Ascolta / Listen Next";
-            nextBtn.style.background = "var(--primary)"; // Vuelta al color Rojo/Verde
+            nextBtn.style.background = "var(--primary)"; 
             nextBtn.style.color = "white";
-            nextBtn.onclick = reproducirInterventoExaminer; // Volvemos a la función de avanzar
+            nextBtn.onclick = reproducirInterventoExaminer; 
         } else { 
             document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
         }
@@ -582,12 +583,16 @@ async function analyzeStory() {
   `;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
     
-    const d = await r.json(); 
+    if (!r.ok) throw new Error("Errore Backend");
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('storyArea').style.display = 'none'; 
@@ -601,7 +606,7 @@ async function analyzeStory() {
 
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(L'IA è occupata, aspetta 10 secondi)."); 
+      alert("⚠️ Errore: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Evaluate Description"; 
   }

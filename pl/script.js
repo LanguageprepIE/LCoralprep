@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // ===========================================
 // DATOS EXAMEN POLACO 2026 (15 TEMAS - COMPLETO)
@@ -232,8 +231,16 @@ async function analyze() {
     }`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-    const d = await r.json(); 
+    // CONEXIÓN AL BACKEND (NETLIFY)
+    const r = await fetch('/.netlify/functions/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    if (!r.ok) throw new Error("Błąd Backend");
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
     
     document.getElementById('exerciseArea').style.display = 'none'; 
@@ -255,8 +262,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      // ERROR AMABLE HIGH TRAFFIC
-      alert("⚠️ The AI is a bit busy right now (High Traffic).\nPlease wait 10 seconds and try again!\n\n(Serwer zajęty, spróbuj za 10 sekund)."); 
+      alert("⚠️ Błąd: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Sprawdź (Evaluate)"; 
   }

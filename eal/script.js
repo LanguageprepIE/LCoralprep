@@ -1,9 +1,8 @@
 // ===========================================
-// CONFIGURACIÓN (API KEY)
+// CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-const parteA = "AIzaSyASf_PIq7es0iPVt"; 
-const parteB = "VUMt8Kn1Ll3qSpQQxg"; 
-const API_KEY = parteA + parteB;
+// La clave API ha sido eliminada. 
+// Ahora nos conectamos a través de Netlify Functions.
 
 // ===========================================
 // DATOS EAL (11 TEMAS)
@@ -204,19 +203,24 @@ function readInput() {
   window.speechSynthesis.speak(u);
 }
 
-// Traducción Simultánea
+// Traducción Simultánea (VÍA BACKEND)
 async function translateQuestion() {
   if(userLanguage === "English") return alert("Please select your native language at the top first.");
   const box = document.getElementById('qTranslation');
   box.style.display = 'block';
   box.innerText = "🔄 Translating...";
   const prompt = `TRANSLATE this text: "${currentItem.q}" into ${userLanguage}. OUTPUT ONLY THE TRANSLATION.`;
+  
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    const r = await fetch('/.netlify/functions/gemini', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
+    
+    if (!r.ok) throw new Error("Backend Error");
     const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    
     box.innerText = d.candidates[0].content.parts[0].text;
   } catch(e) { 
       console.error(e);
@@ -224,7 +228,7 @@ async function translateQuestion() {
   }
 }
 
-// Corrección Inteligente (EAL)
+// Corrección Inteligente (EAL) (VÍA BACKEND)
 async function analyze() {
   const t = document.getElementById('userInput').value;
   if(t.length < 2) return alert("Please write an answer first.");
@@ -241,12 +245,17 @@ async function analyze() {
   OUTPUT JSON ONLY: { "feedback": "Feedback string (in native lang if possible)", "corrections": [{"original":"x", "fix":"y"}] }`;
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
+    const r = await fetch('/.netlify/functions/gemini', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
+
+    if (!r.ok) throw new Error("Backend Error");
     const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
     const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+    
     document.getElementById('exerciseArea').style.display = 'none';
     document.getElementById('result').style.display = 'block';
     document.getElementById('fbText').innerHTML = `<strong>Teacher:</strong> ${j.feedback}`;

@@ -1,32 +1,40 @@
-// ===========================================
-// MOTOR INTELIGENTE (VERSIÓN BACKEND SEGURO)
-// ===========================================
-async function callSmartAI(prompt) {
-    try {
-        // AHORA LLAMAMOS A NUESTRO PROPIO SERVIDOR (NETLIFY), NO A GOOGLE DIRECTAMENTE
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                contents: [{ parts: [{ text: prompt }] }] 
-            })
-        });
+// BACKEND EN FORMATO MODERNO (ES MODULES)
+// Soluciona el error "HandlerNotFound"
 
-        if (!response.ok) {
-            throw new Error(`Error del servidor: ${response.statusText}`);
+export const handler = async (event, context) => {
+    // 1. Solo aceptamos pedidos POST (enviar datos)
+    if (event.httpMethod !== "POST") {
+        return { statusCode: 405, body: "Method Not Allowed" };
+    }
+
+    try {
+        // 2. Recuperamos la clave secreta de la caja fuerte de Netlify
+        const apiKey = process.env.GEMINI_API_KEY;
+        
+        if (!apiKey) {
+            return { statusCode: 500, body: JSON.stringify({ error: "Falta la API Key en Netlify. Revisa la configuración." }) };
         }
 
-        const data = await response.json();
-        
-        // Verificamos si Google nos dio error o respuesta
-        if (data.error) throw new Error(data.error.message || "Error en la IA");
-        if (!data.candidates || !data.candidates.length) throw new Error("La IA no respondió nada.");
+        // 3. Leemos lo que pide el usuario
+        const body = JSON.parse(event.body);
+        const contents = body.contents;
 
-        // Devolvemos el texto limpio
-        return data.candidates[0].content.parts[0].text;
+        // 4. Llamamos a Google Gemini (Modelo 2.0 Flash)
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents })
+        });
+
+        const data = await response.json();
+
+        // 5. Devolvemos la respuesta
+        return {
+            statusCode: 200,
+            body: JSON.stringify(data)
+        };
 
     } catch (error) {
-        console.error("Fallo en Backend:", error);
-        throw error; // Lanzamos el error para que salga la alerta en el iPad
+        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
-}
+};

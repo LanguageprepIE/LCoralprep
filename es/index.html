@@ -30,6 +30,7 @@
       <strong>Instrucciones:</strong>
       <ul>
         <li>🗣️ <strong>Conversation:</strong> Select a topic. Answer the question aloud or type it to check your grammar.</li>
+        <li>📚 <strong>Study Mode:</strong> Review key vocabulary and grammar with AI help.</li>
         <li>🎭 <strong>Roleplays:</strong> Listen to the examiner and reply. Complete the 5 steps.</li>
       </ul>
     </div>
@@ -42,19 +43,21 @@
 
   <div id="sectionConversation">
     
-  <div class="level-selector">
-    <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
-    <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
-</div>
-
-<div class="mode-selector">
-    <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
-    <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
-</div>
+    <div class="level-selector">
+        <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
+        <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
     </div>
+
+    <div class="mode-selector">
+        <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
+        <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
+    </div>
+
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
+
+    <div id="studyContainer" class="study-box" style="display:none;"></div>
 
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
@@ -66,16 +69,17 @@
         💡 ¿Qué debo incluir? / What should I include? (Key Points)
       </button>
       <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+      
       <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
       
-      <button onclick="readMyInput()" style="margin: 10px 0; background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%;">
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Escuchar mi respuesta
       </button>
 
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Corregir Respuesta</button>
     </div>
 
-    <div id="result">
+    <div id="result" style="display:none;">
       <div class="student-response-box"><strong>Dijiste:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
@@ -103,7 +107,7 @@
       <div id="rpChat" class="rp-chat-window"></div>
       
       <div class="rp-controls">
-        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="proximaIntervencion()">▶️ Play Examiner Audio</button>
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirSiguienteAudio()">▶️ Play Examiner Audio</button>
         
         <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
         
@@ -117,8 +121,9 @@
 
   <div class="footer-section">
     <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-    <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
+    
+    <h3>David Martín</h3>
+    <p class="bio-text" style="text-align: center; margin-bottom: 15px;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
     
     <div class="support-box">
         <span class="support-title">🚀 A Student-Focused Project</span>
@@ -135,16 +140,27 @@
        ☕ Support the Project
     </a>
 
-    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
+    <div class="feedback-section">
       <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
+      <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
+      
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required
-                  style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
-        <button type="submit" 
-                style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">
-          Send Feedback
-        </button>
+        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
+    </div>
+
+    <div class="legal-section">
+        <p>© 2024 LCorals.ie. Created for educational purposes only.</p>
+        <p>
+            <strong>Disclaimer:</strong> This tool uses Artificial Intelligence to generate feedback. 
+            While designed to support Leaving Cert students, AI can make mistakes. 
+            Always consult your textbook or teacher for official corrections.
+        </p>
+        <p>
+            <strong>Privacy:</strong> We use privacy-friendly analytics (GoatCounter) and do not track personal data via cookies. 
+            Feedback is anonymous unless voluntarily provided.
+        </p>
     </div>
   </div>
 

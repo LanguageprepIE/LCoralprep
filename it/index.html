@@ -10,7 +10,6 @@
   
   <style>
     .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin: 0 auto 15px auto !important; display: block; }
-    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
   </style>
 </head>
 <body>
@@ -29,10 +28,10 @@
     <div id="infoBox" class="info-box">
       <strong>Instructions:</strong>
       <ul>
-        <li>🗣️ <strong>Conversation:</strong> Use the "Conversation" tab to practice Italian topics.</li>
+        <li>🗣️ <strong>Conversation:</strong> Practice the 15 most common oral topics.</li>
+        <li>📚 <strong>Study Mode:</strong> Learn key vocabulary and grammar concepts with AI help.</li>
         <li>🎭 <strong>Roleplays:</strong> The AI acts as the examiner. You read your part.</li>
         <li>🖼️ <strong>Storie:</strong> Describe the picture sequence and get feedback.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Please use the Italian keyboard on your device.</li>
       </ul>
     </div>
   </header>
@@ -49,19 +48,28 @@
       <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
     </div>
 
+    <div class="mode-selector">
+        <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Mode</button>
+        <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
+    </div>
+
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
+
+    <div id="studyContainer" class="study-box" style="display:none;"></div>
 
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
+      
       <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
-  💡 Cosa devo dire? / What to include? (Key Points)
-</button>
-<div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+        💡 Cosa devo dire? / What to include? (Key Points)
+      </button>
+      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+      
       <textarea id="userInput" placeholder="Type or use your microphone..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">

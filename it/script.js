@@ -1,12 +1,6 @@
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-// La clave API ha sido eliminada. 
-// Ahora nos conectamos a través de Netlify Functions.
-
-// ===========================================
-// MOTOR INTELIGENTE DE IA (CONECTADO AL BACKEND)
-// ===========================================
 async function callSmartAI(prompt) {
     try {
         const response = await fetch('/.netlify/functions/gemini', {
@@ -235,7 +229,7 @@ function setMode(mode) {
 }
 
 // ===========================================
-// FUNCIONES UI
+// FUNCIONES DE UI
 // ===========================================
 
 function initConv() { 
@@ -252,8 +246,6 @@ function initConv() {
             currentTopic = item; 
             
             if(currentMode === 'study') {
-                const titleEl = document.querySelector('#studyContainer h3');
-                if(titleEl) titleEl.innerText = "📚 Study Mode: " + item.title;
                 renderCheckpoints();
             } else {
                 updateQuestion(); 
@@ -421,29 +413,26 @@ async function analyze() {
 // ===========================================
 
 function initStudyHTML() {
-    const div = document.createElement('div');
-    div.id = 'studyContainer';
-    div.className = 'study-box';
-    div.style.display = 'none';
+    // No es necesario crear el contenedor si ya existe en HTML
+}
+
+function renderCheckpoints() {
+    const container = document.getElementById('studyContainer');
+    if (!container) return;
+
+    if (!currentTopic) {
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
+        return;
+    }
     
-    div.innerHTML = `
-        <h3>📚 Study Mode: ${currentTopic ? currentTopic.title : 'Select a topic'}</h3>
+    container.innerHTML = `
+        <h3>📚 Study Mode: ${currentTopic.title}</h3>
         <p class="small-text">Click on a concept to get an instant explanation.</p>
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
-    const parent = document.getElementById('exerciseArea');
-    parent.parentNode.insertBefore(div, parent);
-}
 
-function renderCheckpoints() {
     const list = document.getElementById('checkpointsList');
-    list.innerHTML = "";
-    
-    if (!currentTopic) {
-        list.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
-        return;
-    }
     
     const createSection = (title, items, cssClass) => {
         if(!items || items.length === 0) return;
@@ -501,38 +490,15 @@ async function askAIConcept(concept) {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (INTACTA CON BACKEND FIX)
+// PARTE 2: ROLEPLAYS (INTACTA)
 // ===========================================
-let rpActual = null; 
-let pasoActual = 0; 
-let speaking = false;
-
+let rpActual = null; let pasoActual = 0; let speaking = false;
 const RP_DB = {
-    1: { 
-        context: "Un problema in albergo. You booked a room but the receptionist has no record.", 
-        dialogs: ["Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a questo nome.", "Capisco che è arrabbiato, ma purtroppo siamo al completo questa settimana.", "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", ["Ho chiamato l'Hotel Stella e fortunatamente hanno una camera libera.", "È tutto risolto. L'Hotel Stella la aspetta."]], 
-        sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho prenotato una camera singola per tre notti. Ecco la mia conferma.", "Non è possibile! Ho fatto la prenotazione su internet un mese fa. Sono molto sorpreso e preoccupato.", "Guardi, è un disastro per me. Ho assolutamente bisogno di un alloggio in questa zona perché ho una conferenza importante qui vicino.", "Sì, per favore. Sarebbe molto gentile da parte sua. Non conosco bene la città e non saprei dove andare.", "Grazie mille per il suo aiuto. Apprezzo molto la sua disponibilità. Arrivederci."] 
-    },
-    2: { 
-        context: "Una multa sul treno. You didn't validate your ticket.", 
-        dialogs: ["Buongiorno. Biglietto, prego.", "Signore, vedo che ha il biglietto ma non è stato convalidato. Devo farle la multa.", "Mi dispiace, ma la regola è chiara. La multa è di cinquanta euro. Deve pagare ora.", "Se non ha contanti, posso darle un bollettino postale. Ha domande su come funziona?", ["Sì, deve convalidare il biglietto ogni volta che cambia treno, anche a Bologna.", "Ricordi sempre di timbrare alle macchinette gialle prima di salire."]], 
-        sugerencias: ["Buongiorno. Ecco il mio biglietto, sto andando a Venezia.", "Mi scusi tanto! Sono arrivato in ritardo alla stazione e sono salito di corsa sul treno. Non l'ho fatto apposta, per favore non mi faccia la multa.", "Cinquanta euro?! Purtroppo non ho abbastanza contanti con me in questo momento. Sono uno studente.", "Va bene, accetto il bollettino. Posso chiedere se devo convalidare di nuovo il biglietto quando cambio treno a Bologna?", "Ho capito, starò più attento la prossima volta. Grazie per l'informazione. Arrivederci."] 
-    },
-    3: { 
-        context: "In farmacia. You feel sick and need advice.", 
-        dialogs: ["Buongiorno. Dimmi, cosa c'è che non va?", "Da quanto tempo ti senti così? Hai mangiato qualcosa di strano recentemente?", "Capisco. Ti consiglio di prendere queste compresse due volte al giorno dopo i pasti.", "Che lavoro farai quest'estate qui in Italia?", ["Non preoccuparti. Con questa medicina starai meglio in un paio di giorni.", "Bevi molta acqua e riposati. Arrivederci."]], 
-        sugerencias: ["Buongiorno. Non mi sento molto bene. Ho mal di stomaco e un po' di febbre.", "Sto male da ieri sera. Penso di aver mangiato del pesce che non era fresco in un ristorante del centro.", "Grazie dottore. Per quanti giorni devo prenderle? E ci sono cibi che dovrei evitare?", "Lavorerò come cameriere in un ristorante, per questo è molto importante che io guarisca presto.", "Grazie mille per il consiglio. Spero di rimettermi presto. Arrivederci."] 
-    },
-    4: { 
-        context: "Dov'è il passaporto? You left it at your host family's house.", 
-        dialogs: ["Pronto, casa Rossi. Chi parla?", "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", "Aspetta un attimo, vado a controllare... Sì! L'ho trovato! Era proprio lì.", "Ascolta, non preoccuparti. Prendo un taxi e te lo porto subito all'aeroporto.", ["Non preoccuparti per il taxi, mi fa piacere aiutarti.", "Sto uscendo ora. Ci vediamo agli arrivi tra mezz'ora!"]], 
-        sugerencias: ["Pronto Maria? Sono io. Sono disperato! Sono in fila al check-in all'aeroporto e mi sono accorto di non avere il passaporto.", "L'ultima volta l'ho visto stamattina sul comodino accanto al letto, o forse sulla scrivania. Potresti controllare per favore?", "Che sollievo! Grazie mille! Devo assolutamente tornare in Irlanda oggi per un esame domani.", "Sei un angelo! Grazie infinite. Ovviamente ti pagherò io il taxi quando arrivi.", "Grazie ancora Maria, non so cosa avrei fatto senza di te. A tra poco!"] 
-    },
-    5: { 
-        context: "Un colloquio di lavoro. Summer job in a tourist village.", 
-        dialogs: ["Buongiorno. Prego, si accomodi. Come si chiama e quanti anni ha?", "Molto bene. Mi parli delle sue esperienze lavorative precedenti.", "Parla molto bene l'italiano! Dove l'ha studiato e per quanto tempo?", "Perché pensa di essere il candidato ideale per questo lavoro nel nostro villaggio?", ["Ha qualche domanda da farmi sugli orari o sullo stipendio?", "Le faremo sapere la nostra decisione domani. Arrivederci."]], 
-        sugerencias: ["Buongiorno. Mi chiamo [Nome], ho 18 anni e vengo dall'Irlanda.", "L'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo attività sportive per i bambini e aiutavo in cucina.", "Studio italiano a scuola da cinque anni e guardo molti film italiani per migliorare la pronuncia.", "Sono una persona molto socievole, affidabile e gran lavoratore. Mi piace stare a contatto con la gente e imparo in fretta.", "Sì, vorrei sapere quali sono i turni di lavoro e se l'alloggio è compreso. Grazie."] 
-    }
+    1: { context: "Un problema in albergo. You booked a room but the receptionist has no record.", dialogs: ["Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a questo nome.", "Capisco che è arrabbiato, ma purtroppo siamo al completo questa settimana.", "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", ["Ho chiamato l'Hotel Stella e fortunatamente hanno una camera libera.", "È tutto risolto. L'Hotel Stella la aspetta."]], sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho prenotato una camera singola per tre notti. Ecco la mia conferma.", "Non è possibile! Ho fatto la prenotazione su internet un mese fa. Sono molto sorpreso e preoccupato.", "Guardi, è un disastro per me. Ho assolutamente bisogno di un alloggio in questa zona perché ho una conferenza importante qui vicino.", "Sì, per favore. Sarebbe molto gentile da parte sua. Non conosco bene la città e non saprei dove andare.", "Grazie mille per il suo aiuto. Apprezzo molto la sua disponibilità. Arrivederci."] },
+    2: { context: "Una multa sul treno. You didn't validate your ticket.", dialogs: ["Buongiorno. Biglietto, prego.", "Signore, vedo che ha il biglietto ma non è stato convalidato. Devo farle la multa.", "Mi dispiace, ma la regola è chiara. La multa è di cinquanta euro. Deve pagare ora.", "Se non ha contanti, posso darle un bollettino postale. Ha domande su come funziona?", ["Sì, deve convalidare il biglietto ogni volta che cambia treno, anche a Bologna.", "Ricordi sempre di timbrare alle macchinette gialle prima di salire."]], sugerencias: ["Buongiorno. Ecco il mio biglietto, sto andando a Venezia.", "Mi scusi tanto! Sono arrivato in ritardo alla stazione e sono salito di corsa sul treno. Non l'ho fatto apposta, per favore non mi faccia la multa.", "Cinquanta euro?! Purtroppo non ho abbastanza contanti con me in questo momento. Sono uno studente.", "Va bene, accetto il bollettino. Posso chiedere se devo convalidare di nuovo il biglietto quando cambio treno a Bologna?", "Ho capito, starò più attento la prossima volta. Grazie per l'informazione. Arrivederci."] },
+    3: { context: "In farmacia. You feel sick and need advice.", dialogs: ["Buongiorno. Dimmi, cosa c'è che non va?", "Da quanto tempo ti senti così? Hai mangiato qualcosa di strano recentemente?", "Capisco. Ti consiglio di prendere queste compresse due volte al giorno dopo i pasti.", "Che lavoro farai quest'estate qui in Italia?", ["Non preoccuparti. Con questa medicina starai meglio in un paio di giorni.", "Bevi molta acqua e riposati. Arrivederci."]], sugerencias: ["Buongiorno. Non mi sento molto bene. Ho mal di stomaco e un po' di febbre.", "Sto male da ieri sera. Penso di aver mangiato del pesce che non era fresco in un ristorante del centro.", "Grazie dottore. Per quanti giorni devo prenderle? E ci sono cibi che dovrei evitare?", "Lavorerò come cameriere in un ristorante, per questo è molto importante che io guarisca presto.", "Grazie mille per il consiglio. Spero di rimettermi presto. Arrivederci."] },
+    4: { context: "Dov'è il passaporto? You left it at your host family's house.", dialogs: ["Pronto, casa Rossi. Chi parla?", "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", "Aspetta un attimo, vado a controllare... Sì! L'ho trovato! Era proprio lì.", "Ascolta, non preoccuparti. Prendo un taxi e te lo porto subito all'aeroporto.", ["Non preoccuparti per il taxi, mi fa piacere aiutarti.", "Sto uscendo ora. Ci vediamo agli arrivi tra mezz'ora!"]], sugerencias: ["Pronto Maria? Sono io. Sono disperato! Sono in fila al check-in all'aeroporto e mi sono accorto di non avere il passaporto.", "L'ultima volta l'ho visto stamattina sul comodino accanto al letto, o forse sulla scrivania. Potresti controllare per favore?", "Che sollievo! Grazie mille! Devo assolutamente tornare in Irlanda oggi per un esame domani.", "Sei un angelo! Grazie infinite. Ovviamente ti pagherò io il taxi quando arrivi.", "Grazie ancora Maria, non so cosa avrei fatto senza di te. A tra poco!"] },
+    5: { context: "Un colloquio di lavoro. Summer job in a tourist village.", dialogs: ["Buongiorno. Prego, si accomodi. Come si chiama e quanti anni ha?", "Molto bene. Mi parli delle sue esperienze lavorative precedenti.", "Parla molto bene l'italiano! Dove l'ha studiato e per quanto tempo?", "Perché pensa di essere il candidato ideale per questo lavoro nel nostro villaggio?", ["Ha qualche domanda da farmi sugli orari o sullo stipendio?", "Le faremo sapere la nostra decisione domani. Arrivederci."]], sugerencias: ["Buongiorno. Mi chiamo [Nome], ho 18 anni e vengo dall'Irlanda.", "L'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo attività sportive per i bambini e aiutavo in cucina.", "Studio italiano a scuola da cinque anni e guardo molti film italiani per migliorare la pronuncia.", "Sono una persona molto socievole, affidabile e gran lavoratore. Mi piace stare a contatto con la gente e imparo in fretta.", "Sì, vorrei sapere quali sono i turni di lavoro e se l'alloggio è compreso. Grazie."] }
 };
 
 function seleccionarRP(id, btn) {
@@ -608,7 +574,7 @@ function mostrarSugerencia() {
 }
 
 // ===========================================
-// LÓGICA DE STORIE ILLUSTRATE (INTATTA CON BACKEND)
+// LÓGICA DE STORIE ILLUSTRATE (INTATTA)
 // ===========================================
 let currentStoryTitle = "";
 const STORIE_TITLES = [ "Storia 1: La Spesa al Supermercato", "Storia 2: L'Incidente Stradale", "Storia 3: Il Portafoglio Smarrito/Ritrovato", "Storia 4: La Festa in Casa", "Storia 5: La Gita Scolastica" ];

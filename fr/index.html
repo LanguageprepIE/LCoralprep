@@ -25,8 +25,8 @@
       <strong>Instructions:</strong>
       <ul>
         <li>🗣️ <strong>Conversation:</strong> Practice the 15 most common oral topics.</li>
+        <li>📚 <strong>Study Mode:</strong> Learn key vocabulary and grammar concepts with AI help.</li>
         <li>📄 <strong>Le Document:</strong> Select Option 2 to generate questions for your document.</li>
-        <li>⌨️ <strong>Keyboard:</strong> Use a French keyboard (é, è, à, ç).</li>
       </ul>
     </div>
   </header>
@@ -37,24 +37,34 @@
   </div>
 
   <div id="sectionConversation">
+    
     <div class="level-selector">
       <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
       <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
+    </div>
+
+    <div class="mode-selector">
+        <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Mode</button>
+        <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
 
+    <div id="studyContainer" class="study-box" style="display:none;"></div>
+
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
         <div id="qDisplay" style="font-weight: 700;"></div>
         <button class="audio-btn" onclick="speakText()">🔊 Écouter (Listen)</button>
       </div>
+      
       <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#2563eb; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
-  💡 Qu'est-ce que je dois inclure ? / What to include? (Key Points)
-</button>
-<div id="hintBox" style="display:none; background:#eff6ff; border-left:4px solid #2563eb; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#1e40af;"></div>
+        💡 Qu'est-ce que je dois inclure ? / What to include? (Key Points)
+      </button>
+      <div id="hintBox" style="display:none; background:#eff6ff; border-left:4px solid #2563eb; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#1e40af;"></div>
+      
       <textarea id="userInput" placeholder="Écrivez votre réponse ici..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">

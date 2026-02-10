@@ -1,8 +1,22 @@
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-// La clave API ha sido eliminada. 
-// Ahora nos conectamos a través de Netlify Functions.
+async function callSmartAI(prompt) {
+    try {
+        const response = await fetch('/.netlify/functions/gemini', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message || "AI Error");
+        return data.candidates[0].content.parts[0].text;
+    } catch (e) {
+        console.error("AI Call Failed:", e);
+        throw e;
+    }
+}
 
 // --- DETECCIÓN DE VOZ IRLANDESA (TTS) ---
 let irishVoiceAvailable = null;
@@ -10,9 +24,9 @@ let irishVoiceAvailable = null;
 function initVoiceCheck() {
     const check = () => {
         const voices = window.speechSynthesis.getVoices();
+        // Intentar encontrar 'ga-IE', si no, buscar algo que diga Irish/Gaeilge
         irishVoiceAvailable = voices.find(v => v.lang.includes('ga') || v.name.includes('Irish') || v.name.includes('Gaeilge'));
     };
-
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = check;
     }
@@ -24,9 +38,8 @@ function setupYouTubePlayer(videoId, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Inyectamos iframe de YouTube (legal y externo)
     container.innerHTML = `
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; background: #000;">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #16a34a; background: #000;">
             <iframe 
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
                 src="https://www.youtube.com/embed/${videoId}?rel=0" 
@@ -36,9 +49,9 @@ function setupYouTubePlayer(videoId, containerId) {
                 allowfullscreen>
             </iframe>
         </div>
-        <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 8px;">
-            ℹ️ Video sourced from YouTube (Educational Use). <br>
-            Please open your textbook to read the text.
+        <p style="font-size: 0.8rem; color: #166534; text-align: center; margin-top: 8px;">
+            ℹ️ Físeán ó YouTube (Educational Use). <br>
+            Oscail do leabhar chun an dán a léamh.
         </p>
     `;
     container.style.display = "block";
@@ -60,132 +73,162 @@ function switchTab(tab) {
   if(tab === 'conv') document.getElementById('sectionConversation').style.display = 'block';
   if(tab === 'poem') document.getElementById('sectionPoetry').style.display = 'block';
   if(tab === 'sraith') document.getElementById('sectionSraith').style.display = 'block';
-  
-  // Limpiar YouTube al cambiar de pestaña para que no siga sonando
-  const player = document.getElementById('audioPlayerContainer');
-  if(player) player.innerHTML = "";
 }
 
 // ===========================================
-// 1. COMHRÁ (15 TEMAS)
+// 1. COMHRÁ (15 TEMAS - ENRIQUECIDOS PARA STUDY MODE)
 // ===========================================
 const DATA = [
   { 
-    id: 1, 
-    title: "1. Mé Féin", 
+    id: 1, title: "1. Mé Féin", 
     OL: "Cén t-ainm atá ort? Cén aois thú? Cathain a rugadh thú?", 
     HL: "Déan cur síos ar do phearsantacht. Cad iad na buanna atá agat?",
-    check_HL: "Tuiseal Ginideach (m.sh. Ainm mo mháthar...), Aidiachtaí sealbhacha (Mo/Do/A + Séimhiú), Cur síos fisiciúil & Pearsantacht."
+    check_HL: "Tuiseal Ginideach, Aidiachtaí sealbhacha, Cur síos fisiciúil & Pearsantacht.",
+    checkpoints_OL: ["Is mise... (Ainm)", "Tá mé X bliain d'aois", "Rugadh mé ar an..."],
+    checkpoints_HL: ["Agam vs Orm (Physical vs Emotion)", "Is duine... mé (Copaail)", "Gruaig/Súile (Aidiachtaí)"],
+    checkpoints_TOP: ["✨ Nath: I mbarr na sláinte", "✨ Gramadach: Aidiachtaí Sealbhacha (Mo/Do/A)", "✨ Vocab: Tréithe Pearsanta"]
   },
   { 
-    id: 2, 
-    title: "2. Mo Theaghlach", 
+    id: 2, title: "2. Mo Theaghlach", 
     OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", 
     HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu.",
-    check_HL: "Uimhreacha (Beirt/Triúr/Ceathrar...), Réimír (Ag réiteach le...), Tuiseal Ginideach (Post m'athar), Nathanna cainte (Is duine lách í)."
+    check_HL: "Uimhreacha, Réimír, Tuiseal Ginideach (Post m'athar), Nathanna cainte.",
+    checkpoints_OL: ["Tá cúigear againn sa chlann", "Tá deartháir amháin agam", "Is múinteoir í mo mham"],
+    checkpoints_HL: ["Réitím go maith le...", "An duine is sine/óige", "Bíonn argóintí againn"],
+    checkpoints_TOP: ["✨ Nath: Ní bhíonn saoi gan locht", "✨ Gramadach: Tuiseal Ginideach (Teach an athar)", "✨ Vocab: Clann mhór/bheag"]
   },
   { 
-    id: 3, 
-    title: "3. Mo Cheantar", 
+    id: 3, title: "3. Mo Cheantar", 
     OL: "Cá bhfuil tú i do chónaí? An maith leat do cheantar?", 
     HL: "Cad iad na fadhbanna sóisialta i do cheantar? (m.sh. dífhostaíocht)",
-    check_HL: "Áiseanna (Tá leabharlann/páirc ann), Fadhbanna (Dífhostaíocht/Drugaí), Tuiseal Ginideach (Lár an bhaile/muintir na háite)."
+    check_HL: "Áiseanna, Fadhbanna, Tuiseal Ginideach (Lár an bhaile/muintir na háite).",
+    checkpoints_OL: ["Tá mé i mo chónaí i...", "Tá sé suite in aice le...", "Tá páirc/siopa ann"],
+    checkpoints_HL: ["Fadhbanna sóisialta", "Easpa áiseanna", "Tá sé ciúin/plódaithe"],
+    checkpoints_TOP: ["✨ Nath: Níl aon tinteán mar do thinteán féin", "✨ Gramadach: Sa + Séimhiú (Sa chathair)", "✨ Vocab: Bruachbhaile"]
   },
   { 
-    id: 4, 
-    title: "4. An Scoil", 
+    id: 4, title: "4. An Scoil", 
     OL: "Cén scoil a bhfuil tú ag freastal uirthi? An maith leat í?", 
     HL: "Cad a cheapann tú faoin gcóras oideachais? An bhfuil an iomarca brú ann?",
-    check_HL: "Ainm na scoile (TG), Ábhair (Stair/Tíreolaíocht), An Córas Pointí, Modh Coinníollach (Dá mbeinn i mo phríomhoide...)."
+    check_HL: "Ainm na scoile, Ábhair, An Córas Pointí, Modh Coinníollach.",
+    checkpoints_OL: ["Freastalaím ar scoil mheasctha", "Caithim éide scoile", "Déanaim seacht n-ábhar"],
+    checkpoints_HL: ["An Ardteist", "Brú na bpointí", "Rialacha na scoile"],
+    checkpoints_TOP: ["✨ Nath: Is maith an t-anlann an t-ocras", "✨ Gramadach: Dá mbeinn i mo phríomhoide...", "✨ Vocab: Idirbhliain"]
   },
   { 
-    id: 5, 
-    title: "5. Caitheamh Aimsire", 
+    id: 5, title: "5. Caitheamh Aimsire", 
     OL: "Cad a dhéanann tú i do chuid am saor? An imríonn tú spórt?", 
     HL: "Cén tábhacht a bhaineann le spórt do dhaoine óga?",
-    check_HL: "Ainm briathartha (Ag imirt/Ag léamh), TG (Cumann Peile), Sláinte intinne & choirp, Buntáistí an spóirt."
+    check_HL: "Ainm briathartha, TG (Cumann Peile), Sláinte intinne & choirp.",
+    checkpoints_OL: ["Imrím peil", "Éistim le ceol", "Is maith liom Netflix"],
+    checkpoints_HL: ["Buntáistí an spóirt", "Sláinte mheabhrach", "Caitheamh aimsire ciúin"],
+    checkpoints_TOP: ["✨ Nath: Tír gan teanga, tír gan anam", "✨ Gramadach: Ainm Briathartha (Ag imirt)", "✨ Vocab: Aclaíocht"]
   },
   { 
-    id: 6, 
-    title: "6. Laethanta Saoire", 
+    id: 6, title: "6. Laethanta Saoire", 
     OL: "Cad a dhéanann tú sa samhradh? An dtéann tú ar laethanta saoire?", 
     HL: "Inis dom faoi laethanta saoire a chuaigh i bhfeidhm ort.",
-    check_HL: "Aimsir Chaite (Chuaigh mé/D'fhan mé), Aimsir Ghnáthchaite (Théinn/Bhínn), TG (Lár na cathrach/Bia na háite)."
+    check_HL: "Aimsir Chaite, Aimsir Ghnáthchaite, TG (Lár na cathrach).",
+    checkpoints_OL: ["Rachaidh mé go dtí an Spáinn", "Beidh mé ag obair", "Gheobhaidh mé post"],
+    checkpoints_HL: ["Ag taisteal", "Ag sábháil airgid", "An tSraith Shóisearach"],
+    checkpoints_TOP: ["✨ Nath: Beidh an ghrian ag taitneamh", "✨ Gramadach: Aimsir Fháistineach (Beidh mé)", "✨ Vocab: Thar lear"]
   },
   { 
-    id: 7, 
-    title: "7. An Todhchaí", 
+    id: 7, title: "7. An Todhchaí", 
     OL: "Cad a dhéanfaidh tú tar éis na hArdteiste?", 
     HL: "Cén post ba mhaith leat a fháil? An bhfuil sé deacair post a fháil in Éirinn?",
-    check_HL: "Aimsir Fháistineach (Déanfaidh mé/Rachaidh mé), Modh Coinníollach (Ba mhaith liom...), An Ollscoil/Gairm."
+    check_HL: "Aimsir Fháistineach, Modh Coinníollach (Ba mhaith liom...), An Ollscoil.",
+    checkpoints_OL: ["Rachaidh mé go dtí an ollscoil", "Ba mhaith liom staidéar a dhéanamh", "Beidh mé sásta"],
+    checkpoints_HL: ["An bhliain seo chugainn", "Gairm bheatha", "Lóistín mic léinn"],
+    checkpoints_TOP: ["✨ Nath: Ní neart go cur le chéile", "✨ Gramadach: Modh Coinníollach", "✨ Vocab: Neamhspleáchas"]
   },
   { 
-    id: 8, 
-    title: "8. Obair Pháirtaimseartha", 
+    id: 8, title: "8. Obair Pháirtaimseartha", 
     OL: "An bhfuil post agat? Cén sórt oibre a dhéanann tú?", 
     HL: "An bhfuil sé go maith do dhaltaí scoile post a bheith acu?",
-    check_HL: "Cur síos ar an obair (Ag obair i siopa/bialann), Pá/Airgead, Buntáistí & Míbhuntáistí (Brú staidéir vs Airgead)."
+    check_HL: "Cur síos ar an obair, Pá, Buntáistí & Míbhuntáistí.",
+    checkpoints_OL: ["Oibrím i siopa", "Faighim deich euro san uair", "Is maith liom an t-airgead"],
+    checkpoints_HL: ["Cothromaíocht (Balance)", "Brú staidéir", "Taithí oibre"],
+    checkpoints_TOP: ["✨ Nath: Is fearr an tsláinte ná na táinte", "✨ Gramadach: Dá mbeadh post agam...", "✨ Vocab: Airgead póca"]
   },
   { 
-    id: 9, 
-    title: "9. An Ghaeilge", 
+    id: 9, title: "9. An Ghaeilge", 
     OL: "An maith leat an Ghaeilge? An raibh tú sa Ghaeltacht?", 
     HL: "Stádas na Gaeilge. Cad is féidir linn a dhéanamh chun í a chur chun cinn?",
-    check_HL: "An Ghaeltacht, Seachtain na Gaeilge, TG4, Tábhacht an chultúir, Modh Coinníollach (Ba cheart dúinn...)."
+    check_HL: "An Ghaeltacht, Seachtain na Gaeilge, TG4, Modh Coinníollach.",
+    checkpoints_OL: ["Is maith liom an teanga", "Bhí mé sa Ghaeltacht", "Tá sé tábhachtach"],
+    checkpoints_HL: ["Todhchaí na Gaeilge", "An cultúr Gaelach", "Ag cur na teanga chun cinn"],
+    checkpoints_TOP: ["✨ Nath: Beatha teanga í a labhairt", "✨ Gramadach: An Aimsir Láithreach", "✨ Vocab: Oidhreacht"]
   },
   { 
-    id: 10, 
-    title: "10. Fadhbanna Sóisialta", 
+    id: 10, title: "10. Fadhbanna Sóisialta", 
     OL: "An bhfuil fadhbanna ag daoine óga inniu?", 
     HL: "Alcól, drugaí, agus tithíocht. Cad iad na dúshláin is mó?",
-    check_HL: "Fadhbanna (Alcól/Drugaí/Tithíocht), Brú na bpiaraí, TG (Fadhb na dtiarnaí talún), Réiteach (Ba chóir don rialtas...)."
+    check_HL: "Fadhbanna, Brú na bpiaraí, TG (Fadhb na dtiarnaí talún), Réiteach.",
+    checkpoints_OL: ["Tá fadhb an óil ann", "Tá drugaí ann", "Tá brú mór ar dhaoine óga"],
+    checkpoints_HL: ["Géarchéim na tithíochta", "Daoine gan dídean", "An córas sláinte"],
+    checkpoints_TOP: ["✨ Nath: Is maith an scéalaí an aimsir", "✨ Gramadach: Ba chóir don rialtas...", "✨ Vocab: Bochtaineacht"]
   },
   { 
-    id: 11, 
-    title: "11. Cúrsaí Reatha", 
+    id: 11, title: "11. Cúrsaí Reatha", 
     OL: "An léann tú an nuacht? Cad atá sa nuacht?", 
     HL: "Cogadh, athrú aeráide, nó polaitíocht. Scéal mór le déanaí.",
-    check_HL: "Scéal nuachta sonrach, Athrú Aeráide (Téamh domhanda), Tuairim phearsanta (Cuireann sé imní orm...)."
+    check_HL: "Scéal nuachta sonrach, Athrú Aeráide (Téamh domhanda), Tuairim phearsanta.",
+    checkpoints_OL: ["Léim an nuacht ar líne", "Tá cogadh ar siúl", "Tá an aimsir go dona"],
+    checkpoints_HL: ["Téamh domhanda", "An timpeallacht", "Cúrsaí polaitíochta"],
+    checkpoints_TOP: ["✨ Nath: Níorhaon lae é an domhan", "✨ Gramadach: An Aimsir Láithreach", "✨ Vocab: Athrú aeráide"]
   },
   { 
-    id: 12, 
-    title: "12. Ceol & Cultúr", 
+    id: 12, title: "12. Ceol & Cultúr", 
     OL: "An maith leat ceol? Cén cineál ceoil?", 
     HL: "Tábhacht an chultúir agus an cheoil. An dtéann tú chuig ceolchoirmeacha?",
-    check_HL: "Uirlisí ceoil (Ag seinm...), Ceolchoirmeacha (Electric Picnic etc.), Tábhacht an chultúir Ghaelaigh."
+    check_HL: "Uirlisí ceoil, Ceolchoirmeacha, Tábhacht an chultúir Ghaelaigh.",
+    checkpoints_OL: ["Is maith liom popcheol", "Seinim an giotár", "Rachaidh mé go dtí ceolchoirm"],
+    checkpoints_HL: ["Ceol traidisiúnta", "Fleadh Cheoil", "Tionchar an cheoil"],
+    checkpoints_TOP: ["✨ Nath: Ceol na n-éan", "✨ Gramadach: Ag seinm (Ainm Briathartha)", "✨ Vocab: Cultúr Gaelach"]
   },
   { 
-    id: 13, 
-    title: "13. Teicneolaíocht", 
+    id: 13, title: "13. Teicneolaíocht", 
     OL: "An bhfuil fón póca agat? An úsáideann tú TikTok?", 
     HL: "Buntáistí agus míbhuntáistí an idirlín agus na meáin shóisialta.",
-    check_HL: "Aipeanna (Apps), Buntáistí (Eolas/Cumarsáid), Míbhuntáistí (Cibearbhulaíocht/Andúil), TG (Suíomhanna sóisialta)."
+    check_HL: "Aipeanna, Buntáistí/Míbhuntáistí, Cibearbhulaíocht, TG (Suíomhanna sóisialta).",
+    checkpoints_OL: ["Úsáidim Instagram", "Bím ar líne gach lá", "Tá fón póca agam"],
+    checkpoints_HL: ["Cibearbhulaíocht", "Bréagnuacht (Fake news)", "Andúil sa teicneolaíocht"],
+    checkpoints_TOP: ["✨ Nath: Ar scáth a chéile a mhaireann na daoine", "✨ Gramadach: Buntáistí vs Míbhuntáistí", "✨ Vocab: Meáin shóisialta"]
   },
   { 
-    id: 14, 
-    title: "14. Sláinte", 
+    id: 14, title: "14. Sláinte", 
     OL: "An itheann tú bia sláintiúil? An ndéanann tú aclaíocht?", 
     HL: "Fadhb na raimhre in Éirinn. Cén fáth a bhfuil sláinte intinne tábhachtach?",
-    check_HL: "Bia folláin vs Mí-fhalláin, Aclaíocht, Sláinte intinne (Strus/Imní), TG (Fadhb na raimhre)."
+    check_HL: "Bia folláin vs Mí-fhalláin, Aclaíocht, Sláinte intinne, TG (Fadhb na raimhre).",
+    checkpoints_OL: ["Ithim torthaí agus glasraí", "Ólaim uisce", "Déanaim aclaíocht"],
+    checkpoints_HL: ["Fadhb na raimhre", "Sláinte mheabhrach", "Bia junk (Bia gasta)"],
+    checkpoints_TOP: ["✨ Nath: Sláinte an bhradáin", "✨ Gramadach: Ba cheart dúinn...", "✨ Vocab: Folláine"]
   },
   { 
-    id: 15, 
-    title: "15. Daoine Cáiliúla", 
+    id: 15, title: "15. Daoine Cáiliúla", 
     OL: "Cé hé/hí an duine is fearr leat?", 
     HL: "An bhfuil tionchar maith nó olc ag daoine cáiliúla ar dhaoine óga?",
-    check_HL: "Tionchar (Influence), Eiseamláirí (Role models), Na Meáin (The media), Tuairim."
+    check_HL: "Tionchar, Eiseamláirí, Na Meáin, Tuairim.",
+    checkpoints_OL: ["Is maith liom Taylor Swift", "Is aisteoir maith é", "Tá sé cáiliúil"],
+    checkpoints_HL: ["Tionchar na meán", "Eiseamláirí maithe/olca", "Brú ar dhaoine óga"],
+    checkpoints_TOP: ["✨ Nath: Laoch na himeartha", "✨ Gramadach: An Aimsir Láithreach", "✨ Vocab: Tionchar"]
   }
 ];
 
 let currentLevel = 'OL';
+let currentMode = 'exam';
 let currentTopic = null;
 let isMockExam = false; 
 let mockQuestions = []; 
 let mockIndex = 0; 
-let currentAudio = null;
 
 const PAST_Q = ["Cad a rinne tú inné?", "Ar ndeachaigh tú amach?", "Cén chaoi ar chaith tú do bhreithlá?"];
 const FUT_Q = ["Cad a dhéanfaidh tú amárach?", "Cá rachaidh tú?", "Cad a dhéanfaidh tú tar éis na scrúduithe?"];
+
+// ===========================================
+// LÓGICA DE CONTROL (SET MODE / SET LEVEL)
+// ===========================================
 
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
@@ -200,7 +243,12 @@ function initConv() {
             document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
             b.classList.add('active'); 
             currentTopic = item; 
-            updateQuestion(); 
+            
+            if(currentMode === 'study') {
+                renderCheckpoints();
+            } else {
+                updateQuestion(); 
+            }
         }; 
         g.appendChild(b); 
     }); 
@@ -210,39 +258,192 @@ function setLevel(lvl) {
     currentLevel = lvl; 
     document.getElementById('btnOL').className = lvl === 'OL' ? 'level-btn active' : 'level-btn'; 
     document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
-    if(currentTopic && !isMockExam) updateQuestion(); 
-}
-
-function toggleHint() {
-    const box = document.getElementById('hintBox');
-    if (box.style.display === 'none') {
-        box.style.display = 'block';
+    
+    if(currentMode === 'exam') {
+        if(currentTopic && !isMockExam) updateQuestion(); 
     } else {
-        box.style.display = 'none';
+        renderCheckpoints(); 
     }
 }
 
-function updateQuestion() { 
-    document.getElementById('exerciseArea').style.display = 'block'; 
-    document.getElementById('result').style.display = 'none'; 
-    document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
-    document.getElementById('userInput').value = "";
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('modeExam').className = mode === 'exam' ? 'mode-btn active' : 'mode-btn';
+    document.getElementById('modeStudy').className = mode === 'study' ? 'mode-btn active' : 'mode-btn';
 
-    const hintBox = document.getElementById('hintBox');
-    const btnHint = document.getElementById('btnHint');
+    const exerciseArea = document.getElementById('exerciseArea');
+    const resultArea = document.getElementById('result'); 
     
-    if (hintBox && btnHint) {
-        hintBox.style.display = 'none'; 
-        if (currentLevel === 'HL' && currentTopic.check_HL) {
-            btnHint.style.display = 'inline-block';
-            hintBox.innerHTML = "<strong>📝 Pointí Tábhachtacha (HL):</strong><br>" + currentTopic.check_HL;
+    let studyContainer = document.getElementById('studyContainer');
+    if (!studyContainer) { initStudyHTML(); studyContainer = document.getElementById('studyContainer'); }
+
+    if (mode === 'exam') {
+        studyContainer.style.display = 'none';
+        if (document.getElementById('scoreDisplay').innerText !== "") {
+             resultArea.style.display = 'block';
+             exerciseArea.style.display = 'none';
         } else {
-            btnHint.style.display = 'none'; 
+             exerciseArea.style.display = 'block';
+             resultArea.style.display = 'none';
+        }
+    } else {
+        studyContainer.style.display = 'block';
+        exerciseArea.style.display = 'none';
+        resultArea.style.display = 'none';
+        renderCheckpoints(); 
+    }
+}
+
+// ===========================================
+// MODO FORMACIÓN (STUDY MODE AI)
+// ===========================================
+
+function initStudyHTML() {
+    // El contenedor ya está en HTML
+}
+
+function renderCheckpoints() {
+    const container = document.getElementById('studyContainer');
+    if (!container) return;
+
+    if (!currentTopic) {
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Roghnaigh topaic le do thoil.</p>";
+        return;
+    }
+    
+    container.innerHTML = `
+        <h3 style="color:#166534;">📚 Study Mode: ${currentTopic.title}</h3>
+        <p class="small-text">Click on a concept to get an instant explanation.</p>
+        <div id="checkpointsList"></div> 
+        <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
+    `;
+
+    const list = document.getElementById('checkpointsList');
+    
+    const createSection = (title, items, cssClass) => {
+        if(!items || items.length === 0) return;
+        const h = document.createElement('h4');
+        h.innerText = title; h.style.margin = "15px 0 5px 0"; h.style.color = "#374151"; h.style.borderBottom = "1px solid #e5e7eb"; h.style.paddingBottom = "5px";
+        list.appendChild(h);
+        const grid = document.createElement('div'); grid.className = 'checklist-grid';
+        items.forEach(point => {
+            const btn = document.createElement('button'); btn.className = `check-btn ${cssClass}`; 
+            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
+            btn.onclick = () => askAIConcept(point);
+            grid.appendChild(btn);
+        });
+        list.appendChild(grid);
+    };
+
+    if (currentTopic.checkpoints_OL) createSection("🧱 Bunús (Foundations)", currentTopic.checkpoints_OL, "btn-ol");
+    if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
+        createSection("🔧 Ardleibhéal (HL)", currentTopic.checkpoints_HL, "btn-hl");
+        if(currentTopic.checkpoints_TOP) {
+            createSection("🚀 Nathanna Cainte (Top Marks)", currentTopic.checkpoints_TOP, "btn-top");
         }
     }
 }
 
+async function askAIConcept(concept) {
+    const box = document.getElementById('aiExplanationBox');
+    box.style.display = 'block'; 
+    box.innerHTML = "⏳ <b>Ag fiafraí den mhúinteoir AI...</b>";
+
+    const prompt = `
+        ACT AS: Irish Grammar Teacher.
+        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
+        CONCEPT: "${concept}".
+        INSTRUCTIONS: Explain in English (max 50 words). Provide 2 Irish examples with English translation.
+        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
+    `;
+
+    try {
+        const text = await callSmartAI(prompt);
+        const cleanText = text.replace(/```html|```/g, "").trim();
+        
+        box.innerHTML = `
+            <div style="display:flex; justify-content:space-between;">
+                <strong>💡 Concept: ${concept}</strong>
+                <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
+            </div>
+            <hr>
+            ${cleanText}
+        `;
+    } catch (e) {
+        console.error(e);
+        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
+    }
+}
+
+// ===========================================
+// FUNCIÓN ANALYZE (EXAM MODE)
+// ===========================================
+async function analyze() {
+  const t = document.getElementById('userInput').value; 
+  if(t.length < 5) return alert("Scríobh níos mó le do thoil...");
+  
+  const b = document.getElementById('btnAction'); 
+  b.disabled = true; b.innerText = "⏳ Ag ceartú...";
+  
+  const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
+  
+  let criteria = "Gramadach cruinn (Accurate grammar) and vocabulary."; 
+  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
+      criteria = currentTopic.check_HL;
+  }
+
+  const prompt = `
+  ACT AS: Strict Leaving Cert Irish Examiner.
+  CONTEXT: RAW TEXT (No punctuation).
+  QUESTION: "${q}". 
+  STUDENT WROTE: "${t}". 
+  LEVEL: ${currentLevel}.
+  CHECKPOINTS: [ ${criteria} ].
+  INSTRUCTIONS: Check Grammar (Tuiseal Ginideach, Séimhiú/Urú, Briathra).
+  OUTPUT JSON: { 
+    "score": 0-100, 
+    "feedback_ga": "Moladh & Comhairle i nGaeilge", 
+    "feedback_en": "Explain grammar mistakes simply in English", 
+    "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
+  }`;
+
+  try {
+    const rawText = await callSmartAI(prompt);
+    const cleanJson = rawText.replace(/```json|```/g, "").trim();
+    const j = JSON.parse(cleanJson);
+    
+    document.getElementById('exerciseArea').style.display = 'none'; 
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('userResponseText').innerText = t;
+    
+    const s = document.getElementById('scoreDisplay');
+    s.innerText = `Scór: ${j.score}%`;
+    s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
+    document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
+    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
+    
+    const btnReset = document.getElementById('btnReset');
+    if (isMockExam && mockIndex < 4) { 
+        btnReset.innerText = "➡️ An Chéad Cheist Eile"; 
+        btnReset.onclick = nextMockQuestion; 
+    } else { 
+        btnReset.innerText = "🔄 Topaic Eile"; 
+        btnReset.onclick = () => { isMockExam=false; resetApp(); }; 
+    }
+  } catch (e) { 
+      console.error(e); 
+      alert("⚠️ The AI is a bit busy right now. (" + e.message + ")"); 
+  } finally { 
+      b.disabled = false; b.innerText = "✨ Ceartaigh"; 
+  }
+}
+
+// ===========================================
+// MOCK EXAM & UTILS
+// ===========================================
 function startMockExam() { 
+    setMode('exam');
     isMockExam = true; mockIndex = 0; 
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
@@ -268,123 +469,23 @@ function showMockQuestion() {
     if(hintBox) hintBox.style.display = 'none';
 }
 
-function speakText() { 
-    if(currentAudio) { currentAudio.pause(); }
-    
-    if(isMockExam) {
-        speakRobot(document.getElementById('qDisplay').innerText);
-        return;
-    }
+function nextMockQuestion() { mockIndex++; showMockQuestion(); }
 
-    const filename = `audio/q_t${currentTopic.id}_${currentLevel.toLowerCase()}.mp3`;
-    
-    // Intentamos reproducir archivo local, si falla usamos TTS
-    currentAudio = new Audio(filename);
-    currentAudio.onerror = function() {
-        console.log("Audio file not found, using TTS.");
-        speakRobot(document.getElementById('qDisplay').innerText);
-    };
-    currentAudio.play();
+function speakText() { 
+    const rawHTML = document.getElementById('qDisplay').innerHTML;
+    const t = rawHTML.replace(/<[^>]*>/g, "").replace(/\(OL\)|\(HL\)/g, ""); 
+    speakRobot(t);
 }
 
 function speakRobot(text) {
     if ('speechSynthesis' in window) { 
-        if (!irishVoiceAvailable) {
-            alert("⚠️ No Irish voice detected on this device.\n(Níl guth Gaeilge ar fáil).");
-            return;
-        }
         window.speechSynthesis.cancel(); 
         const u = new SpeechSynthesisUtterance(text); 
         u.lang = 'ga-IE'; 
-        u.voice = irishVoiceAvailable;
+        if (irishVoiceAvailable) u.voice = irishVoiceAvailable;
         u.rate = 0.9; 
         window.speechSynthesis.speak(u); 
     }
-}
-
-function resetApp() { 
-    document.getElementById('result').style.display = 'none'; 
-    document.getElementById('exerciseArea').style.display = 'block'; 
-    
-    if(isMockExam && mockIndex < 4) { 
-        mockIndex++; 
-        showMockQuestion(); 
-    } else { 
-        isMockExam = false; 
-        document.getElementById('userInput').value = ""; 
-        document.getElementById('qDisplay').innerHTML = "Roghnaigh topaic..."; 
-        const btnHint = document.getElementById('btnHint');
-        if(btnHint) btnHint.style.display = 'none';
-    }
-}
-
-async function analyze() {
-  const t = document.getElementById('userInput').value; 
-  if(t.length < 5) return alert("Scríobh níos mó le do thoil...");
-  
-  const b = document.getElementById('btnAction'); 
-  b.disabled = true; b.innerText = "⏳ Ag ceartú...";
-  
-  const q = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  
-  let criteria = "Gramadach cruinn (Accurate grammar) and vocabulary."; 
-  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
-      criteria = currentTopic.check_HL;
-  }
-
-  const prompt = `
-  ACT AS: Strict Leaving Cert Irish (Gaeilge) Grammar Teacher. 
-  QUESTION: "${q}". 
-  STUDENT WROTE: "${t}". 
-  LEVEL: ${currentLevel}.
-  
-  CRITICAL INSTRUCTIONS:
-  1. CHECK GRAMMAR STRICTLY: Focus on 'Tuiseal Ginideach' (Genitive Case), 'Séimhiú' (Lenition), 'Urú' (Eclipsis) and Verb Tenses.
-  2. CHECK CONTENT: Student MUST mention: [ ${criteria} ].
-  
-  OUTPUT JSON ONLY: { 
-    "score": (0-100), 
-    "feedback_ga": "Moladh (Praise) & Comhairle (Advice) i nGaeilge", 
-    "feedback_en": "Explain the grammar mistakes simply in English", 
-    "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
-  }`;
-
-  try {
-    // CONEXIÓN AL BACKEND (NETLIFY)
-    const r = await fetch('/.netlify/functions/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    
-    if (!r.ok) throw new Error("Earráid Backend");
-    const d = await r.json(); 
-    if (d.error) throw new Error(d.error.message);
-
-    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
-    
-    document.getElementById('exerciseArea').style.display = 'none'; 
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('userResponseText').innerText = t;
-    document.getElementById('scoreDisplay').innerText = `Scór Gramadaí: ${j.score}%`;
-    document.getElementById('scoreDisplay').style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
-    document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
-    document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
-    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Gramadach foirfe!";
-    
-    const btnReset = document.getElementById('btnReset');
-    if (isMockExam && mockIndex < 4) { 
-        btnReset.innerText = "➡️ An Chéad Cheist Eile"; 
-        btnReset.onclick = resetApp; 
-    } else { 
-        btnReset.innerText = "🔄 Topaic Eile"; 
-        btnReset.onclick = () => { isMockExam=false; resetApp(); }; 
-    }
-  } catch (e) { 
-      console.error(e); 
-      alert("⚠️ The AI is a bit busy right now. Please wait. (Earráid: " + e.message + ")"); 
-  } finally { 
-      b.disabled = false; b.innerText = "✨ Ceartaigh (Correct)"; 
-  }
 }
 
 function readMyInput() {
@@ -393,26 +494,48 @@ function readMyInput() {
     speakRobot(text); 
 }
 
+function updateQuestion() { 
+    document.getElementById('exerciseArea').style.display = 'block'; 
+    document.getElementById('result').style.display = 'none'; 
+    document.getElementById('studyContainer').style.display = 'none'; 
+    
+    document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
+    document.getElementById('userInput').value = "";
+
+    const hintBox = document.getElementById('hintBox');
+    const btnHint = document.getElementById('btnHint');
+    
+    if (hintBox && btnHint) {
+        hintBox.style.display = 'none'; 
+        if (currentLevel === 'HL' && currentTopic.check_HL) {
+            btnHint.style.display = 'inline-block';
+            hintBox.innerHTML = "<strong>📝 Pointí Tábhachtacha (HL):</strong><br>" + currentTopic.check_HL;
+        } else {
+            btnHint.style.display = 'none'; 
+        }
+    }
+}
+
 // ===========================================
-// 4. DATOS DE POEMAS (YOUTUBE EDITION)
+// 4. FILÍOCHT (POETRY YOUTUBE)
 // ===========================================
 let currentPoemYear = 2026;
 let currentPoemIndex = 0;
 
 const POEMS_2026 = [
-  { title: "Géibheann", author: "Caitlín Maude", youtubeId: "8t15UbhCYHo" }, // Teacher reading
-  { title: "Colscaradh", author: "Pádraig Mac Suibhne", youtubeId: "kJE3N7Z2pWw" }, // Leaving Cert Irish Channel
-  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", youtubeId: "m9AyCD7XLn4" }, // Irish Teacher
-  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", youtubeId: "eT1Y9tdZ898" }, // Leaving Cert Irish Channel
-  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", youtubeId: "hrUGsTFIO3w" } // Poetry Reading Section
+  { title: "Géibheann", author: "Caitlín Maude", youtubeId: "8t15UbhCYHo" }, 
+  { title: "Colscaradh", author: "Pádraig Mac Suibhne", youtubeId: "kJE3N7Z2pWw" }, 
+  { title: "Mo Ghrá-sa", author: "Nuala Ní Dhomhnaill", youtubeId: "m9AyCD7XLn4" }, 
+  { title: "An tEarrach Thiar", author: "Máirtín Ó Direáin", youtubeId: "eT1Y9tdZ898" }, 
+  { title: "An Spailpín Fánach", author: "Anaithnid (Traditional)", youtubeId: "hrUGsTFIO3w" } 
 ];
 
 const POEMS_2027 = [
-  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", youtubeId: "7lQsS-EupoE" }, // Leaving Cert Irish Channel
-  { title: "Iníon", author: "Áine Durkin", youtubeId: "1vGv9aDxeoI" }, // Foghlaim TG4 (Canal Oficial)
-  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", youtubeId: "_eNdbzJdkmw" }, // Teacher Reading
-  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", youtubeId: "GnbBxuiuhNI" }, // Leaving Cert Irish Channel
-  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", youtubeId: "WaHQNmqj9g0" } // Traditional Song with Lyrics
+  { title: "Dínit an Bhróin", author: "Máirtín Ó Direáin", youtubeId: "7lQsS-EupoE" }, 
+  { title: "Iníon", author: "Áine Durkin", youtubeId: "1vGv9aDxeoI" }, 
+  { title: "Glaoch Abhaile", author: "Áine Ní Ghlinn", youtubeId: "_eNdbzJdkmw" }, 
+  { title: "Deireadh na Feide", author: "Ailbhe Ní Ghearbhuigh", youtubeId: "GnbBxuiuhNI" }, 
+  { title: "Úirchill an Chreagáin", author: "Art Mac Cumhaigh", youtubeId: "WaHQNmqj9g0" } 
 ];
 
 function setPoemYear(year) {
@@ -435,7 +558,10 @@ function renderPoemButtons() {
         btn.onclick = () => selectPoem(index, btn);
         container.appendChild(btn);
     });
-    selectPoem(0, container.children[0]);
+    // Seleccionar el primero por defecto si no hay activo
+    if (!document.querySelector('#poemButtonsContainer .active')) {
+        selectPoem(0, container.children[0]);
+    }
 }
 
 function selectPoem(index, btn) {
@@ -449,25 +575,22 @@ function selectPoem(index, btn) {
     document.getElementById('poemArea').style.display = 'block';
     document.getElementById('poemTitle').innerText = p.title;
     document.getElementById('poemAuthor').innerText = "le " + p.author;
-    
-    // Mostramos aviso en lugar del texto
-    document.getElementById('poemText').innerHTML = "<em>Due to copyright restrictions, please follow the text in your official textbook or exam papers.</em>";
+    document.getElementById('poemText').innerHTML = "<em>Due to copyright restrictions, please follow the text in your official textbook.</em>";
 
-    // Llamamos a YouTube
     setupYouTubePlayer(p.youtubeId, 'audioPlayerContainer');
 }
 
 // ===========================================
-// 5. DATOS SRAITH PICTIÚR
+// 5. SRAITH PICTIÚR
 // ===========================================
 let currentSraithTitle = "";
 const SRAITH_TITLES = [
   "1. Cuairt ar Aintín i Nua-Eabhrac", "2. Imreoir Gortaithe", "3. Bua sa chomórtas díospóireachta", 
-  "4. Ná húsáid an cárta creidmheasa gan chead", "5. Ag toghadh scoláire na bliana", "6. An Ghaeilge - seoid luachmhar agus cuid dár gcultúr", 
-  "7. Obair dhian: torthaí maithe san Ardteistiméireacht", "8. Comhoibriú an Phobail", "9. Samhradh Iontach", 
-  "10. Drochaimsir an Gheimhridh - Athrú Aeráide", "11. Timpiste sa Choláiste Samhraidh", "12. Sláinte na nóg - Seachtain na Sláinte", 
+  "4. Ná húsáid an cárta creidmheasa gan chead", "5. Ag toghadh scoláire na bliana", "6. An Ghaeilge - seoid luachmhar", 
+  "7. Obair dhian: torthaí maithe", "8. Comhoibriú an Phobail", "9. Samhradh Iontach", 
+  "10. Drochaimsir - Athrú Aeráide", "11. Timpiste sa Choláiste Samhraidh", "12. Sláinte na nóg", 
   "13. Bua ag Cór na Scoile", "14. Teip sa Scrúdú Tiomána", "15. Breoite ar Scoil", 
-  "16. Agallamh do nuacht TG4@7", "17. Madra ar Strae", "18. Na Déagóirí Cróga", 
+  "16. Agallamh do nuacht TG4", "17. Madra ar Strae", "18. Na Déagóirí Cróga", 
   "19. Rialacha na Scoile", "20. Gaeilge: Teanga Bheo"
 ];
 
@@ -510,30 +633,11 @@ async function analyzeSraith() {
   const b = document.getElementById('btnActionSraith'); 
   b.disabled = true; b.innerText = "⏳ Ag ceartú...";
   
-  const prompt = `
-  ACT AS: Irish Examiner. 
-  TASK: Sraith Pictiúr "${currentSraithTitle}". 
-  STUDENT WROTE: "${t}". 
-  CHECK GRAMMAR: Focus on Past Tense (Aimsir Chaite) and Vocabulary.
-  OUTPUT JSON: { 
-    "score": (0-100), 
-    "feedback_ga": "Irish feedback", 
-    "feedback_en": "English feedback", 
-    "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] 
-  }`;
+  const prompt = `ACT AS: Irish Examiner. TASK: Sraith Pictiúr "${currentSraithTitle}". STUDENT WROTE: "${t}". CHECK GRAMMAR: Focus on Past Tense (Aimsir Chaite). OUTPUT JSON: { "score": 0-100, "feedback_ga": "Irish feedback", "feedback_en": "English feedback", "errors": [{ "original": "x", "correction": "y", "explanation_en": "z" }] }`;
 
   try {
-    // CONEXIÓN AL BACKEND (NETLIFY)
-    const r = await fetch('/.netlify/functions/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    
-    if (!r.ok) throw new Error("Earráid Backend");
-    const d = await r.json(); 
-    if (d.error) throw new Error(d.error.message);
-
-    const j = JSON.parse(d.candidates[0].content.parts[0].text.replace(/```json|```/g, "").trim());
+    const rawText = await callSmartAI(prompt);
+    const j = JSON.parse(rawText.replace(/```json|```/g, "").trim());
     document.getElementById('sraithArea').style.display = 'none'; 
     document.getElementById('resultSraith').style.display = 'block';
     document.getElementById('userResponseTextSraith').innerText = t;
@@ -544,7 +648,7 @@ async function analyzeSraith() {
     document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now. Please wait. (" + e.message + ")"); 
+      alert("⚠️ Earráid: " + e.message); 
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
   }

@@ -1,16 +1,13 @@
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-// Ya no necesitamos poner claves aquí. 
-// El archivo 'script.js' llamará a '/.netlify/functions/gemini'
-// y Netlify usará la clave que guardaste en la "Caja Fuerte".
+// Conexión a Netlify Functions para proteger la API Key
 
 // ===========================================
 // MOTOR INTELIGENTE DE IA (CONECTADO AL BACKEND)
 // ===========================================
 async function callSmartAI(prompt) {
     try {
-        // LLAMADA AL BACKEND (TU CAMARERO)
         const response = await fetch('/.netlify/functions/gemini', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -20,27 +17,24 @@ async function callSmartAI(prompt) {
         });
 
         if (!response.ok) {
-            throw new Error(`Error de conexión con Netlify: ${response.statusText}`);
+            throw new Error(`Error de conexión: ${response.statusText}`);
         }
 
         const data = await response.json();
 
-        // Verificamos si Google devolvió un error a través del backend
         if (data.error) {
             throw new Error(data.error.message || "Error desconocido de la IA");
         }
 
-        // Verificamos que haya respuesta válida
         if (!data.candidates || !data.candidates.length) {
-            throw new Error("La IA no devolvió ninguna respuesta (EMPTY_RESPONSE).");
+            throw new Error("La IA no devolvió respuesta.");
         }
         
-        // Devolvemos el texto limpio
         return data.candidates[0].content.parts[0].text;
 
     } catch (e) {
         console.error("Fallo en la llamada a la IA:", e);
-        throw e; // Pasamos el error para que la pantalla muestre la alerta
+        throw e;
     }
 }
 
@@ -74,13 +68,13 @@ const DATA = [
     check_HL: "Nombre, Edad, Cumpleaños, Celebración típica, Físico detallado, Personalidad, Conectores.",
     checkpoints_OL: ["Datos Básicos (Nombre, Edad...)", "El Cumpleaños (Fechas)", "Descripción Física (Verbos)"],
     checkpoints_HL: ["Personalidad (Adjetivos)", "Ser (Rasgo) vs Estar (Estado)", "Conectores (Sin embargo...)"],
-    checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo (Habits)", "✨ Vocab: Virtudes y Defectos"]
+    checkpoints_TOP: ["✨ Idiom: Tener don de gentes", "✨ Structure: Soler + Infinitivo", "✨ Vocab: Virtudes y Defectos"]
   },
   { 
     title: "2. Mi familia", 
     OL: "¿Cuántas personas hay en tu familia? ¿Tienes hermanos?", 
     HL: "Háblame de tu familia. ¿Cómo son tus padres y hermanos? ¿Te llevas bien con ellos?",
-    check_HL: "Cuántos sois, Profesiones (Mi padre es...), Descripción física/carácter, Verbos de relación (Me llevo bien/mal, Discutimos, Me apoya).",
+    check_HL: "Cuántos sois, Profesiones, Descripción física/carácter, Verbos de relación (Me llevo bien/mal).",
     checkpoints_OL: ["Cuántos somos (Hay... / Somos...)", "Tengo hermanos (Mayor/Menor)", "Profesión padres (Mi madre es...)"],
     checkpoints_HL: ["Llevarse bien/mal (Me llevo...)", "Discutir (Discuto con...)", "Descripción Carácter (Es trabajador...)"],
     checkpoints_TOP: ["✨ Idiom: Ser la oveja negra", "✨ Idiom: Ser uña y carne", "✨ Grammar: Ojalá tuviera... (Wish)"]
@@ -98,7 +92,7 @@ const DATA = [
     title: "4. Mi casa", 
     OL: "¿Vives en una casa o en un piso? ¿Cómo es tu dormitorio?", 
     HL: "Describe tu casa ideal. ¿Qué es lo que más te gusta y lo que menos de tu hogar?",
-    check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión (Lo que más me gusta es...), Tareas (Tengo que + infinitivo).",
+    check_HL: "Tipo de vivienda, Ubicación, Mi dormitorio (Hay + muebles), Opinión, Tareas.",
     checkpoints_OL: ["Dónde vivo (Vivo en...)", "Mi dormitorio (Tengo...)", "Opinión (Me gusta mi casa...)"],
     checkpoints_HL: ["Mi rincón favorito (Lo que más...)", "Tareas domésticas (Tengo que...)", "Ubicación (Está cerca de...)"],
     checkpoints_TOP: ["✨ Idiom: Sentirse como en casa", "✨ Grammar: Si ganara la lotería...", "✨ Vocab: Chalet adosado"]
@@ -107,7 +101,7 @@ const DATA = [
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
     HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?",
-    check_HL: "Instalaciones (Hay...), Lo bueno/malo (Lo mejor es...), Problemas (Hay mucho ruido/tráfico), Opinión personal.",
+    check_HL: "Instalaciones (Hay...), Lo bueno/malo, Problemas (Ruido/tráfico), Opinión personal.",
     checkpoints_OL: ["Instalaciones (Hay un parque...)", "Adjetivos (Es tranquilo/ruidoso)", "Tiendas (La farmacia, el super...)"],
     checkpoints_HL: ["Problemas sociales (Botellón...)", "Ventajas y Desventajas", "Transporte público"],
     checkpoints_TOP: ["✨ Idiom: Es un barrio de mala muerte", "✨ Grammar: Ojalá hubiera...", "✨ Vocab: Zonas verdes"]
@@ -116,7 +110,7 @@ const DATA = [
     title: "6. Mi pueblo/ciudad", 
     OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", 
     HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?",
-    check_HL: "Ubicación, Comparativos (Más tranquilo que...), Ventajas/Desventajas, Preferencia (Prefiero vivir en... porque...).",
+    check_HL: "Ubicación, Comparativos (Más tranquilo que...), Ventajas/Desventajas, Preferencia.",
     checkpoints_OL: ["Ubicación (Está en el norte...)", "Tamaño (Es pequeño/grande)", "Lugares de interés"],
     checkpoints_HL: ["Vida urbana vs Rural", "Contaminación y Tráfico", "Comparativos (Más... que)"],
     checkpoints_TOP: ["✨ Idiom: Echar de menos (Miss)", "✨ Grammar: Si pudiera elegir...", "✨ Vocab: Calidad de vida"]
@@ -125,16 +119,16 @@ const DATA = [
     title: "7. Mi colegio", 
     OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", 
     HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?",
-    check_HL: "Tipo (Mixto/Público), Instalaciones (Hay un gimnasio...), Uniforme (Llevo...), Opinión (Es cómodo/anticuado), Normas (Se debe/No se permite).",
+    check_HL: "Tipo (Mixto/Público), Instalaciones, Uniforme, Opinión, Normas.",
     checkpoints_OL: ["Descripción (Es mixto...)", "El Uniforme (Llevo...)", "Instalaciones (Cantina, lab...)"],
     checkpoints_HL: ["Las Normas (Está prohibido...)", "Opinión del Uniforme", "Profesores y Alumnos"],
-    checkpoints_TOP: ["✨ Idiom: Hincar los codos (Study hard)", "✨ Grammar: Si yo fuera director...", "✨ Vocab: Acoso escolar (Bullying)"]
+    checkpoints_TOP: ["✨ Idiom: Hincar los codos", "✨ Grammar: Si yo fuera director...", "✨ Vocab: Acoso escolar (Bullying)"]
   },
   { 
     title: "8. Mis asignaturas", 
     OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", 
     HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?",
-    check_HL: "Asignaturas, Favorita (Me encanta porque es...), Difícil (Me cuesta...), Opinión Sistema (Mucho estrés, Puntos).",
+    check_HL: "Asignaturas, Favorita, Difícil, Opinión Sistema (Estrés, Puntos).",
     checkpoints_OL: ["Lista de asignaturas", "Asignatura favorita (Me gusta...)", "Asignatura difícil (Odio...)"],
     checkpoints_HL: ["Presión de los exámenes", "El sistema de puntos (CAO)", "Utilidad para el futuro"],
     checkpoints_TOP: ["✨ Idiom: Ser un empollón", "✨ Grammar: Se me da bien/mal", "✨ Vocab: Aprobar / Suspender"]
@@ -143,7 +137,7 @@ const DATA = [
     title: "9. Rutina diaria", 
     OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", 
     HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?",
-    check_HL: "Verbos Reflexivos (Me levanto, Me ducho...), Horarios (A las ocho...), Conectores (Primero, Luego, Después), Estudio vs Tiempo libre.",
+    check_HL: "Verbos Reflexivos (Me levanto...), Horarios, Conectores, Estudio vs Tiempo libre.",
     checkpoints_OL: ["Verbos Reflexivos (Me levanto)", "Las horas (A las siete...)", "Comidas (Desayuno, Ceno)"],
     checkpoints_HL: ["Equilibrio estudio/vida", "El estrés diario", "Diferencia con el fin de semana"],
     checkpoints_TOP: ["✨ Idiom: Pegársele a uno las sábanas", "✨ Idiom: No dar abasto", "✨ Grammar: Antes de + Infinitivo"]
@@ -152,7 +146,7 @@ const DATA = [
     title: "10. Pasatiempos", 
     OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", 
     HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?",
-    check_HL: "Deporte (Juego al...), Frecuencia (Dos veces a la semana), Importancia (Para desconectar, Para estar en forma).",
+    check_HL: "Deporte (Juego al...), Frecuencia, Importancia (Desconectar, Estar en forma).",
     checkpoints_OL: ["Deportes (Juego al fútbol...)", "Instrumentos (Toco el piano...)", "Frecuencia (A veces/Nunca)"],
     checkpoints_HL: ["Beneficios mentales (Desconectar)", "Deporte individual vs Equipo", "Influencia de la tecnología"],
     checkpoints_TOP: ["✨ Idiom: Matar el tiempo", "✨ Vocab: Sedentarismo", "✨ Grammar: Llevo X años jugando..."]
@@ -161,7 +155,7 @@ const DATA = [
     title: "11. Tareas domésticas", 
     OL: "¿Ayudas en casa? ¿Haces tu cama?", 
     HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?",
-    check_HL: "Tareas (Pongo la mesa, Paso la aspiradora), Frecuencia (A veces, Siempre), Opinión (Es justo/injusto, Todos ayudamos).",
+    check_HL: "Tareas (Pongo la mesa...), Frecuencia, Opinión (Justo/injusto).",
     checkpoints_OL: ["Acciones (Lavar, planchar...)", "Mi responsabilidad", "Frecuencia"],
     checkpoints_HL: ["Igualdad de género en casa", "La paga (Pocket money)", "Conflictos por las tareas"],
     checkpoints_TOP: ["✨ Idiom: Arrimar el hombro", "✨ Idiom: Es pan comido", "✨ Vocab: Reparto equitativo"]
@@ -170,7 +164,7 @@ const DATA = [
     title: "12. Vacaciones", 
     OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", 
     HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?",
-    check_HL: "Pretérito Indefinido (Fui, Visité, Comí), Imperfecto (Hacía sol, Era bonito), Alojamiento, Opinión.",
+    check_HL: "Pretérito Indefinido (Fui, Visité...), Imperfecto (Hacía sol...), Alojamiento, Opinión.",
     checkpoints_OL: ["Destino (Fui a España...)", "Actividades (Nadé, tomé el sol)", "Transporte (En avión)"],
     checkpoints_HL: ["Turismo de sol y playa vs Cultural", "Experiencias gastronómicas", "Clima (Hacía calor...)"],
     checkpoints_TOP: ["✨ Idiom: Costar un ojo de la cara", "✨ Idiom: Recargar las pilas", "✨ Grammar: Lo pasé bomba"]
@@ -179,7 +173,7 @@ const DATA = [
     title: "13. Planes de Futuro", 
     OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", 
     HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?",
-    check_HL: "Futuro Simple (Estudiaré, Viajaré) O 'Ir a + Infinitivo', Condicional (Me gustaría ser...), Universidad/Carrera, Por qué (Porque me interesa...).",
+    check_HL: "Futuro Simple (Estudiaré...), Condicional (Me gustaría...), Universidad, Por qué.",
     checkpoints_OL: ["Ir a la universidad", "La carrera (Medicina, Derecho...)", "Trabajar (Quiero ser...)"],
     checkpoints_HL: ["El Año Sabático (Gap Year)", "Independizarse de los padres", "Vocación vs Salario"],
     checkpoints_TOP: ["✨ Idiom: El mundo es un pañuelo", "✨ Idiom: Buscarse la vida", "✨ Grammar: Cuando termine... (Subjuntivo)"]
@@ -188,7 +182,7 @@ const DATA = [
     title: "14. Fin de semana pasado", 
     OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", 
     HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?",
-    check_HL: "Pretérito Indefinido (Fui al cine, Estudié, Salí con amigos), Imperfecto (Estaba cansado), Conectores temporales (El sábado por la tarde...).",
+    check_HL: "Pretérito Indefinido (Fui al cine...), Imperfecto (Estaba cansado), Conectores.",
     checkpoints_OL: ["Viernes/Sábado/Domingo", "Actividades (Fui, Vi, Comí)", "Con quién (Con mis amigos)"],
     checkpoints_HL: ["Describir una fiesta/evento", "Sensaciones (Estaba agotado)", "Imprevistos"],
     checkpoints_TOP: ["✨ Idiom: Quedarse frito (Sleep)", "✨ Idiom: Pasarlo de cine", "✨ Grammar: Al llegar a casa..."]
@@ -197,7 +191,7 @@ const DATA = [
     title: "15. Próximo fin de semana", 
     OL: "¿Qué harás el próximo fin de semana?", 
     HL: "Háblame de tus planes para el próximo fin de semana.",
-    check_HL: "Perífrasis 'Ir a + Infinitivo' (Voy a estudiar, Voy a ir...), Futuro Simple (Jugaré un partido), Planes concretos.",
+    check_HL: "Ir a + Infinitivo, Futuro Simple, Planes concretos.",
     checkpoints_OL: ["Planes fijos (Voy a trabajar)", "Ocio (Voy a ir al cine)", "Descanso (Voy a dormir)"],
     checkpoints_HL: ["Planes dependientes del clima", "Estudio y deberes", "Eventos familiares"],
     checkpoints_TOP: ["✨ Idiom: Darse un capricho", "✨ Grammar: Tengo ganas de...", "✨ Grammar: Si hace buen tiempo..."]
@@ -231,6 +225,7 @@ function setMode(mode) {
     const exerciseArea = document.getElementById('exerciseArea');
     const resultArea = document.getElementById('result'); 
     
+    // Inyectamos el contenedor si no existe
     let studyContainer = document.getElementById('studyContainer');
     if (!studyContainer) { initStudyHTML(); studyContainer = document.getElementById('studyContainer'); }
 
@@ -269,8 +264,6 @@ function initConv() {
             currentTopic = item; 
             
             if(currentMode === 'study') {
-                const titleEl = document.querySelector('#studyContainer h3');
-                if(titleEl) titleEl.innerText = "📚 Study Mode: " + item.title;
                 renderCheckpoints();
             } else {
                 updateQuestion(); 
@@ -394,7 +387,6 @@ async function analyze() {
   `;
 
   try {
-    // LLAMADA AL BACKEND
     const rawText = await callSmartAI(prompt);
     
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
@@ -461,7 +453,6 @@ async function askAIConcept(concept) {
     `;
 
     try {
-        // LLAMADA AL BACKEND
         const text = await callSmartAI(prompt);
         const cleanText = text.replace(/```html|```/g, "").trim();
         
@@ -477,6 +468,65 @@ async function askAIConcept(concept) {
     } catch (e) {
         console.error(e);
         box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
+    }
+}
+
+// ===========================================
+// MODO ESTUDIO (RENDERIZADO)
+// ===========================================
+function initStudyHTML() {
+    // Si ya existe el contenedor en HTML (que ahora SÍ existe), no lo creamos de nuevo
+    // Solo actualizamos su contenido cuando sea necesario.
+}
+
+function renderCheckpoints() {
+    const container = document.getElementById('studyContainer');
+    if (!container) return; // Seguridad
+
+    if (!currentTopic) {
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
+        return;
+    }
+
+    // Limpiamos el contenedor y añadimos el título
+    container.innerHTML = `
+        <h3>📚 Study Mode: ${currentTopic.title}</h3>
+        <p class="small-text">Click on a concept to get an instant explanation.</p>
+        <div id="checkpointsList"></div> 
+        <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
+    `;
+
+    const list = document.getElementById('checkpointsList');
+    
+    const createSection = (title, items, cssClass) => {
+        if(!items || items.length === 0) return;
+        const h = document.createElement('h4');
+        h.innerText = title; 
+        h.style.margin = "15px 0 5px 0"; 
+        h.style.color = "#374151"; 
+        h.style.borderBottom = "1px solid #e5e7eb"; 
+        h.style.paddingBottom = "5px";
+        list.appendChild(h);
+        
+        const grid = document.createElement('div'); 
+        grid.className = 'checklist-grid';
+        
+        items.forEach(point => {
+            const btn = document.createElement('button'); 
+            btn.className = `check-btn ${cssClass}`; 
+            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
+            btn.onclick = () => askAIConcept(point);
+            grid.appendChild(btn);
+        });
+        list.appendChild(grid);
+    };
+
+    if (currentTopic.checkpoints_OL) createSection("🧱 Cimientos (Lo Básico)", currentTopic.checkpoints_OL, "btn-ol");
+    if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
+        createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
+        if(currentTopic.checkpoints_TOP) {
+            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
+        }
     }
 }
 
@@ -560,59 +610,6 @@ function readMyInput() {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-ES'; utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
-}
-
-// ===========================================
-// MODO FORMACIÓN (STUDY MODE AI)
-// ===========================================
-
-function initStudyHTML() {
-    const div = document.createElement('div');
-    div.id = 'studyContainer';
-    div.className = 'study-box';
-    div.style.display = 'none';
-    
-    div.innerHTML = `
-        <h3>📚 Study Mode: ${currentTopic ? currentTopic.title : 'Select a topic'}</h3>
-        <p class="small-text">Click on a concept to get an instant explanation.</p>
-        <div id="checkpointsList"></div> 
-        <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
-    `;
-    const parent = document.getElementById('exerciseArea');
-    parent.parentNode.insertBefore(div, parent);
-}
-
-function renderCheckpoints() {
-    const list = document.getElementById('checkpointsList');
-    list.innerHTML = "";
-    
-    if (!currentTopic) {
-        list.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
-        return;
-    }
-    
-    const createSection = (title, items, cssClass) => {
-        if(!items || items.length === 0) return;
-        const h = document.createElement('h4');
-        h.innerText = title; h.style.margin = "15px 0 5px 0"; h.style.color = "#374151"; h.style.borderBottom = "1px solid #e5e7eb"; h.style.paddingBottom = "5px";
-        list.appendChild(h);
-        const grid = document.createElement('div'); grid.className = 'checklist-grid';
-        items.forEach(point => {
-            const btn = document.createElement('button'); btn.className = `check-btn ${cssClass}`; 
-            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
-            btn.onclick = () => askAIConcept(point);
-            grid.appendChild(btn);
-        });
-        list.appendChild(grid);
-    };
-
-    createSection("🧱 Cimientos (Lo Básico)", currentTopic.checkpoints_OL, "btn-ol");
-    if (currentLevel === 'HL') {
-        createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
-        if(currentTopic.checkpoints_TOP) {
-            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
-        }
-    }
 }
 
 // Inicialización

@@ -184,3 +184,30 @@ textarea:focus { border-color: var(--secondary); outline: none; }
 .legal-section p {
     margin: 5px 0;
 }
+/* =========================================
+   NUEVO: ESTILOS PARA LA TARJETA DE CANDIDATO
+   ========================================= */
+
+.instruction-box {
+    background: #fff;
+    border: 2px dashed #94a3b8;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    animation: fadeIn 0.3s ease-in;
+    display: none; /* Se oculta por defecto y se muestra con JS */
+}
+
+.instruction-label {
+    display: block;
+    font-weight: 800;
+    color: var(--primary); /* Usará el rojo definido arriba */
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}

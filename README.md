@@ -1,41 +1,79 @@
-📘 Manual de Operaciones: LanguagePrep Ireland
-Descripción: Web App educativa para la preparación de orales (Leaving Cert) usando IA.
-Tecnología: HTML5 + Javascript (Frontend) + Google Gemini API (Backend IA).
-Alojamiento: GitHub Pages.
-🔗 1. Enlaces Vitales (Los Centros de Mando)
- * La Web (Pública): https://languageprepie.github.io/LCoralprep/
- * El Código (GitHub): https://github.com/LanguagePrepIE/LCoralprep
- * Estadísticas (Visitas): https://lcoralprep.goatcounter.com
- * Gestión de IA (Prompts y Claves): Google AI Studio
- * Gestión de Pagos/Seguridad: Google Cloud Console
-🤖 2. La Clave API (El Motor)
- * Modelo usado: Gemini 1.5 Flash (Rápido y barato/gratis).
- * Seguridad: La clave está restringida por "HTTP Referrer". Solo funciona si la petición viene de languageprepie.github.io/*.
- * Si cambias de dominio: Si compras languageprep.ie, HAY QUE IR a Google Cloud Console y añadir esa nueva dirección a las restricciones de la API Key, o dejará de funcionar.
-🛠️ 3. Solución de Errores Frecuentes (Troubleshooting)
-"La IA no responde / Error de conexión"
- * Revisar comillas: Si editaste código desde el iPad, asegúrate de que las comillas son rectas " y no curvadas “.
- * Caché: GitHub tarda hasta 5 minutos en actualizar. Prueba en Pestaña de Incógnito.
- * Restricciones: ¿Has cambiado el nombre del repo o la URL? Revisa la Google Cloud Console.
-"El audio en Irlandés suena raro"
- * Estado: El audio (speakText) está desactivado intencionalmente en iPad/iPhone para evitar la pronunciación inglesa incorrecta.
- * Excepción: El código tiene un "Detector Inteligente". Si detecta una voz nativa irlandesa (Android o configuración específica), la usará. Si no, se queda mudo.
- * Consejo: Decir a los alumnos que pongan el Teclado en Gaeilge antes de dictar para que les entienda mejor.
-"No veo los cambios que acabo de hacer"
- * Es la caché del navegador. Espera 2 minutos y refresca la web varias veces.
-📝 4. Estructura del Proyecto
- * /index.html -> La portada con las banderas.
- * /es/index.html -> Web de Español (Roleplays + Conversación).
- * /fr/index.html -> Web de Francés.
- * /ga/index.html -> Web de Irlandés (Sin audio de salida).
- * Para volver al menú: El título "LanguagePrep Ireland" tiene un enlace invisible ../ que lleva a la portada.
-📊 5. Estadísticas (GoatCounter)
- * No usa Cookies (GDPR Friendly).
- * Código insertado al final del </body> en todos los archivos.
- * Mide visitas únicas y páginas más vistas.
-🚀 6. Hoja de Ruta (Futuro)
- * [ ] Comprar dominio .ie (requiere carné de conducir irlandés).
- * [ ] Crear sección de Italiano (/it/).
- * [ ] Junior Cycle (Gramática y Vocabulario - Proyecto aparte).
- * [ ] Añadir "The Document" en Francés.
-Nota Final: Recuerda NUNCA publicar la Clave API escrita en un chat, email o foto. Aunque tiene restricciones de dominio, es mejor mantenerla oculta en el código.
+# 📘 Manual de Operaciones: LCorals.ie (LanguagePrep)
+
+**Descripción:** Web App educativa para la preparación de los orales del Leaving Certificate.
+**Arquitectura:** Híbrida. Frontend estático (HTML/JS) + Backend Serverless (Netlify Functions).
+**Seguridad:** Nivel Alto (API Key oculta en servidor).
+
+---
+
+## 🔗 1. Enlaces Vitales (Centro de Mando)
+
+* **🌐 La Web Oficial:** [https://lcorals.ie](https://lcorals.ie)
+* **💻 El Código (GitHub):** [https://github.com/LanguagePrepIE/LCoralprep](https://github.com/LanguagePrepIE/LCoralprep)
+* **⚡ Backend & Deploy (Netlify):** [Netlify Dashboard](https://app.netlify.com) *(Aquí se miran los logs si la IA falla)*.
+* **📊 Estadísticas (GoatCounter):** [https://lcoralprep.goatcounter.com](https://lcoralprep.goatcounter.com)
+* **🧠 Google AI Studio:** Para generar nuevas API Keys si fuera necesario.
+
+---
+
+## 🤖 2. El Motor IA & Seguridad (CAMBIO IMPORTANTE)
+
+Ya **NO** usamos la clave API en el código público (`script.js`). Ahora usamos un **Backend Proxy**.
+
+1.  **Cómo funciona:** El usuario escribe en la web -> La web llama a `/.netlify/functions/gemini` -> Netlify habla con Google -> Google responde a Netlify -> Netlify responde a la web.
+2.  **Dónde está la Clave:** La `GEMINI_API_KEY` está guardada como **Variable de Entorno** en el panel de control de Netlify. **Nunca** debe escribirse en los archivos `.js` o `.html`.
+3.  **Modelo:** Gemini 1.5 Flash (Optimizado para velocidad y bajo coste).
+
+---
+
+## 🛠️ 3. Solución de Errores (Troubleshooting)
+
+**"La IA no responde / Error de conexión"**
+* **Causa 1:** El servidor de Netlify puede estar "dormido" (Cold Start). Reintenta en 5 segundos.
+* **Causa 2:** Límite de cuota de Google excedido (Raro, pero posible). Revisa Google AI Studio.
+* **Diagnóstico:** Entra en Netlify > Functions > Logs para ver el error real.
+
+**"No veo los cambios que acabo de hacer"**
+* **Solución:** GitHub y Netlify tardan 1-2 minutos en procesar los cambios ("Build"). Espera un poco y refresca la web (Ctrl+R / Cmd+R).
+
+**"El audio en Irlandés suena robótico o no suena"**
+* **Razón:** Los navegadores (especialmente en iPhone/iPad) no suelen tener una voz instalada para "Gaeilge".
+* **Solución:** La web intenta detectar si hay voz irlandesa. Si no la hay, usa una voz inglesa por defecto o avisa al usuario.
+* **Consejo:** Recomendar a los alumnos usar Android o instalar paquetes de voz si es posible.
+
+---
+
+## 📝 4. Estructura del Proyecto
+
+* `/index.html` → **Homepage** (Menú principal con banderas).
+* `/netlify/functions/gemini.js` → **CEREBRO DEL PROYECTO.** (Código del servidor, no tocar salvo error grave).
+* `/es/` → Español (Roleplays, Conversación, Study Mode).
+* `/fr/` → Francés (Le Document + Conversación).
+* `/ga/` → Irlandés (Sraith Pictiúr, Filíocht, Comhrá).
+* `/de/` → Alemán (Rollenspiele, Bildergeschichten).
+* `/it/` → Italiano (Roleplays, Storie).
+* `/pl/` → Polaco (Rozmowa, Portfolio).
+* `/eal/` → English as Additional Language (Support).
+
+---
+
+## 📚 5. Nuevas Funcionalidades (2026 Update)
+
+* **Study Mode:** Checkpoints de gramática y vocabulario generados dinámicamente.
+* **Footer Legal:** Aviso de privacidad, Copyright y Disclaimer sobre la IA (Protección legal).
+* **Formularios Seguros:** Formspree configurado para no pedir datos personales (GDPR Friendly).
+
+---
+
+## 🚀 6. Hoja de Ruta (Roadmap)
+
+* [x] Migrar a Backend Seguro (Netlify Functions).
+* [x] Implementar Alemán, Italiano y Polaco.
+* [x] Crear "Study Mode" para repaso de gramática.
+* [x] Comprar dominio `.ie`.
+* [ ] Junior Cycle (Gramática y Vocabulario - Futuro proyecto).
+* [ ] Mejorar el TTS (Text-to-Speech) de Irlandés (Investigar APIs externas).
+
+---
+
+**⚠️ NOTA FINAL:** Si editas código desde el iPad, cuidado con las comillas "inteligentes" (`“ ”`). El código siempre necesita comillas rectas (`" "`).

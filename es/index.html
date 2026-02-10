@@ -31,7 +31,7 @@
       <ul>
         <li>🗣️ <strong>Conversation:</strong> Select a topic. Answer the question aloud or type it to check your grammar.</li>
         <li>📚 <strong>Study Mode:</strong> Review key vocabulary and grammar with AI help.</li>
-        <li>🎭 <strong>Roleplays:</strong> Listen to the examiner and reply. Complete the 5 steps.</li>
+        <li>🎭 <strong>Roleplays:</strong> Follow the instructions on the Candidate Card. Listen to the examiner and reply.</li>
       </ul>
     </div>
   </header>
@@ -106,6 +106,8 @@
       
       <div id="rpChat" class="rp-chat-window"></div>
       
+      <div id="rpInstructionBox" class="instruction-box" style="display:none;"></div>
+
       <div class="rp-controls">
         <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirSiguienteAudio()">▶️ Play Examiner Audio</button>
         
@@ -151,7 +153,7 @@
     </div>
 
     <div class="legal-section">
-        <p>© 2024 LCorals.ie. Created for educational purposes only.</p>
+        <p>© 2026 LCorals.ie. Created for educational purposes only.</p>
         <p>
             <strong>Disclaimer:</strong> This tool uses Artificial Intelligence to generate feedback. 
             While designed to support Leaving Cert students, AI can make mistakes. 

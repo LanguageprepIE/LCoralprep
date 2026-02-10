@@ -1,12 +1,6 @@
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
-// La clave API ha sido eliminada. 
-// Ahora nos conectamos a través de Netlify Functions.
-
-// ===========================================
-// MOTOR INTELIGENTE DE IA (CONECTADO AL BACKEND)
-// ===========================================
 async function callSmartAI(prompt) {
     try {
         const response = await fetch('/.netlify/functions/gemini', {
@@ -186,7 +180,6 @@ const DATA = [
   }
 ];
 
-// Preguntas Aleatorias
 const PAST_Q = ["Qu'est-ce que tu as fait le week-end dernier ?", "Où es-tu allé l'été dernier ?", "Qu'est-ce que tu as fait hier soir ?"];
 const FUT_Q = ["Qu'est-ce que tu feras demain ?", "Quels sont tes projets pour l'été ?", "Qu'est-ce que tu feras après les examens ?"];
 
@@ -235,7 +228,7 @@ function setMode(mode) {
 }
 
 // ===========================================
-// FUNCIONES UI
+// FUNCIONES DE UI
 // ===========================================
 
 function initConv() { 
@@ -252,8 +245,6 @@ function initConv() {
             currentTopic = item; 
             
             if(currentMode === 'study') {
-                const titleEl = document.querySelector('#studyContainer h3');
-                if(titleEl) titleEl.innerText = "📚 Study Mode: " + item.title;
                 renderCheckpoints();
             } else {
                 updateQuestion(); 
@@ -423,29 +414,27 @@ async function analyze() {
 // ===========================================
 
 function initStudyHTML() {
-    const div = document.createElement('div');
-    div.id = 'studyContainer';
-    div.className = 'study-box';
-    div.style.display = 'none';
+    // Ya no es necesario crear el contenedor dinámicamente si existe en HTML
+}
+
+function renderCheckpoints() {
+    const container = document.getElementById('studyContainer');
+    if (!container) return; 
+
+    if (!currentTopic) {
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
+        return;
+    }
     
-    div.innerHTML = `
-        <h3>📚 Study Mode: ${currentTopic ? currentTopic.title : 'Select a topic'}</h3>
+    // RELLENAR LA CAJA EXISTENTE
+    container.innerHTML = `
+        <h3>📚 Study Mode: ${currentTopic.title}</h3>
         <p class="small-text">Click on a concept to get an instant explanation.</p>
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
-    const parent = document.getElementById('exerciseArea');
-    parent.parentNode.insertBefore(div, parent);
-}
 
-function renderCheckpoints() {
     const list = document.getElementById('checkpointsList');
-    list.innerHTML = "";
-    
-    if (!currentTopic) {
-        list.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
-        return;
-    }
     
     const createSection = (title, items, cssClass) => {
         if(!items || items.length === 0) return;

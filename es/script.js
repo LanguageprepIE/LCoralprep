@@ -64,7 +64,7 @@ let mockQuestions = [];
 let mockIndex = 0;      
 
 // ===========================================
-// BASE DE DATOS (DATA) - TEMAS 1-15
+// BASE DE DATOS (DATA) - TEMAS 1-15 (CON STUDY MODE)
 // ===========================================
 const DATA = [
   { 
@@ -107,67 +107,100 @@ const DATA = [
     title: "5. Mi barrio", 
     OL: "¿Cómo es tu barrio? ¿Hay tiendas o un parque?", 
     HL: "Háblame de tu barrio. ¿Hay problemas sociales? ¿Qué instalaciones hay para jóvenes?",
-    check_HL: "Instalaciones (Hay...), Lo bueno/malo (Lo mejor es...), Problemas (Hay mucho ruido/tráfico), Opinión personal."
+    check_HL: "Instalaciones (Hay...), Lo bueno/malo (Lo mejor es...), Problemas (Hay mucho ruido/tráfico), Opinión personal.",
+    checkpoints_OL: ["Instalaciones (Hay un parque...)", "Adjetivos (Es tranquilo/ruidoso)", "Tiendas (La farmacia, el super...)"],
+    checkpoints_HL: ["Problemas sociales (Botellón...)", "Ventajas y Desventajas", "Transporte público"],
+    checkpoints_TOP: ["✨ Idiom: Es un barrio de mala muerte", "✨ Grammar: Ojalá hubiera...", "✨ Vocab: Zonas verdes"]
   },
   { 
     title: "6. Mi pueblo/ciudad", 
     OL: "¿Vives en el campo o en la ciudad? ¿Te gusta tu pueblo?", 
     HL: "Háblame de tu pueblo o ciudad. ¿Prefieres la vida urbana o la rural?",
-    check_HL: "Ubicación, Comparativos (Más tranquilo que...), Ventajas/Desventajas, Preferencia (Prefiero vivir en... porque...)."
+    check_HL: "Ubicación, Comparativos (Más tranquilo que...), Ventajas/Desventajas, Preferencia (Prefiero vivir en... porque...).",
+    checkpoints_OL: ["Ubicación (Está en el norte...)", "Tamaño (Es pequeño/grande)", "Lugares de interés"],
+    checkpoints_HL: ["Vida urbana vs Rural", "Contaminación y Tráfico", "Comparativos (Más... que)"],
+    checkpoints_TOP: ["✨ Idiom: Echar de menos (Miss)", "✨ Grammar: Si pudiera elegir...", "✨ Vocab: Calidad de vida"]
   },
   { 
     title: "7. Mi colegio", 
     OL: "¿Cómo es tu colegio? ¿Es mixto? ¿Llevas uniforme?", 
     HL: "Háblame de tu instituto. ¿Qué opinas de las normas y del uniforme?",
-    check_HL: "Tipo (Mixto/Público), Instalaciones (Hay un gimnasio...), Uniforme (Llevo...), Opinión (Es cómodo/anticuado), Normas (Se debe/No se permite)."
+    check_HL: "Tipo (Mixto/Público), Instalaciones (Hay un gimnasio...), Uniforme (Llevo...), Opinión (Es cómodo/anticuado), Normas (Se debe/No se permite).",
+    checkpoints_OL: ["Descripción (Es mixto...)", "El Uniforme (Llevo...)", "Instalaciones (Cantina, lab...)"],
+    checkpoints_HL: ["Las Normas (Está prohibido...)", "Opinión del Uniforme", "Profesores y Alumnos"],
+    checkpoints_TOP: ["✨ Idiom: Hincar los codos (Study hard)", "✨ Grammar: Si yo fuera director...", "✨ Vocab: Acoso escolar (Bullying)"]
   },
   { 
     title: "8. Mis asignaturas", 
     OL: "¿Qué asignaturas estudias? ¿Cuál es tu favorita?", 
     HL: "Háblame de tus asignaturas. ¿Crees que el sistema educativo prepara bien para la vida?",
-    check_HL: "Asignaturas, Favorita (Me encanta porque es...), Difícil (Me cuesta...), Opinión Sistema (Mucho estrés, Puntos)."
+    check_HL: "Asignaturas, Favorita (Me encanta porque es...), Difícil (Me cuesta...), Opinión Sistema (Mucho estrés, Puntos).",
+    checkpoints_OL: ["Lista de asignaturas", "Asignatura favorita (Me gusta...)", "Asignatura difícil (Odio...)"],
+    checkpoints_HL: ["Presión de los exámenes", "El sistema de puntos (CAO)", "Utilidad para el futuro"],
+    checkpoints_TOP: ["✨ Idiom: Ser un empollón", "✨ Grammar: Se me da bien/mal", "✨ Vocab: Aprobar / Suspender"]
   },
   { 
     title: "9. Rutina diaria", 
     OL: "¿A qué hora te levantas? ¿Qué haces después del colegio?", 
     HL: "Describe tu rutina diaria. ¿Te resulta difícil compaginar el estudio con tu tiempo libre?",
-    check_HL: "Verbos Reflexivos (Me levanto, Me ducho...), Horarios (A las ocho...), Conectores (Primero, Luego, Después), Estudio vs Tiempo libre."
+    check_HL: "Verbos Reflexivos (Me levanto, Me ducho...), Horarios (A las ocho...), Conectores (Primero, Luego, Después), Estudio vs Tiempo libre.",
+    checkpoints_OL: ["Verbos Reflexivos (Me levanto)", "Las horas (A las siete...)", "Comidas (Desayuno, Ceno)"],
+    checkpoints_HL: ["Equilibrio estudio/vida", "El estrés diario", "Diferencia con el fin de semana"],
+    checkpoints_TOP: ["✨ Idiom: Pegársele a uno las sábanas", "✨ Idiom: No dar abasto", "✨ Grammar: Antes de + Infinitivo"]
   },
   { 
     title: "10. Pasatiempos", 
     OL: "¿Qué haces en tus ratos libres? ¿Te gusta el deporte?", 
     HL: "Háblame de tus aficiones. ¿Por qué es importante tener pasatiempos para la salud mental?",
-    check_HL: "Deporte (Juego al...), Frecuencia (Dos veces a la semana), Importancia (Para desconectar, Para estar en forma)."
+    check_HL: "Deporte (Juego al...), Frecuencia (Dos veces a la semana), Importancia (Para desconectar, Para estar en forma).",
+    checkpoints_OL: ["Deportes (Juego al fútbol...)", "Instrumentos (Toco el piano...)", "Frecuencia (A veces/Nunca)"],
+    checkpoints_HL: ["Beneficios mentales (Desconectar)", "Deporte individual vs Equipo", "Influencia de la tecnología"],
+    checkpoints_TOP: ["✨ Idiom: Matar el tiempo", "✨ Vocab: Sedentarismo", "✨ Grammar: Llevo X años jugando..."]
   },
   { 
     title: "11. Tareas domésticas", 
     OL: "¿Ayudas en casa? ¿Haces tu cama?", 
     HL: "Háblame de las tareas del hogar. ¿Crees que el reparto es justo en tu casa?",
-    check_HL: "Tareas (Pongo la mesa, Paso la aspiradora), Frecuencia (A veces, Siempre), Opinión (Es justo/injusto, Todos ayudamos)."
+    check_HL: "Tareas (Pongo la mesa, Paso la aspiradora), Frecuencia (A veces, Siempre), Opinión (Es justo/injusto, Todos ayudamos).",
+    checkpoints_OL: ["Acciones (Lavar, planchar...)", "Mi responsabilidad", "Frecuencia"],
+    checkpoints_HL: ["Igualdad de género en casa", "La paga (Pocket money)", "Conflictos por las tareas"],
+    checkpoints_TOP: ["✨ Idiom: Arrimar el hombro", "✨ Idiom: Es pan comido", "✨ Vocab: Reparto equitativo"]
   },
   { 
     title: "12. Vacaciones", 
     OL: "¿Qué hiciste el verano pasado? ¿Has estado en España?", 
     HL: "Háblame de tus vacaciones. ¿Prefieres quedarte en Irlanda o viajar? ¿Por qué?",
-    check_HL: "Pretérito Indefinido (Fui, Visité, Comí), Imperfecto (Hacía sol, Era bonito), Alojamiento, Opinión."
+    check_HL: "Pretérito Indefinido (Fui, Visité, Comí), Imperfecto (Hacía sol, Era bonito), Alojamiento, Opinión.",
+    checkpoints_OL: ["Destino (Fui a España...)", "Actividades (Nadé, tomé el sol)", "Transporte (En avión)"],
+    checkpoints_HL: ["Turismo de sol y playa vs Cultural", "Experiencias gastronómicas", "Clima (Hacía calor...)"],
+    checkpoints_TOP: ["✨ Idiom: Costar un ojo de la cara", "✨ Idiom: Recargar las pilas", "✨ Grammar: Lo pasé bomba"]
   },
   { 
     title: "13. Planes de Futuro", 
     OL: "¿Qué vas a hacer el año que viene? ¿Quieres ir a la universidad?", 
     HL: "Háblame de tus planes. ¿Qué carrera te gustaría estudiar y por qué?",
-    check_HL: "Futuro Simple (Estudiaré, Viajaré) O 'Ir a + Infinitivo', Condicional (Me gustaría ser...), Universidad/Carrera, Por qué (Porque me interesa...)."
+    check_HL: "Futuro Simple (Estudiaré, Viajaré) O 'Ir a + Infinitivo', Condicional (Me gustaría ser...), Universidad/Carrera, Por qué (Porque me interesa...).",
+    checkpoints_OL: ["Ir a la universidad", "La carrera (Medicina, Derecho...)", "Trabajar (Quiero ser...)"],
+    checkpoints_HL: ["El Año Sabático (Gap Year)", "Independizarse de los padres", "Vocación vs Salario"],
+    checkpoints_TOP: ["✨ Idiom: El mundo es un pañuelo", "✨ Idiom: Buscarse la vida", "✨ Grammar: Cuando termine... (Subjuntivo)"]
   },
   { 
     title: "14. Fin de semana pasado", 
     OL: "¿Qué hiciste el fin de semana pasado? ¿Saliste?", 
     HL: "Háblame de lo que hiciste el fin de semana pasado. ¿Hiciste algo especial?",
-    check_HL: "Pretérito Indefinido (Fui al cine, Estudié, Salí con amigos), Imperfecto (Estaba cansado), Conectores temporales (El sábado por la tarde...)."
+    check_HL: "Pretérito Indefinido (Fui al cine, Estudié, Salí con amigos), Imperfecto (Estaba cansado), Conectores temporales (El sábado por la tarde...).",
+    checkpoints_OL: ["Viernes/Sábado/Domingo", "Actividades (Fui, Vi, Comí)", "Con quién (Con mis amigos)"],
+    checkpoints_HL: ["Describir una fiesta/evento", "Sensaciones (Estaba agotado)", "Imprevistos"],
+    checkpoints_TOP: ["✨ Idiom: Quedarse frito (Sleep)", "✨ Idiom: Pasarlo de cine", "✨ Grammar: Al llegar a casa..."]
   },
   { 
     title: "15. Próximo fin de semana", 
     OL: "¿Qué harás el próximo fin de semana?", 
     HL: "Háblame de tus planes para el próximo fin de semana.",
-    check_HL: "Perífrasis 'Ir a + Infinitivo' (Voy a estudiar, Voy a ir...), Futuro Simple (Jugaré un partido), Planes concretos."
+    check_HL: "Perífrasis 'Ir a + Infinitivo' (Voy a estudiar, Voy a ir...), Futuro Simple (Jugaré un partido), Planes concretos.",
+    checkpoints_OL: ["Planes fijos (Voy a trabajar)", "Ocio (Voy a ir al cine)", "Descanso (Voy a dormir)"],
+    checkpoints_HL: ["Planes dependientes del clima", "Estudio y deberes", "Eventos familiares"],
+    checkpoints_TOP: ["✨ Idiom: Darse un capricho", "✨ Grammar: Tengo ganas de...", "✨ Grammar: Si hace buen tiempo..."]
   }
 ];
 

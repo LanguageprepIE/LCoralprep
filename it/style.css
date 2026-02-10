@@ -37,7 +37,7 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 .level-btn.hl.active { color: var(--secondary); }
 
 /* MODE SELECTOR (NEW) */
-.mode-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+.mode-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
 .mode-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
 .mode-btn.active { background: white; color: var(--study); box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 2px solid var(--study); }
 #modeExam.active { color: var(--primary); border-color: var(--primary); }
@@ -47,19 +47,18 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 .study-box h3 { margin-top: 0; color: #5b21b6; }
 .small-text { font-size: 0.85rem; color: #6d28d9; margin-bottom: 15px; }
 
-.checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 8px; margin-bottom: 15px; }
-.check-btn { padding: 10px; border: 1px solid #ddd6fe; border-radius: 8px; background: white; text-align: left; cursor: pointer; font-size: 0.9rem; color: #4c1d95; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-.check-btn:hover { background: #ede9fe; transform: translateX(3px); }
+.checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+.check-btn { background: white; border: 1px solid #ddd6fe; color: #4c1d95; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; text-align: left; display: flex; align-items: center; gap: 8px; }
+.check-btn:hover { background: #ede9fe; transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-/* Colores para Checkpoints (Italia Colors: Blue/Red/Green) */
-.btn-ol { border-left: 4px solid #3b82f6; } /* Azul (Savoia) */
+/* Colores para Checkpoints (Italia Colors) */
+.btn-ol { border-left: 4px solid #3b82f6; } /* Azul Savoia */
 .btn-hl { border-left: 4px solid #D32F2F; } /* Rojo */
-.btn-top { border-left: 4px solid #008C45; font-weight: bold; background: #f0fdf4; } /* Verde */
+.btn-top { background: #f0fdf4; border: 1px solid #008C45; color: #006633; font-weight: bold; border-left: 4px solid #008C45; } /* Verde */
 
 /* AI EXPLANATION BOX */
-.ai-box { margin-top: 15px; background: white; border: 2px solid #8b5cf6; padding: 15px; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; color: #374151; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); animation: slideDown 0.3s ease-out; }
-@keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
-
+.ai-box { margin-top: 15px; background: white; border-left: 4px solid #8b5cf6; padding: 15px; border-radius: 4px; font-size: 0.95rem; line-height: 1.6; color: #374151; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* MOCK EXAM BUTTON */
 .mock-btn { width: 100%; padding: 15px; margin-bottom: 25px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); transition: transform 0.2s; }
@@ -79,32 +78,18 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 .rp-btn-select.active { background: var(--secondary); color: white; border-color: var(--secondary); }
 
 /* CHAT WINDOW */
-.rp-chat-window { 
-    background: #f8fafc; 
-    border-radius: 15px; 
-    padding: 15px; 
-    overflow-y: auto; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 15px; 
-    border: 1px solid #e2e8f0; 
-    max-height: 400px; 
-    min-height: 300px; 
-    margin-bottom: 15px; 
-}
+.rp-chat-window { background: #f8fafc; border-radius: 15px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; border: 1px solid #e2e8f0; max-height: 400px; min-height: 300px; margin-bottom: 15px; }
 .bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
 .ex { align-self: flex-start; background: white; border: 1px solid #e2e8f0; color: #334155; border-bottom-left-radius: 4px; }
 .st { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
 
 /* CONTROLS AREA */
 .rp-controls { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-
-.audio-btn { background: white; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-.audio-btn:hover { background: #f1f5f9; }
-
 .feedback-rp { font-size: 0.9em; background: #fffbeb; color: #92400e; padding: 10px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 5px; }
 
 /* SHARED INPUTS & BUTTONS */
+.audio-btn { background: white; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--text); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.audio-btn:hover { background: #f1f5f9; }
 textarea { width: 100%; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; min-height: 100px; box-sizing: border-box; font-size: 1rem; margin-bottom: 15px; font-family: inherit; }
 textarea:focus { border-color: var(--primary); outline: none; }
 .btn-main { width: 100%; padding: 16px; background: var(--text); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
@@ -123,6 +108,13 @@ textarea:focus { border-color: var(--primary); outline: none; }
 .revolut-btn:hover { transform: translateY(-2px); }
 
 /* SUPPORT BOX */
-.support-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 15px; margin: 20px auto 15px auto; max-width: 90%; text-align: center; }
+.support-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 15px; margin: 20px auto 15px auto; max-width: 500px; text-align: center; }
 .support-title { font-weight: 800; color: #92400e; margin-bottom: 5px; display: block; font-size: 0.95rem; }
 .support-text { font-size: 0.85rem; color: #78350f; line-height: 1.5; margin: 0; }
+
+/* =========================================
+   FOOTER LEGAL & EXTRAS (NUEVO)
+   ========================================= */
+.feedback-section { margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px; }
+.legal-section { margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 0.75rem; color: #94a3b8; line-height: 1.5; }
+.legal-section p { margin: 5px 0; }

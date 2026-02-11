@@ -511,13 +511,13 @@ const RP_DB = {
         context: "Situación 1: Alojamiento (Accommodation). You are going on Erasmus to Cáceres. You need accommodation and call the university.", 
         dialogs: ["¡Hola, dígame!", "¿En qué parte de la ciudad querrías vivir?", "Entiendo. ¿Por qué?", "Tienes razón. Pero sabes que Cáceres es muy pequeña y se puede andar desde las afueras a la Plaza Mayor en media hora.", ["¿Has estado antes en España?", "¿Qué te gusta de España?", "¿Por qué estudiar en España?"]], 
         instructions: [
-            "Say that you will be on ERASMUS in the university for the coming academic year.",
-            "Say you don't know anybody in Caceres and ask if he/she could give you some advice about accommodation.",
-            "Say that you would prefer to live near the university because last year you lived in the outskirts of Dublin and really didn't like it.",
-            "Say that if you could spend that time studying you would be able to get good grades.",
+            "Say that you will be on ERASMUS in the university for the coming academic year. Say you don’t know anybody in Cáceres and ask if he/she could give you some advice about accommodation",
+            "Say that you would prefer to live near the university because last year you lived in the outskirts of Dublin and really didn’t like it.",
+            "Well, you spent too much time travelling because it was very far from everything. Say that if you could spend that time studying you would be able to get good grades.",
             "Say that's not far and the climate is much better than in Ireland so you will consider all areas even though you would prefer the city centre."
+            "Answer the examiner's question"
         ],
-        sugerencias: ["Voy a ir de Erasmus a la universidad durante el próximo curso académico.", "No conozco a nadie en Cáceres. ¿Podría darme algún consejo para encontrar alojamiento por favor?", "Preferiría vivir cerca de la universidad porque el año pasado viví en las afueras de Dublín y no me gustó.", "Si pudiera dedicar ese tiempo a estudiar, podría sacar buenas notas.", "Eso no está tan lejos y el clima es mucho mejor que en Irlanda así que tendré en cuenta todos los barrios aunque preferiría vivir en el centro de la ciudad."] 
+        sugerencias: ["Voy a ir de Erasmus a la universidad durante el próximo curso académico. No conozco a nadie en Cáceres. ¿Podría darme algún consejo para encontrar alojamiento por favor?", "Preferiría vivir cerca de la universidad porque el año pasado viví en las afueras de Dublín y no me gustó.", "Pues es que pasaba demasiado tiempo viajando porque estaba muy lejos de todo. Si pudiera dedicar ese tiempo a estudiar, podría sacar buenas notas.", "Eso no está tan lejos y el clima es mucho mejor que en Irlanda así que tendré en cuenta todos los barrios aunque preferiría vivir en el centro de la ciudad."] 
     },
     2: { 
         context: "Situación 2: Ordenador portátil (Broken Laptop). You are in a computer shop in Ávila.", 
@@ -559,13 +559,13 @@ const RP_DB = {
         context: "Situación 5: Avería de coche (Breakdown). You are calling your insurance company.", 
         dialogs: ["Hola, buenas tardes.", "Debes estar entre Medina del Campo y Tordesillas. ¿Hay alguna señal de tráfico por ahí?", "Claro que sí. Voy a arreglarlo todo inmediatamente.", "Por supuesto. ¿Me puedes describir tu coche?", ["¿Viajas solo o acompañado?", "¿Qué ciudades quieres visitar?", "¿Cuánto costó el coche?"]], 
         instructions: [
-            "Say your car has just broken down and that you are on the AP-6 motorway.",
-            "Say that you don't know exactly where you are but that you passed through the toll half an hour ago.",
-            "Say you see the exit sign 156 in the distance. Ask if they can send out a mechanic or perhaps a tow truck because you think the problem is serious.",
-            "Ask if they could give you a replacement car so that you can continue your journey to Lugo. Say that you have to collect your parents from the airport in Santiago de Compostela.",
-            "Say it is a red SEAT Ibiza. The registration is 4620 CFK. Say you bought it second hand from your aunt and you have never had a problem with it before."
+            "Say your car has just broken down and that you are on the AP-6 motorway. Say that you don’t know exactly where you are but that you passed through the toll half an hour ago.",
+            "Say you can see the exit sign 156 in the distance. Ask if they can send out a mechanic or perhaps a tow truck because you think the problem is serious.",
+            "Ask if they could give you a replacement car so that you can continue your journey to Lugo. Say you have to collect your parents from the airport in Santiago de Compostela.",
+            "Say it is red Seat Ibiza. The registration is 4620 CFK. Say you bought if second hand from your aunt and you have never had a problem with it before.",
+            "Answer the examiner's question."
         ],
-        sugerencias: ["Mi coche se acaba de averiar y estoy en la autopista AP-6.", "No sé exactamente dónde estoy pero pasé el peaje hace media hora.", "Veo a lo lejos la señal de salida 156. ¿Pueden enviar un mecánico o quizás una grúa porque creo que el problema es serio?", "¿Podrían darme un coche de sustitución para que pueda seguir mi viaje a Lugo? Tengo que recoger a mis padres en el aeropuerto de Santiago de Compostela.", "Es un Seat Ibiza rojo. La matrícula es 4620 CFK. Se lo compré de segunda mano a mi tía y nunca antes he tenido un problema con él."] 
+        sugerencias: ["Mi coche se acaba de averiar y estoy en la autopista AP-6. No sé exactamente dónde estoy pero pasé el peaje hace media hora.", "Veo a lo lejos la señal de salida 156. ¿Pueden enviar un mecánico o quizás una grúa porque creo que el problema es serio?", "¿Podrían darme un coche de sustitución para que pueda seguir mi viaje a Lugo? Tengo que recoger a mis padres en el aeropuerto de Santiago de Compostela.", "Es un Seat Ibiza rojo. La matrícula es 4620 CFK. Se lo compré de segunda mano a mi tía y nunca antes he tenido un problema con él."] 
     }
 };
 

@@ -496,13 +496,8 @@ function renderCheckpoints() {
     if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
         createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
         if(currentTopic.checkpoints_TOP) {
-            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
-        }
-    }
-}
-
-// ===========================================
-// PARTE 2: ROLEPLAYS (DATOS ACTUALIZADOS DEL PDF)
+            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-// ===========================================
+// PARTE 2: ROLEPLAYS (DATOS CORREGIDOS ✅)
 // ===========================================
 let rpActual = null; let pasoActual = 0; 
 
@@ -514,7 +509,7 @@ const RP_DB = {
             "Say that you will be on ERASMUS in the university for the coming academic year. Say you don’t know anybody in Cáceres and ask if he/she could give you some advice about accommodation",
             "Say that you would prefer to live near the university because last year you lived in the outskirts of Dublin and really didn’t like it.",
             "Well, you spent too much time travelling because it was very far from everything. Say that if you could spend that time studying you would be able to get good grades.",
-            "Say that's not far and the climate is much better than in Ireland so you will consider all areas even though you would prefer the city centre."
+            "Say that's not far and the climate is much better than in Ireland so you will consider all areas even though you would prefer the city centre.", // <--- COMA AÑADIDA AQUÍ
             "Answer the examiner's question"
         ],
         sugerencias: ["Voy a ir de Erasmus a la universidad durante el próximo curso académico. No conozco a nadie en Cáceres. ¿Podría darme algún consejo para encontrar alojamiento por favor?", "Preferiría vivir cerca de la universidad porque el año pasado viví en las afueras de Dublín y no me gustó.", "Pues es que pasaba demasiado tiempo viajando porque estaba muy lejos de todo. Si pudiera dedicar ese tiempo a estudiar, podría sacar buenas notas.", "Eso no está tan lejos y el clima es mucho mejor que en Irlanda así que tendré en cuenta todos los barrios aunque preferiría vivir en el centro de la ciudad."] 

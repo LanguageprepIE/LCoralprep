@@ -592,15 +592,20 @@ function seleccionarRP(id, btn) {
 
 function reproducirSiguienteAudio() {
     document.getElementById('nextAudioBtn').style.display = "none";
+    
+    // Si ya hemos terminado (paso 5), salimos
     if (pasoActual >= 5) {
         document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
         document.getElementById('rpInstructionBox').style.display = 'none';
         return;
     }
+
+    // Obtener texto y nombre del archivo de audio
     let dialogText = RP_DB[rpActual].dialogs[pasoActual];
     let audioFile = "";
+    
+    // Lógica para la última pregunta aleatoria (Step 5)
     if (Array.isArray(dialogText)) {
-        // Para la última pregunta aleatoria (Step 5)
         const randomIndex = Math.floor(Math.random() * dialogText.length);
         dialogText = dialogText[randomIndex];
         audioFile = `rp${rpActual}_5${['a','b','c'][randomIndex]}.mp3`;
@@ -608,18 +613,40 @@ function reproducirSiguienteAudio() {
         audioFile = `rp${rpActual}_${pasoActual + 1}.mp3`; 
     }
 
+    // Mostrar burbuja del examinador
     const chat = document.getElementById('rpChat');
-    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`; chat.scrollTop = chat.scrollHeight;
+    chat.innerHTML += `<div class="bubble ex"><b>Examiner:</b> ${dialogText}</div>`; 
+    chat.scrollTop = chat.scrollHeight;
     
+    // Intentar reproducir audio con Fallback robusto
     const audio = new Audio(audioFile);
-    audio.onerror = () => { 
-        const u = new SpeechSynthesisUtterance(dialogText); 
-        u.lang = 'es-ES'; 
-        u.onend = habilitarInput; 
-        window.speechSynthesis.speak(u); 
+    
+    // Función de respaldo (Voz robótica) corregida
+    const playFallback = () => {
+        console.log("Audio MP3 falló, usando voz sintética...");
+        window.speechSynthesis.cancel(); // Limpiar cola anterior
+        window.utterance = new SpeechSynthesisUtterance(dialogText); // VARIABLE GLOBAL (CRUCIAL)
+        window.utterance.lang = 'es-ES'; 
+        window.utterance.rate = 0.9;
+        window.utterance.onend = function() {
+            habilitarInput();
+        };
+        window.utterance.onerror = function(e) {
+            console.error("Error en TTS:", e);
+            habilitarInput(); // Si falla la voz, habilitamos input para no bloquear
+        };
+        window.speechSynthesis.speak(window.utterance);
     };
-    audio.onended = habilitarInput; 
-    audio.play().catch(e => { audio.onerror(); });
+
+    audio.onerror = playFallback;
+    
+    audio.onended = habilitarInput;
+    
+    // Intentar reproducir y capturar errores de promesa (común en iOS/Safari)
+    audio.play().catch(e => { 
+        console.warn("Autoplay bloqueado o archivo no encontrado:", e);
+        playFallback(); 
+    });
 }
 
 function habilitarInput() {

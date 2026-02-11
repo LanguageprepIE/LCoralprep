@@ -509,7 +509,7 @@ let rpActual = null; let pasoActual = 0;
 const RP_DB = {
     1: { 
         context: "Situación 1: Alojamiento (Accommodation). You are going on Erasmus to Cáceres. You need accommodation and call the university.", 
-        dialogs: ["¡Hola, dígame!", "¿En qué parte de la ciudad querrías vivir?", "Entiendo. ¿Por qué?", "Tienes razón. Pero sabes que Cáceres es muy pequeña y se puede andar desde las afueras a la Plaza Mayor en media hora.", ["¿Has estado antes en España?", "¿Qué te gusta de España?", "¿Por qué estudiar en España?"]], 
+        dialogs: ["¡Hola, dígame!", "¿En qué parte de la ciudad querrías vivir?", "¿Por qué?", "Tienes razón. Pero sabes que Cáceres es muy pequeña y se puede andar desde las afueras a la Plaza Mayor en media hora.", ["¿Has estado antes en España?", "¿Qué te gusta de España?", "¿Por qué estudiar en España?"]], 
         instructions: [
             "Say that you will be on ERASMUS in the university for the coming academic year. Say you don’t know anybody in Cáceres and ask if he/she could give you some advice about accommodation",
             "Say that you would prefer to live near the university because last year you lived in the outskirts of Dublin and really didn’t like it.",

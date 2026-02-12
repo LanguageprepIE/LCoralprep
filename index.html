@@ -4,17 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LCOrals Ireland - Leaving Cert Oral Prep</title>
+  
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
   <meta name="google-site-verification" content="7DckDfOSGMMPbVyQq1jB01wdsjSasWSrFkCw5sHHAEc" />
   <meta name="description" content="Free Leaving Cert Oral Exam preparation tools for Spanish, French, Irish, German, Italian, and Polish. AI-powered roleplays, conversation topics, and study aids created by teachers.">
-<meta name="keywords" content="Leaving Cert, Oral Exam, Spanish, French, Irish, German, Italian, Polish, AI, Study, Revision, Ireland, LCOrals, David Martín">
-<meta name="author" content="David Martín">
+  <meta name="keywords" content="Leaving Cert, Oral Exam, Spanish, French, Irish, German, Italian, Polish, AI, Study, Revision, Ireland, LCOrals, David Martín">
+  <meta name="author" content="David Martín">
 
-<meta property="og:title" content="LCOrals Ireland - Free Oral Exam Prep">
-<meta property="og:description" content="Practice for your Leaving Cert Orals with AI. Spanish, French, Irish & more.">
-<meta property="og:image" content="https://lcorals.ie/og-image.jpg"> <meta property="og:url" content="https://lcorals.ie/">
-<meta property="og:type" content="website">
+  <meta property="og:title" content="LCOrals Ireland - Free Oral Exam Prep">
+  <meta property="og:description" content="Practice for your Leaving Cert Orals with AI. Spanish, French, Irish & more.">
+  <meta property="og:image" content="https://lcorals.ie/og-image.jpg"> 
+  <meta property="og:url" content="https://lcorals.ie/">
+  <meta property="og:type" content="website">
+  
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇮🇪</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  
   <style>
     :root { --bg: #f8fafc; --text: #1e293b; --blue: #2563eb; --purple: #7c3aed; --green: #16a34a; --orange: #ea580c; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; text-align: center; }
@@ -33,7 +40,6 @@
     .card p { margin: 0; color: #64748b; font-size: 0.9rem; }
     .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 15px; }
     
-    /* Colores específicos al pasar el ratón */
     .es:hover { border-top: 5px solid var(--orange); }
     .fr:hover { border-top: 5px solid var(--blue); }
     .ga:hover { border-top: 5px solid var(--green); }
@@ -42,7 +48,6 @@
     .pl:hover { border-top: 5px solid #dc2626; } 
     .eal:hover { border-top: 5px solid #0d9488; }
 
-    /* CAJA DE SOPORTE (Amarilla) */
     .support-box {
         background: #fffbeb;
         border: 1px solid #fcd34d;
@@ -55,11 +60,12 @@
     .support-title { font-weight: 800; color: #92400e; margin-bottom: 10px; display: block; font-size: 1rem; }
     .support-text { font-size: 0.9rem; color: #78350f; line-height: 1.5; margin: 0; }
     
-    /* BOTÓN REVOLUT */
-    .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .revolut-btn { background: #000; color: white; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 15px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: none; cursor: pointer; font-family: inherit; }
     .revolut-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-    /* FOOTER Y LEGAL */
+    /* Estilo para el botón de instalar */
+    #btnInstalar { background: var(--blue); margin-bottom: 30px; }
+
     footer { margin-top: 60px; padding: 40px 20px; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e2e8f0; line-height: 1.6; }
     footer p { margin: 5px 0; }
   </style>
@@ -122,7 +128,6 @@
         <p>English for Newcomers.</p>
         <span class="badge" style="background:#ccfbf1; color:#0f766e;">New!</span>
       </a>
-
     </div>
   </div>
 
@@ -131,9 +136,6 @@
     <p class="support-text">
         I created LCOrals to help you feel confident in your oral exams. 
         It's a free tool driven by passion, but running advanced AI does come with monthly costs.
-        <br><br>
-        If you find it useful, your support means the world. It helps keep the site running and allows me to 
-        <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
     </p>
   </div>
 
@@ -141,10 +143,13 @@
     ☕ Support the Project
   </a>
 
+  <br>
+  <button id="btnInstalar" class="revolut-btn" style="display:none;">
+    📲 Install LCorals App
+  </button>
+
   <div style="text-align: center; margin: 20px 20px; padding-top: 20px; border-top: 1px dashed #cbd5e1; max-width: 500px; margin: 0 auto;">
     <h3 style="color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</h3>
-    <p style="font-size: 0.8rem; color: #64748b; margin-top: 0;">(Please do not share personal details like email or phone)</p>
-    
     <form action="https://formspree.io/f/mjggeygj" method="POST" style="text-align: left;">
       <textarea name="message" required placeholder="Type your suggestion here..." style="width: 100%; min-height: 100px; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.9rem; box-sizing: border-box;"></textarea>
       <button type="submit" style="width: 100%; background-color: #475569; color: white; padding: 12px; border: none; border-radius: 50px; cursor: pointer; font-weight: 700;">Send Feedback</button>
@@ -153,17 +158,41 @@
 
   <footer>
     <p>© 2026 LCorals.ie. Created for educational purposes only.</p>
-    <p>
-        <strong>Disclaimer:</strong> This tool uses Artificial Intelligence. 
-        While designed to support students, AI can make mistakes. 
-        Always consult your teacher.
-    </p>
-    <p>
-        <strong>Privacy:</strong> We use privacy-friendly analytics (GoatCounter) and do not track personal data via cookies.
-    </p>
+    <p><strong>Disclaimer:</strong> This tool uses Artificial Intelligence. Always consult your teacher.</p>
+    <p><strong>Privacy:</strong> We use privacy-friendly analytics (GoatCounter) and do not track personal data.</p>
   </footer>
 
   <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+  <script>
+    let deferredPrompt;
+    const btnInstalar = document.getElementById('btnInstalar');
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+
+    // Lógica del botón de instalación
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btnInstalar.style.display = 'inline-flex';
+    });
+
+    btnInstalar.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          btnInstalar.style.display = 'none';
+        }
+        deferredPrompt = null;
+      }
+    });
+  </script>
 
 </body>
 </html>

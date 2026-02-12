@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>LCOrals Ireland - Leaving Cert Oral Prep</title>
   
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#2563eb">
+  
+  <link rel="apple-touch-icon" href="/icon-512.png">
 
   <meta name="google-site-verification" content="7DckDfOSGMMPbVyQq1jB01wdsjSasWSrFkCw5sHHAEc" />
   <meta name="description" content="Free Leaving Cert Oral Exam preparation tools for Spanish, French, Irish, German, Italian, and Polish. AI-powered roleplays, conversation topics, and study aids created by teachers.">
@@ -65,7 +67,7 @@
     .revolut-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
     /* Estilo para el botón de instalar */
-    #btnInstalar { background: var(--blue); margin-bottom: 30px; }
+    #btnInstalar { background: var(--blue); margin-bottom: 30px; display: inline-flex; } /* Forzamos que se vea siempre */
 
     footer { margin-top: 60px; padding: 40px 20px; color: #94a3b8; font-size: 0.75rem; border-top: 1px solid #e2e8f0; line-height: 1.6; }
     footer p { margin: 8px 0; }
@@ -132,7 +134,7 @@
   </div>
 
   <div style="margin: 50px auto 20px auto; text-align: center;">
-      <img src="tu-foto.jpg" alt="David Martín" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+      <img src="david.PNG" alt="David Martín" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
       
       <h3 style="margin: 15px 0 5px 0; color: #1e293b;">David Martín</h3>
       <p style="color: #64748b; margin: 0; font-size: 0.95rem;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
@@ -153,7 +155,7 @@
   </a>
 
   <br>
-  <button id="btnInstalar" class="revolut-btn" style="display:none;">
+  <button id="btnInstalar" class="revolut-btn">
     📲 Install LCorals App
   </button>
 
@@ -188,21 +190,26 @@
       });
     }
 
-    // Lógica del botón de instalación
+    // Escuchar el evento de instalación (Solo Android/PC)
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      btnInstalar.style.display = 'inline-flex';
+      // No hacemos nada aquí porque el botón ya es visible por defecto
     });
 
+    // Qué pasa al hacer click
     btnInstalar.addEventListener('click', async () => {
       if (deferredPrompt) {
+        // Si es Android/PC y está listo para instalar
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
           btnInstalar.style.display = 'none';
         }
         deferredPrompt = null;
+      } else {
+        // Si es iPhone/iPad (o no soporta instalación automática)
+        alert("Para instalar en iPhone/iPad:\n1️⃣ Pulsa el botón 'Compartir' (cuadrado con flecha) en la barra del navegador.\n2️⃣ Busca y pulsa 'Añadir a pantalla de inicio'.");
       }
     });
   </script>

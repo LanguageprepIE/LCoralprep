@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LCorals - English Support (EAL)</title>
-  <meta name="description" content="English as an Additional Language (EAL) support for secondary school students in Ireland. Practice conversational English, school vocabulary, and proficiency topics with AI.">
-<meta name="keywords" content="EAL, English as an Additional Language, ESL, English Support, Irish Secondary School, Vocabulary, AI English Tutor, Ireland, LCOrals">
-<meta name="author" content="David Martín">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -14,25 +11,20 @@
 <body>
 
 <div class="container">
-  
   <header>
-    <h1>
-      <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
-        LCorals Ireland
-      </a>
-    </h1>
+    <h1>LCorals Ireland</h1>
     <p class="subtitle">Module: English Support (EAL)</p>
 
-    <div class="lang-select-container">
+        <div class="lang-select-container">
       <label for="nativeLang" class="lang-label">🗣️ I speak / Je parle / Hablo / Я розмовляю:</label>
       <select id="nativeLang" class="lang-select" onchange="updateInterfaceLang()">
         <option value="English">Select your native language...</option>
         <option value="Ukrainian">🇺🇦 Ukrainian (Українська)</option>
         <option value="Russian">🏳️ Russian (Русский)</option>
-        <option value="Filipino">🇵🇭 Filipino (Tagalog)</option> <option value="Arabic">🇸🇾 Arabic (العربية)</option>
+        <option value="Filipino">🇵🇭 Filipino (Tagalog)</option> 
+        <option value="Arabic">🇸🇾 Arabic (العربية)</option>
         <option value="Spanish">🇪🇸 Spanish (Español)</option>
         <option value="Portuguese">🇧🇷 Portuguese (Português)</option>
-        <option value="Serbian">🇷🇸 Serbian (Српски / Srpski)</option>
         <option value="French">🇫🇷 French (Français)</option>
         <option value="Polish">🇵🇱 Polish (Polski)</option>
         <option value="Romanian">🇷🇴 Romanian (Română)</option>
@@ -40,97 +32,94 @@
         <option value="Pashto">🇦🇫 Pashto (پښتو)</option>
         <option value="Urdu">🇵🇰 Urdu (اردو)</option>
         <option value="Somali">🇸🇴 Somali</option>
+        <option value="Serbian">🇷🇸 Serbian (Српски / Srpski)</option>
       </select>
+    </div>
+
+    <div class="tabs-container">
+        <button id="tabConv" class="tab-btn active" onclick="switchTab('conv')">💬 Conversation Topics</button>
+        <button id="tabRole" class="tab-btn" onclick="switchTab('role')">🎭 Real-Life Situations</button>
     </div>
   </header>
 
-  <div class="level-selector">
-    <button class="level-btn active" id="btnNewcomer" onclick="setTopic('newcomer')">🐣 Newcomer (Survival)</button>
-    <button class="level-btn" id="btnSocial" onclick="setTopic('social')">🗣️ Social & School</button>
-  </div>
-
-  <div class="topic-grid" id="topicGrid"></div>
-
-  <div id="exerciseArea" style="display:none; margin-top:20px;">
-    <div class="question-card">
-      <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
-      
-      <div id="qDisplay"></div>
-      
-      <div class="action-buttons">
-        <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
-        <button class="translate-btn" onclick="translateQuestion()">🌍 Translate Question</button>
+  <div id="sectionConversation">
+      <div class="level-selector">
+          <button class="level-btn active" id="btnBasic" onclick="setLevel('Basic')">🌱 Basic (A1-A2)</button>
+          <button class="level-btn" id="btnAdvanced" onclick="setLevel('Advanced')">🚀 Advanced (B1-B2)</button>
       </div>
 
-      <div id="qTranslation" class="translation-box"></div>
-    </div>
+      <div class="mode-selector" style="display:flex; gap:10px; margin-bottom:20px;">
+          <button class="mode-btn" id="modeStudy" onclick="setMode('study')" style="flex:1; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;">📖 Study Mode</button>
+          <button class="mode-btn active" id="modeExam" onclick="setMode('exam')" style="flex:1; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer; background:#1e293b; color:white;">🎤 Practice Mode</button>
+      </div>
 
-    <button onclick="toggleHelpers()" class="hint-btn">
-      💡 Need help? Click here for sentences
-    </button>
-    
-    <div id="helperArea" style="display:none;" class="helper-box">
-      <p style="margin-top:0; font-size:0.85rem; color:#64748b;">Click a sentence to copy & listen:</p>
-      
-      <strong style="color:#16a34a; display:block; margin-bottom:5px;">🟢 Simple:</strong>
-      <div id="basicSentences" class="helper-grid"></div>
-      
-      <div style="margin-top:15px;"></div>
-      <strong style="color:#2563eb; display:block; margin-bottom:5px;">🔵 Polite / Advanced:</strong>
-      <div id="advSentences" class="helper-grid"></div>
-    </div>
+      <div class="topic-grid" id="topicGrid"></div>
 
-    <textarea id="userInput" placeholder="Type your answer in English here..."></textarea>
-    
-    <button onclick="readInput()" class="listen-self-btn">
-       👂 Listen to my pronunciation
-    </button>
+      <div id="studyContainer" style="display:none; background:#f8fafc; padding:20px; border-radius:15px; border:1px solid #e2e8f0; margin-bottom:20px;"></div>
 
-    <button class="btn-main" id="btnAction" onclick="analyze()">✨ Check my English</button>
+      <div id="exerciseArea" style="display:none; margin-top:20px;">
+        <div class="question-card">
+          <h3 id="qTitle" style="margin-top:0; color:var(--primary);"></h3>
+          <div id="qDisplay"></div>
+          
+          <div class="action-buttons">
+            <button class="audio-btn" onclick="speakText()">🔊 Listen</button>
+            <button class="translate-btn" onclick="translateQuestion()">🌍 Translate</button>
+          </div>
+          <div id="qTranslation" class="translation-box"></div>
+        </div>
+
+        <button id="btnHint" onclick="toggleHint()" class="hint-btn" style="display:none;">
+          💡 Checkpoints (What to include)
+        </button>
+        <div id="hintBox" style="display:none; background:#fffbeb; padding:15px; border-radius:10px; border:1px solid #fcd34d; margin-bottom:15px; font-size:0.9rem;"></div>
+
+        <textarea id="userInput" placeholder="Type your answer in English here..."></textarea>
+        <button onclick="readInput()" class="listen-self-btn">👂 Listen to my pronunciation</button>
+        <button class="btn-main" id="btnAction" onclick="analyze()">✨ Check my English</button>
+      </div>
+
+      <div id="result" style="display:none; margin-top:20px;">
+        <div class="feedback-box">
+          <h2 id="scoreDisplay" style="margin-top:0;"></h2>
+          <div id="userResponseText" style="font-style:italic; color:#64748b; margin-bottom:15px; padding:10px; background:#f1f5f9; border-radius:8px;"></div>
+          <div id="fbNative" style="margin-bottom:10px;"></div>
+          <div id="fbEN" style="color:#475569; font-size:0.95rem;"></div>
+          <hr style="margin: 15px 0; border:0; border-top:1px solid #eee;">
+          <div id="errorsList"></div>
+        </div>
+        <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:#334155;" onclick="resetApp()">🔄 Practice something else</button>
+      </div>
   </div>
 
-  <div id="result" style="display:none; margin-top:20px;">
-    <div class="feedback-box">
-      <div id="fbText"></div>
-      <hr style="margin: 15px 0; border:0; border-top:1px solid #eee;">
-      <div id="errorsList"></div>
-    </div>
-    <button class="btn-main" style="margin-top:20px; background:#e2e8f0; color:#334155;" onclick="reset()">🔄 Practice something else</button>
-  </div>
+  <div id="sectionRoleplay" style="display:none;">
+      <h3 style="color:#1e293b; margin-top:0;">Real-Life Situations in Ireland</h3>
+      <div class="topic-grid" id="rpGrid">
+          <button class="topic-btn rp-btn-select" onclick="seleccionarRP(1, this)">🏪 The Deli Counter</button>
+          <button class="topic-btn rp-btn-select" onclick="seleccionarRP(2, this)">🚌 The Bus & Leap Card</button>
+          <button class="topic-btn rp-btn-select" onclick="seleccionarRP(3, this)">👨‍🏫 The Year Head</button>
+          <button class="topic-btn rp-btn-select" onclick="seleccionarRP(4, this)">👕 Buying Uniform</button>
+      </div>
 
-  <div class="footer-section">
-    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-    <h3 style="margin: 0 0 5px 0;">David Martín</h3>
-    <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #64748b;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
-    
-    <div class="support-box">
-        <span class="support-title">🚀 A Student-Focused Project</span>
-        <p class="support-text">
-            I created LCOrals to help you feel confident in your oral exams. 
-            It's a free tool driven by passion, but running advanced AI does come with monthly costs.
-            <br><br>
-            If you find it useful, your support means the world. It helps keep the site running and allows me to 
-            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
-        </p>
-    </div>
+      <div id="rpArea" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:15px; padding:20px;">
+          <div id="rpContext" style="background:#e0f2fe; color:#0369a1; padding:15px; border-radius:10px; font-weight:600; margin-bottom:15px;"></div>
+          
+          <div id="rpChat" style="background:white; border:1px solid #cbd5e1; border-radius:10px; height:300px; overflow-y:auto; padding:15px; margin-bottom:15px; display:flex; flex-direction:column; gap:10px;"></div>
+          
+          <div id="rpInstructionBox" style="display:none; background:#fffbeb; border:1px solid #f59e0b; padding:12px; border-radius:8px; margin-bottom:15px; font-size:0.95rem;"></div>
 
-    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">
-       ☕ Support the Project
-    </a>
-
-    <div style="margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px;">
-      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
-      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
-        <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
-      </form>
-    </div>
+          <button id="nextAudioBtn" class="btn-main" style="margin-bottom:15px; background:#2563eb;">▶️ Start Conversation</button>
+          
+          <textarea id="rpInput" placeholder="Listen to the audio first..." disabled style="min-height:80px; margin-bottom:10px;"></textarea>
+          
+          <div style="display:flex; gap:10px;">
+              <button id="rpSendBtn" class="btn-main" style="flex:2; background:#16a34a;" onclick="enviarRespuestaRP()" disabled>📤 Send Reply</button>
+              <button id="hintBtn" class="btn-main" style="flex:1; background:#f1f5f9; color:#475569;" onclick="mostrarSugerencia()" style="display:none;">💡 Hint</button>
+          </div>
+      </div>
   </div>
 
 </div>
-
 <script src="script.js"></script>
-<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
 </body>
 </html>

@@ -650,20 +650,25 @@ function reproducirSiguienteAudio() {
 }
 
 function habilitarInput() {
-    // CORRECCIÓN: Ahora habilitamos el input incluso para el paso 5 (índice 4)
-    if(pasoActual <= 4) { 
-        document.getElementById('rpInput').disabled = false; 
+    if(pasoActual < 5) { 
+        const inp = document.getElementById('rpInput');
+        inp.disabled = false; 
         document.getElementById('rpSendBtn').disabled = false;
-        document.getElementById('rpInput').focus(); 
-        document.getElementById('hintBtn').style.display = "block";
-        document.getElementById('rpInput').placeholder = "Type your reply...";
         
-        // MOSTRAR LA INSTRUCCIÓN DEL CANDIDATO (CANDIDATE CARD)
+        // Mostrar la instrucción
         const instructionBox = document.getElementById('rpInstructionBox');
         const instructionText = RP_DB[rpActual].instructions[pasoActual];
-        
         instructionBox.innerHTML = `<span class="instruction-label">YOUR TURN (CANDIDATE CARD):</span>${instructionText}`;
         instructionBox.style.display = 'block';
+
+        document.getElementById('hintBtn').style.display = "block";
+        inp.placeholder = "Type your reply...";
+        
+        // FIX DE USABILIDAD: Forzar scroll hacia el input para que no se pierdan
+        inp.scrollIntoView({ behavior: "smooth", block: "center" });
+        
+        // Darle foco para que salga el teclado en el móvil
+        setTimeout(() => inp.focus(), 300);
     }
 }
 

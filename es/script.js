@@ -565,7 +565,7 @@ const RP_DB = {
             "Say it is red Seat Ibiza. The registration is 4620 CFK. Say you bought if second hand from your aunt and you have never had a problem with it before.",
             "Answer the examiner's question."
         ],
-        sugerencias: ["Mi coche se acaba de averiar y estoy en la autopista AP-6. No sé exactamente dónde estoy pero pasé el peaje hace media hora.", "Veo a lo lejos la señal de salida 156. ¿Pueden enviar un mecánico o quizás una grúa porque creo que el problema es serio?", "¿Podrían darme un coche de sustitución para que pueda seguir mi viaje a Lugo? Tengo que recoger a mis padres en el aeropuerto de Santiago de Compostela.", "Es un Seat Ibiza rojo. La matrícula es 4620 CFK. Se lo compré de segunda mano a mi tía y nunca antes he tenido un problema con él."] 
+        sugerencias: ["Mi coche se acaba de averiar y estoy en la autopista AP-6. No sé exactamente dónde estoy pero pasé el peaje hace media hora.", "Veo a lo lejos la señal de salida 156. ¿Pueden enviar un mecánico o quizás una grúa porque creo que el problema es serio?", "¿Podrían darme un coche de sustitución para que pueda seguir mi viaje a Lugo? Tengo que recoger a mis padres en el aeropuerto de Santiago de Compostela.", "Es un Seat Ibiza rojo. La matrícula es 4620 CFK. Se lo compré de segunda mano a mi tía y nunca antes he tenido un problema con él.", "(Respuesta libre)"] 
     }
 };
 
@@ -593,8 +593,8 @@ function seleccionarRP(id, btn) {
 function reproducirSiguienteAudio() {
     document.getElementById('nextAudioBtn').style.display = "none";
     
-    // Si ya hemos terminado (paso 5), salimos
-    if (pasoActual >= 5) {
+    // CORRECCIÓN: Ahora verificamos si es MAYOR que 4, para que la pregunta 5 (índice 4) suene.
+    if (pasoActual > 4) {
         document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7; border-color:#86efac;"><b>System:</b> Roleplay Completed!</div>`;
         document.getElementById('rpInstructionBox').style.display = 'none';
         return;
@@ -621,7 +621,7 @@ function reproducirSiguienteAudio() {
     // Intentar reproducir audio con Fallback robusto
     const audio = new Audio(audioFile);
     
-    // Función de respaldo (Voz robótica) corregida
+    // Función de respaldo (Voz robótica)
     const playFallback = () => {
         console.log("Audio MP3 falló, usando voz sintética...");
         window.speechSynthesis.cancel(); // Limpiar cola anterior
@@ -650,7 +650,8 @@ function reproducirSiguienteAudio() {
 }
 
 function habilitarInput() {
-    if(pasoActual < 5) { 
+    // CORRECCIÓN: Ahora habilitamos el input incluso para el paso 5 (índice 4)
+    if(pasoActual <= 4) { 
         document.getElementById('rpInput').disabled = false; 
         document.getElementById('rpSendBtn').disabled = false;
         document.getElementById('rpInput').focus(); 
@@ -676,11 +677,16 @@ function enviarRespuestaRP() {
     document.getElementById('rpInstructionBox').style.display = 'none'; // Ocultar instrucción al enviar
     
     pasoActual++;
+    
     setTimeout(() => { 
-        if(pasoActual < 5) { 
+        // CORRECCIÓN: Si pasoActual es 5, debe mostrar el botón final o terminar. 
+        // Como hemos contestado la 5 (índice 4), pasoActual ahora es 5.
+        if(pasoActual <= 4) { 
             const nextBtn = document.getElementById('nextAudioBtn');
             nextBtn.style.display = "block"; nextBtn.innerText = "🔊 Listen to Examiner"; nextBtn.onclick = reproducirSiguienteAudio;
         } else { 
+            // Si ya terminó el paso 4, mostramos el mensaje final y quitamos el botón de audio
+            document.getElementById('nextAudioBtn').style.display = "none";
             document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
         }
     }, 500);

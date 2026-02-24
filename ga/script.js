@@ -33,6 +33,62 @@ function initVoiceCheck() {
     check();
 }
 
+// --- DICTADO DE VOZ (SPEECH-TO-TEXT) ---
+function startDictation(inputId, btnElement) {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert("⚠️ Ní thacaíonn do bhrabhsálaí leis seo. (Bain úsáid as Chrome nó Safari).");
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = 'ga-IE'; 
+    recognition.interimResults = true; 
+    recognition.maxAlternatives = 1;
+
+    const originalText = btnElement.innerHTML;
+    const inputField = document.getElementById(inputId);
+    
+    // Guardar lo que ya estuviera escrito antes de empezar a hablar
+    const currentText = inputField.value;
+
+    btnElement.innerHTML = "🔴 Ag éisteacht...";
+    btnElement.style.backgroundColor = "#fee2e2";
+    btnElement.style.color = "#dc2626";
+
+    recognition.onresult = function(event) {
+        let interimTranscript = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+            } else {
+                interimTranscript += event.results[i][0].transcript;
+            }
+        }
+        
+        // Añadir el texto nuevo al texto que ya existía
+        inputField.value = currentText + (currentText ? " " : "") + finalTranscript + interimTranscript;
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Aitheantas gutha earráid: ", event.error);
+        if(event.error === 'no-speech') {
+            alert("⚠️ Níor chuala mé aon rud. Déan iarracht arís!");
+        }
+    };
+
+    recognition.onend = function() {
+        btnElement.innerHTML = originalText;
+        btnElement.style.backgroundColor = "";
+        btnElement.style.color = "";
+    };
+
+    recognition.start();
+}
+
 // --- REPRODUCTOR DE YOUTUBE (MODO SEGURO) ---
 function setupYouTubePlayer(videoId, containerId) {
     const container = document.getElementById(containerId);
@@ -90,7 +146,7 @@ const DATA = [
   },
   { 
     id: 2, title: "2. Mo Theaghlach", 
-    OL: "Cé mhéad duine atá i do theaghlach? An bhfuil deartháireacha agat?", 
+    OL: "Cé mhéad duine atá i do simple deaghlach? An bhfuil deartháireacha agat?", 
     HL: "An réitíonn tú go maith le do thuismitheoirí? Inis dom fúthu.",
     check_HL: "Uimhreacha, Réimír, Tuiseal Ginideach (Post m'athar), Nathanna cainte.",
     checkpoints_OL: ["Tá cúigear againn sa chlann", "Tá deartháir amháin agam", "Is múinteoir í mo mham"],

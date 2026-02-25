@@ -65,7 +65,7 @@
     <div id="exerciseArea" style="display:none;">
       <div class="question-card">
         <div id="qDisplay" style="font-weight: 700;"></div>
-        <button class="audio-btn" onclick="speakText()">🔊 Słuchaj (Listen)</button>
+        <button class="audio-btn" onclick="speakText()">🔊 Proszę posłuchać (Listen)</button>
       </div>
       
       <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#dc2626; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
@@ -73,17 +73,17 @@
       </button>
       <div id="hintBox" style="display:none; background:#fef2f2; border-left:4px solid #dc2626; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#991b1b;"></div>
       
-      <textarea id="userInput" placeholder="Wpisz odpowiedź (Type here)..."></textarea>
+      <textarea id="userInput" placeholder="Proszę wpisać odpowiedź (Type here)..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Check my pronunciation
       </button>
 
-      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Sprawdź (Evaluate)</button>
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Proszę sprawdzić (Evaluate)</button>
     </div>
 
     <div id="result" style="display:none;">
-      <div class="student-response-box"><strong>Twój tekst:</strong> <span id="userResponseText"></span></div>
+      <div class="student-response-box"><strong>Pański/Pani tekst:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
         <div id="fbPL" style="margin-bottom:10px; font-weight:500;"></div>

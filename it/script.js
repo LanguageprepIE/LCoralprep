@@ -42,12 +42,12 @@ let isMockExam = false;
 let mockQuestions = []; 
 let mockIndex = 0;      
 
-// Base de datos de Conversación (15 Temas) + STUDY MODE CHECKPOINTS
+// Base de datos de Conversación (15 Temas) + STUDY MODE CHECKPOINTS (ADAPTADO A REGISTRO FORMAL 'LEI')
 const DATA = [
   { 
     title: "1. Mi presento", 
-    OL: "Come ti chiami? Quanti anni hai? Quando è il tuo compleanno?", 
-    HL: "Parlami di te. Descrivi la tua personalità e i tuoi interessi.",
+    OL: "Come si chiama? Quanti anni ha? Quando è il Suo compleanno?", 
+    HL: "Mi parli di Lei. Descriva la Sua personalità e i Suoi interessi.",
     check_HL: "Nome, Età, Compleanno (Il mio compleanno è il...), Descrizione fisica (Occhi/Capelli), Personalità (Sono simpatico/a, aperto/a...).",
     checkpoints_OL: ["Mi chiamo... (Nome)", "Ho X anni (Avere - Età)", "Il mio compleanno è il... (Data)"],
     checkpoints_HL: ["Descrizione fisica (Sono alto/basso...)", "Aggettivi (Simpatico, Timido, Pigro)", "I miei occhi sono... (Accordo)"],
@@ -55,8 +55,8 @@ const DATA = [
   },
   { 
     title: "2. La mia famiglia", 
-    OL: "Quante persone ci sono nella tua famiglia? Hai fratelli o sorelle?", 
-    HL: "Parlami della tua famiglia. Vai d'accordo con i tuoi genitori e fratelli?",
+    OL: "Quante persone ci sono nella Sua famiglia? Ha fratelli o sorelle?", 
+    HL: "Mi parli della Sua famiglia. Va d'accordo con i Suoi genitori e fratelli?",
     check_HL: "Numero persone (Siamo in...), Lavoro genitori (Mio padre fa...), Fratelli/Sorelle, Rapporti (Vado d'accordo con..., Litighiamo spesso).",
     checkpoints_OL: ["Siamo in quattro (Numeri)", "Ho un fratello / una sorella", "Mio padre fa il medico (Lavori)"],
     checkpoints_HL: ["Andare d'accordo (Get along)", "Litigare (Argue)", "Descrizione caratteriale dei genitori"],
@@ -64,8 +64,8 @@ const DATA = [
   },
   { 
     title: "3. La mia casa", 
-    OL: "Vivi in una casa o in un appartamento? Descrivi la tua camera.", 
-    HL: "Descrivi la tua casa ideale. Cosa ti piace di più della tua casa attuale?",
+    OL: "Vive in una casa o in un appartamento? Descriva la Sua camera.", 
+    HL: "Descriva la Sua casa ideale. Cosa Le piace di più della Sua casa attuale?",
     check_HL: "Tipo (Villetta/Appartamento), Stanze (C'è/Ci sono...), La mia camera (Ho un letto...), Opinione (Mi piace perché...), Casa ideale (Vorrei una piscina...).",
     checkpoints_OL: ["Vivo in una casa / un appartamento", "La mia camera è...", "C'è un letto e una scrivania"],
     checkpoints_HL: ["Preposizioni (In cucina, In salotto)", "Le faccende domestiche (Chores)", "La casa dei miei sogni (Condizionale)"],
@@ -73,8 +73,8 @@ const DATA = [
   },
   { 
     title: "4. Il mio quartiere", 
-    OL: "Cosa c'è nel tuo quartiere? C'è un parco o un cinema?", 
-    HL: "Parlami della tua zona. Quali sono i vantaggi e gli svantaggi di vivere lì?",
+    OL: "Cosa c'è nel Suo quartiere? C'è un parco o un cinema?", 
+    HL: "Mi parli della Sua zona. Quali sono i vantaggi e gli svantaggi di vivere lì?",
     check_HL: "Strutture (C'è un parco...), Vantaggi (È tranquillo), Svantaggi (Non c'è niente da fare), Mezzi di trasporto.",
     checkpoints_OL: ["C'è un parco / una chiesa", "Abito vicino a... (Near)", "È tranquillo / rumoroso"],
     checkpoints_HL: ["Vantaggi e svantaggi", "Problemi sociali (Traffico, Rifiuti)", "Mezzi di trasporto"],
@@ -82,8 +82,8 @@ const DATA = [
   },
   { 
     title: "5. La scuola", 
-    OL: "Ti piace la scuola? Qual è la tua materia preferita?", 
-    HL: "Parlami della tua scuola. Cosa ne pensi del sistema scolastico irlandese?",
+    OL: "Le piace la scuola? Qual è la Sua materia preferita?", 
+    HL: "Mi parli della Sua scuola. Cosa ne pensa del sistema scolastico irlandese?",
     check_HL: "Tipo (Mista/Maschile/Femminile), Materie (Studio...), Materia preferita vs Odiata, Opinione sistema (Punti Leaving Cert, Stress).",
     checkpoints_OL: ["La mia scuola è mista", "Studio l'italiano e la matematica", "La mia materia preferita è..."],
     checkpoints_HL: ["Opinione sulla divisa (Uniforme)", "Regole scolastiche (È vietato...)", "Sistema dei punti (CAO)"],
@@ -91,8 +91,8 @@ const DATA = [
   },
   { 
     title: "6. Passatempi", 
-    OL: "Cosa fai nel tempo libero? Ti piace lo sport?", 
-    HL: "Parlami dei tuoi hobby. Perché è importante avere interessi fuori dalla scuola?",
+    OL: "Cosa fa nel tempo libero? Le piace lo sport?", 
+    HL: "Mi parli dei Suoi hobby. Perché è importante avere interessi fuori dalla scuola?",
     check_HL: "Sport (Gioco a calcio...), Musica/Lettura, Frequenza (Due volte alla settimana), Importanza (Per rilassarmi, Salute mentale).",
     checkpoints_OL: ["Gioco a calcio / rugby", "Ascolto la musica", "Guardo Netflix"],
     checkpoints_HL: ["Sport di squadra vs individuale", "Benefici mentali (Rilassarsi)", "Frequenza (Spesso, Mai, A volte)"],
@@ -100,8 +100,8 @@ const DATA = [
   },
   { 
     title: "7. Il lavoro", 
-    OL: "Hai un lavoro part-time? Cosa fai?", 
-    HL: "Parlami della tua esperienza lavorativa. Pensi che gli studenti dovrebbero lavorare?",
+    OL: "Ha un lavoro part-time? Cosa fa?", 
+    HL: "Mi parli della Sua esperienza lavorativa. Pensa che gli studenti dovrebbero lavorare?",
     check_HL: "Lavoro attuale (Faccio il cameriere...), Mansioni (Devo pulire...), Opinione (Indipendenza economica vs Tempo per studiare).",
     checkpoints_OL: ["Faccio il cameriere / la babysitter", "Lavoro il sabato", "Guadagno X euro all'ora"],
     checkpoints_HL: ["Indipendenza economica", "Conciliare studio e lavoro", "Risparmiare soldi"],
@@ -109,8 +109,8 @@ const DATA = [
   },
   { 
     title: "8. Le vacanze", 
-    OL: "Dove sei andato in vacanza l'anno scorso? Ti piace l'Italia?", 
-    HL: "Parlami delle tue vacanze. Preferisci il mare o la montagna? Perché?",
+    OL: "Dove è andato in vacanza l'anno scorso? Le piace l'Italia?", 
+    HL: "Mi parli delle Sue vacanze. Preferisce il mare o la montagna? Perché?",
     check_HL: "Passato Prossimo (Sono andato/a in...), Imperfetto (Faceva caldo, Era bello), Alloggio, Preferenze (Preferisco il mare).",
     checkpoints_OL: ["Sono andato in Italia (Passato)", "Ho viaggiato in aereo", "Era bellissimo!"],
     checkpoints_HL: ["Passato Prossimo (Azioni)", "Imperfetto (Descrizione/Meteo)", "Vacanze attive vs Relax"],
@@ -118,8 +118,8 @@ const DATA = [
   },
   { 
     title: "9. Il futuro", 
-    OL: "Cosa farai l'anno prossimo? Vuoi andare all'università?", 
-    HL: "Quali sono i tuoi progetti per il futuro? Che lavoro ti piacerebbe fare?",
+    OL: "Cosa farà l'anno prossimo? Vuole andare all'università?", 
+    HL: "Quali sono i Suoi progetti per il futuro? Che lavoro Le piacerebbe fare?",
     check_HL: "Futuro Semplice (Andrò, Studierò...), Condizionale (Vorrei diventare...), Università/Corso di laurea, Anno sabbatico.",
     checkpoints_OL: ["Andrò all'università (Futuro)", "Studierò economia", "Vorrei essere ricco"],
     checkpoints_HL: ["Anno sabbatico (Gap year)", "Vivere all'estero", "Sogni e ambizioni"],
@@ -127,8 +127,8 @@ const DATA = [
   },
   { 
     title: "10. Fine settimana scorso", 
-    OL: "Cosa hai fatto il fine settimana scorso?", 
-    HL: "Raccontami come hai trascorso lo scorso weekend. Hai fatto qualcosa di speciale?",
+    OL: "Cosa ha fatto il fine settimana scorso?", 
+    HL: "Mi racconti come ha trascorso lo scorso weekend. Ha fatto qualcosa di speciale?",
     check_HL: "Passato Prossimo AVERE (Ho guardato, Ho mangiato), Passato Prossimo ESSERE (Sono uscito/a, Sono andato/a), Amici/Famiglia.",
     checkpoints_OL: ["Ho guardato la TV", "Sono uscito con gli amici", "Ho dormito molto"],
     checkpoints_HL: ["Attività sociali (Cinema, Festa)", "Studio e compiti", "Pranzo della domenica"],
@@ -136,8 +136,8 @@ const DATA = [
   },
   { 
     title: "11. Prossimo weekend", 
-    OL: "Cosa farai il prossimo fine settimana?", 
-    HL: "Quali sono i tuoi programmi per il prossimo weekend?",
+    OL: "Cosa farà il prossimo fine settimana?", 
+    HL: "Quali sono i Suoi programmi per il prossimo weekend?",
     check_HL: "Futuro Semplice (Andrò al cinema, Farò i compiti...), Piani specifici (Uscirò con gli amici).",
     checkpoints_OL: ["Andrò al cinema", "Farò i compiti", "Giocherò a calcio"],
     checkpoints_HL: ["Piani con la famiglia", "Eventi sportivi", "Preparazione esami"],
@@ -145,8 +145,8 @@ const DATA = [
   },
   { 
     title: "12. Cibo italiano", 
-    OL: "Ti piace il cibo italiano? Qual è il tuo piatto preferito?", 
-    HL: "Cosa ne pensi della cucina italiana? Sai cucinare qualche piatto?",
+    OL: "Le piace il cibo italiano? Qual è il Suo piatto preferito?", 
+    HL: "Cosa ne pensa della cucina italiana? Sa cucinare qualche piatto?",
     check_HL: "Piatto preferito (Adoro la pizza...), Cucinare (So cucinare la pasta...), Confronto Cibo Irlandese vs Italiano.",
     checkpoints_OL: ["Amo la pizza e la pasta", "Il mio piatto preferito è...", "Non mi piace il pesce"],
     checkpoints_HL: ["Cucina salutare (Dieta mediterranea)", "Differenze Italia/Irlanda", "So cucinare..."],
@@ -154,8 +154,8 @@ const DATA = [
   },
   { 
     title: "13. La routine", 
-    OL: "A che ora ti svegli la mattina? Cosa fai dopo scuola?", 
-    HL: "Descrivi la tua giornata tipica. È stressante la vita di uno studente?",
+    OL: "A che ora si sveglia la mattina? Cosa fa dopo scuola?", 
+    HL: "Descriva la Sua giornata tipica. È stressante la vita di uno studente?",
     check_HL: "Verbi Riflessivi (Mi sveglio, Mi alzo, Mi vesto...), Orari (Alle otto...), Pasti, Studio vs Tempo libero.",
     checkpoints_OL: ["Mi sveglio alle 7 (Riflessivo)", "Faccio colazione", "Vado a scuola in autobus"],
     checkpoints_HL: ["Gestione del tempo", "Lo stress degli esami", "Differenza settimana/weekend"],
@@ -163,8 +163,8 @@ const DATA = [
   },
   { 
     title: "14. La moda", 
-    OL: "Ti piace fare shopping? Cosa indossi di solito?", 
-    HL: "Segui la moda? Pensi che i vestiti firmati siano importanti per i giovani?",
+    OL: "Le piace fare shopping? Cosa indossa di solito?", 
+    HL: "Segue la moda? Pensa che i vestiti firmati siano importanti per i giovani?",
     check_HL: "Abbigliamento abituale (Di solito indosso...), Opinione marche (Sono troppo costose), Pressione sociale.",
     checkpoints_OL: ["Mi piace fare shopping", "Indosso jeans e felpa", "Il mio colore preferito è..."],
     checkpoints_HL: ["Vestiti firmati vs economici", "L'importanza dell'apparenza", "Uniforme scolastica"],
@@ -172,8 +172,8 @@ const DATA = [
   },
   { 
     title: "15. Tecnologia", 
-    OL: "Hai un telefono nuovo? Usi molto i social media?", 
-    HL: "Qual è il ruolo della tecnologia nella tua vita? Pensi che siamo dipendenti dai telefoni?",
+    OL: "Ha un telefono nuovo? Usa molto i social media?", 
+    HL: "Qual è il ruolo della tecnologia nella Sua vita? Pensa che siamo dipendenti dai telefoni?",
     check_HL: "Uso quotidiano (Uso Instagram per...), Vantaggi (Comunicazione), Svantaggi (Cyberbullismo, Dipendenza).",
     checkpoints_OL: ["Uso il telefono ogni giorno", "Guardo video su TikTok", "Chatto con gli amici"],
     checkpoints_HL: ["Dipendenza dalla tecnologia", "Cyberbullismo", "Vantaggi per lo studio"],
@@ -181,8 +181,8 @@ const DATA = [
   }
 ];
 
-const PAST_Q = ["Cosa hai fatto ieri?", "Dove sei andato l'estate scorsa?", "Come hai festeggiato il tuo compleanno?"];
-const FUT_Q = ["Cosa farai domani?", "Dove andrai in vacanza quest'anno?", "Cosa farai dopo gli esami?"];
+const PAST_Q = ["Cosa ha fatto ieri?", "Dove è andato l'estate scorsa?", "Come ha festeggiato il Suo compleanno?"];
+const FUT_Q = ["Cosa farà domani?", "Dove andrà in vacanza quest'anno?", "Cosa farà dopo gli esami?"];
 
 // ===========================================
 // LÓGICA DE CONTROL (NIVEL Y MODO)
@@ -490,15 +490,15 @@ async function askAIConcept(concept) {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (INTACTA)
+// PARTE 2: ROLEPLAYS (ADAPTADO A REGISTRO FORMAL 'LEI')
 // ===========================================
 let rpActual = null; let pasoActual = 0; let speaking = false;
 const RP_DB = {
-    1: { context: "Un problema in albergo. You booked a room but the receptionist has no record.", dialogs: ["Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a questo nome.", "Capisco che è arrabbiato, ma purtroppo siamo al completo questa settimana.", "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", ["Ho chiamato l'Hotel Stella e fortunatamente hanno una camera libera.", "È tutto risolto. L'Hotel Stella la aspetta."]], sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho prenotato una camera singola per tre notti. Ecco la mia conferma.", "Non è possibile! Ho fatto la prenotazione su internet un mese fa. Sono molto sorpreso e preoccupato.", "Guardi, è un disastro per me. Ho assolutamente bisogno di un alloggio in questa zona perché ho una conferenza importante qui vicino.", "Sì, per favore. Sarebbe molto gentile da parte sua. Non conosco bene la città e non saprei dove andare.", "Grazie mille per il suo aiuto. Apprezzo molto la sua disponibilità. Arrivederci."] },
-    2: { context: "Una multa sul treno. You didn't validate your ticket.", dialogs: ["Buongiorno. Biglietto, prego.", "Signore, vedo che ha il biglietto ma non è stato convalidato. Devo farle la multa.", "Mi dispiace, ma la regola è chiara. La multa è di cinquanta euro. Deve pagare ora.", "Se non ha contanti, posso darle un bollettino postale. Ha domande su come funziona?", ["Sì, deve convalidare il biglietto ogni volta che cambia treno, anche a Bologna.", "Ricordi sempre di timbrare alle macchinette gialle prima di salire."]], sugerencias: ["Buongiorno. Ecco il mio biglietto, sto andando a Venezia.", "Mi scusi tanto! Sono arrivato in ritardo alla stazione e sono salito di corsa sul treno. Non l'ho fatto apposta, per favore non mi faccia la multa.", "Cinquanta euro?! Purtroppo non ho abbastanza contanti con me in questo momento. Sono uno studente.", "Va bene, accetto il bollettino. Posso chiedere se devo convalidare di nuovo il biglietto quando cambio treno a Bologna?", "Ho capito, starò più attento la prossima volta. Grazie per l'informazione. Arrivederci."] },
-    3: { context: "In farmacia. You feel sick and need advice.", dialogs: ["Buongiorno. Dimmi, cosa c'è che non va?", "Da quanto tempo ti senti così? Hai mangiato qualcosa di strano recentemente?", "Capisco. Ti consiglio di prendere queste compresse due volte al giorno dopo i pasti.", "Che lavoro farai quest'estate qui in Italia?", ["Non preoccuparti. Con questa medicina starai meglio in un paio di giorni.", "Bevi molta acqua e riposati. Arrivederci."]], sugerencias: ["Buongiorno. Non mi sento molto bene. Ho mal di stomaco e un po' di febbre.", "Sto male da ieri sera. Penso di aver mangiato del pesce che non era fresco in un ristorante del centro.", "Grazie dottore. Per quanti giorni devo prenderle? E ci sono cibi che dovrei evitare?", "Lavorerò come cameriere in un ristorante, per questo è molto importante che io guarisca presto.", "Grazie mille per il consiglio. Spero di rimettermi presto. Arrivederci."] },
-    4: { context: "Dov'è il passaporto? You left it at your host family's house.", dialogs: ["Pronto, casa Rossi. Chi parla?", "Oh no! Sei sicuro? Dove l'hai visto l'ultima volta?", "Aspetta un attimo, vado a controllare... Sì! L'ho trovato! Era proprio lì.", "Ascolta, non preoccuparti. Prendo un taxi e te lo porto subito all'aeroporto.", ["Non preoccuparti per il taxi, mi fa piacere aiutarti.", "Sto uscendo ora. Ci vediamo agli arrivi tra mezz'ora!"]], sugerencias: ["Pronto Maria? Sono io. Sono disperato! Sono in fila al check-in all'aeroporto e mi sono accorto di non avere il passaporto.", "L'ultima volta l'ho visto stamattina sul comodino accanto al letto, o forse sulla scrivania. Potresti controllare per favore?", "Che sollievo! Grazie mille! Devo assolutamente tornare in Irlanda oggi per un esame domani.", "Sei un angelo! Grazie infinite. Ovviamente ti pagherò io il taxi quando arrivi.", "Grazie ancora Maria, non so cosa avrei fatto senza di te. A tra poco!"] },
-    5: { context: "Un colloquio di lavoro. Summer job in a tourist village.", dialogs: ["Buongiorno. Prego, si accomodi. Come si chiama e quanti anni ha?", "Molto bene. Mi parli delle sue esperienze lavorative precedenti.", "Parla molto bene l'italiano! Dove l'ha studiato e per quanto tempo?", "Perché pensa di essere il candidato ideale per questo lavoro nel nostro villaggio?", ["Ha qualche domanda da farmi sugli orari o sullo stipendio?", "Le faremo sapere la nostra decisione domani. Arrivederci."]], sugerencias: ["Buongiorno. Mi chiamo [Nome], ho 18 anni e vengo dall'Irlanda.", "L'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo attività sportive per i bambini e aiutavo in cucina.", "Studio italiano a scuola da cinque anni e guardo molti film italiani per migliorare la pronuncia.", "Sono una persona molto socievole, affidabile e gran lavoratore. Mi piace stare a contatto con la gente e imparo in fretta.", "Sì, vorrei sapere quali sono i turni di lavoro e se l'alloggio è compreso. Grazie."] }
+    1: { context: "Un problema in albergo. You booked a room but the receptionist has no record.", dialogs: ["Buongiorno, benvenuto all'Hotel Milano. Come posso aiutarla?", "Mi dispiace, signore. Ho controllato il computer ma non risulta nessuna prenotazione a questo nome.", "Capisco che è arrabbiato, ma purtroppo siamo al completo questa settimana.", "Sì, conosco un albergo qui vicino. Si chiama Hotel Stella. Vuole che chiami per vedere se hanno posto?", ["Ho chiamato l'Hotel Stella e fortunatamente hanno una camera libera.", "È tutto risolto. L'Hotel Stella La aspetta."]], sugerencias: ["Buongiorno. Mi chiamo [Nome] e ho prenotato una camera singola per tre notti. Ecco la mia conferma.", "Non è possibile! Ho fatto la prenotazione su internet un mese fa. Sono molto sorpreso e preoccupato.", "Guardi, è un disastro per me. Ho assolutamente bisogno di un alloggio in questa zona perché ho una conferenza importante qui vicino.", "Sì, per favore. Sarebbe molto gentile da parte Sua. Non conosco bene la città e non saprei dove andare.", "Grazie mille per il Suo aiuto. Apprezzo molto la Sua disponibilità. Arrivederci."] },
+    2: { context: "Una multa sul treno. You didn't validate your ticket.", dialogs: ["Buongiorno. Biglietto, prego.", "Signore, vedo che ha il biglietto ma non è stato convalidato. Devo farLe la multa.", "Mi dispiace, ma la regola è chiara. La multa è di cinquanta euro. Deve pagare ora.", "Se non ha contanti, posso darLe un bollettino postale. Ha domande su come funziona?", ["Sì, deve convalidare il biglietto ogni volta che cambia treno, anche a Bologna.", "Ricordi sempre di timbrare alle macchinette gialle prima di salire."]], sugerencias: ["Buongiorno. Ecco il mio biglietto, sto andando a Venezia.", "Mi scusi tanto! Sono arrivato in ritardo alla stazione e sono salito di corsa sul treno. Non l'ho fatto apposta, per favore non mi faccia la multa.", "Cinquanta euro?! Purtroppo non ho abbastanza contanti con me in questo momento. Sono uno studente.", "Va bene, accetto il bollettino. Posso chiedere se devo convalidare di nuovo il biglietto quando cambio treno a Bologna?", "Ho capito, starò più attento la prossima volta. Grazie per l'informazione. Arrivederci."] },
+    3: { context: "In farmacia. You feel sick and need advice.", dialogs: ["Buongiorno. Mi dica, cosa c'è che non va?", "Da quanto tempo si sente così? Ha mangiato qualcosa di strano recentemente?", "Capisco. Le consiglio di prendere queste compresse due volte al giorno dopo i pasti.", "Che lavoro farà quest'estate qui in Italia?", ["Non si preoccupi. Con questa medicina starà meglio in un paio di giorni.", "Beva molta acqua e si riposi. Arrivederci."]], sugerencias: ["Buongiorno. Non mi sento molto bene. Ho mal di stomaco e un po' di febbre.", "Sto male da ieri sera. Penso di aver mangiato del pesce che non era fresco in un ristorante del centro.", "Grazie dottore. Per quanti giorni devo prenderle? E ci sono cibi che dovrei evitare?", "Lavorerò come cameriere in un ristorante, per questo è molto importante che io guarisca presto.", "Grazie mille per il consiglio. Spero di rimettermi presto. Arrivederci."] },
+    4: { context: "Dov'è il passaporto? You left it at your host family's house.", dialogs: ["Pronto, casa Rossi. Chi parla?", "Oh no! È sicuro? Dove l'ha visto l'ultima volta?", "Aspetti un attimo, vado a controllare... Sì! L'ho trovato! Era proprio lì.", "Ascolti, non si preoccupi. Prendo un taxi e glielo porto subito all'aeroporto.", ["Non si preoccupi per il taxi, mi fa piacere aiutarLa.", "Sto uscendo ora. Ci vediamo agli arrivi tra mezz'ora!"]], sugerencias: ["Pronto, Signora Rossi? Sono [Nome]. Sono disperato! Sono in fila al check-in all'aeroporto e mi sono accorto di non avere il passaporto.", "L'ultima volta l'ho visto stamattina sul comodino accanto al letto, o forse sulla scrivania. Potrebbe controllare per favore?", "Che sollievo! La ringrazio moltissimo! Devo assolutamente tornare in Irlanda oggi per un esame domani.", "È un angelo! Grazie infinite. Ovviamente Le pagherò io il taxi quando arriva.", "Grazie ancora Signora Rossi, non so cosa avrei fatto senza di Lei. A tra poco!"] },
+    5: { context: "Un colloquio di lavoro. Summer job in a tourist village.", dialogs: ["Buongiorno. Prego, si accomodi. Come si chiama e quanti anni ha?", "Molto bene. Mi parli delle Sue esperienze lavorative precedenti.", "Parla molto bene l'italiano! Dove l'ha studiato e per quanto tempo?", "Perché pensa di essere il candidato ideale per questo lavoro nel nostro villaggio?", ["Ha qualche domanda da farmi sugli orari o sullo stipendio?", "Le faremo sapere la nostra decisione domani. Arrivederci."]], sugerencias: ["Buongiorno. Mi chiamo [Nome], ho 18 anni e vengo dall'Irlanda.", "L'estate scorsa ho lavorato in un campo estivo in Irlanda. Organizzavo attività sportive per i bambini e aiutavo in cucina.", "Studio italiano a scuola da cinque anni e guardo molti film italiani per migliorare la pronuncia.", "Sono una persona molto socievole, affidabile e gran lavoratore. Mi piace stare a contatto con la gente e imparo in fretta.", "Sì, vorrei sapere quali sono i turni di lavoro e se l'alloggio è compreso. Grazie."] }
 };
 
 function seleccionarRP(id, btn) {
@@ -587,7 +587,7 @@ function selectStory(index, btn) {
 }
 
 function speakStoryPrompt() {
-    const text = "Guardiamo questa storia. Descrivi ciò che vedi nelle immagini.";
+    const text = "Guardiamo questa storia. Descriva ciò che vede nelle immagini.";
     if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'it-IT'; u.rate = 0.9; window.speechSynthesis.speak(u); }
 }
 

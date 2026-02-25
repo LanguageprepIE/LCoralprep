@@ -45,8 +45,8 @@ let mockIndex = 0;
 const DATA = [
   { 
     title: "1. Moi-même", 
-    OL: "Comment t'appelles-tu ? Quel âge as-tu ? Quelle est ta date de naissance ?", 
-    HL: "Parle-moi de toi. Décris ta personnalité et tes qualités principales.",
+    OL: "Comment vous appelez-vous ? Quel âge avez-vous ? Quelle est votre date de naissance ?", 
+    HL: "Parlez-moi de vous. Décrivez votre personnalité et vos qualités principales.",
     check_HL: "Nom (Name), Âge (Age), Anniversaire (Birthday - full date), Physique (Physical - Yeux/Cheveux + Adjectifs), Caractère (Personality - 3 adjectives).",
     checkpoints_OL: ["Je m'appelle... (Name)", "J'ai X ans (Age)", "Mon anniversaire est le... (Date)"],
     checkpoints_HL: ["Les yeux et les cheveux (Adjectives agreement)", "Caractère (Je suis sympa/timide)", "Nationalité (Je suis irlandais/e)"],
@@ -54,8 +54,8 @@ const DATA = [
   },
   { 
     title: "2. Ma famille", 
-    OL: "Il y a combien de personnes dans ta famille ? Tu as des frères et sœurs ?", 
-    HL: "Parle-moi de ta famille. Est-ce que tu t'entends bien avec tes parents et tes frères et sœurs ?",
+    OL: "Il y a combien de personnes dans votre famille ? Vous avez des frères et sœurs ?", 
+    HL: "Parlez-moi de votre famille. Est-ce que vous vous entendez bien avec vos parents et vos frères et sœurs ?",
     check_HL: "Nombre de personnes (Number of people), Professions (Parents' jobs), Description frères/sœurs (Siblings), Relations (Getting on well/badly - s'entendre bien/mal).",
     checkpoints_OL: ["Nous sommes cinq... (Numbers)", "J'ai un frère / une sœur", "Mon père est médecin... (Jobs)"],
     checkpoints_HL: ["S'entendre bien/mal avec...", "Se disputer (Argue)", "Description physique des parents"],
@@ -63,8 +63,8 @@ const DATA = [
   },
   { 
     title: "3. Les amis", 
-    OL: "Tu as beaucoup d'amis ? Comment s'appelle ton meilleur ami ?", 
-    HL: "Parle-moi de ton meilleur ami ou ta meilleure amie. Pourquoi est-ce qu'il/elle est important(e) pour toi ?",
+    OL: "Vous avez beaucoup d'amis ? Comment s'appelle votre meilleur ami ?", 
+    HL: "Parlez-moi de votre meilleur ami ou votre meilleure amie. Pourquoi est-ce qu'il/elle est important(e) pour vous ?",
     check_HL: "Nom (Name), Description, Points communs (Shared interests), Pourquoi (Why special - loyal/drôle).",
     checkpoints_OL: ["Mon meilleur ami s'appelle...", "Il est grand et sportif", "On joue au foot ensemble"],
     checkpoints_HL: ["Les qualités d'un bon ami", "On a les mêmes goûts", "On se connaît depuis..."],
@@ -72,8 +72,8 @@ const DATA = [
   },
   { 
     title: "4. Ma maison", 
-    OL: "Tu habites dans une maison ou un appartement ? Comment est ta chambre ?", 
-    HL: "Décris ta maison idéale. Si tu pouvais changer quelque chose chez toi, ce serait quoi ?",
+    OL: "Vous habitez dans une maison ou un appartement ? Comment est votre chambre ?", 
+    HL: "Décrivez votre maison idéale. Si vous pouviez changer quelque chose chez vous, ce serait quoi ?",
     check_HL: "Type de logement (House/Apartment), Ma chambre (My bedroom - meubles/prepositions), Pièce préférée (Fav room), Conditionnel (Je voudrais changerais...).",
     checkpoints_OL: ["J'habite dans une maison...", "Ma chambre est petite/grande", "Il y a un lit et un bureau"],
     checkpoints_HL: ["Les tâches ménagères (Chores)", "Ma pièce préférée (My favorite room)", "Les prépositions (Sur, sous, à côté)"],
@@ -81,8 +81,8 @@ const DATA = [
   },
   { 
     title: "5. Mon quartier", 
-    OL: "Est-ce qu'il y a des magasins près de chez toi ? Il y a un parc ?", 
-    HL: "Parle-moi de ton quartier. Est-ce qu'il y a des problèmes sociaux ou de la délinquance ?",
+    OL: "Est-ce qu'il y a des magasins près de chez vous ? Il y a un parc ?", 
+    HL: "Parlez-moi de votre quartier. Est-ce qu'il y a des problèmes sociaux ou de la délinquance ?",
     check_HL: "Installations (Facilities - Il y a...), Avantages/Inconvénients (Pros/Cons - calme/bruyant), Problèmes sociaux (Social issues).",
     checkpoints_OL: ["Il y a un parc / une école", "C'est tranquille / bruyant", "C'est près de la mer"],
     checkpoints_HL: ["Les installations sportives", "Les problèmes (Déchets, Bruit)", "Les transports en commun"],
@@ -90,7 +90,7 @@ const DATA = [
   },
   { 
     title: "6. Ma ville/village", 
-    OL: "Tu aimes ta ville ? Qu'est-ce qu'il y a à faire pour les jeunes ?", 
+    OL: "Vous aimez votre ville ? Qu'est-ce qu'il y a à faire pour les jeunes ?", 
     HL: "Quels sont les avantages et les inconvénients de vivre en ville par rapport à la campagne ?",
     check_HL: "Comparaison (Plus calme que... / Moins stressant que...), Avantages Ville (Transports/Magasins), Avantages Campagne (Nature/Air pur).",
     checkpoints_OL: ["J'habite à Dublin", "C'est une grande ville", "On peut aller au cinéma"],
@@ -99,8 +99,8 @@ const DATA = [
   },
   { 
     title: "7. L'école", 
-    OL: "Comment s'appelle ton école ? C'est une école mixte ? Il y a combien d'élèves ?", 
-    HL: "Parle-moi de ton lycée. Que penses-tu du système éducatif irlandais et des règles de l'école ?",
+    OL: "Comment s'appelle votre école ? C'est une école mixte ? Il y a combien d'élèves ?", 
+    HL: "Parlez-moi de votre lycée. Que pensez-vous du système éducatif irlandais et des règles de l'école ?",
     check_HL: "Description (Mixte/Publique), Uniforme (Description), Règles (Rules - Il est interdit de...), Opinion Système (Points system/Stress).",
     checkpoints_OL: ["Mon école est mixte", "Je porte un uniforme (Pull, Pantalon)", "Il y a 500 élèves"],
     checkpoints_HL: ["Le règlement scolaire (Interdictions)", "Les installations (Cantine, Gymnase)", "Les professeurs"],
@@ -108,8 +108,8 @@ const DATA = [
   },
   { 
     title: "8. Les matières", 
-    OL: "Quelles matières étudies-tu ? Quelle est ta matière préférée ?", 
-    HL: "Parle-moi de tes matières. Penses-tu que le Leaving Cert est un bon système d'évaluation ?",
+    OL: "Quelles matières étudiez-vous ? Quelle est votre matière préférée ?", 
+    HL: "Parlez-moi de vos matières. Pensez-vous que le Leaving Cert est un bon système d'évaluation ?",
     check_HL: "Liste de matières (Subjects), Matière préférée (Fav subject - J'aime...), Difficile (Hard - Je suis nul en...), Opinion Leaving Cert (Pression/Juste).",
     checkpoints_OL: ["J'étudie le français, les maths...", "J'aime l'histoire", "Je déteste la géo"],
     checkpoints_HL: ["Matières obligatoires vs optionnelles", "La pression du Leaving Cert", "Système de points (CAO)"],
@@ -117,8 +117,8 @@ const DATA = [
   },
   { 
     title: "9. La routine", 
-    OL: "À quelle heure tu te lèves le matin ? À quelle heure tu rentres chez toi ?", 
-    HL: "Décris ta journée typique. Est-ce que tu trouves tes journées stressantes en ce moment ?",
+    OL: "À quelle heure vous vous levez le matin ? À quelle heure vous rentrez chez vous ?", 
+    HL: "Décrivez votre journée typique. Est-ce que vous trouvez vos journées stressantes en ce moment ?",
     check_HL: "Verbes Pronominaux (Je me lève, Je m'habille...), Horaires (À huit heures...), Transport, Devoirs/Études (Homework/Study).",
     checkpoints_OL: ["Je me lève à 7h (Reflexive)", "Je prends le petit déjeuner", "Je vais à l'école en bus"],
     checkpoints_HL: ["La journée scolaire (Emploi du temps)", "Le soir (Devoirs, Dîner)", "Le week-end (Grasse matinée)"],
@@ -126,8 +126,8 @@ const DATA = [
   },
   { 
     title: "10. Les passe-temps", 
-    OL: "Qu'est-ce que tu fais pendant ton temps libre ? Tu fais du sport ?", 
-    HL: "Parle-moi de tes loisirs. Pourquoi est-il important d'avoir des passe-temps pour la santé mentale ?",
+    OL: "Qu'est-ce que vous faites pendant votre temps libre ? Vous faites du sport ?", 
+    HL: "Parlez-moi de vos loisirs. Pourquoi est-il important d'avoir des passe-temps pour la santé mentale ?",
     check_HL: "Sport (Je joue au...), Musique/Lecture (Music/Reading), Fréquence (Souvent/Le samedi), Importance (Santé mentale/Décompresser).",
     checkpoints_OL: ["Je joue au foot / rugby", "J'écoute de la musique", "Je regarde Netflix"],
     checkpoints_HL: ["Sport individuel vs équipe", "Bienfaits pour la santé", "L'importance de décompresser"],
@@ -135,8 +135,8 @@ const DATA = [
   },
   { 
     title: "11. Tâches ménagères", 
-    OL: "Est-ce que tu aides à la maison ? Tu fais ton lit ?", 
-    HL: "Parle-moi du partage des tâches ménagères chez toi. Est-ce que c'est équitable ?",
+    OL: "Est-ce que vous aidez à la maison ? Vous faites votre lit ?", 
+    HL: "Parlez-moi du partage des tâches ménagères chez vous. Est-ce que c'est équitable ?",
     check_HL: "Tâches spécifiques (Je fais la vaisselle/mon lit...), Argent de poche (Pocket money), Opinion (C'est juste/injuste).",
     checkpoints_OL: ["Je fais mon lit", "Je mets la table", "Je range ma chambre"],
     checkpoints_HL: ["L'argent de poche", "Partage des tâches (Juste/Injuste)", "Conflits avec les parents"],
@@ -144,8 +144,8 @@ const DATA = [
   },
   { 
     title: "12. Les vacances (Passé)", 
-    OL: "Où es-tu allé en vacances l'année dernière ? Tu aimes la France ?", 
-    HL: "Parle-moi de tes vacances. Préfères-tu partir à l'étranger ou rester en Irlande ? Pourquoi ?",
+    OL: "Où êtes-vous allé en vacances l'année dernière ? Vous aimez la France ?", 
+    HL: "Parlez-moi de vos vacances. Préfériez-vous partir à l'étranger ou rester en Irlande ? Pourquoi ?",
     check_HL: "Passé Composé (Actions: Je suis allé, J'ai visité...), Imparfait (Météo/Description: Il faisait beau, C'était super), Préférence (Voyager vs Rester).",
     checkpoints_OL: ["Je suis allé en Espagne (Passé)", "J'ai voyagé en avion", "C'était super !"],
     checkpoints_HL: ["Passé Composé vs Imparfait", "Logement (Hôtel, Camping)", "Activités (Bronzer, Nager)"],
@@ -153,8 +153,8 @@ const DATA = [
   },
   { 
     title: "13. L'avenir (Futur)", 
-    OL: "Qu'est-ce que tu vas faire l'année prochaine ? Tu veux aller à l'université ?", 
-    HL: "Quels sont tes projets pour l'avenir ? Quel métier aimerais-tu faire et pourquoi ?",
+    OL: "Qu'est-ce que vous allez faire l'année prochaine ? Vous voulez aller à l'université ?", 
+    HL: "Quels sont vos projets pour l'avenir ? Quel métier aimeriez-vous faire et pourquoi ?",
     check_HL: "Futur Simple (J'irai, Je ferai...), Conditionnel (J'aimerais être...), Université/Fac, Année sabbatique (Gap Year).",
     checkpoints_OL: ["Je vais aller à l'université", "Je veux étudier le commerce", "Je voudrais être riche"],
     checkpoints_HL: ["L'année sabbatique (Gap Year)", "Le logement étudiant", "Projets de carrière"],
@@ -162,8 +162,8 @@ const DATA = [
   },
   { 
     title: "14. Week-end dernier", 
-    OL: "Qu'est-ce que tu as fait le week-end dernier ? Tu es sorti ?", 
-    HL: "Raconte-moi ce que tu as fait le week-end dernier. C'était un bon week-end ?",
+    OL: "Qu'est-ce que vous avez fait le week-end dernier ? Vous êtes sorti ?", 
+    HL: "Racontez-moi ce que vous avez fait le week-end dernier. C'était un bon week-end ?",
     check_HL: "Passé Composé avec AVOIR (J'ai regardé, J'ai joué), Passé Composé avec ÊTRE (Je suis sorti(e), Je suis allé(e)), Activités sociales.",
     checkpoints_OL: ["J'ai regardé un match", "Je suis allé au cinéma", "J'ai mangé une pizza"],
     checkpoints_HL: ["Sorties entre amis", "Réviser pour les examens", "Événements spéciaux"],
@@ -171,8 +171,8 @@ const DATA = [
   },
   { 
     title: "15. Week-end prochain", 
-    OL: "Qu'est-ce que tu feras le week-end prochain ?", 
-    HL: "Quels sont tes projets pour le week-end prochain ? Tu as prévu quelque chose de spécial ?",
+    OL: "Qu'est-ce que vous ferez le week-end prochain ?", 
+    HL: "Quels sont vos projets pour le week-end prochain ? Vous avez prévu quelque chose de spécial ?",
     check_HL: "Futur Proche (Je vais aller...), Futur Simple (Je sortirai...), Projets spécifiques (Specific plans - amis/sport/devoirs).",
     checkpoints_OL: ["Je vais jouer au foot", "Je vais étudier", "Je vais voir mes amis"],
     checkpoints_HL: ["Futur Proche (Aller + Infinitif)", "Compétitions sportives", "Repas de famille"],
@@ -180,8 +180,8 @@ const DATA = [
   }
 ];
 
-const PAST_Q = ["Qu'est-ce que tu as fait le week-end dernier ?", "Où es-tu allé l'été dernier ?", "Qu'est-ce que tu as fait hier soir ?"];
-const FUT_Q = ["Qu'est-ce que tu feras demain ?", "Quels sont tes projets pour l'été ?", "Qu'est-ce que tu feras après les examens ?"];
+const PAST_Q = ["Qu'est-ce que vous avez fait le week-end dernier ?", "Où êtes-vous allé l'été dernier ?", "Qu'est-ce que vous avez fait hier soir ?"];
+const FUT_Q = ["Qu'est-ce que vous ferez demain ?", "Quels sont vos projets pour l'été ?", "Qu'est-ce que vous ferez après les examens ?"];
 
 // ===========================================
 // LÓGICA DE CONTROL (NIVEL Y MODO)
@@ -345,7 +345,7 @@ function resetApp() {
 // ===========================================
 async function analyze() {
   const t = document.getElementById('userInput').value; 
-  if(t.length < 3) return alert("S'il te plaît, écris ou dis quelque chose...");
+  if(t.length < 3) return alert("S'il vous plaît, écrivez ou dites quelque chose...");
   
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Grading...";
@@ -363,7 +363,7 @@ async function analyze() {
     ANSWER: "${t}"
     LEVEL: ${currentLevel}.
     CHECKPOINTS: [ ${criteria} ].
-    INSTRUCTIONS: Ignore punctuation errors.
+    INSTRUCTIONS: Ignore punctuation errors. Maintain formal 'vous' perspective when addressing the student in feedback.
     OUTPUT JSON: { "score": 0-100, "feedback_fr": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }
   `;
 
@@ -507,7 +507,7 @@ async function generateDocQuestions() {
   const b = document.querySelector('#docStep2 button'); b.disabled = true; b.innerText = "🤔 Génération...";
 
   const prompt = `ACT AS: Leaving Cert French Examiner. CONTEXT: Document about "${currentDocType}". DESC: "${desc}".
-  TASK: Generate 5 questions. 1-3 specific, 4-5 general themes. OUTPUT: List 1-5.`;
+  TASK: Generate 5 questions. 1-3 specific, 4-5 general themes. INSTRUCTIONS: Always formulate questions using the formal 'vous' form. OUTPUT: List 1-5.`;
 
   try {
     const text = await callSmartAI(prompt);
@@ -535,6 +535,7 @@ async function analyzeDoc() {
   const b = document.getElementById('btnActionDoc'); b.disabled = true; b.innerText = "⏳ Correction...";
 
   const prompt = `ACT AS: French Examiner. CONTEXT: Questions: ${currentQuestionsText}. ANSWER: "${t}".
+  INSTRUCTIONS: Maintain formal 'vous' perspective when addressing the student in feedback.
   OUTPUT JSON: { "score": (0-100), "feedback_fr": "Feedback", "feedback_en": "Advice", "errors": [{"original":"x","correction":"y","explanation_en":"z"}] }`;
 
   try {

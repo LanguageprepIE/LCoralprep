@@ -47,8 +47,8 @@ let mockIndex = 0;
 const DATA_CONV = [
   { 
     title: "1. Sich vorstellen", 
-    OL: "Wie heißt du und wie alt bist du? Wann hast du Geburtstag?", 
-    HL: "Erzähl mir ein bisschen über dich selbst. Wie würdest du deinen Charakter beschreiben?",
+    OL: "Wie heißen Sie und wie alt sind Sie? Wann haben Sie Geburtstag?", 
+    HL: "Erzählen Sie mir ein bisschen über sich selbst. Wie würden Sie Ihren Charakter beschreiben?",
     check_HL: "Name, Alter, Geburtstag (Datum), Aussehen (Ich habe... Augen/Haare), Charakter (Ich bin... + 3 Adjektive).",
     checkpoints_OL: ["Ich heiße... (Name)", "Ich bin X Jahre alt", "Ich wohne in..."],
     checkpoints_HL: ["Aussehen (Ich habe blaue Augen)", "Charakter (Ehrgeizig, Offen)", "Geburtstag (Am dritten Mai...)"],
@@ -56,8 +56,8 @@ const DATA_CONV = [
   },
   { 
     title: "2. Familie", 
-    OL: "Hast du Geschwister? Wie heißen sie?", 
-    HL: "Verstehst du dich gut mit deinen Eltern? Gibt es oft Streit zu Hause?",
+    OL: "Haben Sie Geschwister? Wie heißen sie?", 
+    HL: "Verstehen Sie sich gut mit Ihren Eltern? Gibt es oft Streit zu Hause?",
     check_HL: "Personenzahl (Wir sind... Personen), Berufe der Eltern, Geschwister (Beschreibung), Verhältnis (Ich verstehe mich gut/schlecht mit...), Streitgründe.",
     checkpoints_OL: ["Ich habe einen Bruder / eine Schwester", "Meine Mutter ist...", "Wir sind fünf Personen"],
     checkpoints_HL: ["Sich gut verstehen mit...", "Streit über Hausarbeit", "Ältester/Jüngster sein"],
@@ -65,8 +65,8 @@ const DATA_CONV = [
   },
   { 
     title: "3. Wohnort", 
-    OL: "Wo wohnst du? Wohnst du gern dort?", 
-    HL: "Beschreibe deine Gegend. Was sind die Vor- und Nachteile vom Leben auf dem Land/in der Stadt?",
+    OL: "Wo wohnen Sie? Wohnen Sie gern dort?", 
+    HL: "Beschreiben Sie Ihre Gegend. Was sind die Vor- und Nachteile vom Leben auf dem Land/in der Stadt?",
     check_HL: "Wohnort (Ich wohne in...), Beschreibung (Es gibt...), Vorteile/Nachteile (Es ist ruhig/langweilig), Stadt vs Land Vergleich.",
     checkpoints_OL: ["Ich wohne in Dublin", "Es gibt einen Park", "Es ist ruhig"],
     checkpoints_HL: ["Vorteile (Verkehrsmittel)", "Nachteile (Lärm, Kriminalität)", "Stadtleben vs Landleben"],
@@ -74,8 +74,8 @@ const DATA_CONV = [
   },
   { 
     title: "4. Schule", 
-    OL: "Wie viele Fächer lernst du? Was ist dein Lieblingsfach?", 
-    HL: "Was hältst du vom irischen Schulsystem? Ist der Druck für das Leaving Cert zu hoch?",
+    OL: "Wie viele Fächer lernen Sie? Was ist Ihr Lieblingsfach?", 
+    HL: "Was halten Sie vom irischen Schulsystem? Ist der Druck für das Leaving Cert zu hoch?",
     check_HL: "Schulart, Fächer (Ich lerne...), Lieblingsfach (Mein Lieblingsfach ist... weil...), Meinung zum System (Punkte, Druck, Uniform).",
     checkpoints_OL: ["Meine Schule ist gemischt", "Ich lerne Deutsch und Mathe", "Ich trage eine Uniform"],
     checkpoints_HL: ["Das Punktesystem (CAO)", "Druck und Stress", "Schulregeln (Handyverbot)"],
@@ -83,8 +83,8 @@ const DATA_CONV = [
   },
   { 
     title: "5. Freizeit & Hobbys", 
-    OL: "Was machst du in deiner Freizeit? Spielst du ein Instrument?", 
-    HL: "Warum ist Sport wichtig für Jugendliche? Erzähl mir von deinen Interessen.",
+    OL: "Was machen Sie in Ihrer Freizeit? Spielen Sie ein Instrument?", 
+    HL: "Warum ist Sport wichtig für Jugendliche? Erzählen Sie mir von Ihren Interessen.",
     check_HL: "Sportart (Ich spiele...), Musik/Lesen, Häufigkeit (Oft, Jeden Tag), Wichtigkeit (Gesundheit, Stressabbau), Wortstellung.",
     checkpoints_OL: ["Ich spiele Fußball", "Ich höre Musik", "Ich treffe Freunde"],
     checkpoints_HL: ["Mannschaftssport vs Einzelsport", "Wichtig für die Gesundheit", "Abschalten vom Stress"],
@@ -92,32 +92,32 @@ const DATA_CONV = [
   },
   { 
     title: "6. Alltag", 
-    OL: "Wann stehst du auf? Was isst du zum Frühstück?", 
-    HL: "Wie sieht ein typischer Samstag bei dir aus? Hilfst du im Haushalt?",
+    OL: "Wann stehen Sie auf? Was essen Sie zum Frühstück?", 
+    HL: "Wie sieht ein typischer Samstag bei Ihnen aus? Helfen Sie im Haushalt?",
     check_HL: "Trennbare Verben (Ich stehe... auf), Uhrzeiten, Mahlzeiten, Hausarbeit (Ich muss...)."
   },
   { 
     title: "7. Ferien & Reisen", 
-    OL: "Was hast du letzten Sommer gemacht? Warst du im Ausland?", 
-    HL: "Fährst du lieber mit der Familie oder mit Freunden in den Urlaub? Warum?",
+    OL: "Was haben Sie letzten Sommer gemacht? Waren Sie im Ausland?", 
+    HL: "Fahren Sie lieber mit der Familie oder mit Freunden in den Urlaub? Warum?",
     check_HL: "Perfekt Form (Ich bin... gefahren), Reiseziel, Wetter, Präferenz (Lieber mit Freunden, weil...)."
   },
   { 
     title: "8. Zukunftspläne", 
-    OL: "Was möchtest du nach der Schule machen? Willst du studieren?", 
-    HL: "Welchen Beruf möchtest du später ausüben? Ist es schwer, heutzutage einen Job zu finden?",
+    OL: "Was möchten Sie nach der Schule machen? Wollen Sie studieren?", 
+    HL: "Welchen Beruf möchten Sie später ausüben? Ist es schwer, heutzutage einen Job zu finden?",
     check_HL: "Futur I (Ich werde...), Modalverben (Ich möchte...), Studium/Ausbildung, Gap Year, Berufswunsch."
   },
   { 
     title: "9. Arbeit (Nebenjob)", 
-    OL: "Hast du einen Nebenjob? Wo arbeitest du?", 
+    OL: "Haben Sie einen Nebenjob? Wo arbeiten Sie?", 
     HL: "Sollten Schüler neben der Schule arbeiten? Was sind die Vor- und Nachteile?",
     check_HL: "Jobbeschreibung (Ich arbeite als...), Stundenlohn/Zeiten, Meinung (Geld vs Zeit für Schule), Vor-/Nachteile."
   },
   { 
     title: "10. Deutsch & Sprachen", 
-    OL: "Warum lernst du Deutsch? Warst du schon mal in Deutschland?", 
-    HL: "Warum ist es wichtig, Fremdsprachen zu lernen? Was gefällt dir an der deutschen Kultur?",
+    OL: "Warum lernen Sie Deutsch? Waren Sie schon mal in Deutschland?", 
+    HL: "Warum ist es wichtig, Fremdsprachen zu lernen? Was gefällt Ihnen an der deutschen Kultur?",
     check_HL: "Gründe (Jobchancen, Reisen), Erfahrung in Deutschland, Meinung (Deutsch ist schwer/logisch), Nebensätze."
   },
   { 
@@ -128,32 +128,32 @@ const DATA_CONV = [
   },
   { 
     title: "12. Technologie", 
-    OL: "Hast du ein Handy? Wie oft benutzt du das Internet?", 
-    HL: "Welche Rolle spielen soziale Medien in deinem Leben? Fluch oder Segen?",
+    OL: "Haben Sie ein Handy? Wie oft benutzen Sie das Internet?", 
+    HL: "Welche Rolle spielen soziale Medien in Ihrem Leben? Fluch oder Segen?",
     check_HL: "Nutzung (Ich benutze...), Soziale Medien, Gefahren (Cybermobbing), Vorteile (Kontakt bleiben)."
   },
   { 
     title: "13. Letztes Wochenende", 
-    OL: "Was hast du letztes Wochenende gemacht? Bist du ausgegangen?", 
-    HL: "Erzähl mir genau, was du letztes Wochenende gemacht hast. War es ein typisches Wochenende?",
+    OL: "Was haben Sie letztes Wochenende gemacht? Sind Sie ausgegangen?", 
+    HL: "Erzählen Sie mir genau, was Sie letztes Wochenende gemacht haben. War es ein typisches Wochenende?",
     check_HL: "Perfekt (Ich habe gelernt, Ich bin gegangen), Präteritum (Es war lustig), Zeitangaben."
   },
   { 
     title: "14. Nächstes Wochenende", 
-    OL: "Was wirst du nächstes Wochenende machen?", 
-    HL: "Was sind deine Pläne für das nächste Wochenende? Wirst du lernen oder dich entspannen?",
+    OL: "Was werden Sie nächstes Wochenende machen?", 
+    HL: "Was sind Ihre Pläne für das nächste Wochenende? Werden Sie lernen oder sich entspannen?",
     check_HL: "Futur I (Ich werde... gehen), Pläne (Ich habe vor, zu...), Modalverben (Ich möchte...), Aktivitäten."
   },
   { 
     title: "15. Feste & Feiern", 
-    OL: "Wie feierst du deinen Geburtstag? Was machst du an Weihnachten?", 
-    HL: "Welches ist dein Lieblingsfest? Wie feiern die Iren im Vergleich zu den Deutschen?",
+    OL: "Wie feiern Sie Ihren Geburtstag? Was machen Sie an Weihnachten?", 
+    HL: "Welches ist Ihr Lieblingsfest? Wie feiern die Iren im Vergleich zu den Deutschen?",
     check_HL: "Feiertage, Traditionen (Geschenke, Essen), Vergleich (In Irland...), Meinung."
   }
 ];
 
-const PAST_Q = ["Was hast du gestern gemacht?", "Was hast du letzten Sommer gemacht?", "Wie hast du deinen letzten Geburtstag gefeiert?"];
-const FUT_Q = ["Was wirst du morgen machen?", "Was sind deine Pläne für den Sommer?", "Was wirst du nach den Prüfungen machen?"];
+const PAST_Q = ["Was haben Sie gestern gemacht?", "Was haben Sie letzten Sommer gemacht?", "Wie haben Sie Ihren letzten Geburtstag gefeiert?"];
+const FUT_Q = ["Was werden Sie morgen machen?", "Was sind Ihre Pläne für den Sommer?", "Was werden Sie nach den Prüfungen machen?"];
 
 // ===========================================
 // LÓGICA DE CONTROL (NIVEL Y MODO)
@@ -304,7 +304,7 @@ function resetApp() {
     if(isMockExam) {
         isMockExam = false;
         document.getElementById('userInput').value = "";
-        document.getElementById('qDisplay').innerHTML = "Wähle ein Thema oder starte den Mock Exam.";
+        document.getElementById('qDisplay').innerHTML = "Wählen Sie ein Thema oder starten Sie das Mock Exam.";
         const btnHint = document.getElementById('btnHint');
         if(btnHint) btnHint.style.display = 'none';
     } else {
@@ -317,7 +317,7 @@ function resetApp() {
 // ===========================================
 async function analyze() {
   const t = document.getElementById('userInput').value; 
-  if(t.length < 5) return alert("Bitte sag etwas mehr...");
+  if(t.length < 5) return alert("Bitte sagen Sie etwas mehr...");
   
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Korrigiere...";
@@ -335,7 +335,7 @@ async function analyze() {
     LEVEL: ${currentLevel}.
     STUDENT ANSWER: "${t}"
     CHECKPOINTS: [ ${criteria} ].
-    INSTRUCTIONS: Ignore punctuation errors. Check Verb Position (Wortstellung).
+    INSTRUCTIONS: Ignore punctuation errors. Check Verb Position (Wortstellung). Maintain 'Sie' form perspective if addressing the student.
     OUTPUT JSON: { "score": 0-100, "feedback_de": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }
   `;
 
@@ -382,7 +382,7 @@ function renderCheckpoints() {
     if (!container) return;
 
     if (!currentTopic) {
-        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Bitte wähle ein Thema aus.</p>";
+        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Bitte wählen Sie ein Thema aus.</p>";
         return;
     }
     
@@ -451,14 +451,14 @@ async function askAIConcept(concept) {
 }
 
 // ===========================================
-// PARTE 2: ROLEPLAYS (INTACTA)
+// PARTE 2: ROLEPLAYS (INTACTA - AHORA CON SIE EN RP4)
 // ===========================================
 let rpActual = null; let pasoActual = 0; 
 const RP_DATA = {
     1: { context: "Hund verloren (Missing Dog). You are staying with the Vogler family in Berlin. You lost their dog Otto in Grunewald.", dialogs: ["Guten Tag. Bitte setzen Sie sich. Wie kann ich Ihnen helfen?", "Verstehe. Um wann genau ist das passiert und wo im Grunewald waren Sie?", "Können Sie den Hund genauer beschreiben? Rasse, Aussehen, Charakter?", "Das ist hilfreich. Haben Sie schon etwas unternommen, um ihn zu finden?", ["Ich rate Ihnen, den Tierschutzverein anzurufen. Hier ist die Nummer.", "Hängen Sie auch Zettel in der Nachbarschaft auf. Wir melden uns, wenn wir etwas hören."]], sugerencias: ["Guten Tag. Ich heiße [Name] und wohne bei Familie Vogler. Ich muss einen Verlust melden: Der Hund der Familie ist weggelaufen.", "Es ist heute Morgen gegen 10 Uhr passiert. Ich war im Grunewald spazieren, als wir plötzlich einem Wildschwein begegnet sind.", "Otto ist ein kleiner Terrier-Mischling. Er hat braunes Fell und ist sehr freundlich.", "Ja, ich habe laut nach ihm gerufen und lange gewartet, aber er kam nicht zurück.", "Vielen Dank, Herr Wachtmeister. Das mache ich sofort."] },
     2: { context: "Anruf bei der Redaktion. You call 'Essen & Trinken' magazine.", dialogs: ["Redaktion 'Essen & Trinken', guten Tag. Was kann ich für Sie tun?", "Moment bitte... Hier spricht Müller. Wie war Ihr Name noch einmal?", "Aha. Und was genau möchten Sie wissen? Geht es um deutsche Küche?", "Interessant. Und wie ist das bei Ihnen in Irland? Welche deutschen Produkte sind dort beliebt?", ["Gut, ich kann Ihnen gerne einige alte Ausgaben zuschicken.", "Schicken Sie mir einfach eine E-Mail mit Ihrer Adresse. Auf Wiederhören."]], sugerencias: ["Guten Tag, hier spricht [Name] aus Irland. Ich mache ein Schulprojekt über Essen und Trinken.", "Entschuldigung, ich habe Ihren Namen akustisch nicht verstanden. Könnten Sie ihn bitte buchstabieren?", "Ich möchte wissen: Ist typisch deutsches Essen immer noch beliebt oder gibt es neue Trends?", "Also, in Irland kaufen viele Leute bei Lidl und Aldi ein. Deutsches Brot ist sehr beliebt.", "Das wäre fantastisch! Ich brauche Material für meine Collage. Danke!"] },
     3: { context: "Interview fürs Fernsehen (MDR). Erasmus student in Leipzig.", dialogs: ["Hallo! Wir sind vom MDR Fernsehen. Dürfen wir Ihnen ein paar Fragen stellen?", "Toll, dass Sie so gut Deutsch sprechen! Warum haben Sie sich für ein Erasmus-Jahr entschieden?", "Und warum ausgerechnet Leipzig? Was gefällt Ihnen hier?", "Wie finden Sie das Studium hier im Vergleich zu Irland? Sind die Studiengebühren ein Thema?", ["Vielen Dank für das Interview. Viel Erfolg noch!", "Das war sehr interessant. Genießen Sie Ihre Zeit in Leipzig!"]], sugerencias: ["Ja, natürlich. Ich heiße [Name] und das ist meine Gruppe. Wir kommen aus Irland.", "Ich wollte unbedingt meine Deutschkenntnisse verbessern und neue Leute kennenlernen.", "Leipzig ist eine wunderschöne Stadt mit viel Kultur und Geschichte. Außerdem sind die Mieten hier billiger.", "Das Punktesystem in Irland ist sehr stressig. Hier in Deutschland finde ich es gut, dass es keine Studiengebühren gibt.", "Danke schön! Auf Wiedersehen!"] },
-    4: { context: "Eltern überreden (Electric Picnic).", dialogs: ["Hallo! Hier ist der Vater von Thomas. Schön, dich kennenzulernen.", "Thomas hat erzählt, du hast ihn zu einem Festival eingeladen. Wann und wo ist das genau?", "Ich weiß nicht recht. Ist Thomas nicht noch zu jung für so eine weite Reise allein?", "Aber auf solchen Festivals gibt es doch immer viel Alkohol und Drogen. Ich mache mir Sorgen.", ["Na gut, wenn du meinst, dass ihr vernünftig seid...", "Okay, wir überlegen es uns noch einmal. Danke für den Anruf."]], sugerencias: ["Guten Tag, Herr Hofer. Ich freue mich auch sehr. Thomas und ich verstehen uns super.", "Ja, genau! Es ist das 'Electric Picnic' Festival im September.", "Ach, keine Sorge! Thomas ist fast 18 und sehr vernünftig. Außerdem hole ich ihn vom Flughafen ab.", "Ich verstehe Ihre Sorgen, aber wir passen gut auf uns auf. Es war alles sehr sicher letztes Jahr.", "Vielen Dank für Ihr Vertrauen, Herr Hofer!"] },
+    4: { context: "Eltern überreden (Electric Picnic).", dialogs: ["Hallo! Hier ist der Vater von Thomas. Schön, Sie kennenzulernen.", "Thomas hat erzählt, Sie haben ihn zu einem Festival eingeladen. Wann und wo ist das genau?", "Ich weiß nicht recht. Ist Thomas nicht noch zu jung für so eine weite Reise allein?", "Aber auf solchen Festivals gibt es doch immer viel Alkohol und Drogen. Ich mache mir Sorgen.", ["Na gut, wenn Sie meinen, dass Sie vernünftig sind...", "Okay, wir überlegen es uns noch einmal. Danke für den Anruf."]], sugerencias: ["Guten Tag, Herr Hofer. Ich freue mich auch sehr. Thomas und ich verstehen uns super.", "Ja, genau! Es ist das 'Electric Picnic' Festival im September.", "Ach, keine Sorge! Thomas ist fast 18 und sehr vernünftig. Außerdem hole ich ihn vom Flughafen ab.", "Ich verstehe Ihre Sorgen, aber wir passen gut auf uns auf. Es war alles sehr sicher letztes Jahr.", "Vielen Dank für Ihr Vertrauen, Herr Hofer!"] },
     5: { context: "Ferienjob (Tour Guide). Bus delay.", dialogs: ["Endlich! Wir warten schon seit einer Ewigkeit. Das geht ja gut los!", "Das Wetter ist auch furchtbar. Regnet es hier eigentlich immer?", "Und was steht jetzt auf dem Programm? Ich hoffe, nicht wieder stundenlang Busfahren.", "Ich habe viel Geld für diese Reise bezahlt und erwarte erstklassigen Service!", ["Na gut, hoffentlich wird das Hotel wenigstens besser sein.", "Wir werden sehen. Fahren wir jetzt endlich los?"]], sugerencias: ["Guten Tag und herzlich willkommen. Es tut mir leid, dass ich zu spät bin. Der Bus hatte eine Panne.", "Haha, das ist eben Irland! Aber morgen soll die Sonne scheinen.", "Nein, keine Sorge. Heute fahren wir nur kurz zum Hotel und essen zu Abend.", "Ich verstehe Ihren Ärger, aber wir haben ein tolles Programm für Sie zusammengestellt.", "Das Hotel ist ausgezeichnet. Bitte steigen Sie ein, wir fahren sofort los."] }
 };
 
@@ -533,7 +533,7 @@ function selectStory(index, btn) {
 }
 
 function speakStoryPrompt() {
-    const text = "Erzähl mir bitte, was hier passiert.";
+    const text = "Erzählen Sie mir bitte, was hier passiert.";
     if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 0.9; window.speechSynthesis.speak(u); }
 }
 
@@ -543,10 +543,10 @@ function readMyStoryInput() {
 }
 
 async function analyzeStory() {
-  const t = document.getElementById('userInputStory').value; if(t.length < 5) return alert("Bitte schreib etwas mehr...");
+  const t = document.getElementById('userInputStory').value; if(t.length < 5) return alert("Bitte schreiben Sie etwas mehr...");
   const b = document.getElementById('btnActionStory'); b.disabled = true; b.innerText = "⏳ Korrigiere...";
 
-  const prompt = `ACT AS: German Leaving Cert Examiner. TASK: Picture Sequence "${currentStoryTitle}". STUDENT: "${t}". OUTPUT JSON: { "score": 0-100, "feedback_de": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }`;
+  const prompt = `ACT AS: German Leaving Cert Examiner. TASK: Picture Sequence "${currentStoryTitle}". STUDENT: "${t}". INSTRUCTIONS: Maintain 'Sie' form perspective if addressing the student in feedback. OUTPUT JSON: { "score": 0-100, "feedback_de": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }`;
 
   try {
     const rawText = await callSmartAI(prompt);

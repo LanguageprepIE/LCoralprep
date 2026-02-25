@@ -39,8 +39,8 @@ let mockIndex = 0;
 const DATA = [
   { 
     title: "1. O sobie (Myself)", 
-    General: "Jak masz na imię? Ile masz lat? Skąd jesteś?", 
-    Advanced: "Opowiedz mi o sobie. Jakie są twoje mocne i słabe strony?",
+    General: "Jak ma Pan/Pani na imię? Ile ma Pan/Pani lat? Skąd Pan/Pani jest?", 
+    Advanced: "Proszę mi opowiedzieć o sobie. Jakie są Pana/Pani mocne i słabe strony?",
     check_HL: "Imię, Wiek, Pochodzenie (Jestem z...), Cechy charakteru, Zainteresowania (Interesuję się + Narzędnik).",
     checkpoints_OL: ["Nazywam się... (Mianownik)", "Mam X lat (Dopełniacz)", "Mieszkam w... (Miejscownik)"],
     checkpoints_HL: ["Cechy charakteru (Ambitny, Otwarty)", "Interesuję się... (Narzędnik)", "Moje wady i zalety"],
@@ -48,8 +48,8 @@ const DATA = [
   },
   { 
     title: "2. Rodzina (Family)", 
-    General: "Masz rodzeństwo? Czym zajmują się twoi rodzice?", 
-    Advanced: "Opisz swoją rodzinę. Czy dobrze dogadujesz się z rodzicami? Czy istnieje konflikt pokoleń?",
+    General: "Czy ma Pan/Pani rodzeństwo? Czym zajmują się Pana/Pani rodzice?", 
+    Advanced: "Proszę opisać swoją rodzinę. Czy dobrze dogaduje się Pan/Pani z rodzicami? Czy istnieje konflikt pokoleń?",
     check_HL: "Liczba osób, Zawody rodziców, Rodzeństwo, Relacje (Dogaduję się z...), Konflikt pokoleń.",
     checkpoints_OL: ["Mam brata/siostrę (Biernik)", "Moi rodzice pracują jako...", "Moja rodzina jest duża"],
     checkpoints_HL: ["Relacje (Kłócić się z...)", "Konflikt pokoleń", "Wspieramy się nawzajem"],
@@ -57,8 +57,8 @@ const DATA = [
   },
   { 
     title: "3. Dom i Okolica", 
-    General: "Gdzie mieszkasz? Opisz swój dom lub mieszkanie.", 
-    Advanced: "Wolisz życie w mieście czy na wsi? Uzasadnij swoją opinię.",
+    General: "Gdzie Pan/Pani mieszka? Proszę opisać swój dom lub mieszkanie.", 
+    Advanced: "Woli Pan/Pani życie w mieście czy na wsi? Proszę uzasadnić swoją opinię.",
     check_HL: "Opis domu, Lokalizacja (Na przedmieściach), Miasto vs Wieś, Zalety/Wady.",
     checkpoints_OL: ["Mieszkam w domu jednorodzinnym", "Mój pokój jest...", "W okolicy jest park"],
     checkpoints_HL: ["Zalety życia w mieście", "Infrastruktura i korki", "Spokój na wsi"],
@@ -66,8 +66,8 @@ const DATA = [
   },
   { 
     title: "4. Szkoła (School)", 
-    General: "Do jakiej szkoły chodzisz? Jakie przedmioty lubisz?", 
-    Advanced: "Co sądzisz o systemie edukacji w Irlandii? Czy matura (Leaving Cert) to sprawiedliwy egzamin?",
+    General: "Do jakiej szkoły Pan/Pani chodzi? Jakie przedmioty Pan/Pani lubi?", 
+    Advanced: "Co sądzi Pan/Pani o systemie edukacji w Irlandii? Czy matura (Leaving Cert) to sprawiedliwy egzamin?",
     check_HL: "Nazwa szkoły, Przedmioty (Uczę się...), System punktowy (CAO), Stres egzaminacyjny.",
     checkpoints_OL: ["Chodzę do szkoły średniej", "Moim ulubionym przedmiotem jest...", "Nie lubię matematyki"],
     checkpoints_HL: ["System punktowy (CAO)", "Presja egzaminacyjna", "Zajęcia pozalekcyjne"],
@@ -75,8 +75,8 @@ const DATA = [
   },
   { 
     title: "5. Czas wolny (Hobbies)", 
-    General: "Co robisz w wolnym czasie? Uprawiasz jakiś sport?", 
-    Advanced: "Dlaczego warto mieć hobby? Jak spędzasz czas ze znajomymi?",
+    General: "Co robi Pan/Pani w wolnym czasie? Czy uprawia Pan/Pani jakiś sport?", 
+    Advanced: "Dlaczego warto mieć hobby? Jak spędza Pan/Pani czas ze znajomymi?",
     check_HL: "Zainteresowania (Lubię + Bezokolicznik), Sport, Znaczenie relaksu, Balans szkoła-życie.",
     checkpoints_OL: ["Gram w piłkę nożną", "Słucham muzyki", "Spotykam się z przyjaciółmi"],
     checkpoints_HL: ["Zdrowie psychiczne", "Sporty drużynowe", "Oderwać się od nauki"],
@@ -84,8 +84,8 @@ const DATA = [
   },
   { 
     title: "6. Polska vs Irlandia", 
-    General: "Byłeś kiedyś w Polsce? Co ci się tam podoba?", 
-    Advanced: "Porównaj życie w Polsce i w Irlandii. Gdzie wolisz mieszkać i dlaczego?",
+    General: "Czy był Pan / była Pani kiedyś w Polsce? Co się Panu/Pani tam podoba?", 
+    Advanced: "Proszę porównać życie w Polsce i w Irlandii. Gdzie woli Pan/Pani mieszkać i dlaczego?",
     check_HL: "Podobieństwa/Różnice, Kultura, Pogoda, Mentalność ludzi, Emigracja.",
     checkpoints_OL: ["Polska jest piękna", "Jedzenie jest smaczne", "Irlandia jest zielona"],
     checkpoints_HL: ["Polonia w Irlandii", "Różnice kulturowe", "Tęsknota za krajem"],
@@ -93,8 +93,8 @@ const DATA = [
   },
   { 
     title: "7. Plany na przyszłość", 
-    OL: "Co zamierzasz robić po maturze? Chcesz iść na studia?", 
-    HL: "Kim chciałbyś zostać w przyszłości? Czy studia są dzisiaj konieczne do sukcesu?",
+    General: "Co zamierza Pan/Pani robić po maturze? Czy chce Pan/Pani iść na studia?", 
+    Advanced: "Kim chciałby Pan / chciałaby Pani zostać w przyszłości? Czy studia są dzisiaj konieczne do sukcesu?",
     check_HL: "Studia (Uniwersytet), Praca, Podróże (Gap Year), Marzenia zawodowe.",
     checkpoints_OL: ["Chcę iść na studia", "Będę pracować", "Chcę zostać lekarzem (Narzędnik)"],
     checkpoints_HL: ["Rynek pracy", "Kariera zawodowa", "Niezależność finansowa"],
@@ -102,8 +102,8 @@ const DATA = [
   },
   { 
     title: "8. Praca (Work)", 
-    OL: "Masz pracę dorywczą? Co robisz?", 
-    HL: "Czy łączenie nauki z pracą to dobry pomysł? Jakie są zalety i wady?",
+    General: "Czy ma Pan/Pani pracę dorywczą? Co Pan/Pani robi?", 
+    Advanced: "Czy łączenie nauki z pracą to dobry pomysł? Jakie są zalety i wady?",
     check_HL: "Rodzaj pracy (Pracuję w...), Zarobki, Doświadczenie, Wpływ na naukę.",
     checkpoints_OL: ["Pracuję w weekendy", "Jestem kelnerem", "Zarabiam pieniądze"],
     checkpoints_HL: ["Niezależność finansowa", "Zdobywanie doświadczenia", "Brak czasu na naukę"],
@@ -111,8 +111,8 @@ const DATA = [
   },
   { 
     title: "9. Podróże (Travel)", 
-    OL: "Gdzie byłeś na wakacjach w zeszłym roku? Lubisz podróżować?", 
-    HL: "Dlaczego ludzie podróżują? Opowiedz o swojej podróży marzeń.",
+    General: "Gdzie był Pan / była Pani na wakacjach w zeszłym roku? Czy lubi Pan/Pani podróżować?", 
+    Advanced: "Dlaczego ludzie podróżują? Proszę opowiedzieć o swojej podróży marzeń.",
     check_HL: "Opis wakacji (Byłem w...), Sposób podróżowania, Znaczenie podróży (Poznawanie kultur).",
     checkpoints_OL: ["Byłem we Włoszech", "Jechałem pociągiem", "Było słonecznie"],
     checkpoints_HL: ["Turystyka masowa", "Poznawanie nowych kultur", "Bariera językowa"],
@@ -120,8 +120,8 @@ const DATA = [
   },
   { 
     title: "10. Problemy społeczne", 
-    OL: "Czy życie młodych ludzi jest trudne?", 
-    HL: "Jakie są największe problemy młodzieży w dzisiejszych czasach? (np. stres, uzależnienia).",
+    General: "Czy życie młodych ludzi jest trudne?", 
+    Advanced: "Jakie są największe problemy młodzieży w dzisiejszych czasach? (np. stres, uzależnienia).",
     check_HL: "Problemy (Alkohol/Narkotyki), Presja rówieśników, Media społecznościowe, Rozwiązania.",
     checkpoints_OL: ["Jest dużo stresu", "Problemy z alkoholem", "Brak pieniędzy"],
     checkpoints_HL: ["Uzależnienia", "Presja rówieśnicza", "Zdrowie psychiczne"],
@@ -129,8 +129,8 @@ const DATA = [
   },
   { 
     title: "11. Nowoczesne technologie", 
-    OL: "Masz telefon? Jak często korzystasz z internetu?", 
-    HL: "Czy technologia ułatwia czy utrudnia życie? Opowiedz o zagrożeniach w sieci.",
+    General: "Czy ma Pan/Pani telefon? Jak często korzysta Pan/Pani z internetu?", 
+    Advanced: "Czy technologia ułatwia czy utrudnia życie? Proszę opowiedzieć o zagrożeniach w sieci.",
     check_HL: "Zalety (Komunikacja), Wady (Uzależnienie/Cyberprzemoc), Rola AI, Przyszłość.",
     checkpoints_OL: ["Używam Instagrama", "Gram w gry", "Internet jest przydatny"],
     checkpoints_HL: ["Cyberprzemoc (Cyberbullying)", "Media społecznościowe", "Fake news"],
@@ -138,8 +138,8 @@ const DATA = [
   },
   { 
     title: "12. Portfolio / Teksty", 
-    OL: "Jaki tekst omawiałeś w szkole? O czym on jest?", 
-    HL: "Wybierz jeden tekst ze swojego Portfolio. Omów głównego bohatera i przesłanie utworu.",
+    General: "Jaki tekst omawiał Pan / omawiała Pani w szkole? O czym on jest?", 
+    Advanced: "Proszę wybrać jeden tekst ze swojego Portfolio. Proszę omówić głównego bohatera i przesłanie utworu.",
     check_HL: "Tytuł/Autor, Streszczenie (O czym?), Bohaterowie, Tematyka (Miłość/Wojna/Emigracja).",
     checkpoints_OL: ["Przeczytałem książkę...", "Główny bohater to...", "Podobało mi się, bo..."],
     checkpoints_HL: ["Analiza postaci", "Motyw emigracji", "Przesłanie autora"],
@@ -147,8 +147,8 @@ const DATA = [
   },
   { 
     title: "13. Święta i Tradycje", 
-    OL: "Jak obchodzisz Boże Narodzenie? Co jesz w Wigilię?", 
-    HL: "Porównaj tradycje polskie i irlandzkie. Czy młodzi ludzie wciąż kultywują tradycje?",
+    General: "Jak obchodzi Pan/Pani Boże Narodzenie? Co je Pan/Pani w Wigilię?", 
+    Advanced: "Proszę porównać tradycje polskie i irlandzkie. Czy młodzi ludzie wciąż kultywują tradycje?",
     check_HL: "Opis świąt (Wigilia/Wielkanoc), Potrawy (Pierogi/Opłatek), Zwyczaje, Zmiany w tradycji.",
     checkpoints_OL: ["Dzielimy się opłatkiem", "Jemy karpia", "Dostaję prezenty"],
     checkpoints_HL: ["Zanikanie tradycji", "Święta komercyjne", "Rodzinna atmosfera"],
@@ -156,8 +156,8 @@ const DATA = [
   },
   { 
     title: "14. Zdrowy styl życia", 
-    OL: "Czy zdrowo się odżywiasz? Lubisz owoce i warzywa?", 
-    HL: "Dlaczego otyłość jest problemem? Co robisz, żeby dbać o zdrowie?",
+    General: "Czy zdrowo się Pan/Pani odżywia? Czy lubi Pan/Pani owoce i warzywa?", 
+    Advanced: "Dlaczego otyłość jest problemem? Co robi Pan/Pani, żeby dbać o zdrowie?",
     check_HL: "Dieta, Sport, Fast food, Konsekwencje złego odżywiania, Rady.",
     checkpoints_OL: ["Jem dużo warzyw", "Piję wodę", "Nie palę papierosów"],
     checkpoints_HL: ["Zbilansowana dieta", "Choroby cywilizacyjne", "Aktywność fizyczna"],
@@ -165,8 +165,8 @@ const DATA = [
   },
   { 
     title: "15. Autorytet / Idol", 
-    OL: "Kto jest twoim idolem? Dlaczego go lubisz?", 
-    HL: "Kto jest autorytetem dla młodych ludzi? Czy celebryci to dobre wzorce do naśladowania?",
+    General: "Kto jest Pana/Pani idolem? Dlaczego go Pan/Pani lubi?", 
+    Advanced: "Kto jest autorytetem dla młodych ludzi? Czy celebryci to dobre wzorce do naśladowania?",
     check_HL: "Osoba (Papież/Piłkarz/Rodzic), Cechy, Wpływ na ludzi, Różnica Idol vs Autorytet.",
     checkpoints_OL: ["Moim idolem jest...", "On jest utalentowany", "Pomaga ludziom"],
     checkpoints_HL: ["Wzór do naśladowania", "Wpływ influencerów", "Prawdziwe wartości"],
@@ -174,8 +174,8 @@ const DATA = [
   }
 ];
 
-const PAST_Q = ["Co robiłeś wczoraj?", "Gdzie byłeś w zeszłe wakacje?", "Jak spędziłeś ostatni weekend?"];
-const FUT_Q = ["Co będziesz robić jutro?", "Gdzie pojedziesz w przyszłym roku?", "Kim chcesz zostać w przyszłości?"];
+const PAST_Q = ["Co robił Pan / robiła Pani wczoraj?", "Gdzie był Pan / była Pani w zeszłe wakacje?", "Jak spędził Pan / spędziła Pani ostatni weekend?"];
+const FUT_Q = ["Co będzie Pan/Pani robić jutro?", "Gdzie pojedzie Pan/Pani w przyszłym roku?", "Kim chce Pan/Pani zostać w przyszłości?"];
 
 // ===========================================
 // LÓGICA DE CONTROL (NIVEL Y MODO)
@@ -397,7 +397,7 @@ async function analyze() {
       console.error(e); 
       alert("⚠️ Błąd: " + e.message); 
   } finally { 
-      b.disabled = false; b.innerText = "✨ Sprawdź"; 
+      b.disabled = false; b.innerText = "✨ Proszę sprawdzić"; 
   }
 }
 

@@ -41,6 +41,17 @@
     .card h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
     .card p { margin: 0; color: #64748b; font-size: 0.9rem; }
     .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 15px; }
+
+    .latest-news { max-width: 1000px; margin: 28px auto 0; padding: 18px 20px; text-align: left; background: #fafbff; border: 1px solid #e2e8f0; border-radius: 16px; }
+    .latest-news-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+    .latest-news h2 { margin: 0; color: #4f46e5; font-size: 1.15rem; }
+    .latest-news-kicker { color: #7c3aed; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; }
+    .latest-news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .latest-news-item { padding: 11px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 11px; }
+    .latest-news-item strong { color: #334155; font-size: 0.9rem; }
+    .latest-news-item p { margin: 4px 0 0; color: #64748b; font-size: 0.82rem; line-height: 1.45; }
+    .latest-news-item.highlight { border-color: #c7d2fe; background: #f8faff; }
+    .latest-news-note { margin: 12px 0 0; color: #64748b; font-size: 0.8rem; line-height: 1.5; }
     
     .es:hover { border-top: 5px solid var(--orange); }
     .fr:hover { border-top: 5px solid var(--blue); }
@@ -49,6 +60,12 @@
     .de:hover { border-top: 5px solid #FFCE00; } 
     .pl:hover { border-top: 5px solid #dc2626; } 
     .eal:hover { border-top: 5px solid #0d9488; }
+
+    @media (max-width: 650px) {
+      .latest-news-grid { grid-template-columns: 1fr; }
+      .latest-news-heading { display: block; }
+      .latest-news-kicker { display: block; margin-bottom: 4px; }
+    }
 
     /* ESTILOS DEL FOOTER Y SOPORTE */
     .support-box {
@@ -85,8 +102,8 @@
       <a href="es/" class="card es">
         <div class="flag">🇪🇸</div>
         <h2>Spanish</h2>
-        <p>Conversation topics & Roleplays.</p>
-        <span class="badge" style="background:#ffedd5; color:#c2410c;">Ready</span>
+        <p>Full Mock Exam, Study Mode & Roleplays.</p>
+        <span class="badge" style="background:#ede9fe; color:#6d28d9;">Enhanced</span>
       </a>
 
       <a href="fr/" class="card fr">
@@ -131,6 +148,28 @@
         <span class="badge" style="background:#ccfbf1; color:#0f766e;">New!</span>
       </a>
     </div>
+
+    <section class="latest-news" aria-labelledby="latestNewsTitle">
+      <div class="latest-news-heading">
+        <span class="latest-news-kicker">LCORALS NEWS</span>
+        <h2 id="latestNewsTitle">📌 Latest updates</h2>
+      </div>
+      <div class="latest-news-grid">
+        <article class="latest-news-item highlight">
+          <strong>Spanish: enhanced version</strong>
+          <p>Full Mock Exam, improved Higher Level feedback, upgraded Study Mode and extra Opinion Training.</p>
+        </article>
+        <article class="latest-news-item">
+          <strong>Mock Exam improvements</strong>
+          <p>Six conversation questions, three role-play choices and a final /70 + /30 result.</p>
+        </article>
+        <article class="latest-news-item">
+          <strong>Independent project</strong>
+          <p>LCorals is teacher-made and has no sponsor or external funding. Support helps cover its running costs.</p>
+        </article>
+      </div>
+      <p class="latest-news-note">More language modules are being developed and updated progressively.</p>
+    </section>
   </div>
 
   <div style="margin: 50px auto 20px auto; text-align: center;">

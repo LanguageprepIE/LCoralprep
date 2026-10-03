@@ -666,6 +666,16 @@ async function analyze() {
   const levelExpectation = currentLevel === 'HL'
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
       : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
+  const scoreCalibration = currentLevel === 'HL' ? `
+    HL SCORE CALIBRATION (use these Leaving Cert learner benchmarks, not native-speaker expectations):
+    - Keep the numerical score consistent with the written feedback. If the response is described as very good, communicates substantial relevant information and has no significant language errors, do not award a mark in the mid-60s merely because it could include more examples, connectors or vocabulary variety.
+    - 90-100: exceptional senior-cycle response: sustained, highly controlled, richly developed and consistently accurate. It does not need to sound bilingual.
+    - 82-89: excellent response: autonomous, detailed and varied, with strong control; minor limitations do not impede it.
+    - 75-81: very good response: clearly relevant and developed, gives substantial information and some reasons, opinions or examples, uses useful vocabulary, and has few or no significant errors. Some repetition, ordinary vocabulary or missed opportunities for further detail are compatible with this band.
+    - 65-74: competent response but with noticeable limitations in development, range, relevance or accuracy. Communication remains successful.
+    - 50-64: adequate response relying mainly on simple or brief language, with limited development or recurring inaccuracies.
+    - Below 50: substantial difficulty communicating a relevant, comprehensible response.
+    - A response should normally receive at least 75 when it answers the topic directly, provides several relevant details, sustains communication and contains no significant language errors, even if wider linking, more varied vocabulary or an additional example would improve it.` : '';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -687,6 +697,7 @@ async function analyze() {
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - Avoid demanding memorised idioms or unnatural language.
+    ${scoreCalibration}
     - Return valid JSON only, with no markdown.
 
     OUTPUT SCHEMA:
@@ -715,7 +726,8 @@ async function analyze() {
     const s = document.getElementById('scoreDisplay');
     const safeScore = Math.max(0, Math.min(100, Number(j.score) || 0));
     s.innerText = optionalOpinion ? `Optional practice: ${safeScore}%` : `Score: ${safeScore}%`;
-    s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    const positiveScoreThreshold = currentLevel === 'HL' ? 75 : 85;
+    s.style.color = safeScore >= positiveScoreThreshold ? "#166534" : (safeScore >= 50 ? "#ca8a04" : "#991b1b");
 
     document.getElementById('fbES').innerText = "🇪🇸 " + j.feedback_es;
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;

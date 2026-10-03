@@ -273,6 +273,26 @@ const TOPIC_GUIDES = [
   }
 ];
 
+// English support is shown alongside the Spanish idea, while the actual
+// prompt and Gemini evaluation remain grounded in the target language.
+const TOPIC_GUIDE_TRANSLATIONS = [
+  { ideas: ["personal details and birthday", "physical appearance", "personality", "likes and interests"], hlIdeas: ["strengths and weaknesses", "an example showing what you are like", "ambitions or changes for the future"] },
+  { ideas: ["who is in your family", "ages or jobs", "personality and appearance", "how you get on"], hlIdeas: ["house rules and responsibilities", "who you get on best with and why", "a family experience or activity"] },
+  { ideas: ["your best friend", "what he or she is like", "how you met", "what you do together"], hlIdeas: ["shared interests and differences", "what you value in a friendship", "a shared experience"] },
+  { ideas: ["type of home and location", "rooms", "your bedroom", "your favourite place"], hlIdeas: ["advantages and disadvantages", "chores you do", "what your ideal home would be like"] },
+  { ideas: ["location and atmosphere", "shops and facilities", "transport", "activities for young people"], hlIdeas: ["advantages and problems", "something you would improve", "how it has changed or could change"] },
+  { ideas: ["location and size", "places of interest", "transport", "your favourite place"], hlIdeas: ["urban and rural life", "advantages and disadvantages", "tourism, traffic or pollution"] },
+  { ideas: ["location and size", "facilities", "uniform", "teachers and activities"], hlIdeas: ["rules and relationships", "advantages and things you would improve", "a school experience"] },
+  { ideas: ["subjects you study", "your favourite and why", "the most difficult subject", "homework and results"], hlIdeas: ["exam pressure", "the usefulness of subjects", "how you study and what helps you"] },
+  { ideas: ["what time you get up", "morning and school day", "after school", "evening and weekend"], hlIdeas: ["balance between study and free time", "stress or lack of time", "how you would improve your routine"] },
+  { ideas: ["favourite activities", "how often and where", "who you do them with", "music, sport or technology"], hlIdeas: ["physical or mental benefits", "how you started", "how your interests have changed"] },
+  { ideas: ["chores you do", "how often", "the chore you prefer", "the chore you like least"], hlIdeas: ["whether the division is fair", "pocket money", "responsibility and equality"] },
+  { ideas: ["destination and company", "transport and accommodation", "activities", "how you enjoyed it"], hlIdeas: ["comparison between destinations", "Spain or Ireland as a destination", "plans for future holidays"] },
+  { ideas: ["next year", "studies or training", "the job you would like", "places where you would like to live or travel"], hlIdeas: ["reasons for choosing a course", "difficulties or requirements", "what you will miss about school"] },
+  { ideas: ["what you did each day", "who you were with", "where you went", "how you enjoyed it"], hlIdeas: ["description and context", "a special moment or unexpected event", "a final opinion or reflection"] },
+  { ideas: ["plans for each day", "people and places", "study or work", "leisure and rest"], hlIdeas: ["alternative plans", "how the weather will affect your plans", "why you are looking forward to them"] }
+];
+
 const PAST_Q = [
   { prompt: "Habla de lo que hiciste el fin de semana pasado.", guidance: ["actividades", "personas y lugares", "cómo lo pasaste", "algún detalle o imprevisto"] },
   { prompt: "Habla de tus últimas vacaciones.", guidance: ["destino y compañía", "transporte o alojamiento", "actividades", "opinión personal"] },
@@ -298,6 +318,17 @@ function getExamPrompt(topic) {
 function getExamGuidance(topic) {
     const guide = getTopicGuide(topic);
     return currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : [];
+}
+
+function getExamGuidanceBilingual(topic) {
+    const index = DATA.indexOf(topic);
+    const guide = getTopicGuide(topic);
+    const translations = TOPIC_GUIDE_TRANSLATIONS[index];
+    if (!translations) return getExamGuidance(topic).map(es => ({ es, en: '' }));
+    const pairs = currentLevel === 'HL'
+        ? guide.ideas.map((es, i) => ({ es, en: translations.ideas[i] || '' })).concat(guide.hlIdeas.map((es, i) => ({ es, en: translations.hlIdeas[i] || '' })))
+        : [];
+    return pairs;
 }
 
 // ===========================================
@@ -415,7 +446,7 @@ function showMockQuestion() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
     document.getElementById('userInput').value = "";
-    showExamGuidance(item.guidance);
+    showExamGuidance(item.guidance, item.topic ? getExamGuidanceBilingual(item.topic) : null);
 }
 
 function nextMockQuestion() { mockIndex++; showMockQuestion(); }
@@ -428,18 +459,23 @@ function updateQuestion() {
     document.getElementById('qDisplay').innerText = getExamPrompt(currentTopic);
     document.getElementById('userInput').value = "";
 
-    showExamGuidance(getExamGuidance(currentTopic));
+    showExamGuidance(getExamGuidance(currentTopic), getExamGuidanceBilingual(currentTopic));
 }
 
-function showExamGuidance(points) {
+function showExamGuidance(points, bilingualPoints = null) {
     const hintBox = document.getElementById('hintBox');
     const btnHint = document.getElementById('btnHint');
     if (!hintBox || !btnHint) return;
     hintBox.style.display = 'none';
     btnHint.style.display = points && points.length ? 'inline-block' : 'none';
-    hintBox.innerHTML = points && points.length
-        ? `<strong>💡 Ideas, no una lista obligatoria:</strong><p>Puedes hablar de ${points.map(escapeHTML).join(', ')}. Elige las ideas que te permitan desarrollar mejor tu respuesta.</p>`
-        : '';
+    if (!points || !points.length) {
+        hintBox.innerHTML = '';
+        return;
+    }
+    const displayPoints = bilingualPoints && bilingualPoints.length
+        ? bilingualPoints
+        : points.map(es => ({ es, en: '' }));
+    hintBox.innerHTML = `<strong>💡 Ideas, no una lista obligatoria:</strong><p>Elige las ideas que te permitan desarrollar mejor tu respuesta:</p><ul class="bilingual-guidance">${displayPoints.map(point => `<li><span class="target-language">${escapeHTML(point.es)}</span>${point.en ? `<span class="english-support">${escapeHTML(point.en)}</span>` : ''}</li>`).join('')}</ul>`;
 }
 
 function resetApp() { 
@@ -656,7 +692,7 @@ function renderCheckpoints() {
 
     const list = document.getElementById('checkpointsList');
     
-    const createSection = (title, items, cssClass, kind = 'language') => {
+    const createSection = (title, items, cssClass, kind = 'language', translations = null) => {
         if(!items || items.length === 0) return;
         const h = document.createElement('h4');
         h.innerText = title; 
@@ -669,10 +705,11 @@ function renderCheckpoints() {
         const grid = document.createElement('div'); 
         grid.className = 'checklist-grid';
         
-        items.forEach(point => {
+        items.forEach((point, index) => {
             const btn = document.createElement('button'); 
             btn.className = `check-btn ${cssClass}`; 
-            btn.innerHTML = `${kind === 'question' ? '❓' : (kind === 'content' ? '💡' : '🗣️')} ${escapeHTML(point)}`;
+            const translation = translations && translations[index];
+            btn.innerHTML = `${kind === 'question' ? '❓' : (kind === 'content' ? '💡' : '🗣️')} <span>${escapeHTML(point)}</span>${translation ? `<small class="english-support">${escapeHTML(translation)}</small>` : ''}`;
             btn.onclick = () => askAIConcept(point, kind);
             grid.appendChild(btn);
         });
@@ -680,7 +717,9 @@ function renderCheckpoints() {
     };
 
     if (currentLevel === 'HL') {
-        createSection("💡 Ideas you could include", contentIdeas, "btn-content", "content");
+        const guideTranslations = TOPIC_GUIDE_TRANSLATIONS[DATA.indexOf(currentTopic)];
+        const contentTranslations = guideTranslations ? [...guideTranslations.ideas, ...guideTranslations.hlIdeas] : null;
+        createSection("💡 Ideas you could include", contentIdeas, "btn-content", "content", contentTranslations);
         createSection("❓ Questions to prepare", guide.questions, "btn-question", "question");
     } else {
         createSection("❓ Questions to prepare", guide.questions.slice(0, 3), "btn-question", "question");

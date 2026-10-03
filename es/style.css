@@ -133,6 +133,30 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     font-size: 0.92rem;
 }
 
+.bilingual-guidance {
+    margin: 8px 0 0;
+    padding-left: 22px;
+}
+
+.bilingual-guidance li {
+    margin: 8px 0;
+    line-height: 1.35;
+}
+
+.target-language {
+    display: block;
+    font-weight: 700;
+}
+
+.english-support {
+    display: block;
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 0.86em;
+    font-style: italic;
+    font-weight: 400;
+}
+
 .checklist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -149,6 +173,11 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     cursor: pointer;
     font-size: 0.9rem;
     transition: 0.2s;
+    text-align: left;
+}
+
+.check-btn .english-support {
+    margin-left: 24px;
     text-align: left;
 }
 

@@ -185,7 +185,7 @@ const DATA = [
     checkpoints_TOP: ["✨ Idiom: Darse un capricho", "✨ Grammar: Tengo ganas de...", "✨ Grammar: Si hace buen tiempo..."]
   },
   {
-    title: "16. IA y educación",
+    title: "IA y educación",
     opinion: true,
     OL: "¿Usas la inteligencia artificial para estudiar? ¿Te parece útil?",
     HL: "¿Qué opinas del uso de la inteligencia artificial en la educación?",
@@ -194,7 +194,7 @@ const DATA = [
     checkpoints_TOP: ["✨ Concession: Aunque puede ser útil...", "✨ Structure: No se trata de..., sino de...", "✨ Vocab: Pensamiento crítico"]
   },
   {
-    title: "17. Tecnología en clase",
+    title: "Tecnología en clase",
     opinion: true,
     OL: "¿Usáis tecnología en clase? ¿Te ayuda a aprender?",
     HL: "¿Crees que la tecnología mejora el aprendizaje en el aula?",
@@ -203,7 +203,7 @@ const DATA = [
     checkpoints_TOP: ["✨ Structure: Siempre que se use bien...", "✨ Contrast: Por un lado... por otro...", "✨ Vocab: Brecha digital"]
   },
   {
-    title: "18. Redes sociales",
+    title: "Redes sociales",
     opinion: true,
     OL: "¿Usas las redes sociales? ¿Cuáles son sus ventajas y peligros?",
     HL: "¿Qué influencia tienen las redes sociales en la vida de los jóvenes?",
@@ -212,7 +212,7 @@ const DATA = [
     checkpoints_TOP: ["✨ Structure: Es innegable que...", "✨ Hypothesis: Si pasáramos menos tiempo...", "✨ Vocab: Autoestima y desinformación"]
   },
   {
-    title: "19. Contaminación",
+    title: "Contaminación",
     opinion: true,
     OL: "¿Hay contaminación donde vives? ¿Qué podemos hacer?",
     HL: "¿Qué podemos hacer para reducir la contaminación?",
@@ -221,7 +221,7 @@ const DATA = [
     checkpoints_TOP: ["✨ Structure: Hace falta que...", "✨ Proposal: Se debería fomentar...", "✨ Vocab: Emisiones y calidad del aire"]
   },
   {
-    title: "20. Reciclaje",
+    title: "Reciclaje",
     opinion: true,
     OL: "¿Reciclas en casa? ¿Por qué es importante?",
     HL: "¿Es suficiente reciclar para proteger el medioambiente?",
@@ -491,14 +491,23 @@ function setMode(mode) {
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
     g.innerHTML = "";
-    let opinionHeaderAdded = false;
+    let opinionUnitGrid = null;
     DATA.forEach((item) => { 
-        if (item.opinion && !opinionHeaderAdded) {
-            const header = document.createElement('div');
-            header.className = 'opinion-unit-intro';
-            header.innerHTML = `<span>⭐ Extra Opinion Training</span><strong>Entrenamiento extra de opinión</strong><p>Estas preguntas no aparecen en todos los exámenes, pero son una buena práctica para cualquier alumno: da tu opinión, justifica tus ideas y añade un ejemplo.</p><small>These questions do not appear in every oral, but they are useful practice for everyone.</small>`;
-            g.appendChild(header);
-            opinionHeaderAdded = true;
+        if (item.opinion && !opinionUnitGrid) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'opinion-unit-wrap';
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'opinion-unit-btn';
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.innerHTML = `<strong>⭐ Extra Opinion Training</strong><small>Entrenamiento extra de opinión · útil para todos</small>`;
+            toggle.onclick = () => toggleOpinionUnit(toggle);
+            wrapper.appendChild(toggle);
+            opinionUnitGrid = document.createElement('div');
+            opinionUnitGrid.className = 'opinion-subtopic-grid';
+            opinionUnitGrid.style.display = 'none';
+            wrapper.appendChild(opinionUnitGrid);
+            g.appendChild(wrapper);
         }
         const b = document.createElement('button'); 
         b.className = item.opinion ? 'topic-btn opinion-topic-btn' : 'topic-btn';
@@ -519,8 +528,15 @@ function initConv() {
                 updateQuestion(); 
             }
         }; 
-        g.appendChild(b); 
+        (item.opinion ? opinionUnitGrid : g).appendChild(b);
     }); 
+}
+
+function toggleOpinionUnit(button) {
+    const subtopics = button.parentElement.querySelector('.opinion-subtopic-grid');
+    const isOpen = subtopics.style.display !== 'none';
+    subtopics.style.display = isOpen ? 'none' : 'grid';
+    button.setAttribute('aria-expanded', String(!isOpen));
 }
 
 function toggleHint() {

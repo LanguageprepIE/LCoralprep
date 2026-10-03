@@ -506,7 +506,7 @@ async function analyze() {
   const questionContext = mockItem ? mockItem.prompt : getExamPrompt(currentTopic);
   const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
   const levelExpectation = currentLevel === 'HL'
-      ? 'Expect a developed response with reasons, examples, a useful range of vocabulary, connectors and more than one time frame where natural.'
+      ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
       : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
 
   const prompt = `
@@ -522,6 +522,7 @@ async function analyze() {
     - POSSIBLE CONTENT is guidance, not a compulsory checklist. Do not deduct marks simply because an item is omitted.
     - Apply the LEVEL EXPECTATION above. Do not judge an OL response by HL expectations.
     - At HL, reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
+    - A high HL score does not require idioms, subjunctive, conditional forms, multiple tenses in every answer or native-like spontaneity. Advanced structures are optional evidence of extra control, not prerequisites for an H1-level performance.
     - At OL, reward clear communication and relevant basic information; suggestions must be simple and achievable.
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
@@ -611,7 +612,7 @@ async function askAIConcept(concept, kind = 'language') {
         ROLE: Supportive Leaving Certificate Spanish oral teacher in Ireland.
         TOPIC: ${JSON.stringify(currentTopic ? currentTopic.title : 'General')}
         LEVEL: ${currentLevel}
-        LEVEL EXPECTATION: ${currentLevel === 'HL' ? 'Help the learner develop and extend a Higher Level response.' : 'Keep support simple, practical and suitable for Ordinary Level.'}
+        LEVEL EXPECTATION: ${currentLevel === 'HL' ? 'Help the learner develop and extend a Higher Level response. Advanced language is optional enrichment, not a requirement for H1.' : 'Keep support simple, practical and suitable for Ordinary Level.'}
         STUDY ITEM TYPE: ${kind}
         STUDY ITEM: ${JSON.stringify(concept)}
 
@@ -728,7 +729,7 @@ function renderCheckpoints() {
     if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
         createSection("🔧 Develop your HL answer", currentTopic.checkpoints_HL, "btn-hl");
         if(currentTopic.checkpoints_TOP) {
-            createSection("🚀 Ambitious but natural Spanish", currentTopic.checkpoints_TOP, "btn-top");
+            createSection("🚀 Optional stretch (not required for H1)", currentTopic.checkpoints_TOP, "btn-top");
         }
     }
 }

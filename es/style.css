@@ -126,6 +126,13 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     margin-bottom: 20px;
 }
 
+.study-intro {
+    margin: 4px 0 14px;
+    color: #3f6212;
+    line-height: 1.5;
+    font-size: 0.92rem;
+}
+
 .checklist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -147,6 +154,22 @@ textarea:focus { border-color: var(--secondary); outline: none; }
 
 .check-btn:hover { background: #dcfce7; transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
+.btn-content {
+    border-color: #0284c7;
+    color: #075985;
+    background: #f0f9ff;
+}
+
+.btn-content:hover { background: #e0f2fe; }
+
+.btn-question {
+    border-color: #7c3aed;
+    color: #6d28d9;
+    background: #faf5ff;
+}
+
+.btn-question:hover { background: #f3e8ff; }
+
 .ai-box {
     margin-top: 15px;
     background: white;
@@ -157,6 +180,29 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     font-size: 0.95rem;
     animation: fadeIn 0.3s ease;
 }
+
+.ai-study-part { margin-top: 12px; }
+.ai-study-part ol, .ai-study-part ul { margin: 7px 0 0; padding-left: 22px; }
+.ai-study-part li { margin-bottom: 6px; line-height: 1.45; }
+.study-challenge {
+    margin-top: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.feedback-section-card {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 9px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+.feedback-section-card ul { margin: 7px 0 0; padding-left: 22px; }
+.feedback-section-card p { margin: 7px 0 0; }
+.feedback-strength { background: #f0fdf4; border-color: #bbf7d0; }
+.feedback-next { background: #fff7ed; border-color: #fed7aa; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }

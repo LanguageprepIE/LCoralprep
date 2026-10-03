@@ -178,8 +178,125 @@ const DATA = [
   }
 ];
 
-const PAST_Q = ["¿Qué hiciste el fin de semana pasado?", "¿Adónde fuiste el verano pasado?", "¿Qué hiciste ayer?"];
-const FUT_Q = ["¿Qué harás mañana?", "¿Qué planes tienes para el verano?", "¿Qué harás tras el colegio?"];
+// The conversation manual is used as a coverage map, not as a script students
+// must reproduce. These ideas guide preparation and supportive AI feedback.
+const TOPIC_GUIDES = [
+  {
+    prompt: { OL: "Habla de ti.", HL: "Habla de ti con detalle." },
+    ideas: ["datos personales y cumpleaños", "aspecto físico", "personalidad", "gustos e intereses"],
+    hlIdeas: ["cualidades y defectos", "un ejemplo que demuestre cómo eres", "ambiciones o cambios para el futuro"],
+    questions: ["¿Cómo te describirías?", "¿Cómo celebras normalmente tu cumpleaños?", "¿Qué es lo que más te gusta de tu personalidad?", "¿Qué te gustaría cambiar de ti?"]
+  },
+  {
+    prompt: { OL: "Habla de tu familia.", HL: "Habla de tu familia y de vuestra relación." },
+    ideas: ["quiénes forman tu familia", "edades o profesiones", "personalidad y aspecto", "cómo os lleváis"],
+    hlIdeas: ["normas y responsabilidades en casa", "con quién te llevas mejor y por qué", "una experiencia o actividad familiar"],
+    questions: ["¿Cuántas personas hay en tu familia?", "¿Cómo son tus familiares?", "¿Con quién te llevas mejor?", "¿Qué soléis hacer juntos?"]
+  },
+  {
+    prompt: { OL: "Habla de tus amigos.", HL: "Habla de tus amigos y de lo que significa la amistad para ti." },
+    ideas: ["tu mejor amigo o amiga", "cómo es", "cómo os conocisteis", "qué hacéis juntos"],
+    hlIdeas: ["intereses en común y diferencias", "qué valoras en una amistad", "una experiencia compartida"],
+    questions: ["¿Cómo es tu mejor amigo o amiga?", "¿Desde cuándo os conocéis?", "¿Qué hacéis juntos?", "¿Qué cualidades buscas en un amigo?"]
+  },
+  {
+    prompt: { OL: "Habla de tu casa.", HL: "Habla de tu casa y de lo que representa para ti." },
+    ideas: ["tipo de vivienda y ubicación", "habitaciones", "tu dormitorio", "tu lugar favorito"],
+    hlIdeas: ["ventajas y desventajas", "tareas que haces", "cómo sería tu casa ideal"],
+    questions: ["¿Dónde vives y qué tipo de vivienda es?", "¿Cómo es tu dormitorio?", "¿Dónde pasas más tiempo?", "¿Qué cambiarías de tu casa?"]
+  },
+  {
+    prompt: { OL: "Habla de tu barrio.", HL: "Habla de tu barrio y valora cómo es vivir allí." },
+    ideas: ["ubicación y ambiente", "tiendas e instalaciones", "transporte", "actividades para jóvenes"],
+    hlIdeas: ["ventajas y problemas", "algo que mejorarías", "cómo ha cambiado o podría cambiar"],
+    questions: ["¿Cómo es tu barrio?", "¿Qué instalaciones hay?", "¿Está bien comunicado?", "¿Qué mejorarías para los jóvenes?"]
+  },
+  {
+    prompt: { OL: "Habla de tu pueblo o ciudad.", HL: "Habla de tu pueblo o ciudad y compáralo con otros lugares." },
+    ideas: ["ubicación y tamaño", "lugares de interés", "transporte", "tu lugar favorito"],
+    hlIdeas: ["vida urbana y rural", "ventajas y desventajas", "turismo, tráfico o contaminación"],
+    questions: ["¿Dónde está y cómo es?", "¿Qué puede visitar un turista?", "¿Qué es lo mejor de vivir allí?", "¿Preferirías vivir en otro lugar?"]
+  },
+  {
+    prompt: { OL: "Habla de tu instituto.", HL: "Habla de tu instituto y da tu opinión sobre la vida escolar." },
+    ideas: ["ubicación y tamaño", "instalaciones", "uniforme", "profesores y actividades"],
+    hlIdeas: ["normas y convivencia", "ventajas y aspectos que mejorarías", "una experiencia escolar"],
+    questions: ["¿Cómo es tu instituto?", "¿Qué instalaciones tiene?", "¿Qué opinas del uniforme?", "¿Qué cambiarías si fueras director o directora?"]
+  },
+  {
+    prompt: { OL: "Habla de las asignaturas que estudias.", HL: "Habla de tus asignaturas y de tu experiencia académica." },
+    ideas: ["asignaturas que estudias", "tu favorita y por qué", "la más difícil", "deberes y resultados"],
+    hlIdeas: ["presión de los exámenes", "utilidad de las asignaturas", "cómo estudias y qué te ayuda"],
+    questions: ["¿Cuál es tu asignatura favorita?", "¿Qué asignatura te resulta difícil?", "¿Cómo estudias para los exámenes?", "¿Te prepara bien el colegio para el futuro?"]
+  },
+  {
+    prompt: { OL: "Habla de tu rutina diaria.", HL: "Habla de tu rutina y de cómo organizas tu tiempo." },
+    ideas: ["hora de levantarte", "mañana y jornada escolar", "después del colegio", "noche y fin de semana"],
+    hlIdeas: ["equilibrio entre estudio y ocio", "estrés o falta de tiempo", "cómo mejorarías tu rutina"],
+    questions: ["¿Qué haces por la mañana?", "¿Cómo es un día normal de colegio?", "¿Qué haces por la tarde?", "¿Cambia tu rutina el fin de semana?"]
+  },
+  {
+    prompt: { OL: "Habla de tus pasatiempos.", HL: "Habla de tus aficiones y de su importancia en tu vida." },
+    ideas: ["actividades favoritas", "frecuencia y lugar", "con quién las haces", "música, deporte o tecnología"],
+    hlIdeas: ["beneficios físicos o mentales", "cómo empezaste", "cómo han cambiado tus aficiones"],
+    questions: ["¿Qué haces en tu tiempo libre?", "¿Practicas algún deporte?", "¿Qué música te gusta?", "¿Por qué es importante tener aficiones?"]
+  },
+  {
+    prompt: { OL: "Habla de cómo ayudas en casa.", HL: "Habla de las tareas domésticas y del reparto de responsabilidades en casa." },
+    ideas: ["tareas que haces", "frecuencia", "la tarea que prefieres", "la que menos te gusta"],
+    hlIdeas: ["si el reparto es justo", "paga semanal", "responsabilidad e igualdad"],
+    questions: ["¿Cómo ayudas en casa?", "¿Qué tarea no te gusta hacer?", "¿Quién hace la mayoría de las tareas?", "¿Crees que el reparto es justo?"]
+  },
+  {
+    prompt: { OL: "Habla de tus vacaciones.", HL: "Habla de tus vacaciones y de tus preferencias al viajar." },
+    ideas: ["destino y compañía", "transporte y alojamiento", "actividades", "cómo lo pasaste"],
+    hlIdeas: ["comparación entre destinos", "España o Irlanda como destino", "planes para próximas vacaciones"],
+    questions: ["¿Dónde pasaste tus últimas vacaciones?", "¿Qué hiciste allí?", "¿Has estado en España?", "¿Adónde te gustaría viajar?"]
+  },
+  {
+    prompt: { OL: "Habla de tus planes de futuro.", HL: "Habla de tus planes y ambiciones para el futuro." },
+    ideas: ["el próximo año", "estudios o formación", "trabajo que te gustaría", "lugares donde te gustaría vivir o viajar"],
+    hlIdeas: ["razones para elegir una carrera", "dificultades o requisitos", "qué echarás de menos del instituto"],
+    questions: ["¿Qué harás cuando termines el instituto?", "¿Qué te gustaría estudiar?", "¿A qué te gustaría dedicarte?", "¿Dónde te ves dentro de diez años?"]
+  },
+  {
+    prompt: { OL: "Habla del fin de semana pasado.", HL: "Cuenta con detalle lo que hiciste el fin de semana pasado." },
+    ideas: ["qué hiciste cada día", "con quién estuviste", "dónde fuiste", "cómo lo pasaste"],
+    hlIdeas: ["descripción y contexto", "un momento especial o imprevisto", "opinión o reflexión final"],
+    questions: ["¿Qué hiciste el viernes?", "¿Saliste con alguien?", "¿Ocurrió algo especial?", "¿Fue un buen fin de semana?"]
+  },
+  {
+    prompt: { OL: "Habla de tus planes para el próximo fin de semana.", HL: "Habla con detalle de tus planes para el próximo fin de semana." },
+    ideas: ["planes para cada día", "personas y lugares", "estudio o trabajo", "ocio y descanso"],
+    hlIdeas: ["planes alternativos", "cómo influirá el tiempo", "por qué te apetece hacerlos"],
+    questions: ["¿Qué vas a hacer el viernes?", "¿Vas a quedar con alguien?", "¿Tienes que estudiar o trabajar?", "¿Qué harás si hace mal tiempo?"]
+  }
+];
+
+const PAST_Q = [
+  { prompt: "Habla de lo que hiciste el fin de semana pasado.", guidance: ["actividades", "personas y lugares", "cómo lo pasaste", "algún detalle o imprevisto"] },
+  { prompt: "Habla de tus últimas vacaciones.", guidance: ["destino y compañía", "transporte o alojamiento", "actividades", "opinión personal"] },
+  { prompt: "Habla de lo que hiciste ayer.", guidance: ["rutina", "lugares y personas", "una actividad concreta", "cómo fue el día"] }
+];
+const FUT_Q = [
+  { prompt: "Habla de tus planes para mañana.", guidance: ["actividades", "horarios", "personas o lugares", "razones"] },
+  { prompt: "Habla de tus planes para el verano.", guidance: ["viajes o trabajo", "personas y lugares", "actividades", "expectativas"] },
+  { prompt: "Habla de lo que harás cuando termines el instituto.", guidance: ["estudios o trabajo", "razones", "objetivos", "planes a más largo plazo"] }
+];
+
+function getTopicGuide(topic) {
+    const index = DATA.indexOf(topic);
+    return TOPIC_GUIDES[index] || { prompt: { OL: topic.OL, HL: topic.HL }, ideas: [], hlIdeas: [], questions: [] };
+}
+
+function getExamPrompt(topic) {
+    return getTopicGuide(topic).prompt[currentLevel];
+}
+
+function getExamGuidance(topic) {
+    const guide = getTopicGuide(topic);
+    return currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : guide.ideas;
+}
 
 // ===========================================
 // LÓGICA DE CONTROL (NIVEL Y MODO)
@@ -279,25 +396,22 @@ function startMockExam() {
     
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
     mockQuestions = [
-        DATA[i[0]][currentLevel],
-        DATA[i[1]][currentLevel],
-        DATA[i[2]][currentLevel],
-        PAST_Q[Math.floor(Math.random()*3)] + " (PASADO)",
-        FUT_Q[Math.floor(Math.random()*3)] + " (FUTURO)"
+        { prompt: getExamPrompt(DATA[i[0]]), guidance: getExamGuidance(DATA[i[0]]), topic: DATA[i[0]] },
+        { prompt: getExamPrompt(DATA[i[1]]), guidance: getExamGuidance(DATA[i[1]]), topic: DATA[i[1]] },
+        { prompt: getExamPrompt(DATA[i[2]]), guidance: getExamGuidance(DATA[i[2]]), topic: DATA[i[2]] },
+        { ...PAST_Q[Math.floor(Math.random()*PAST_Q.length)], label: "PASADO" },
+        { ...FUT_Q[Math.floor(Math.random()*FUT_Q.length)], label: "FUTURO" }
     ];
     showMockQuestion();
 }
 
 function showMockQuestion() {
+    const item = mockQuestions[mockIndex];
     document.getElementById('exerciseArea').style.display = 'block'; 
     document.getElementById('result').style.display = 'none'; 
-    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
+    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
     document.getElementById('userInput').value = "";
-    
-    const btnHint = document.getElementById('btnHint');
-    const hintBox = document.getElementById('hintBox');
-    if(btnHint) btnHint.style.display = 'none';
-    if(hintBox) hintBox.style.display = 'none';
+    showExamGuidance(item.guidance);
 }
 
 function nextMockQuestion() { mockIndex++; showMockQuestion(); }
@@ -307,21 +421,21 @@ function updateQuestion() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('studyContainer').style.display = 'none'; 
     
-    document.getElementById('qDisplay').innerHTML = currentTopic[currentLevel]; 
+    document.getElementById('qDisplay').innerText = getExamPrompt(currentTopic);
     document.getElementById('userInput').value = "";
 
+    showExamGuidance(getExamGuidance(currentTopic));
+}
+
+function showExamGuidance(points) {
     const hintBox = document.getElementById('hintBox');
     const btnHint = document.getElementById('btnHint');
-    
-    if (hintBox && btnHint) {
-        hintBox.style.display = 'none'; 
-        if (currentLevel === 'HL' && currentTopic.check_HL) {
-            btnHint.style.display = 'inline-block';
-            hintBox.innerHTML = "<strong>📝 Puntos clave / Key Points (HL):</strong><br>" + currentTopic.check_HL;
-        } else {
-            btnHint.style.display = 'none'; 
-        }
-    }
+    if (!hintBox || !btnHint) return;
+    hintBox.style.display = 'none';
+    btnHint.style.display = points && points.length ? 'inline-block' : 'none';
+    hintBox.innerHTML = points && points.length
+        ? `<strong>💡 Ideas, no una lista obligatoria:</strong><p>Puedes hablar de ${points.map(escapeHTML).join(', ')}. Elige las ideas que te permitan desarrollar mejor tu respuesta.</p>`
+        : '';
 }
 
 function resetApp() { 
@@ -348,21 +462,39 @@ async function analyze() {
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Grading...";
 
-  const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  let criteria = "Gramática y vocabulario correctos."; 
-  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
-      criteria = currentTopic.check_HL;
-  }
+  const mockItem = isMockExam ? mockQuestions[mockIndex] : null;
+  const questionContext = mockItem ? mockItem.prompt : getExamPrompt(currentTopic);
+  const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
 
   const prompt = `
-    ACT AS: Sympathetic Leaving Cert Spanish Oral Examiner (Ireland).
-    CONTEXT: RAW VOICE TRANSCRIPTION (NO PUNCTUATION).
-    QUESTION: "${questionContext}"
-    ANSWER: "${t}"
-    LEVEL: ${currentLevel}.
-    CHECKPOINTS: [ ${criteria} ].
-    INSTRUCTIONS: Ignore punctuation errors.
-    OUTPUT JSON: { "score": 0-100, "feedback_es": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }
+    ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
+    TASK: Evaluate one uninterrupted spoken response to a broad conversation topic.
+    TOPIC: ${JSON.stringify(questionContext)}
+    STUDENT TRANSCRIPT: ${JSON.stringify(t)}
+    LEVEL: ${currentLevel}
+    POSSIBLE CONTENT: ${JSON.stringify(guidance)}
+
+    IMPORTANT ASSESSMENT RULES:
+    - POSSIBLE CONTENT is guidance, not a compulsory checklist. Do not deduct marks simply because an item is omitted.
+    - Reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
+    - Be encouraging and confidence-building, while identifying one or two realistic next steps.
+    - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
+    - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
+    - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
+    - Avoid demanding memorised idioms or unnatural language.
+    - Return valid JSON only, with no markdown.
+
+    OUTPUT SCHEMA:
+    {
+      "score": 0-100,
+      "feedback_es": "Short encouraging overview in Spanish",
+      "feedback_en": "Short clear overview in English",
+      "strengths": ["up to 3 specific strengths"],
+      "next_steps": ["up to 2 achievable improvements"],
+      "connectors": ["up to 3 suitable Spanish connectors"],
+      "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
+      "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
+    }
   `;
 
   try {
@@ -379,14 +511,27 @@ async function analyze() {
     s.innerText = `Score: ${j.score}%`;
     s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
 
-    document.getElementById('fbES').innerHTML = "🇪🇸 " + j.feedback_es; 
+    document.getElementById('fbES').innerText = "🇪🇸 " + j.feedback_es;
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
     
     const l = document.getElementById('errorsList'); l.innerHTML = "";
+    if (j.strengths && j.strengths.length) {
+        l.innerHTML += `<div class="feedback-section-card feedback-strength"><strong>✅ What worked well</strong><ul>${j.strengths.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+    }
+    if (j.next_steps && j.next_steps.length) {
+        l.innerHTML += `<div class="feedback-section-card feedback-next"><strong>🎯 Next steps</strong><ul>${j.next_steps.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+    }
+    if (j.connectors && j.connectors.length) {
+        l.innerHTML += `<div class="feedback-section-card"><strong>🔗 Connectors to try</strong><p>${j.connectors.map(escapeHTML).join(' · ')}</p></div>`;
+    }
+    if (j.vocabulary_suggestions && j.vocabulary_suggestions.length) {
+        l.innerHTML += `<div class="feedback-section-card"><strong>🧠 Richer vocabulary</strong><ul>${j.vocabulary_suggestions.map(v => `<li>${escapeHTML(v.basic)} → <b>${escapeHTML(v.richer)}</b></li>`).join('')}</ul></div>`;
+    }
     if(j.errors && j.errors.length > 0) {
-        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; });
+        l.innerHTML += '<div class="feedback-section-card"><strong>✍️ Language corrections</strong></div>';
+        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`; });
     } else {
-        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Perfect! No significant errors found.</div>";
+        l.innerHTML += "<div style='color:#166534; font-weight:bold;'>✅ No significant language errors found in the transcript.</div>";
     }
 
     const btnReset = document.getElementById('btnReset');
@@ -411,30 +556,57 @@ async function analyze() {
 // ===========================================
 // FUNCIÓN ASK AI CONCEPT (MODO ESTUDIO)
 // ===========================================
-async function askAIConcept(concept) {
+async function askAIConcept(concept, kind = 'language') {
     const box = document.getElementById('aiExplanationBox');
     box.style.display = 'block'; 
     box.innerHTML = "⏳ <b>Consulting AI Teacher...</b>";
 
     const prompt = `
-        ACT AS: Spanish Teacher.
-        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
-        CONCEPT: "${concept}".
-        INSTRUCTIONS: Explain in English (max 50 words). 2 Examples (ES->EN).
-        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
+        ROLE: Supportive Leaving Certificate Spanish oral teacher in Ireland.
+        TOPIC: ${JSON.stringify(currentTopic ? currentTopic.title : 'General')}
+        LEVEL: ${currentLevel}
+        STUDY ITEM TYPE: ${kind}
+        STUDY ITEM: ${JSON.stringify(concept)}
+
+        Help the learner prepare ideas for a natural spoken response. Do not write a long answer for memorisation.
+        If this is a practice question, give a simple three-part speaking plan and useful language.
+        If this is a content idea or language feature, explain how it can improve the oral answer.
+        Use natural Peninsular Spanish suitable for a secondary-school learner.
+        Keep the explanation in English and supportive. Return valid JSON only, with no markdown.
+
+        OUTPUT SCHEMA:
+        {
+          "explanation_en": "maximum 70 words",
+          "speaking_plan": ["up to 3 short steps"],
+          "examples": [{ "es": "short natural Spanish phrase", "en": "English meaning" }],
+          "challenge": "one optional sentence challenge"
+        }
     `;
 
     try {
         const text = await callSmartAI(prompt);
-        const cleanText = text.replace(/```html|```/g, "").trim();
+        const cleanText = text.replace(/```json|```/g, "").trim();
+        const result = JSON.parse(cleanText);
+        const plan = Array.isArray(result.speaking_plan) && result.speaking_plan.length
+            ? `<div class="ai-study-part"><strong>🗣️ Speaking plan</strong><ol>${result.speaking_plan.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ol></div>`
+            : '';
+        const examples = Array.isArray(result.examples) && result.examples.length
+            ? `<div class="ai-study-part"><strong>💬 Useful Spanish</strong><ul>${result.examples.map(x => `<li><b>${escapeHTML(x.es)}</b> — ${escapeHTML(x.en)}</li>`).join('')}</ul></div>`
+            : '';
+        const challenge = result.challenge
+            ? `<div class="study-challenge"><strong>⭐ Challenge:</strong> ${escapeHTML(result.challenge)}</div>`
+            : '';
         
         box.innerHTML = `
             <div style="display:flex; justify-content:space-between;">
-                <strong>💡 Concept: ${concept}</strong>
+                <strong>💡 ${kind === 'question' ? 'Practice question' : 'Study help'}: ${escapeHTML(concept)}</strong>
                 <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
             </div>
             <hr>
-            ${cleanText}
+            <p>${escapeHTML(result.explanation_en || '')}</p>
+            ${plan}
+            ${examples}
+            ${challenge}
         `;
 
     } catch (e) {
@@ -459,17 +631,19 @@ function renderCheckpoints() {
         return;
     }
 
-    // Limpiamos el contenedor y añadimos el título
+    const guide = getTopicGuide(currentTopic);
+    const contentIdeas = currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : guide.ideas;
+
     container.innerHTML = `
         <h3>📚 Study Mode: ${currentTopic.title}</h3>
-        <p class="small-text">Click on a concept to get an instant explanation.</p>
+        <p class="study-intro">Prepare ideas and useful language before you practise speaking. These are suggestions, not a script or a compulsory checklist.</p>
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
 
     const list = document.getElementById('checkpointsList');
     
-    const createSection = (title, items, cssClass) => {
+    const createSection = (title, items, cssClass, kind = 'language') => {
         if(!items || items.length === 0) return;
         const h = document.createElement('h4');
         h.innerText = title; 
@@ -485,18 +659,20 @@ function renderCheckpoints() {
         items.forEach(point => {
             const btn = document.createElement('button'); 
             btn.className = `check-btn ${cssClass}`; 
-            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
-            btn.onclick = () => askAIConcept(point);
+            btn.innerHTML = `${kind === 'question' ? '❓' : (kind === 'content' ? '💡' : '🗣️')} ${escapeHTML(point)}`;
+            btn.onclick = () => askAIConcept(point, kind);
             grid.appendChild(btn);
         });
         list.appendChild(grid);
     };
 
-    if (currentTopic.checkpoints_OL) createSection("🧱 Cimientos (Lo Básico)", currentTopic.checkpoints_OL, "btn-ol");
+    createSection("💡 Ideas you could include", contentIdeas, "btn-content", "content");
+    createSection("❓ Questions to prepare", guide.questions, "btn-question", "question");
+    if (currentTopic.checkpoints_OL) createSection("🧱 Language foundations", currentTopic.checkpoints_OL, "btn-ol");
     if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
-        createSection("🔧 Nivel Superior (HL Requisitos)", currentTopic.checkpoints_HL, "btn-hl");
+        createSection("🔧 Develop your HL answer", currentTopic.checkpoints_HL, "btn-hl");
         if(currentTopic.checkpoints_TOP) {
-            createSection("🚀 Nivel TOP (Frases H1)", currentTopic.checkpoints_TOP, "btn-top");
+            createSection("🚀 Ambitious but natural Spanish", currentTopic.checkpoints_TOP, "btn-top");
         }
     }
 }

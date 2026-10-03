@@ -734,7 +734,9 @@ MARKING PRINCIPLES:
 - Award each turn 0-6 marks for completing the communicative task, relevance, comprehensibility, grammar and vocabulary.
 - Accept any natural Spanish formulation that fulfils the instruction; do not penalise an answer merely because it differs from the model answer.
 - Treat the final personal question as a genuine spontaneous answer. Do not require a specific fact.
-- Do not assess pronunciation because the answer is a text transcription.
+- This is an oral exam evaluated from an automatic speech-to-text transcription. Ignore punctuation, capitalisation, missing or incorrect accent marks caused by transcription, and transcription artefacts or missing punctuation around pauses. Never deduct marks for commas, full stops, question marks or the way pauses have been transcribed.
+- Do not assess pronunciation, intonation, hesitation or fluency from the text transcription.
+- Assess grammar only when the wording clearly indicates a genuine grammatical error rather than an STT artefact.
 - Be constructive and specific. Identify only meaningful errors or omissions.
 
 Return ONLY valid JSON in this exact shape:

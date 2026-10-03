@@ -21,22 +21,22 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 
 /* NEWS BOARD */
 .updates-board {
-    margin: 20px 0 25px;
-    padding: 18px;
-    border: 1px solid #c7d2fe;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #f8faff 0%, #fdf4ff 100%);
+    margin: 8px 0 25px;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: #fafbff;
     text-align: left;
 }
-.updates-board-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.updates-board h2 { margin: 0; color: #4338ca; font-size: 1.1rem; }
+.updates-board-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+.updates-board h2 { margin: 0; color: #4f46e5; font-size: 1rem; }
 .updates-kicker { color: #7c3aed; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; }
-.updates-list { display: grid; gap: 8px; }
+.updates-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .update-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 11px; border-radius: 11px; background: rgba(255,255,255,0.78); border: 1px solid rgba(199,210,254,0.75); }
 .update-item p { margin: 3px 0 0; color: #475569; font-size: 0.83rem; line-height: 1.45; }
 .update-badge { flex: 0 0 auto; min-width: 42px; padding: 4px 5px; border-radius: 6px; background: #e0e7ff; color: #4338ca; text-align: center; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.05em; }
 .update-highlight .update-badge { background: #ede9fe; color: #7c3aed; }
-.updates-support { margin-top: 13px; padding: 12px; border: 1px solid #fcd34d; border-radius: 11px; background: #fffbeb; color: #78350f; }
+.updates-support { margin-top: 10px; padding: 10px 12px; border: 1px solid #fcd34d; border-radius: 11px; background: #fffbeb; color: #78350f; }
 .updates-support p { margin: 4px 0 9px; font-size: 0.82rem; line-height: 1.5; }
 .updates-support-link { display: inline-block; color: #92400e; font-weight: 800; font-size: 0.82rem; text-decoration: underline; }
 
@@ -510,7 +510,8 @@ textarea:focus { border-color: var(--secondary); outline: none; }
 @media (max-width: 540px) {
     .mock-rp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .mock-panel { padding: 15px; }
-    .updates-board { padding: 15px; }
+    .updates-board { padding: 13px; }
     .updates-board-heading { display: block; }
     .updates-kicker { display: block; margin-bottom: 4px; }
+    .updates-list { grid-template-columns: 1fr; }
 }

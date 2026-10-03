@@ -504,7 +504,13 @@ function renderCheckpoints() {
 // ===========================================
 // PARTE 2: ROLEPLAYS (DATOS ACTUALIZADOS Y CORREGIDOS ✅)
 // ===========================================
-let rpActual = null; let pasoActual = 0; 
+let rpActual = null; let pasoActual = 0;
+let rpResponses = [];
+let rpEvaluationInProgress = false;
+
+function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
 
 const RP_DB = {
     1: { 
@@ -570,7 +576,9 @@ const RP_DB = {
 };
 
 function seleccionarRP(id, btn) {
-    rpActual = id; pasoActual = 0; 
+    rpActual = id; pasoActual = 0;
+    rpResponses = [];
+    rpEvaluationInProgress = false;
     document.querySelectorAll('.rp-btn-select').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('rpArea').style.display = "block";
@@ -674,7 +682,15 @@ function habilitarInput() {
 
 function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput'); const txt = inp.value.trim(); if(!txt) return;
-    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${txt}</div>`; chat.scrollTop = chat.scrollHeight;
+    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${escapeHTML(txt)}</div>`; chat.scrollTop = chat.scrollHeight;
+
+    const examinerText = RP_DB[rpActual].dialogs[pasoActual];
+    rpResponses.push({
+        turn: pasoActual + 1,
+        examiner: Array.isArray(examinerText) ? 'Pregunta personal elegida por el examinador' : examinerText,
+        instruction: RP_DB[rpActual].instructions[pasoActual],
+        answer: txt
+    });
     
     inp.value = ""; inp.disabled = true; 
     document.getElementById('rpSendBtn').disabled = true; 
@@ -692,9 +708,80 @@ function enviarRespuestaRP() {
         } else { 
             // Si ya terminó el paso 4, mostramos el mensaje final y quitamos el botón de audio
             document.getElementById('nextAudioBtn').style.display = "none";
-            document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`; 
+            document.getElementById('rpChat').innerHTML += `<div class="bubble ex" style="background:#dcfce7;"><b>System:</b> Roleplay Completed!</div>`;
+            evaluarRoleplay();
         }
     }, 500);
+}
+
+async function evaluarRoleplay() {
+    if (rpEvaluationInProgress || !rpActual || rpResponses.length !== 5) return;
+    rpEvaluationInProgress = true;
+    const chat = document.getElementById('rpChat');
+    chat.innerHTML += `<div id="rpEvaluationLoading" class="roleplay-evaluation loading">⏳ <b>Evaluating your role play...</b><br><span>Each turn is worth 6 marks. The result is indicative and focuses on communication, task completion and Spanish accuracy.</span></div>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    const roleplay = RP_DB[rpActual];
+    const transcript = rpResponses.map(r => `TURN ${r.turn}\nEXAMINER: ${r.examiner}\nCANDIDATE INSTRUCTION: ${r.instruction}\nCANDIDATE ANSWER: ${r.answer}`).join('\n\n');
+    const prompt = `
+ACT AS: A fair Leaving Certificate Spanish oral examiner in Ireland.
+TASK: Evaluate the completed role play below. It has five candidate turns and is worth 30 marks: 6 marks per turn.
+ROLE PLAY CONTEXT: ${roleplay.context}
+TRANSCRIPT:
+${transcript}
+
+MARKING PRINCIPLES:
+- Award each turn 0-6 marks for completing the communicative task, relevance, comprehensibility, grammar and vocabulary.
+- Accept any natural Spanish formulation that fulfils the instruction; do not penalise an answer merely because it differs from the model answer.
+- Treat the final personal question as a genuine spontaneous answer. Do not require a specific fact.
+- Do not assess pronunciation because the answer is a text transcription.
+- Be constructive and specific. Identify only meaningful errors or omissions.
+
+Return ONLY valid JSON in this exact shape:
+{"total_score":0,"overall_es":"","overall_en":"","turns":[{"turn":1,"score":0,"feedback_es":"","feedback_en":"","missing":"","errors":[{"original":"","correction":"","explanation_en":""}],"improved_answer":""}]}
+The turns array must contain exactly five objects and each score must be an integer from 0 to 6. total_score must equal the sum of the five scores.
+`;
+
+    try {
+        const rawText = await callSmartAI(prompt);
+        const cleanJson = rawText.replace(/```json|```/g, '').trim();
+        const evaluation = JSON.parse(cleanJson);
+        renderRoleplayEvaluation(evaluation);
+    } catch (e) {
+        console.error('Roleplay evaluation failed:', e);
+        const loading = document.getElementById('rpEvaluationLoading');
+        if (loading) loading.innerHTML = `<b>⚠️ We could not evaluate this role play.</b><br><span>${escapeHTML(e.message)}</span><br><button class="btn-main rp-retry" onclick="evaluarRoleplay()">🔄 Try again</button>`;
+    } finally {
+        rpEvaluationInProgress = false;
+    }
+}
+
+function renderRoleplayEvaluation(evaluation) {
+    const loading = document.getElementById('rpEvaluationLoading');
+    if (loading) loading.remove();
+    const turns = Array.isArray(evaluation.turns) ? evaluation.turns : [];
+    const total = Number.isFinite(Number(evaluation.total_score)) ? Number(evaluation.total_score) : turns.reduce((sum, t) => sum + Number(t.score || 0), 0);
+    let html = `<section class="roleplay-evaluation" aria-label="Role play feedback">
+        <h3>🎭 Role play feedback: ${Math.max(0, Math.min(30, total))}/30</h3>
+        <p class="evaluation-note">Indicative AI feedback based on the written/transcribed answers. Pronunciation and fluency are not assessed here.</p>
+        <p><strong>🇪🇸 ${escapeHTML(evaluation.overall_es || 'Revisa cada turno y vuelve a intentarlo.')}</strong></p>
+        <p class="feedback-en">🇬🇧 ${escapeHTML(evaluation.overall_en || '')}</p>
+        <div class="turn-feedback-list">`;
+    for (let i = 0; i < 5; i++) {
+        const t = turns[i] || {turn:i+1, score:0, feedback_es:'No feedback returned for this turn.'};
+        const errors = Array.isArray(t.errors) ? t.errors : [];
+        html += `<article class="turn-feedback">
+            <div class="turn-heading"><strong>Turn ${i + 1}</strong><span>${escapeHTML(t.score ?? 0)}/6</span></div>
+            <p><strong>🇪🇸</strong> ${escapeHTML(t.feedback_es || '')}</p>
+            ${t.feedback_en ? `<p class="feedback-en"><strong>🇬🇧</strong> ${escapeHTML(t.feedback_en)}</p>` : ''}
+            ${t.missing ? `<p><b>Task point to revisit:</b> ${escapeHTML(t.missing)}</p>` : ''}
+            ${errors.length ? `<div class="turn-errors">${errors.map(e => `<div>❌ <s>${escapeHTML(e.original)}</s> → <b>${escapeHTML(e.correction)}</b>${e.explanation_en ? ` <span>(${escapeHTML(e.explanation_en)})</span>` : ''}</div>`).join('')}</div>` : '<div class="turn-good">✅ No significant language error identified.</div>'}
+            ${t.improved_answer ? `<div class="improved-answer"><b>Possible improved answer:</b> ${escapeHTML(t.improved_answer)}</div>` : ''}
+        </article>`;
+    }
+    html += `</div></section>`;
+    document.getElementById('rpChat').insertAdjacentHTML('beforeend', html);
+    document.getElementById('rpChat').scrollTop = document.getElementById('rpChat').scrollHeight;
 }
 
 function mostrarSugerencia() {

@@ -290,12 +290,14 @@ function getTopicGuide(topic) {
 }
 
 function getExamPrompt(topic) {
-    return getTopicGuide(topic).prompt[currentLevel];
+    // Keep the established OL exam prompts; the broader monologue redesign is
+    // currently being trialled only for Higher Level.
+    return currentLevel === 'HL' ? getTopicGuide(topic).prompt.HL : topic.OL;
 }
 
 function getExamGuidance(topic) {
     const guide = getTopicGuide(topic);
-    return currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : guide.ideas;
+    return currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : [];
 }
 
 // ===========================================
@@ -395,12 +397,14 @@ function startMockExam() {
     document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
     
     let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
+    const pastPrompt = PAST_Q[Math.floor(Math.random()*PAST_Q.length)];
+    const futurePrompt = FUT_Q[Math.floor(Math.random()*FUT_Q.length)];
     mockQuestions = [
         { prompt: getExamPrompt(DATA[i[0]]), guidance: getExamGuidance(DATA[i[0]]), topic: DATA[i[0]] },
         { prompt: getExamPrompt(DATA[i[1]]), guidance: getExamGuidance(DATA[i[1]]), topic: DATA[i[1]] },
         { prompt: getExamPrompt(DATA[i[2]]), guidance: getExamGuidance(DATA[i[2]]), topic: DATA[i[2]] },
-        { ...PAST_Q[Math.floor(Math.random()*PAST_Q.length)], label: "PASADO" },
-        { ...FUT_Q[Math.floor(Math.random()*FUT_Q.length)], label: "FUTURO" }
+        { ...pastPrompt, guidance: currentLevel === 'HL' ? pastPrompt.guidance : [], label: "PASADO" },
+        { ...futurePrompt, guidance: currentLevel === 'HL' ? futurePrompt.guidance : [], label: "FUTURO" }
     ];
     showMockQuestion();
 }
@@ -465,6 +469,9 @@ async function analyze() {
   const mockItem = isMockExam ? mockQuestions[mockIndex] : null;
   const questionContext = mockItem ? mockItem.prompt : getExamPrompt(currentTopic);
   const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
+  const levelExpectation = currentLevel === 'HL'
+      ? 'Expect a developed response with reasons, examples, a useful range of vocabulary, connectors and more than one time frame where natural.'
+      : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -472,11 +479,14 @@ async function analyze() {
     TOPIC: ${JSON.stringify(questionContext)}
     STUDENT TRANSCRIPT: ${JSON.stringify(t)}
     LEVEL: ${currentLevel}
+    LEVEL EXPECTATION: ${levelExpectation}
     POSSIBLE CONTENT: ${JSON.stringify(guidance)}
 
     IMPORTANT ASSESSMENT RULES:
     - POSSIBLE CONTENT is guidance, not a compulsory checklist. Do not deduct marks simply because an item is omitted.
-    - Reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
+    - Apply the LEVEL EXPECTATION above. Do not judge an OL response by HL expectations.
+    - At HL, reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
+    - At OL, reward clear communication and relevant basic information; suggestions must be simple and achievable.
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
@@ -565,6 +575,7 @@ async function askAIConcept(concept, kind = 'language') {
         ROLE: Supportive Leaving Certificate Spanish oral teacher in Ireland.
         TOPIC: ${JSON.stringify(currentTopic ? currentTopic.title : 'General')}
         LEVEL: ${currentLevel}
+        LEVEL EXPECTATION: ${currentLevel === 'HL' ? 'Help the learner develop and extend a Higher Level response.' : 'Keep support simple, practical and suitable for Ordinary Level.'}
         STUDY ITEM TYPE: ${kind}
         STUDY ITEM: ${JSON.stringify(concept)}
 
@@ -632,11 +643,13 @@ function renderCheckpoints() {
     }
 
     const guide = getTopicGuide(currentTopic);
-    const contentIdeas = currentLevel === 'HL' ? [...guide.ideas, ...guide.hlIdeas] : guide.ideas;
+    const contentIdeas = [...guide.ideas, ...guide.hlIdeas];
 
     container.innerHTML = `
         <h3>📚 Study Mode: ${currentTopic.title}</h3>
-        <p class="study-intro">Prepare ideas and useful language before you practise speaking. These are suggestions, not a script or a compulsory checklist.</p>
+        <p class="study-intro">${currentLevel === 'HL'
+            ? 'Prepare ideas and useful language before you practise speaking. These are suggestions, not a script or a compulsory checklist.'
+            : 'Review the essential language and prepare a few common questions before you practise speaking.'}</p>
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;
@@ -666,8 +679,12 @@ function renderCheckpoints() {
         list.appendChild(grid);
     };
 
-    createSection("💡 Ideas you could include", contentIdeas, "btn-content", "content");
-    createSection("❓ Questions to prepare", guide.questions, "btn-question", "question");
+    if (currentLevel === 'HL') {
+        createSection("💡 Ideas you could include", contentIdeas, "btn-content", "content");
+        createSection("❓ Questions to prepare", guide.questions, "btn-question", "question");
+    } else {
+        createSection("❓ Questions to prepare", guide.questions.slice(0, 3), "btn-question", "question");
+    }
     if (currentTopic.checkpoints_OL) createSection("🧱 Language foundations", currentTopic.checkpoints_OL, "btn-ol");
     if (currentLevel === 'HL' && currentTopic.checkpoints_HL) {
         createSection("🔧 Develop your HL answer", currentTopic.checkpoints_HL, "btn-hl");

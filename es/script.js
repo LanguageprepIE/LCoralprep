@@ -183,6 +183,51 @@ const DATA = [
     checkpoints_OL: ["Planes fijos (Voy a trabajar)", "Ocio (Voy a ir al cine)", "Descanso (Voy a dormir)"],
     checkpoints_HL: ["Planes dependientes del clima", "Estudio y deberes", "Eventos familiares"],
     checkpoints_TOP: ["✨ Idiom: Darse un capricho", "✨ Grammar: Tengo ganas de...", "✨ Grammar: Si hace buen tiempo..."]
+  },
+  {
+    title: "16. IA y educación",
+    opinion: true,
+    OL: "¿Usas la inteligencia artificial para estudiar? ¿Te parece útil?",
+    HL: "¿Qué opinas del uso de la inteligencia artificial en la educación?",
+    checkpoints_OL: ["Dar una opinión (Creo que...)", "Una ventaja (Es útil para...)", "Un riesgo (Puede ser...)"] ,
+    checkpoints_HL: ["Contrastar ventajas y riesgos", "Justificar con un ejemplo", "Proponer un uso responsable"],
+    checkpoints_TOP: ["✨ Concession: Aunque puede ser útil...", "✨ Structure: No se trata de..., sino de...", "✨ Vocab: Pensamiento crítico"]
+  },
+  {
+    title: "17. Tecnología en clase",
+    opinion: true,
+    OL: "¿Usáis tecnología en clase? ¿Te ayuda a aprender?",
+    HL: "¿Crees que la tecnología mejora el aprendizaje en el aula?",
+    checkpoints_OL: ["Dispositivos (tableta, ordenador)", "Dar una ventaja", "Dar un problema"],
+    checkpoints_HL: ["Aprendizaje y participación", "Distracciones y desigualdad", "Equilibrio entre tecnología y métodos tradicionales"],
+    checkpoints_TOP: ["✨ Structure: Siempre que se use bien...", "✨ Contrast: Por un lado... por otro...", "✨ Vocab: Brecha digital"]
+  },
+  {
+    title: "18. Redes sociales",
+    opinion: true,
+    OL: "¿Usas las redes sociales? ¿Cuáles son sus ventajas y peligros?",
+    HL: "¿Qué influencia tienen las redes sociales en la vida de los jóvenes?",
+    checkpoints_OL: ["Redes que usas", "Una ventaja", "Un peligro o problema"],
+    checkpoints_HL: ["Comunicación e información", "Presión social y salud mental", "Privacidad y uso responsable"],
+    checkpoints_TOP: ["✨ Structure: Es innegable que...", "✨ Hypothesis: Si pasáramos menos tiempo...", "✨ Vocab: Autoestima y desinformación"]
+  },
+  {
+    title: "19. Contaminación",
+    opinion: true,
+    OL: "¿Hay contaminación donde vives? ¿Qué podemos hacer?",
+    HL: "¿Qué podemos hacer para reducir la contaminación?",
+    checkpoints_OL: ["Tipos de contaminación", "Transporte", "Una solución sencilla"],
+    checkpoints_HL: ["Causas y consecuencias", "Responsabilidad individual y colectiva", "Medidas realistas"],
+    checkpoints_TOP: ["✨ Structure: Hace falta que...", "✨ Proposal: Se debería fomentar...", "✨ Vocab: Emisiones y calidad del aire"]
+  },
+  {
+    title: "20. Reciclaje",
+    opinion: true,
+    OL: "¿Reciclas en casa? ¿Por qué es importante?",
+    HL: "¿Es suficiente reciclar para proteger el medioambiente?",
+    checkpoints_OL: ["Qué reciclas", "Cómo separas los residuos", "Por qué es importante"],
+    checkpoints_HL: ["Reciclar, reducir y reutilizar", "Hábitos de consumo", "Papel de colegios, empresas y gobiernos"],
+    checkpoints_TOP: ["✨ Structure: Por mucho que reciclemos...", "✨ Proposal: Sería conveniente que...", "✨ Vocab: Consumo sostenible"]
   }
 ];
 
@@ -278,6 +323,36 @@ const TOPIC_GUIDES = [
     ideas: ["planes para cada día", "personas y lugares", "estudio o trabajo", "ocio y descanso"],
     hlIdeas: ["planes alternativos", "cómo influirá el tiempo", "por qué te apetece hacerlos"],
     questions: ["¿Qué vas a hacer el viernes?", "¿Vas a quedar con alguien?", "¿Tienes que estudiar o trabajar?", "¿Qué harás si hace mal tiempo?"]
+  },
+  {
+    prompt: { OL: "¿Usas la inteligencia artificial para estudiar? ¿Te parece útil?", HL: "¿Qué opinas del uso de la inteligencia artificial en la educación?" },
+    ideas: ["cómo usas la IA", "una ventaja para aprender", "un posible riesgo", "una experiencia o ejemplo"],
+    hlIdeas: ["dependencia y pensamiento crítico", "honestidad académica", "cómo debería utilizarse responsablemente"],
+    questions: ["¿Para qué utilizas la IA?", "¿Cómo puede ayudar a un alumno?", "¿Qué riesgos tiene?", "¿Deberían permitirse estas herramientas en el colegio?"]
+  },
+  {
+    prompt: { OL: "¿Usáis tecnología en clase? ¿Te ayuda a aprender?", HL: "¿Crees que la tecnología mejora el aprendizaje en el aula?" },
+    ideas: ["tecnología que utilizáis", "cómo ayuda a aprender", "una dificultad o distracción", "tu preferencia personal"],
+    hlIdeas: ["participación y acceso a recursos", "desigualdad o brecha digital", "equilibrio con métodos tradicionales"],
+    questions: ["¿Qué tecnología usáis en clase?", "¿Cuándo resulta útil?", "¿Puede distraer a los alumnos?", "¿Cómo sería el aula ideal?"]
+  },
+  {
+    prompt: { OL: "¿Usas las redes sociales? ¿Cuáles son sus ventajas y peligros?", HL: "¿Qué influencia tienen las redes sociales en la vida de los jóvenes?" },
+    ideas: ["redes que utilizas", "comunicación y entretenimiento", "tiempo que pasas conectado", "un peligro o inconveniente"],
+    hlIdeas: ["presión social y autoestima", "privacidad y desinformación", "hábitos para un uso saludable"],
+    questions: ["¿Qué redes sociales utilizas?", "¿Qué ventajas tienen?", "¿Qué problemas pueden causar?", "¿Cómo podemos usarlas de forma responsable?"]
+  },
+  {
+    prompt: { OL: "¿Hay contaminación donde vives? ¿Qué podemos hacer?", HL: "¿Qué podemos hacer para reducir la contaminación?" },
+    ideas: ["contaminación en tu zona", "tráfico y transporte", "basura o plásticos", "una acción personal"],
+    hlIdeas: ["causas y consecuencias", "responsabilidad de gobiernos y empresas", "una medida realista y sus dificultades"],
+    questions: ["¿Hay mucha contaminación donde vives?", "¿Qué haces tú para ayudar?", "¿Cómo podríamos viajar de forma más sostenible?", "¿Quién tiene más responsabilidad?"]
+  },
+  {
+    prompt: { OL: "¿Reciclas en casa? ¿Por qué es importante?", HL: "¿Es suficiente reciclar para proteger el medioambiente?" },
+    ideas: ["qué materiales reciclas", "cómo separáis los residuos", "por qué es importante", "una dificultad"],
+    hlIdeas: ["reducir y reutilizar además de reciclar", "consumo y envases", "papel de colegios, empresas y gobiernos"],
+    questions: ["¿Qué recicláis en casa?", "¿Es fácil reciclar en tu zona?", "¿Qué podríamos consumir menos?", "¿Basta con reciclar?"]
   }
 ];
 
@@ -298,7 +373,12 @@ const TOPIC_GUIDE_TRANSLATIONS = [
   { ideas: ["destination and company", "transport and accommodation", "activities", "how you enjoyed it"], hlIdeas: ["comparison between destinations", "Spain or Ireland as a destination", "plans for future holidays"] },
   { ideas: ["next year", "studies or training", "the job you would like", "places where you would like to live or travel"], hlIdeas: ["reasons for choosing a course", "difficulties or requirements", "what you will miss about school"] },
   { ideas: ["what you did each day", "who you were with", "where you went", "how you enjoyed it"], hlIdeas: ["description and context", "a special moment or unexpected event", "a final opinion or reflection"] },
-  { ideas: ["plans for each day", "people and places", "study or work", "leisure and rest"], hlIdeas: ["alternative plans", "how the weather will affect your plans", "why you are looking forward to them"] }
+  { ideas: ["plans for each day", "people and places", "study or work", "leisure and rest"], hlIdeas: ["alternative plans", "how the weather will affect your plans", "why you are looking forward to them"] },
+  { ideas: ["how you use AI", "one learning benefit", "a possible risk", "an experience or example"], hlIdeas: ["dependence and critical thinking", "academic honesty", "how it should be used responsibly"] },
+  { ideas: ["technology you use", "how it helps learning", "a difficulty or distraction", "your personal preference"], hlIdeas: ["participation and access to resources", "inequality or the digital divide", "balance with traditional methods"] },
+  { ideas: ["social media you use", "communication and entertainment", "time spent online", "a danger or disadvantage"], hlIdeas: ["social pressure and self-esteem", "privacy and misinformation", "healthy-use habits"] },
+  { ideas: ["pollution in your area", "traffic and transport", "rubbish or plastics", "one personal action"], hlIdeas: ["causes and consequences", "government and business responsibility", "a realistic measure and its difficulties"] },
+  { ideas: ["materials you recycle", "how you separate waste", "why it matters", "one difficulty"], hlIdeas: ["reducing and reusing as well as recycling", "consumption and packaging", "the role of schools, businesses and governments"] }
 ];
 
 const PAST_Q = [
@@ -312,12 +392,10 @@ const FUT_Q = [
   { prompt: "Habla de lo que harás cuando termines el instituto.", guidance: ["estudios o trabajo", "razones", "objetivos", "planes a más largo plazo"] }
 ];
 
-const OPINION_Q = [
-  { prompt: "¿Qué opinas del uso de la inteligencia artificial en la educación?", guidance: ["una ventaja", "un posible riesgo", "un ejemplo", "tu conclusión personal"] },
-  { prompt: "¿Crees que la tecnología mejora la vida de los jóvenes?", guidance: ["comunicación y aprendizaje", "redes sociales", "un inconveniente", "tu opinión personal"] },
-  { prompt: "¿Qué podemos hacer para reducir la contaminación?", guidance: ["transporte", "consumo y residuos", "responsabilidad individual", "medidas de gobiernos o colegios"] },
-  { prompt: "¿Es importante reciclar?", guidance: ["por qué importa", "qué reciclas", "dificultades", "cómo animar a otras personas"] }
-];
+const OPINION_Q = DATA.filter(topic => topic.opinion).map(topic => {
+    const guide = getTopicGuide(topic);
+    return { prompt: guide.prompt.HL, guidance: [...guide.ideas, ...guide.hlIdeas] };
+});
 
 const ROLEPLAY_LABELS = {
     1: "Erasmus accommodation",
@@ -413,9 +491,17 @@ function setMode(mode) {
 function initConv() { 
     const g = document.getElementById('topicGrid'); 
     g.innerHTML = "";
+    let opinionHeaderAdded = false;
     DATA.forEach((item) => { 
+        if (item.opinion && !opinionHeaderAdded) {
+            const header = document.createElement('div');
+            header.className = 'opinion-unit-intro';
+            header.innerHTML = `<span>⭐ Extra Opinion Training</span><strong>Entrenamiento extra de opinión</strong><p>Estas preguntas no aparecen en todos los exámenes, pero son una buena práctica para cualquier alumno: da tu opinión, justifica tus ideas y añade un ejemplo.</p><small>These questions do not appear in every oral, but they are useful practice for everyone.</small>`;
+            g.appendChild(header);
+            opinionHeaderAdded = true;
+        }
         const b = document.createElement('button'); 
-        b.className = 'topic-btn'; 
+        b.className = item.opinion ? 'topic-btn opinion-topic-btn' : 'topic-btn';
         b.innerText = item.title; 
         b.onclick = () => { 
             if (isMockExam) {
@@ -868,9 +954,11 @@ function renderCheckpoints() {
 
     container.innerHTML = `
         <h3>📚 Study Mode: ${currentTopic.title}</h3>
-        <p class="study-intro">${currentLevel === 'HL'
-            ? 'Prepare ideas and useful language before you practise speaking. These are suggestions, not a script or a compulsory checklist.'
-            : 'Review the essential language and prepare a few common questions before you practise speaking.'}</p>
+        <p class="study-intro">${currentTopic.opinion
+            ? 'Extra opinion training: these questions are not asked in every oral, but they help every learner practise giving a view, explaining reasons and supporting an answer with an example.'
+            : (currentLevel === 'HL'
+                ? 'Prepare ideas and useful language before you practise speaking. These are suggestions, not a script or a compulsory checklist.'
+                : 'Review the essential language and prepare a few common questions before you practise speaking.')}</p>
         <div id="checkpointsList"></div> 
         <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
     `;

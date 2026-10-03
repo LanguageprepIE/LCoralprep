@@ -8,7 +8,7 @@
 <meta name="keywords" content="Leaving Cert Spanish, Spanish Oral, Roleplays, Higher Level, Ordinary level, Spanish Revision, Ireland">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=bilingual-hl">
+  <link rel="stylesheet" href="style.css?v=mock-exam-v2">
   
   <style>
     .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
@@ -56,7 +56,8 @@
         <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Full Mock Exam</button>
+    <div id="mockPanel" class="mock-panel" style="display:none;"></div>
     
     <div class="topic-grid" id="topicGrid"></div>
 
@@ -97,11 +98,11 @@
 
   <div id="sectionRoleplay" style="display:none;">
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">RP 1 (Erasmus)</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">RP 2 (Laptop)</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">RP 3 (Camper)</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">RP 4 (Plastics)</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">RP 5 (Breakdown)</div>
+      <div class="rp-btn-select" data-rp-id="1" onclick="seleccionarRP(1, this)">RP 1 (Erasmus)</div>
+      <div class="rp-btn-select" data-rp-id="2" onclick="seleccionarRP(2, this)">RP 2 (Laptop)</div>
+      <div class="rp-btn-select" data-rp-id="3" onclick="seleccionarRP(3, this)">RP 3 (Camper)</div>
+      <div class="rp-btn-select" data-rp-id="4" onclick="seleccionarRP(4, this)">RP 4 (Plastics)</div>
+      <div class="rp-btn-select" data-rp-id="5" onclick="seleccionarRP(5, this)">RP 5 (Breakdown)</div>
     </div>
 
     <div id="rpArea" style="display:none;">
@@ -171,7 +172,7 @@
 
 </div>
 
-<script src="script.js?v=bilingual-hl"></script>
+<script src="script.js?v=mock-exam-v2"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>

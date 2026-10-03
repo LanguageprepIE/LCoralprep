@@ -30,7 +30,7 @@ function switchTab(tab) {
   document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
 }
 
-let currentLevel = 'OL';
+let currentLevel = 'HL';
 let currentMode = 'exam'; 
 let currentTopic = null;
 let isMockExam = false; 

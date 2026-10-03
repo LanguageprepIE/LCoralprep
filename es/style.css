@@ -69,6 +69,19 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 
 .next-audio-btn { width: 100%; padding: 12px; background: #ec4899; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: none; }
 .feedback-rp { font-size: 0.9em; background: #fffbeb; color: #92400e; padding: 10px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 5px; }
+.roleplay-evaluation { margin-top: 15px; padding: 18px; border-radius: 14px; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; }
+.roleplay-evaluation h3 { margin: 0 0 8px; color: var(--primary); }
+.roleplay-evaluation.loading { background: #eff6ff; border-color: #93c5fd; }
+.roleplay-evaluation.loading span, .evaluation-note, .feedback-en { color: #64748b; font-size: 0.9rem; }
+.turn-feedback-list { display: grid; gap: 10px; margin-top: 15px; }
+.turn-feedback { padding: 12px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; }
+.turn-feedback p { margin: 7px 0; }
+.turn-heading { display: flex; justify-content: space-between; font-size: 1rem; color: var(--primary); }
+.turn-errors { margin-top: 8px; padding: 8px; border-radius: 7px; background: #fff7ed; color: #9a3412; font-size: 0.9rem; }
+.turn-errors span { color: #64748b; }
+.turn-good { margin-top: 8px; color: #166534; font-size: 0.9rem; font-weight: 600; }
+.improved-answer { margin-top: 8px; padding: 8px; border-left: 3px solid #60a5fa; background: #eff6ff; font-size: 0.9rem; }
+.rp-retry { margin-top: 10px; padding: 8px 14px; font-size: 0.9rem; }
 .model-answer-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline; display: block; margin: 0 auto; }
 
 /* SHARED COMPONENTS */
@@ -113,6 +126,37 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     margin-bottom: 20px;
 }
 
+.study-intro {
+    margin: 4px 0 14px;
+    color: #3f6212;
+    line-height: 1.5;
+    font-size: 0.92rem;
+}
+
+.bilingual-guidance {
+    margin: 8px 0 0;
+    padding-left: 22px;
+}
+
+.bilingual-guidance li {
+    margin: 8px 0;
+    line-height: 1.35;
+}
+
+.target-language {
+    display: block;
+    font-weight: 700;
+}
+
+.english-support {
+    display: block;
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 0.86em;
+    font-style: italic;
+    font-weight: 400;
+}
+
 .checklist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -132,7 +176,28 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     text-align: left;
 }
 
+.check-btn .english-support {
+    margin-left: 24px;
+    text-align: left;
+}
+
 .check-btn:hover { background: #dcfce7; transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+.btn-content {
+    border-color: #0284c7;
+    color: #075985;
+    background: #f0f9ff;
+}
+
+.btn-content:hover { background: #e0f2fe; }
+
+.btn-question {
+    border-color: #7c3aed;
+    color: #6d28d9;
+    background: #faf5ff;
+}
+
+.btn-question:hover { background: #f3e8ff; }
 
 .ai-box {
     margin-top: 15px;
@@ -144,6 +209,29 @@ textarea:focus { border-color: var(--secondary); outline: none; }
     font-size: 0.95rem;
     animation: fadeIn 0.3s ease;
 }
+
+.ai-study-part { margin-top: 12px; }
+.ai-study-part ol, .ai-study-part ul { margin: 7px 0 0; padding-left: 22px; }
+.ai-study-part li { margin-bottom: 6px; line-height: 1.45; }
+.study-challenge {
+    margin-top: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.feedback-section-card {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 9px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+.feedback-section-card ul { margin: 7px 0 0; padding-left: 22px; }
+.feedback-section-card p { margin: 7px 0 0; }
+.feedback-strength { background: #f0fdf4; border-color: #bbf7d0; }
+.feedback-next { background: #fff7ed; border-color: #fed7aa; }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }

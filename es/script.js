@@ -30,12 +30,20 @@ function switchTab(tab) {
   document.getElementById('sectionRoleplay').style.display = tab === 'role' ? 'block' : 'none';
 }
 
-let currentLevel = 'OL';
+let currentLevel = 'HL';
 let currentMode = 'exam'; 
 let currentTopic = null;
 let isMockExam = false; 
 let mockQuestions = []; 
-let mockIndex = 0;      
+let mockIndex = 0;
+let mockPhase = 'idle';
+let mockAnswers = [];
+let mockSelectedRoleplays = [];
+let mockChosenRoleplay = null;
+let mockConversationScore = null;
+let mockRoleplayScore = null;
+let mockOpinionQuestion = null;
+let mockOpinionCompleted = false;
 
 // ===========================================
 // BASE DE DATOS (DATA) - TEMAS 1-15
@@ -304,6 +312,21 @@ const FUT_Q = [
   { prompt: "Habla de lo que harás cuando termines el instituto.", guidance: ["estudios o trabajo", "razones", "objetivos", "planes a más largo plazo"] }
 ];
 
+const OPINION_Q = [
+  { prompt: "¿Qué opinas del uso de la inteligencia artificial en la educación?", guidance: ["una ventaja", "un posible riesgo", "un ejemplo", "tu conclusión personal"] },
+  { prompt: "¿Crees que la tecnología mejora la vida de los jóvenes?", guidance: ["comunicación y aprendizaje", "redes sociales", "un inconveniente", "tu opinión personal"] },
+  { prompt: "¿Qué podemos hacer para reducir la contaminación?", guidance: ["transporte", "consumo y residuos", "responsabilidad individual", "medidas de gobiernos o colegios"] },
+  { prompt: "¿Es importante reciclar?", guidance: ["por qué importa", "qué reciclas", "dificultades", "cómo animar a otras personas"] }
+];
+
+const ROLEPLAY_LABELS = {
+    1: "Erasmus accommodation",
+    2: "Broken laptop",
+    3: "Camper van",
+    4: "Single-use plastics",
+    5: "Car breakdown"
+};
+
 function getTopicGuide(topic) {
     const index = DATA.indexOf(topic);
     return TOPIC_GUIDES[index] || { prompt: { OL: topic.OL, HL: topic.HL }, ideas: [], hlIdeas: [], questions: [] };
@@ -336,6 +359,10 @@ function getExamGuidanceBilingual(topic) {
 // ===========================================
 
 function setLevel(lvl) { 
+    if (isMockExam && !['idle', 'setup'].includes(mockPhase)) {
+        alert('Finish or restart the current mock before changing level.');
+        return;
+    }
     currentLevel = lvl; 
     document.getElementById('btnOL').className = lvl === 'OL' ? 'level-btn active' : 'level-btn'; 
     document.getElementById('btnHL').className = lvl === 'HL' ? 'level-btn hl active' : 'level-btn'; 
@@ -348,6 +375,10 @@ function setLevel(lvl) {
 }
 
 function setMode(mode) {
+    if (isMockExam && mode !== 'exam') {
+        alert('Finish or restart the current mock before opening Study Mode.');
+        return;
+    }
     currentMode = mode;
     document.getElementById('modeExam').className = mode === 'exam' ? 'mode-btn active' : 'mode-btn';
     document.getElementById('modeStudy').className = mode === 'study' ? 'mode-btn active' : 'mode-btn';
@@ -387,7 +418,11 @@ function initConv() {
         b.className = 'topic-btn'; 
         b.innerText = item.title; 
         b.onclick = () => { 
-            isMockExam = false; 
+            if (isMockExam) {
+                resetMockState();
+                document.getElementById('mockPanel').style.display = 'none';
+                document.querySelector('.rp-selector').style.display = '';
+            }
             document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
             b.classList.add('active'); 
             currentTopic = item; 
@@ -421,35 +456,155 @@ function speakText() {
 }
 
 // === MOCK EXAM ===
-function startMockExam() { 
+function resetMockState() {
+    isMockExam = false;
+    mockPhase = 'idle';
+    mockQuestions = [];
+    mockIndex = 0;
+    mockAnswers = [];
+    mockSelectedRoleplays = [];
+    mockChosenRoleplay = null;
+    mockConversationScore = null;
+    mockRoleplayScore = null;
+    mockOpinionQuestion = null;
+    mockOpinionCompleted = false;
+}
+
+function startMockExam() {
     setMode('exam');
-    isMockExam = true; 
-    mockIndex = 0; 
-    document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
-    
-    let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
-    const pastPrompt = PAST_Q[Math.floor(Math.random()*PAST_Q.length)];
-    const futurePrompt = FUT_Q[Math.floor(Math.random()*FUT_Q.length)];
-    mockQuestions = [
-        { prompt: getExamPrompt(DATA[i[0]]), guidance: getExamGuidance(DATA[i[0]]), topic: DATA[i[0]] },
-        { prompt: getExamPrompt(DATA[i[1]]), guidance: getExamGuidance(DATA[i[1]]), topic: DATA[i[1]] },
-        { prompt: getExamPrompt(DATA[i[2]]), guidance: getExamGuidance(DATA[i[2]]), topic: DATA[i[2]] },
-        { ...pastPrompt, guidance: currentLevel === 'HL' ? pastPrompt.guidance : [], label: "PASADO" },
-        { ...futurePrompt, guidance: currentLevel === 'HL' ? futurePrompt.guidance : [], label: "FUTURO" }
-    ];
+    resetMockState();
+    isMockExam = true;
+    mockPhase = 'setup';
+    document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active'));
+    document.getElementById('exerciseArea').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('studyContainer').style.display = 'none';
+    document.querySelector('.rp-selector').style.display = '';
+    renderMockRoleplaySelection();
+}
+
+function renderMockRoleplaySelection() {
+    const panel = document.getElementById('mockPanel');
+    panel.style.display = 'block';
+    panel.innerHTML = `<div class="mock-step-label">FULL MOCK · ${escapeHTML(currentLevel)}</div>
+        <h3>First, choose 3 role plays</h3>
+        <p>You will answer six conversation questions: four general topics, one past question and one future question. After the conversation, the mock will randomly choose one of your three role plays.</p>
+        <div class="mock-rp-grid">${Object.entries(ROLEPLAY_LABELS).map(([id, label]) => `<button type="button" class="mock-rp-option" data-mock-rp="${id}" aria-pressed="false" onclick="toggleMockRoleplaySelection(${id}, this)"><span>RP ${id}</span>${escapeHTML(label)}</button>`).join('')}</div>
+        <p id="mockSelectionCount" class="mock-selection-count">Choose 3 of 5</p>
+        <button id="mockBeginBtn" class="btn-main" type="button" onclick="beginMockConversation()" disabled>Start conversation</button>`;
+}
+
+function toggleMockRoleplaySelection(id, button) {
+    const selectedIndex = mockSelectedRoleplays.indexOf(id);
+    if (selectedIndex >= 0) {
+        mockSelectedRoleplays.splice(selectedIndex, 1);
+        button.classList.remove('selected');
+        button.setAttribute('aria-pressed', 'false');
+    } else if (mockSelectedRoleplays.length < 3) {
+        mockSelectedRoleplays.push(id);
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+    }
+    const count = document.getElementById('mockSelectionCount');
+    const begin = document.getElementById('mockBeginBtn');
+    count.innerText = mockSelectedRoleplays.length === 3 ? 'Three selected — ready to begin' : `Choose ${3 - mockSelectedRoleplays.length} more`;
+    begin.disabled = mockSelectedRoleplays.length !== 3;
+}
+
+function beginMockConversation() {
+    if (mockSelectedRoleplays.length !== 3) return;
+    mockChosenRoleplay = mockSelectedRoleplays[Math.floor(Math.random() * mockSelectedRoleplays.length)];
+    mockPhase = 'conversation';
+    mockIndex = 0;
+    mockAnswers = [];
+
+    // Topics 12-15 already focus on holidays/past/future, so the four general
+    // questions come from topics 1-11 to keep the time-frame questions distinct.
+    const generalTopics = DATA.slice(0, 11).sort(() => Math.random() - 0.5).slice(0, 4);
+    const pastPrompt = PAST_Q[Math.floor(Math.random() * PAST_Q.length)];
+    const futurePrompt = FUT_Q[Math.floor(Math.random() * FUT_Q.length)];
+    mockQuestions = generalTopics.map(topic => ({
+        prompt: getExamPrompt(topic),
+        guidance: getExamGuidance(topic),
+        topic
+    })).concat([
+        { ...pastPrompt, guidance: currentLevel === 'HL' ? pastPrompt.guidance : [], label: 'PASADO' },
+        { ...futurePrompt, guidance: currentLevel === 'HL' ? futurePrompt.guidance : [], label: 'FUTURO' }
+    ]);
     showMockQuestion();
+}
+
+function renderMockProgress() {
+    const panel = document.getElementById('mockPanel');
+    panel.style.display = 'block';
+    panel.innerHTML = `<div class="mock-progress-row"><strong>Conversation</strong><span>${Math.min(mockIndex + 1, 6)} of 6</span></div>
+        <div class="mock-progress-track"><span style="width:${Math.min(((mockIndex + 1) / 6) * 100, 100)}%"></span></div>
+        <p class="mock-small-note">Your selected role play will be revealed after the conversation.</p>`;
 }
 
 function showMockQuestion() {
     const item = mockQuestions[mockIndex];
-    document.getElementById('exerciseArea').style.display = 'block'; 
-    document.getElementById('result').style.display = 'none'; 
-    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
-    document.getElementById('userInput').value = "";
+    renderMockProgress();
+    document.getElementById('exerciseArea').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/6${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
+    document.getElementById('userInput').value = '';
     showExamGuidance(item.guidance, item.topic ? getExamGuidanceBilingual(item.topic) : null);
 }
 
-function nextMockQuestion() { mockIndex++; showMockQuestion(); }
+function nextMockQuestion() {
+    mockIndex++;
+    showMockQuestion();
+}
+
+function calculateMockConversationScore() {
+    if (!mockAnswers.length) return 0;
+    const average = mockAnswers.reduce((sum, item) => sum + item.score, 0) / mockAnswers.length;
+    return Math.max(0, Math.min(70, Math.round(average * 0.7)));
+}
+
+function finishMockConversation() {
+    mockConversationScore = calculateMockConversationScore();
+    mockPhase = 'transition';
+    document.getElementById('exerciseArea').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+    const panel = document.getElementById('mockPanel');
+    const opinionOption = currentLevel === 'HL'
+        ? `<div class="mock-opinion-card"><h4>⭐ Optional examiner extension</h4><p>When a conversation is going well, an examiner may explore a broader opinion. This extra question gives you that challenge, but it will not change your mark out of 70.</p><button class="btn-main mock-secondary" type="button" onclick="startMockOpinion()">Try an opinion question</button></div>`
+        : '';
+    panel.innerHTML = `<div class="mock-step-label">CONVERSATION COMPLETE</div>
+        <div class="mock-score-preview"><strong>${mockConversationScore}/70</strong><span>Indicative conversation mark</span></div>
+        ${opinionOption}
+        <button class="btn-main" type="button" onclick="startMockRoleplay()">Continue to role play →</button>`;
+}
+
+function startMockOpinion() {
+    mockPhase = 'opinion';
+    mockOpinionQuestion = OPINION_Q[Math.floor(Math.random() * OPINION_Q.length)];
+    document.getElementById('mockPanel').innerHTML = `<div class="mock-step-label">OPTIONAL EXTENSION</div><p class="mock-small-note">This question is extra practice and is not included in the conversation mark.</p>`;
+    document.getElementById('exerciseArea').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('qDisplay').innerHTML = `<strong>Optional opinion question:</strong><br><br>${escapeHTML(mockOpinionQuestion.prompt)}`;
+    document.getElementById('userInput').value = '';
+    showExamGuidance(mockOpinionQuestion.guidance);
+}
+
+function startMockRoleplay() {
+    mockPhase = 'roleplay';
+    document.getElementById('mockPanel').style.display = 'none';
+    switchTab('role');
+    const selector = document.querySelector('.rp-selector');
+    selector.style.display = 'none';
+    const chosenButton = document.querySelector(`.rp-btn-select[data-rp-id="${mockChosenRoleplay}"]`);
+    seleccionarRP(mockChosenRoleplay, chosenButton, true);
+    document.getElementById('rpContext').insertAdjacentHTML('afterbegin', `<div class="mock-roleplay-reveal"><span>Your role play</span><strong>RP ${mockChosenRoleplay}: ${escapeHTML(ROLEPLAY_LABELS[mockChosenRoleplay])}</strong></div>`);
+}
+
+function restartMockExam() {
+    document.querySelector('.rp-selector').style.display = '';
+    switchTab('conv');
+    startMockExam();
+}
 
 function updateQuestion() { 
     document.getElementById('exerciseArea').style.display = 'block'; 
@@ -482,7 +637,9 @@ function resetApp() {
     document.getElementById('result').style.display = 'none'; 
     document.getElementById('exerciseArea').style.display = 'block'; 
     if(isMockExam) {
-        isMockExam = false;
+        resetMockState();
+        document.getElementById('mockPanel').style.display = 'none';
+        document.querySelector('.rp-selector').style.display = '';
         document.getElementById('userInput').value = "";
         document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
         const btnHint = document.getElementById('btnHint');
@@ -502,12 +659,23 @@ async function analyze() {
   const b = document.getElementById('btnAction'); 
   b.disabled = true; b.innerText = "⏳ Grading...";
 
-  const mockItem = isMockExam ? mockQuestions[mockIndex] : null;
+  const optionalOpinion = isMockExam && mockPhase === 'opinion';
+  const mockItem = optionalOpinion ? mockOpinionQuestion : (isMockExam && mockPhase === 'conversation' ? mockQuestions[mockIndex] : null);
   const questionContext = mockItem ? mockItem.prompt : getExamPrompt(currentTopic);
   const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
   const levelExpectation = currentLevel === 'HL'
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
       : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
+  const scoreCalibration = currentLevel === 'HL' ? `
+    HL SCORE CALIBRATION (use these Leaving Cert learner benchmarks, not native-speaker expectations):
+    - Keep the numerical score consistent with the written feedback. If the response is described as very good, communicates substantial relevant information and has no significant language errors, do not award a mark in the mid-60s merely because it could include more examples, connectors or vocabulary variety.
+    - 90-100: exceptional senior-cycle response: sustained, highly controlled, richly developed and consistently accurate. It does not need to sound bilingual.
+    - 82-89: excellent response: autonomous, detailed and varied, with strong control; minor limitations do not impede it.
+    - 75-81: very good response: clearly relevant and developed, gives substantial information and some reasons, opinions or examples, uses useful vocabulary, and has few or no significant errors. Some repetition, ordinary vocabulary or missed opportunities for further detail are compatible with this band.
+    - 65-74: competent response but with noticeable limitations in development, range, relevance or accuracy. Communication remains successful.
+    - 50-64: adequate response relying mainly on simple or brief language, with limited development or recurring inaccuracies.
+    - Below 50: substantial difficulty communicating a relevant, comprehensible response.
+    - A response should normally receive at least 75 when it answers the topic directly, provides several relevant details, sustains communication and contains no significant language errors, even if wider linking, more varied vocabulary or an additional example would improve it.` : '';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -529,6 +697,7 @@ async function analyze() {
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - Avoid demanding memorised idioms or unnatural language.
+    ${scoreCalibration}
     - Return valid JSON only, with no markdown.
 
     OUTPUT SCHEMA:
@@ -555,8 +724,10 @@ async function analyze() {
     document.getElementById('userResponseText').innerText = t;
     
     const s = document.getElementById('scoreDisplay');
-    s.innerText = `Score: ${j.score}%`;
-    s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
+    const safeScore = Math.max(0, Math.min(100, Number(j.score) || 0));
+    s.innerText = optionalOpinion ? `Optional practice: ${safeScore}%` : `Score: ${safeScore}%`;
+    const positiveScoreThreshold = currentLevel === 'HL' ? 75 : 85;
+    s.style.color = safeScore >= positiveScoreThreshold ? "#166534" : (safeScore >= 50 ? "#ca8a04" : "#991b1b");
 
     document.getElementById('fbES').innerText = "🇪🇸 " + j.feedback_es;
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
@@ -582,12 +753,25 @@ async function analyze() {
     }
 
     const btnReset = document.getElementById('btnReset');
-    if (isMockExam) {
-        if (mockIndex < 4) {
-            btnReset.innerText = "➡️ Next Question"; btnReset.onclick = nextMockQuestion; 
+    if (isMockExam && mockPhase === 'conversation') {
+        mockAnswers.push({
+            number: mockIndex + 1,
+            label: mockItem.label || (mockItem.topic ? mockItem.topic.title : `Question ${mockIndex + 1}`),
+            prompt: mockItem.prompt,
+            score: safeScore,
+            feedback_es: j.feedback_es || ''
+        });
+        if (mockIndex < 5) {
+            btnReset.innerText = "➡️ Next Question";
+            btnReset.onclick = nextMockQuestion;
         } else {
-            btnReset.innerText = "🏁 Finish Exam"; btnReset.onclick = resetApp; 
+            btnReset.innerText = "✅ Complete Conversation";
+            btnReset.onclick = finishMockConversation;
         }
+    } else if (optionalOpinion) {
+        mockOpinionCompleted = true;
+        btnReset.innerText = "Continue to role play →";
+        btnReset.onclick = startMockRoleplay;
     } else {
         btnReset.innerText = "🔄 Try another topic"; btnReset.onclick = resetApp; 
     }
@@ -808,7 +992,12 @@ const RP_DB = {
     }
 };
 
-function seleccionarRP(id, btn) {
+function seleccionarRP(id, btn, fromMock = false) {
+    if (!fromMock && isMockExam) {
+        resetMockState();
+        document.getElementById('mockPanel').style.display = 'none';
+        document.querySelector('.rp-selector').style.display = '';
+    }
     rpActual = id; pasoActual = 0;
     rpResponses = [];
     rpEvaluationInProgress = false;
@@ -1016,7 +1205,35 @@ function renderRoleplayEvaluation(evaluation) {
     }
     html += `</div></section>`;
     document.getElementById('rpChat').insertAdjacentHTML('beforeend', html);
+    if (isMockExam && mockPhase === 'roleplay') {
+        completeMockExam(Math.max(0, Math.min(30, total)));
+    }
     document.getElementById('rpChat').scrollTop = document.getElementById('rpChat').scrollHeight;
+}
+
+function completeMockExam(roleplayScore) {
+    mockRoleplayScore = Math.round(Number(roleplayScore) || 0);
+    mockConversationScore = mockConversationScore ?? calculateMockConversationScore();
+    mockPhase = 'complete';
+    const totalScore = mockConversationScore + mockRoleplayScore;
+    const breakdown = mockAnswers.map(item => `<li><span>${escapeHTML(item.label)}</span><strong>${Math.round(item.score)}%</strong></li>`).join('');
+    const opinionNote = currentLevel === 'HL'
+        ? `<p class="mock-small-note">Optional opinion extension: <strong>${mockOpinionCompleted ? 'completed' : 'not attempted'}</strong> (not included in the mark).</p>`
+        : '';
+    const summary = `<section class="mock-final-summary" aria-label="Mock exam final result">
+        <div class="mock-step-label">FULL MOCK COMPLETE · ${escapeHTML(currentLevel)}</div>
+        <h3>Final indicative result</h3>
+        <div class="mock-total-score">${totalScore}<span>/100</span></div>
+        <div class="mock-score-grid">
+            <div><strong>${mockConversationScore}/70</strong><span>Conversation</span></div>
+            <div><strong>${mockRoleplayScore}/30</strong><span>Role play</span></div>
+        </div>
+        <details class="mock-breakdown"><summary>View conversation breakdown</summary><ul>${breakdown}</ul></details>
+        ${opinionNote}
+        <p class="evaluation-note">This is supportive AI feedback based on written or transcribed answers. It is not an official SEC result, and pronunciation or live interaction cannot be fully assessed here.</p>
+        <button class="btn-main" type="button" onclick="restartMockExam()">🎲 Start another full mock</button>
+    </section>`;
+    document.getElementById('rpChat').insertAdjacentHTML('beforeend', summary);
 }
 
 function mostrarSugerencia() {

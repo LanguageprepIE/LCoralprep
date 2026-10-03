@@ -1,743 +1,214 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI Study Skills: an interactive Transition Year course hub.">
-  <title>AI Study Skills – Transition Year</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LCorals - Spanish</title>
+  <meta name="description" content="Prepare for your Leaving Cert Spanish Oral Exam. Interactive Roleplays and Conversation topics with AI feedback. Free study tool for Irish students.">
+<meta name="keywords" content="Leaving Cert Spanish, Spanish Oral, Roleplays, Higher Level, Ordinary level, Spanish Revision, Ireland">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇪🇸</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=visual-board-v1">
+  
+  <style>
+    .profile-img { width: 90px !important; height: 90px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid var(--primary) !important; margin-bottom: 15px !important; }
+    .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
+  </style>
 </head>
 <body>
-  <div class="grid-glow" aria-hidden="true"></div>
 
-  <header class="topbar">
-    <a class="brand" href="#home" data-page-link="home" aria-label="AI Study Skills home">
-      <span class="brand-mark" aria-hidden="true">AI</span>
-      <span><strong>AI Study Skills</strong><small>Transition Year</small></span>
-    </a>
-    <button class="button button-outline" id="present-button" type="button">⛶ Present</button>
+<div class="container">
+  
+  <header>
+    <h1>
+      <a href="../" style="text-decoration: none; color: inherit; cursor: pointer;">
+        LCorals Ireland
+      </a>
+    </h1>
+    <p class="subtitle">Module: Leaving Cert Spanish (Oral)</p>
+    
+    <button class="info-toggle" onclick="toggleInfo()">ℹ️ Instructions</button>
+<div id="infoBox" class="info-box">
+  <strong>Instrucciones:</strong>
+  <ul>
+    <li>⌨️ <strong>Important:</strong> Add the <strong>Spanish Keyboard</strong> to your device settings. Use the 🎤 microphone on the Spanish keyboard for accurate voice-to-text.</li>
+    <li>🗣️ <strong>Conversation:</strong> Select a topic and speak freely. The suggested content is a guide, not a compulsory checklist.</li>
+    <li>📚 <strong>Study Mode:</strong> Prepare ideas, optional questions and useful language with AI help.</li>
+    <li>🎭 <strong>Roleplays:</strong> Follow the instructions on the Candidate Card. Listen to the examiner and reply.</li>
+  </ul>
+</div>
+
+    <section class="updates-board" aria-labelledby="updatesTitle">
+      <div class="updates-board-heading">
+        <span class="updates-kicker">LCORALS NEWS</span>
+        <h2 id="updatesTitle">📌 What’s new</h2>
+      </div>
+      <div class="updates-list">
+        <article class="update-item update-highlight">
+          <span class="update-badge">NEW</span>
+          <div>
+            <strong>Full Mock Exam</strong>
+            <p>Six conversation questions, a choice of three role plays and a final <strong>/70 + /30</strong> result.</p>
+          </div>
+        </article>
+        <article class="update-item">
+          <span class="update-badge">HL</span>
+          <div>
+            <strong>More realistic feedback</strong>
+            <p>Higher Level marking now rewards clear, developed communication without expecting students to sound bilingual.</p>
+          </div>
+        </article>
+        <article class="update-item">
+          <span class="update-badge">EXTRA</span>
+          <div>
+            <strong>Opinion Training</strong>
+            <p>Optional practice for giving opinions, reasons and examples about technology, AI and the environment.</p>
+          </div>
+        </article>
+      </div>
+      <div class="updates-support">
+        <strong>💛 Help keep LCorals running</strong>
+        <p>LCorals is an independent, teacher-made project with no sponsor or external funding. AI usage, hosting, the domain and the time needed to maintain the site all have real costs, so donations are genuinely appreciated.</p>
+        <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" rel="noopener" class="updates-support-link">Support the project</a>
+      </div>
+    </section>
   </header>
 
-  <nav class="course-nav" aria-label="Course sections">
-    <div class="tab-list">
-      <button class="tab-button active" type="button" data-page-link="home" aria-controls="home">Home</button>
-      <button class="tab-button" type="button" data-page-link="session1" aria-controls="session1">Session 1</button>
-      <button class="tab-button" type="button" data-page-link="session2" aria-controls="session2">Session 2</button>
-      <button class="tab-button" type="button" data-page-link="session3" aria-controls="session3">Session 3</button>
-      <button class="tab-button" type="button" data-page-link="session4" aria-controls="session4">Session 4</button>
-      <button class="tab-button" type="button" data-page-link="portfolio" aria-controls="portfolio">Portfolio</button>
+  <div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('conv')" id="tabConv">💬 Conversation</button>
+    <button class="tab-btn" onclick="switchTab('role')" id="tabRole">🎭 Roleplays</button>
+  </div>
+
+  <div id="sectionConversation">
+    
+    <div class="level-selector">
+        <button class="level-btn" id="btnOL" onclick="setLevel('OL')">Ordinary Level (OL)</button>
+        <button class="level-btn hl active" id="btnHL" onclick="setLevel('HL')">Higher Level (HL)</button>
     </div>
-    <span class="ready-label"><span></span> Sessions 1–4 ready</span>
-  </nav>
 
-  <main>
-    <section class="page active" id="home" aria-labelledby="course-title">
-      <div class="hero">
-        <div>
-          <p class="eyebrow">✦ Your course. Your thinking.</p>
-          <h1 id="course-title">Learn with AI.<br><span>Do not outsource your brain.</span></h1>
-          <p class="hero-copy">A ten-hour practical module about using artificial intelligence to understand, practise, organise and study — while staying curious, critical and in control.</p>
-          <div class="hero-actions" aria-label="Choose your current session">
-            <button class="button button-primary" type="button" data-page-link="session1">Start Session 1 <span aria-hidden="true">→</span></button>
-            <button class="button button-outline" type="button" data-page-link="session2">Continue to Session 2 <span aria-hidden="true">→</span></button>
-            <button class="button button-outline" type="button" data-page-link="session3">Open Session 3 <span aria-hidden="true">→</span></button>
-            <button class="button button-outline" type="button" data-page-link="session4">Open Session 4 <span aria-hidden="true">→</span></button>
-          </div>
-        </div>
-        <div class="brain-card">
-          <div class="orbit orbit-one" aria-hidden="true"></div>
-          <div class="orbit orbit-two" aria-hidden="true"></div>
-          <span class="brain-symbol" aria-hidden="true">⌁</span>
-          <p>AI can generate an answer.<br><strong>You create the learning.</strong></p>
+    <div class="mode-selector">
+        <button id="modeExam" class="mode-btn active" onclick="setMode('exam')">🎤 Exam Practice</button>
+        <button id="modeStudy" class="mode-btn" onclick="setMode('study')">📚 Study Mode</button>
+    </div>
+
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Full Mock Exam</button>
+    <div id="mockPanel" class="mock-panel" style="display:none;"></div>
+    
+    <div class="topic-grid" id="topicGrid"></div>
+
+    <div id="studyContainer" class="study-box" style="display:none;"></div>
+
+    <div id="exerciseArea" style="display:none;">
+      <div class="question-card">
+        <div id="qDisplay" style="font-weight: 700;">Selecciona un tema...</div>
+        <button class="audio-btn" onclick="speakText()">🔊 Escuchar Pregunta</button>
+      </div>
+      
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
+        💡 ¿Qué debo incluir? / What should I include? (Key Points)
+      </button>
+      <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
+      
+      <textarea id="userInput" placeholder="Escribe tu respuesta aquí..."></textarea>
+      
+      <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
+        👂 Escuchar mi respuesta
+      </button>
+
+      <button class="btn-main" id="btnAction" onclick="analyze()">✨ Corregir Respuesta</button>
+    </div>
+
+    <div id="result" style="display:none;">
+      <div class="student-response-box"><strong>Dijiste:</strong> <span id="userResponseText"></span></div>
+      <div class="feedback-box">
+        <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>
+        <div id="fbES" style="margin-bottom:10px; font-weight:500;"></div>
+        <div id="fbEN" style="color:#64748b; font-style:italic;"></div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+        <div id="errorsList"></div>
+      </div>
+      <button id="btnReset" class="btn-main" style="margin-top:20px; background:#e2e8f0; color:var(--text);" onclick="resetApp()">🔄 Otro Tema</button>
+    </div>
+  </div>
+
+  <div id="sectionRoleplay" style="display:none;">
+    <div class="rp-selector">
+      <div class="rp-btn-select" data-rp-id="1" onclick="seleccionarRP(1, this)">RP 1 (Erasmus)</div>
+      <div class="rp-btn-select" data-rp-id="2" onclick="seleccionarRP(2, this)">RP 2 (Laptop)</div>
+      <div class="rp-btn-select" data-rp-id="3" onclick="seleccionarRP(3, this)">RP 3 (Camper)</div>
+      <div class="rp-btn-select" data-rp-id="4" onclick="seleccionarRP(4, this)">RP 4 (Plastics)</div>
+      <div class="rp-btn-select" data-rp-id="5" onclick="seleccionarRP(5, this)">RP 5 (Breakdown)</div>
+    </div>
+
+    <div id="rpArea" style="display:none;">
+      <div id="rpContext" class="question-card" style="margin-bottom:15px; font-weight:700;"></div>
+      
+      <div id="rpChat" class="rp-chat-window"></div>
+      
+      <div id="rpInstructionBox" class="instruction-box" style="display:none;"></div>
+
+      <div class="rp-controls">
+        <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirSiguienteAudio()">▶️ Play Examiner Audio</button>
+        
+        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        
+        <div style="display:flex; gap:10px;">
+          <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fef3c7; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Ver Sugerencia</button>
+          <button id="rpSendBtn" class="btn-main" style="flex:1; margin:0;" onclick="enviarRespuestaRP()" disabled>Enviar 📤</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="footer-section">
+    <img src="../david.PNG" alt="David Martín" class="profile-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    
+    <h3>David Martín</h3>
+    <p class="bio-text" style="text-align: center; margin-bottom: 15px;">Teacher & Developer at <strong>Ardgillan Community College</strong>.</p>
+    
+    <div class="support-box">
+        <span class="support-title">🚀 A Student-Focused Project</span>
+        <p class="support-text">
+            I created LCorals to help you feel confident in your oral exams. 
+            It's a free tool driven by passion, but running advanced AI does come with monthly costs.
+            <br><br>
+            If you find it useful, your support means the world. It helps keep the site running and allows me to 
+            <strong>invest in better technology to fix limitations</strong> and improve the experience for everyone.
+        </p>
+    </div>
+
+    <a href="https://revolut.me/davidkhy4/pocket/TbT6B5Grkq" target="_blank" class="revolut-btn">
+       ☕ Support the Project
+    </a>
+
+    <div class="feedback-section">
+      <p style="font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</p>
+      <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
+      
+      <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
+        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
+      </form>
+    </div>
+
+    <div class="legal-section">
+        <p>© 2026 LCorals.ie. Created for educational purposes only.</p>
+        <p>
+            <strong>Disclaimer:</strong> This tool uses Artificial Intelligence to generate feedback. 
+            While designed to support Leaving Cert students, AI can make mistakes. 
+            Always consult your textbook or teacher for official corrections.
+        </p>
+        <p>
+            <strong>Privacy:</strong> We use privacy-friendly analytics (GoatCounter) and do not track personal data via cookies. 
+            Feedback is anonymous unless voluntarily provided.
+        </p>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js?v=visual-board-v1"></script>
+<script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
-      <section class="course-map" aria-labelledby="roadmap-title">
-        <div class="section-heading">
-          <p class="kicker">The roadmap</p>
-          <h2 id="roadmap-title">One module. Three phases.</h2>
-          <p>We will build the detail together as the course progresses.</p>
-        </div>
-        <div class="phase-grid">
-          <article class="phase-card active">
-            <span class="card-number">01</span><span class="card-icon" aria-hidden="true">◫</span>
-            <h3>Learn</h3><p>Prompt, explain, practise, research and verify.</p><small>Sessions 1–6</small>
-          </article>
-          <article class="phase-card">
-            <span class="card-number">02</span><span class="card-icon" aria-hidden="true">⌘</span>
-            <h3>Build</h3><p>Use GitHub Copilot to turn a real school topic into a useful study website.</p><small>Sessions 7–9 · GitHub Pages</small>
-          </article>
-          <article class="phase-card">
-            <span class="card-number">03</span><span class="card-icon" aria-hidden="true">✦</span>
-            <h3>Show</h3><p>Share the result and explain the thinking behind it.</p><small>Session 10</small>
-          </article>
-        </div>
-      </section>
-
-      <section class="principles" aria-labelledby="principles-title">
-        <div class="section-heading compact">
-          <p class="kicker">Our agreement</p><h2 id="principles-title">Three rules from day one</h2>
-        </div>
-        <div class="rule-grid">
-          <article><span aria-hidden="true">▣</span><div><strong>Protect privacy</strong><p>Never enter personal or private information.</p></div></article>
-          <article><span aria-hidden="true">✓</span><div><strong>Check the output</strong><p>Never assume an AI answer is correct.</p></div></article>
-          <article><span aria-hidden="true">◎</span><div><strong>Keep thinking</strong><p>Use AI to support your thinking, not replace it.</p></div></article>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="session1" aria-labelledby="session1-title" hidden>
-      <div class="session-header">
-        <div>
-          <p class="eyebrow"><span class="session-number">01</span> First experiment</p>
-          <h1 id="session1-title">Can AI actually<br><span>help you learn?</span></h1>
-          <p>Compare two ways of using Copilot and decide which one produces more learning.</p>
-        </div>
-        <aside class="progress-card" data-progress-card="session1">
-          <div><strong data-progress-number>0%</strong><span>lesson complete</span></div>
-          <div class="progress-track" data-progress-track role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-bar></span></div>
-          <small>The checklist stays only on this computer during this visit.</small>
-        </aside>
-      </div>
-
-      <section class="content-section" aria-labelledby="launch-title">
-        <div class="section-heading compact"><p class="kicker">Begin here</p><h2 id="launch-title">Set up your workspace</h2></div>
-        <div class="launch-grid">
-          <article>
-            <span class="step-number">1</span><h3>Sign in</h3>
-            <p>Use your school Microsoft account. Stay on this page until your teacher begins.</p>
-            <a class="button button-outline" href="https://www.microsoft365.com/" target="_blank" rel="noopener">Open Microsoft 365 ↗</a>
-          </article>
-          <article>
-            <span class="step-number">2</span><h3>Create your portfolio</h3>
-            <p>Open Word, create a blank document and rename it <strong>AI Study Skills Portfolio – First name</strong>.</p>
-            <p class="check-note">✓ Check that it says “Saved to OneDrive”.</p>
-          </article>
-          <article>
-            <span class="step-number">3</span><h3>Open Copilot</h3>
-            <p>Open Copilot in a new tab with the same account. Do not enter personal information.</p>
-            <a class="button button-outline" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Open Copilot Chat ↗</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="starter-question">
-        <p class="kicker">Before you use AI</p>
-        <h2>If Copilot completes your homework perfectly, have you learned anything?</h2>
-        <p>Write two or three lines in your portfolio. There is no single correct answer.</p>
-      </section>
-
-      <section class="content-section" aria-labelledby="experiment-title">
-        <div class="section-heading">
-          <p class="kicker">The experiment</p>
-          <h2 id="experiment-title">Same topic. Two very different requests.</h2>
-          <p>Keep both Copilot conversations available for comparison.</p>
-        </div>
-        <div class="prompt-grid">
-          <article class="prompt-card prompt-one">
-            <div class="prompt-top"><span>Prompt A</span><small>Ask for an answer</small></div>
-            <blockquote id="prompt-a">Why does Earth have seasons?</blockquote>
-            <button class="button button-outline copy-button" type="button" data-copy-target="prompt-a">⧉ Copy prompt A</button>
-            <div class="prompt-questions"><strong>Notice:</strong><ul><li>Is it easy to understand?</li><li>Does it help you remember?</li><li>Does it make you think?</li><li>What might need verifying?</li></ul></div>
-          </article>
-          <article class="prompt-card prompt-two">
-            <div class="prompt-top"><span>Prompt B</span><small>Ask for a tutor</small></div>
-            <blockquote id="prompt-b">I am a 15-year-old student. Help me learn why Earth has seasons. Start by asking me what I already know. Then explain it in simple language using an everyday analogy. Do not give me more than 120 words at a time. Finish by asking me one question and wait for my answer.</blockquote>
-            <button class="button button-outline copy-button" type="button" data-copy-target="prompt-b">⧉ Copy prompt B</button>
-            <div class="prompt-questions"><strong>Then:</strong><ul><li>Answer Copilot’s question.</li><li>Continue for at least one reply.</li><li>Notice who is doing the thinking.</li></ul></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="compare-panel">
-        <div><p class="kicker">Compare in pairs</p><h2>Which version produced more learning?</h2></div>
-        <ol><li>Which response made you think more?</li><li>What did prompt B do differently?</li><li>Would you trust either answer without checking?</li></ol>
-        <div class="fact-check"><span aria-hidden="true">✓</span><p><strong>Verification checkpoint</strong>The seasons are mainly caused by Earth’s axial tilt — not by Earth moving closer to or farther from the Sun.</p></div>
-      </section>
-
-      <section class="task-checklist" aria-labelledby="checklist-title">
-        <div class="section-heading compact"><p class="kicker">Your progress</p><h2 id="checklist-title">Ready to finish?</h2></div>
-        <div class="checklist-grid">
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Sign in to Microsoft 365</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Create and rename your Word portfolio</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Open Copilot Chat</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Try both prompts</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Compare the two responses</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session1"> <span>Complete your portfolio reflection</span></label>
-        </div>
-      </section>
-
-      <section class="exit-ticket">
-        <div><p class="kicker">Exit ticket</p><h2>Three final lines</h2></div>
-        <ol><li>One useful thing AI can do for a student is…</li><li>One thing a student should not do is…</li><li>Today I used Copilot successfully: <strong>Yes / Partly / No</strong></li></ol>
-      </section>
-
-      <section class="content-section" aria-labelledby="agenda-title">
-        <div class="section-heading compact"><p class="kicker">Today’s route</p><h2 id="agenda-title">50-minute agenda</h2></div>
-        <div class="agenda-list">
-          <article><time>00–08</time><div><strong>Launch</strong><p>Open the course hub and sign in to Microsoft.</p></div></article>
-          <article><time>08–13</time><div><strong>Portfolio</strong><p>Create your Word document and check that it is saved.</p></div></article>
-          <article><time>13–18</time><div><strong>The mission</strong><p>Discover what this module is — and is not — about.</p></div></article>
-          <article><time>18–32</time><div><strong>Copilot experiment</strong><p>Compare an answer prompt with a tutor prompt.</p></div></article>
-          <article><time>32–39</time><div><strong>Think together</strong><p>Discuss what changed and what still needs checking.</p></div></article>
-          <article><time>39–47</time><div><strong>Reflection</strong><p>Record your own learning in the portfolio.</p></div></article>
-          <article><time>47–50</time><div><strong>Exit ticket</strong><p>Finish with one benefit, one risk and an access check.</p></div></article>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="session2" aria-labelledby="session2-title" hidden>
-      <div class="session-header">
-        <div>
-          <p class="eyebrow"><span class="session-number">02</span> Prompt adventure</p>
-          <h1 id="session2-title">Enter the<br><span>Knowledge Quest.</span></h1>
-          <p>Build a short educational RPG, play it and discover which instructions turn a basic request into an interactive learning experience.</p>
-        </div>
-        <aside class="progress-card" data-progress-card="session2">
-          <div><strong data-progress-number>0%</strong><span>lesson complete</span></div>
-          <div class="progress-track" data-progress-track role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-bar></span></div>
-          <small>Your ticks are temporary. Your portfolio is the evidence that matters.</small>
-        </aside>
-      </div>
-
-      <section class="content-section" aria-labelledby="catchup-title">
-        <div class="section-heading compact"><p class="kicker">First eight minutes</p><h2 id="catchup-title">Create your course portfolio</h2></div>
-        <div class="launch-grid">
-          <article>
-            <span class="step-number">1</span><h3>Open Word</h3>
-            <p>Sign in with your school Microsoft account and create one blank Word document.</p>
-            <a class="button button-outline" href="https://www.microsoft365.com/launch/word" target="_blank" rel="noopener">Open Word Online ↗</a>
-          </article>
-          <article>
-            <span class="step-number">2</span><h3>Name and save it</h3>
-            <p>Rename it <strong>AI Study Skills Portfolio – First name</strong> and check that it is saved to OneDrive.</p>
-            <button class="button button-outline" type="button" data-page-link="portfolio">Open portfolio templates →</button>
-          </article>
-          <article>
-            <span class="step-number">3</span><h3>Open Copilot</h3>
-            <p>Try Copilot Chat first. If access is blocked, use the Copilot panel in the top-right corner of Microsoft Edge.</p>
-            <a class="button button-outline" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Open Copilot Chat ↗</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="starter-question">
-        <p class="kicker">Before the adventure</p>
-        <h2>How could a story make a difficult school topic easier to learn?</h2>
-        <p>Discuss with a partner. Think about choices, challenges, feedback and memory.</p>
-      </section>
-
-      <section class="content-section" aria-labelledby="ingredients-title">
-        <div class="section-heading">
-          <p class="kicker">The anatomy of the prompt</p>
-          <h2 id="ingredients-title">Five instructions create the experience.</h2>
-          <p>A long prompt is not automatically a good prompt. Each instruction needs a purpose.</p>
-        </div>
-        <div class="ingredient-grid">
-          <article><span>01</span><h3>Goal</h3><p>Define exactly what the learner needs to understand or practise.</p></article>
-          <article><span>02</span><h3>Context</h3><p>Give the subject, topic, age and current level.</p></article>
-          <article><span>03</span><h3>Format</h3><p>Ask for four short scenes and one question at a time.</p></article>
-          <article><span>04</span><h3>Rules</h3><p>Control hints, health points, answers and length.</p></article>
-          <article><span>05</span><h3>Interaction</h3><p>Make Copilot wait and react to the learner’s choices.</p></article>
-        </div>
-      </section>
-
-      <section class="quest-builder" aria-labelledby="builder-title">
-        <div class="builder-heading">
-          <div><p class="kicker">The Knowledge Quest</p><h2 id="builder-title">Create your educational RPG</h2></div>
-          <span class="builder-badge">No coding required</span>
-        </div>
-
-        <div class="builder-layout">
-          <form class="builder-controls" id="quest-builder">
-            <label>Subject
-              <select id="quest-subject">
-                <option value="Spanish">Spanish</option>
-                <option value="English">English</option>
-                <option value="History">History</option>
-                <option value="Science">Science</option>
-                <option value="Maths">Maths</option>
-                <option value="Other">Another subject</option>
-              </select>
-            </label>
-            <label>Topic
-              <select id="quest-topic" aria-describedby="custom-topic-note"></select>
-            </label>
-            <label id="custom-topic-wrap" hidden>Your own topic
-              <input id="quest-custom-topic" type="text" maxlength="80" placeholder="Type a school topic">
-              <small id="custom-topic-note">Use a specific topic, not only the subject name.</small>
-            </label>
-            <label>Character
-              <select id="quest-character">
-                <option>a time traveller</option>
-                <option>a detective</option>
-                <option>a space pilot</option>
-                <option>a medieval healer</option>
-                <option>an apprentice wizard</option>
-                <option>an explorer</option>
-              </select>
-            </label>
-            <label>World
-              <select id="quest-world">
-                <option>a mysterious library</option>
-                <option>a city in the future</option>
-                <option>an ancient temple</option>
-                <option>a space station</option>
-                <option>a medieval kingdom</option>
-                <option>a secret research laboratory</option>
-              </select>
-            </label>
-            <label>Starting difficulty
-              <select id="quest-difficulty">
-                <option>easy</option>
-                <option selected>medium</option>
-                <option>challenging</option>
-              </select>
-            </label>
-            <button class="button button-primary" id="build-quest" type="button">✦ Build my RPG prompt</button>
-          </form>
-
-          <div class="builder-output">
-            <div class="output-top"><span>Your generated prompt</span><small>Edit it if you can improve it.</small></div>
-            <pre id="quest-prompt" tabindex="0">Choose your options, then press “Build my RPG prompt”.</pre>
-            <button class="button button-outline copy-button" id="copy-quest" type="button" data-copy-target="quest-prompt" disabled>⧉ Copy to Copilot</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="content-section" aria-labelledby="topic-bank-title">
-        <div class="section-heading compact"><p class="kicker">Need inspiration?</p><h2 id="topic-bank-title">The topic bank</h2></div>
-        <div class="topic-bank">
-          <article><h3>Spanish</h3><p>ser and estar · daily routine · describing people · school vocabulary</p></article>
-          <article><h3>English</h3><p>poetic techniques · persuasive language · character and theme · paragraph writing</p></article>
-          <article><h3>History</h3><p>World War I · Irish independence · the Industrial Revolution · the Cold War</p></article>
-          <article><h3>Science</h3><p>photosynthesis · cells · forces and energy · genetics</p></article>
-          <article><h3>Maths</h3><p>linear equations · percentages · Pythagoras · probability</p></article>
-        </div>
-      </section>
-
-      <section class="compare-panel">
-        <div><p class="kicker">After you play</p><h2>Improve the game master.</h2></div>
-        <ol><li>Play at least two scenes.</li><li>Identify one thing that helped you learn.</li><li>Identify one weakness in the questions or story.</li><li>Send one precise repair instruction.</li></ol>
-        <div class="fact-check"><span aria-hidden="true">!</span><p><strong>Repair prompt</strong><span id="repair-prompt">The story is interesting, but the questions are too easy. Keep the same character and setting, but increase the academic difficulty.</span></p><button class="mini-copy" type="button" data-copy-target="repair-prompt">Copy</button></div>
-      </section>
-
-      <section class="task-checklist" aria-labelledby="checklist2-title">
-        <div class="section-heading compact"><p class="kicker">Your progress</p><h2 id="checklist2-title">Session 2 checklist</h2></div>
-        <div class="checklist-grid">
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Create and save the course portfolio</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Identify the five prompt instructions</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Build an RPG prompt about a real topic</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Play at least two scenes</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Send one repair instruction</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session2"> <span>Complete the Session 2 portfolio entry</span></label>
-        </div>
-      </section>
-
-      <section class="exit-ticket">
-        <div><p class="kicker">Exit ticket</p><h2>One final decision</h2></div>
-        <ol><li>The instruction that made the RPG work best was…</li><li>I know this because…</li></ol>
-      </section>
-
-      <section class="content-section" aria-labelledby="agenda2-title">
-        <div class="section-heading compact"><p class="kicker">Today’s route</p><h2 id="agenda2-title">50-minute agenda</h2></div>
-        <div class="agenda-list">
-          <article><time>00–08</time><div><strong>Portfolio catch-up</strong><p>Create, name and save the Word portfolio.</p></div></article>
-          <article><time>08–13</time><div><strong>Recall</strong><p>Identify why Session 1’s tutor prompt worked better.</p></div></article>
-          <article><time>13–20</time><div><strong>Live quest</strong><p>Play one projected scene together and inspect the prompt.</p></div></article>
-          <article><time>20–27</time><div><strong>Prompt anatomy</strong><p>Find the goal, context, format, rules and interaction.</p></div></article>
-          <article><time>27–39</time><div><strong>Build and play</strong><p>Create a personal Knowledge Quest and play two scenes.</p></div></article>
-          <article><time>39–44</time><div><strong>Repair</strong><p>Identify one weakness and give Copilot a precise instruction.</p></div></article>
-          <article><time>44–50</time><div><strong>Portfolio and exit</strong><p>Save the evidence and explain which instruction mattered.</p></div></article>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="session3" aria-labelledby="session3-title" hidden>
-      <div class="session-header">
-        <div>
-          <p class="eyebrow"><span class="session-number">03</span> One source set. Many ways to learn.</p>
-          <h1 id="session3-title">Enter the<br><span>Study Toolkit Lab.</span></h1>
-          <p>Explore a teacher-built Gemini Notebook study kit, compare its claims across formats and decide which resource actually helps you learn.</p>
-        </div>
-        <aside class="progress-card" data-progress-card="session3">
-          <div><strong data-progress-number>0%</strong><span>lesson complete</span></div>
-          <div class="progress-track" data-progress-track role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-bar></span></div>
-          <small>No Google account or personal phone is required. All essential materials are provided here.</small>
-        </aside>
-      </div>
-
-      <section class="demo-banner" aria-labelledby="demo-title">
-        <div><p class="kicker">Teacher demonstration · first 18 minutes</p><h2 id="demo-title">Watch one controversial claim become a source-based study kit.</h2></div>
-        <ol><li>Vote on the claim: “TikTok has destroyed your attention span.”</li><li>See Fast Research and a prepared Deep Research investigation.</li><li>Trace one answer to its source, then preview the infographic, evidence deck and audio.</li></ol>
-        <p class="age-note"><strong>Today’s rule:</strong> Gemini Notebook is demonstrated by the teacher. You are not expected to sign in or create a Google account, and this tool will not affect your grade.</p>
-      </section>
-
-      <section class="resource-lab" aria-labelledby="resources-title">
-        <div class="section-heading"><p class="kicker">Shared case study</p><h2 id="resources-title">Open the evidence wall.</h2><p>Work in pairs. Compare the infographic, evidence deck and audio. Look for repeated claims, cautious wording and details that disappear when information changes format.</p></div>
-        <div class="resource-grid">
-          <article class="resource-card resource-visual"><span>01 · Visual overview</span><h3>Infographic</h3><p>Scan the main claims and find one term, statistic or conclusion that deserves checking.</p><a class="button button-outline" href="assets/session-3/s3-infographic.jpeg" target="_blank" rel="noopener">Open infographic ↗</a></article>
-          <article class="resource-card resource-evidence"><span>02 · Explore the evidence</span><h3>Evidence deck</h3><p>Use the slides to examine memory, rapid switching, reward cycles and practical responses.</p><a class="button button-outline" href="assets/session-3/s3-evidence-deck.pptx">Download PowerPoint ↓</a></article>
-          <article class="resource-card resource-audio"><span>03 · Listen critically</span><h3>Audio overview</h3><p>Listen for one strong claim, one cautious claim and one idea that needs checking.</p><audio controls preload="metadata"><source src="assets/session-3/s3-audio-overview.mp3" type="audio/mpeg">Your browser cannot play this audio. <a href="assets/session-3/s3-audio-overview.mp3">Download it here</a>.</audio></article>
-        </div>
-      </section>
-
-      <section class="lab-route" aria-labelledby="route-title">
-        <div class="section-heading"><p class="kicker">Evidence detective mission</p><h2 id="route-title">Complete the four lab stations.</h2><p>You are evaluating the study kit, not testing your ability to create an account.</p></div>
-        <div class="station-list">
-          <article><span class="station-number">01</span><div><h3>Extract</h3><p>Write down one claim that appears in at least two resources. Record which two formats included it.</p></div></article>
-          <article><span class="station-number">02</span><div><h3>Qualify</h3><p>Find one phrase showing uncertainty or limited evidence. Explain why cautious wording matters more than a confident tone.</p></div></article>
-          <article><span class="station-number">03</span><div><h3>Test</h3><p>Choose one claim from the infographic. Check whether the evidence deck and audio repeat, qualify or contradict it. Decide whether the claim looks well supported, uncertain or exaggerated.</p></div></article>
-          <article><span class="station-number">04</span><div><h3>Challenge</h3><p>Ask Copilot for a short answer without giving it the teacher’s source set. Compare its answer with the source-based materials.</p><blockquote id="citation-prompt">Without searching the web, answer in 120 words: Has TikTok destroyed teenagers’ attention spans? Separate what is well supported, uncertain and possibly exaggerated. Do not invent sources.</blockquote><button class="button button-outline copy-button" type="button" data-copy-target="citation-prompt">⧉ Copy comparison prompt</button></div></article>
-        </div>
-      </section>
-
-      <section class="compare-panel">
-        <div><p class="kicker">Tool showdown</p><h2>Which output helped, and which one only looked impressive?</h2></div>
-        <ol><li>Which format made the topic easiest to understand?</li><li>Which format would help you remember it tomorrow?</li><li>What important detail disappeared when the information became visual or audio?</li><li>Was Copilot more certain than the source-based materials?</li></ol>
-        <div class="fact-check"><span aria-hidden="true">✓</span><p><strong>The rule</strong>A polished output is not evidence that it is accurate. Trace important claims back to the original source.</p></div>
-      </section>
-
-      <section class="task-checklist" aria-labelledby="checklist3-title">
-        <div class="section-heading compact"><p class="kicker">Your progress</p><h2 id="checklist3-title">Session 3 checklist</h2></div>
-        <div class="checklist-grid">
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Take part in the opening vote and teacher demonstration</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Explore the three prepared study resources</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Find one repeated claim</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Find one example of cautious language</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Test one claim across the three resources</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Compare Copilot with the source-based kit</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session3"> <span>Complete the short, non-graded reflection</span></label>
-        </div>
-      </section>
-
-      <section class="content-section" aria-labelledby="agenda3-title">
-        <div class="section-heading compact"><p class="kicker">Today’s route</p><h2 id="agenda3-title">50-minute agenda</h2></div>
-        <div class="agenda-list">
-          <article><time>00–05</time><div><strong>Claim vote</strong><p>Decide how convincing the TikTok claim sounds before seeing the evidence.</p></div></article>
-          <article><time>05–18</time><div><strong>Teacher demonstration</strong><p>See research, source selection, citations and several outputs in action.</p></div></article>
-          <article><time>18–23</time><div><strong>Evidence wall</strong><p>Open the prepared resources and divide the formats with a partner.</p></div></article>
-          <article><time>23–35</time><div><strong>Evidence detective</strong><p>Extract, qualify and test claims across the resources.</p></div></article>
-          <article><time>35–42</time><div><strong>Copilot comparison</strong><p>Compare an open-chat answer with the source-based study kit.</p></div></article>
-          <article><time>42–47</time><div><strong>Tool showdown</strong><p>Decide which format supported understanding and remembering.</p></div></article>
-          <article><time>47–50</time><div><strong>Exit reflection</strong><p>Repeat the vote and record one useful feature and one limitation.</p></div></article>
-        </div>
-      </section>
-    </section>
-
-
-    <section class="page" id="session4" aria-labelledby="session4-title" hidden>
-      <div class="session-header">
-        <div>
-          <p class="eyebrow"><span class="session-number">04</span> One topic. Two tools. Two prompts.</p>
-          <h1 id="session4-title">Design better prompts.<br><span>Build better games.</span></h1>
-          <p>Use Copilot to create a tool-specific instruction for Wordwall and another for Educaplay, then test whether the resulting games genuinely support learning.</p>
-        </div>
-        <aside class="progress-card" data-progress-card="session4">
-          <div><strong data-progress-number>0%</strong><span>lesson complete</span></div>
-          <div class="progress-track" data-progress-track role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-bar></span></div>
-          <small>A good prompt fits the tool, the learner and the learning goal.</small>
-        </aside>
-      </div>
-
-      <section class="starter-question">
-        <p class="kicker">Prompt showdown</p>
-        <h2>Why is “Make me a game about volcanoes” not enough?</h2>
-        <p>With a partner, identify three details the AI still needs. Think about the learner, the learning goal, the game format and the level of challenge.</p>
-      </section>
-
-      <section class="demo-banner" aria-labelledby="demo4-title">
-        <div><p class="kicker">Teacher demonstration · first 5 minutes</p><h2 id="demo4-title">The same topic needs different instructions.</h2></div>
-        <ol><li>Turn a vague request into a precise Wordwall content prompt.</li><li>Turn the same choices into an instruction for Educaplay’s Ray.</li><li>Notice which details stay the same and which change with the tool.</li></ol>
-        <p class="age-note"><strong>Today’s rule:</strong> Copilot helps you design. You still choose the learning goal, check the content and repair weak questions.</p>
-      </section>
-
-      <section class="game-prompt-builder" aria-labelledby="game-builder-title">
-        <div class="builder-heading">
-          <div><p class="kicker">Step 1 · Prompt design lab</p><h2 id="game-builder-title">Build two Copilot prompts.</h2><p>Complete the choices once. The builder will adapt your instructions to the job each platform needs.</p></div>
-          <a class="button button-outline" href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Open Copilot ↗</a>
-        </div>
-
-        <form class="game-builder-controls" id="study-game-builder">
-          <label>Subject
-            <select id="game-subject">
-              <option>Spanish</option><option>English</option><option>History</option><option>Science</option><option>Maths</option><option>Geography</option><option>Another subject</option>
-            </select>
-          </label>
-          <label>Specific topic
-            <input id="game-topic" type="text" maxlength="100" placeholder="e.g. the causes of World War I">
-          </label>
-          <label class="wide-field">Learning goal
-            <input id="game-goal" type="text" maxlength="160" placeholder="e.g. remember and distinguish the four main causes">
-          </label>
-          <label class="wide-field">Key facts or instructions <small>Optional — add class notes if accuracy depends on a particular source.</small>
-            <textarea id="game-notes" rows="4" maxlength="1200" placeholder="Paste a short set of notes, or leave blank and check Copilot’s facts carefully."></textarea>
-          </label>
-          <label>Wordwall format
-            <select id="wordwall-format"><option>Quiz</option><option>Match up</option><option>Flashcards</option><option>Group sort</option></select>
-          </label>
-          <label>Educaplay format
-            <select id="educaplay-format"><option>Matching</option><option>Fill in the Blanks</option><option>Line Up</option><option>Dialogue</option><option>Yes or No</option></select>
-          </label>
-          <button class="button button-primary wide-field" id="build-game-prompts" type="button">✦ Build both prompts</button>
-        </form>
-
-        <div class="game-prompt-outputs" aria-live="polite">
-          <article class="game-output-card wordwall-output">
-            <div class="tool-card-top"><span>Prompt A</span><strong>Copilot → Wordwall content</strong></div>
-            <pre id="wordwall-prompt-output">Complete the form, then build your prompts.</pre>
-            <button class="button button-primary" id="copy-wordwall-prompt" type="button" data-copy-target="wordwall-prompt-output" disabled>⧉ Copy Wordwall prompt</button>
-          </article>
-          <article class="game-output-card educaplay-output">
-            <div class="tool-card-top"><span>Prompt B</span><strong>Copilot → prompt for Ray</strong></div>
-            <pre id="educaplay-prompt-output">Complete the form, then build your prompts.</pre>
-            <button class="button button-primary" id="copy-educaplay-prompt" type="button" data-copy-target="educaplay-prompt-output" disabled>⧉ Copy Educaplay prompt</button>
-          </article>
-        </div>
-      </section>
-
-      <section class="activity-lab" aria-labelledby="activity-lab-title">
-        <div class="section-heading"><p class="kicker">Steps 2–3 · Creation lab</p><h2 id="activity-lab-title">Use each prompt for a different job.</h2><p>Work in pairs. One game should support rapid recall; the other should require a different kind of thinking.</p></div>
-        <div class="tool-lab-grid">
-          <article class="study-tool-card wordwall-card">
-            <div class="tool-card-top"><span>Tool A</span><strong>Ready-to-enter content</strong></div>
-            <h3>Wordwall Sprint</h3>
-            <ol>
-              <li>Copy Prompt A into Copilot.</li>
-              <li>Check its facts, answers and distractors.</li>
-              <li>Open Wordwall and choose the format selected above.</li>
-              <li>Enter Copilot’s content manually, publish and copy the player link.</li>
-            </ol>
-            <p class="tool-note"><strong>Why this route?</strong> You are using Copilot to prepare structured content that works even if Wordwall’s own AI generator is unavailable.</p>
-            <a class="button button-primary" href="https://wordwall.net/" target="_blank" rel="noopener">Open Wordwall ↗</a>
-          </article>
-
-          <article class="study-tool-card educaplay-card">
-            <div class="tool-card-top"><span>Tool B</span><strong>A prompt for another AI</strong></div>
-            <h3>Educaplay Challenge</h3>
-            <ol>
-              <li>Copy Prompt B into Copilot.</li>
-              <li>Copy only the final Ray instruction that Copilot returns.</li>
-              <li>Paste that instruction into Ray and generate the chosen activity.</li>
-              <li>Review, edit, publish and copy the player link.</li>
-            </ol>
-            <p class="tool-note"><strong>Notice the difference:</strong> Copilot is not creating the activity content directly. It is writing a stronger instruction for Ray.</p>
-            <a class="button button-primary" href="https://www.educaplay.com/" target="_blank" rel="noopener">Open Educaplay ↗</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="quality-gate" aria-labelledby="quality-title">
-        <div><p class="kicker">Step 4 · Human quality control</p><h2 id="quality-title">Do not publish the first AI draft.</h2><p>Inspect both activities and make at least one meaningful improvement.</p></div>
-        <div class="quality-grid">
-          <article><span>✓</span><strong>Accuracy</strong><p>Check any fact or answer that you are not certain about.</p></article>
-          <article><span>?</span><strong>Clarity</strong><p>There is only one defensible answer unless several are intended.</p></article>
-          <article><span>↗</span><strong>Challenge</strong><p>The wrong answers are plausible, not ridiculous.</p></article>
-          <article><span>◎</span><strong>Learning</strong><p>The game matches the learning goal instead of testing trivia.</p></article>
-        </div>
-      </section>
-
-      <section class="peer-test" aria-labelledby="peer-title">
-        <div><p class="kicker">Step 5 · Play, compare and repair</p><h2 id="peer-title">Swap links. Play without help.</h2></div>
-        <ol><li>Could you open both links?</li><li>Which game was clearer?</li><li>Which required more thinking?</li><li>Did you find an error or ambiguous answer?</li><li>Did each game match its learning goal?</li></ol>
-        <div class="fact-check"><span aria-hidden="true">✓</span><p><strong>Required repair</strong>Improve at least one question, answer, instruction or distractor after receiving feedback. A colour change does not count.</p></div>
-      </section>
-
-      <section class="share-lab" aria-labelledby="share-title">
-        <div class="section-heading compact"><p class="kicker">Step 6 · Publish and record</p><h2 id="share-title">Prove that both games work.</h2></div>
-        <div class="share-route">
-          <article><span>01</span><h3>Publish</h3><p>Use a title without your full name or personal information.</p></article>
-          <article><span>02</span><h3>Copy</h3><p>Copy the player link — never an editing link.</p></article>
-          <article><span>03</span><h3>Test</h3><p>Open each link in a private or InPrivate window.</p></article>
-          <article><span>04</span><h3>Record</h3><p>Add both prompts, both links and your repair to the portfolio.</p></article>
-        </div>
-        <p class="public-warning"><strong>Privacy check:</strong> Activities may be public. Do not include surnames, photographs, school email addresses or personal information.</p>
-      </section>
-
-      <section class="task-checklist" aria-labelledby="checklist4-title">
-        <div class="section-heading compact"><p class="kicker">Your progress</p><h2 id="checklist4-title">Session 4 checklist</h2></div>
-        <div class="checklist-grid">
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Choose a topic and a clear learning goal</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Generate both tool-specific Copilot prompts</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Create and check one Wordwall activity</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Create and check one Educaplay activity</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Test another team’s games and receive feedback</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Make one meaningful repair</span></label>
-          <label><input type="checkbox" class="task-check" data-task-group="session4"> <span>Test both links and complete the portfolio entry</span></label>
-        </div>
-      </section>
-
-      <section class="content-section" aria-labelledby="agenda4-title">
-        <div class="section-heading compact"><p class="kicker">Today’s route</p><h2 id="agenda4-title">50-minute agenda</h2></div>
-        <div class="agenda-list">
-          <article><time>00–05</time><div><strong>Prompt showdown</strong><p>Diagnose a vague game request and watch the tool-specific demonstration.</p></div></article>
-          <article><time>05–10</time><div><strong>Choose and build</strong><p>Set the topic, learning goal and two activity formats.</p></div></article>
-          <article><time>10–21</time><div><strong>Wordwall Sprint</strong><p>Use Copilot to prepare content, then create and check the game.</p></div></article>
-          <article><time>21–33</time><div><strong>Educaplay Challenge</strong><p>Use Copilot to write for Ray, then generate and check the game.</p></div></article>
-          <article><time>33–41</time><div><strong>Peer test</strong><p>Swap links and compare clarity, challenge and learning value.</p></div></article>
-          <article><time>41–46</time><div><strong>Required repair</strong><p>Improve one meaningful weakness identified during testing.</p></div></article>
-          <article><time>46–50</time><div><strong>Portfolio</strong><p>Record both prompts, both links, the repair and your verdict.</p></div></article>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="portfolio" aria-labelledby="portfolio-title" hidden>
-      <div class="portfolio-hero">
-        <div>
-          <p class="eyebrow">◫ Evidence of your learning</p>
-          <h1 id="portfolio-title">Your AI Study<br><span>Skills Portfolio</span></h1>
-          <p>This document is not a collection of perfect AI answers. It is a record of your prompts, checks, changes and thinking.</p>
-        </div>
-        <aside class="portfolio-name"><span>File name</span><strong>AI Study Skills Portfolio – First name</strong><small>Word Online · Saved to OneDrive</small></aside>
-      </div>
-
-      <section class="portfolio-steps">
-        <article><span>1</span><div><h2>Create</h2><p>Open a blank Word document using your school Microsoft account.</p></div></article>
-        <article><span>2</span><div><h2>Rename</h2><p>Use the exact file name above, with your first name only.</p></div></article>
-        <article><span>3</span><div><h2>Check</h2><p>Make sure Word confirms that the document is saved to OneDrive.</p></div></article>
-        <article><span>4</span><div><h2>Keep</h2><p>Use the same document for every session in this module.</p></div></article>
-      </section>
-
-      <section class="template-card">
-        <div class="template-top">
-          <div><p class="kicker">Session 1 template</p><h2>Copy this into Word</h2></div>
-          <button class="button button-outline copy-button" type="button" data-copy-target="portfolio-template">⧉ Copy full template</button>
-        </div>
-        <pre id="portfolio-template">SESSION 1 — CAN AI HELP ME LEARN?
-
-Opening question
-If Copilot completes your homework perfectly, have you learned anything? Why or why not?
-
-My first prompt
-Why does Earth have seasons?
-
-What I noticed
-• Was the answer easy to understand?
-• Did it help me remember?
-• Did it make me think?
-• What might I need to verify?
-
-My tutor prompt
-[Paste the improved prompt here]
-
-My reflection
-1. One difference between the two responses:
-2. One way AI could help me study:
-3. One risk of using AI for schoolwork:
-4. Something I still want to know about AI:</pre>
-      </section>
-
-      <section class="template-card template-card-secondary">
-        <div class="template-top">
-          <div><p class="kicker">Session 2 template</p><h2>Copy this below Session 1</h2></div>
-          <button class="button button-outline copy-button" type="button" data-copy-target="portfolio-template-2">⧉ Copy full template</button>
-        </div>
-        <pre id="portfolio-template-2">SESSION 2 — THE KNOWLEDGE QUEST
-
-My choices
-Subject:
-Topic:
-Character:
-World:
-Starting difficulty:
-
-My RPG prompt
-[Paste your generated prompt here]
-
-Evidence from the adventure
-• One question Copilot asked me:
-• My answer:
-• The feedback or hint I received:
-
-My repair instruction
-[Paste the instruction you used to improve the adventure]
-
-My reflection
-1. The instruction that made the RPG work best was:
-2. One way the story helped — or did not help — my learning:
-3. One improvement I made after testing:
-4. One fact or explanation I would still need to verify:</pre>
-      </section>
-
-      <section class="template-card template-card-tertiary">
-        <div class="template-top">
-          <div><p class="kicker">Session 3 template</p><h2>Copy this below Session 2</h2></div>
-          <button class="button button-outline copy-button" type="button" data-copy-target="portfolio-template-3">⧉ Copy full template</button>
-        </div>
-        <pre id="portfolio-template-3">SESSION 3 — THE STUDY TOOLKIT LAB
-
-Before the demonstration
-My first vote: The claim “TikTok has destroyed your attention span” sounded convincing / uncertain / exaggerated because:
-
-Evidence detective
-• One claim repeated in at least two resources:
-• The two formats where I found it:
-• One phrase showing uncertainty or limited evidence:
-• One claim I tested across the infographic, evidence deck and audio:
-• My verdict on that claim: well supported / uncertain / exaggerated
-
-Copilot comparison
-• One important difference between Copilot’s answer and the source-based study kit:
-
-My evaluation
-1. The format that helped me understand best was:
-2. The format that would help me remember best was:
-3. One limitation or mistake I noticed:
-4. My vote after the investigation:
-5. My final verdict: the Gemini Notebook demonstration was / was not useful because:</pre>
-      </section>
-
-
-      <section class="template-card template-card-quaternary">
-        <div class="template-top">
-          <div><p class="kicker">Session 4 template</p><h2>Copy this below Session 3</h2></div>
-          <button class="button button-outline copy-button" type="button" data-copy-target="portfolio-template-4">⧉ Copy full template</button>
-        </div>
-        <pre id="portfolio-template-4">SESSION 4 — AI STUDY GAMES
-
-My design choices
-Subject:
-Topic:
-Learning goal:
-Wordwall format:
-Educaplay format:
-
-My two Copilot prompts
-Wordwall content prompt:
-[Paste Prompt A]
-
-Educaplay prompt-for-Ray prompt:
-[Paste Prompt B]
-
-My published activities
-Wordwall player link:
-Educaplay player link:
-I tested both links in a private window: Yes / Not yet
-
-My quality control
-1. One fact or answer I checked:
-2. One mistake, weak question or ambiguity found:
-3. Feedback received from another team:
-4. The meaningful repair I made:
-
-My evaluation
-1. Why did the two tools need different instructions?
-2. Which game required more thinking?
-3. Which game would I genuinely use before an exam?
-4. One limitation of AI-generated study games:
-5. My final verdict:</pre>
-      </section>
-
-      <section class="portfolio-values">
-        <article><strong>Show the process</strong><p>Keep useful prompts, attempts and improvements.</p></article>
-        <article><strong>Be honest</strong><p>Record what worked, what failed and what you changed.</p></article>
-        <article><strong>Think for yourself</strong><p>Your reflection matters more than a polished AI response.</p></article>
-      </section>
-    </section>
-  </main>
-
-  <footer><span>AI Study Skills · Transition Year</span><span>Learn. Check. Create.</span></footer>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="script.js"></script>
 </body>
 </html>

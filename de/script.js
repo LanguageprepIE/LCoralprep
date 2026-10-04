@@ -586,5 +586,286 @@ function readMyInput() {
     speakWithBrowserTTS(text);
 }
 
+// ===========================================
+// FULL GERMAN MOCK · 2026 FORMAT · 40/30/30
+// ===========================================
+const FULL_MOCK_STORY_OPINIONS = [
+  "Ist Handymobbing heutzutage ein großes Problem? Was sollte man dagegen tun?",
+  "Warum ist es wichtig, Fremdsprachen zu lernen? Welche Chancen bietet Deutsch?",
+  "Sind Abschlussfahrten eine gute Idee? Begründen Sie Ihre Meinung.",
+  "Was bedeutet es für junge Menschen, achtzehn zu werden?",
+  "Ist Windenergie eine gute Lösung für die Zukunft? Warum oder warum nicht?"
+];
+
+const FULL_MOCK_ROLEPLAY_LABELS = [
+  "1. Hund verloren",
+  "2. Redaktion anrufen",
+  "3. Fernsehinterview",
+  "4. Eltern überzeugen",
+  "5. Ferienjob"
+];
+
+let germanFullMock = null;
+
+function shuffled(values) {
+  return [...values].sort(() => Math.random() - 0.5);
+}
+
+function openGermanFullMockSetup() {
+  populateGermanFullMockChoices();
+  ['fullMockArea', 'fullMockLoading', 'fullMockResult'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('fullMockSetup').style.display = 'block';
+  document.getElementById('fullMockSetupError').textContent = '';
+  scrollToVisibleSection('fullMockSetup');
+}
+
+function closeGermanFullMockSetup() {
+  document.getElementById('fullMockSetup').style.display = 'none';
+}
+
+function populateGermanFullMockChoices() {
+  const storyBox = document.getElementById('mockStoryChoices');
+  const roleBox = document.getElementById('mockRoleplayChoices');
+  if (!storyBox.childElementCount) {
+    STORIE_DATA.forEach((story, index) => storyBox.appendChild(makeMockChoice('preparedStory', String(index), story.title)));
+  }
+  if (!roleBox.childElementCount) {
+    FULL_MOCK_ROLEPLAY_LABELS.forEach((label, index) => roleBox.appendChild(makeMockChoice('preparedRoleplay', String(index + 1), label)));
+  }
+}
+
+function makeMockChoice(name, value, labelText) {
+  const label = document.createElement('label');
+  const input = document.createElement('input');
+  input.type = 'checkbox'; input.name = name; input.value = value;
+  const text = document.createElement('span'); text.textContent = labelText;
+  label.append(input, text);
+  return label;
+}
+
+function toggleGermanPartTwoSetup() {
+  const route = document.querySelector('input[name="partTwoRoute"]:checked')?.value || 'picture';
+  document.getElementById('pictureSetup').style.display = route === 'picture' ? 'block' : 'none';
+  document.getElementById('projectSetup').style.display = route === 'project' ? 'block' : 'none';
+}
+
+async function startGermanFullMock() {
+  const route = document.querySelector('input[name="partTwoRoute"]:checked')?.value || 'picture';
+  const stories = [...document.querySelectorAll('input[name="preparedStory"]:checked')].map(input => Number(input.value));
+  const roleplays = [...document.querySelectorAll('input[name="preparedRoleplay"]:checked')].map(input => Number(input.value));
+  const projectTitle = document.getElementById('mockProjectTitle').value.trim();
+  const projectNotes = document.getElementById('mockProjectNotes').value.trim();
+  const error = document.getElementById('fullMockSetupError');
+  error.textContent = '';
+  if (route === 'picture' && stories.length !== 3) {
+    error.textContent = 'Please select exactly three prepared picture sequences.'; return;
+  }
+  if (route === 'project' && projectTitle.length < 3) {
+    error.textContent = 'Please enter the topic of your project.'; return;
+  }
+  if (roleplays.length !== 3) {
+    error.textContent = 'Please select exactly three prepared roleplays.'; return;
+  }
+
+  const startButton = document.getElementById('startFullMockBtn');
+  startButton.disabled = true; startButton.textContent = '⏳ Preparing mock…';
+  const conversationPool = shuffled([1, 2, 3, 4, 7, 9, 12, 14]);
+  const conversationPrompts = [DATA_CONV[0][currentLevel], ...conversationPool.slice(0, 5).map(index => DATA_CONV[index][currentLevel])];
+  const selectedStory = route === 'picture' ? shuffled(stories)[0] : null;
+  const selectedRoleplay = shuffled(roleplays)[0];
+  let partTwoPrompts;
+  if (route === 'picture') {
+    partTwoPrompts = [
+      `Erzählen Sie mir bitte in zehn bis fünfzehn Sätzen, was in der Bildergeschichte „${STORIE_DATA[selectedStory].title.replace(/^\d+\.\s*/, '')}“ passiert.`,
+      "Wie geht die Geschichte weiter? Erklären Sie auch einen Aspekt, der in Ihrer Erzählung noch nicht ganz klar war.",
+      FULL_MOCK_STORY_OPINIONS[selectedStory]
+    ];
+  } else {
+    partTwoPrompts = await buildProjectPrompts(projectTitle, projectNotes);
+  }
+
+  germanFullMock = {
+    active: true, route, projectTitle, projectNotes, selectedStory, selectedRoleplay,
+    phase: 'conversation', index: 0, conversationPrompts, partTwoPrompts,
+    roleplayPrompts: RP_DATA[selectedRoleplay].dialogs.map(item => Array.isArray(item) ? item[Math.floor(Math.random() * item.length)] : item),
+    answers: { conversation: [], partTwo: [], roleplay: [] }
+  };
+  startButton.disabled = false; startButton.textContent = 'Start full mock';
+  document.getElementById('fullMockSetup').style.display = 'none';
+  document.getElementById('fullMockArea').style.display = 'block';
+  showGermanFullMockStep();
+}
+
+async function buildProjectPrompts(title, notes) {
+  const fallbacks = [
+    `Sie haben ein Projekt über „${title}“ gemacht. Erzählen Sie mir bitte kurz davon.`,
+    "Wo haben Sie Ihre Informationen bekommen, und was haben Sie bei der Arbeit an diesem Projekt gelernt?",
+    `Warum ist das Thema „${title}“ heute wichtig? Vergleichen Sie, wenn möglich, Deutschland und Irland.`
+  ];
+  try {
+    const raw = await callSmartAI(`
+      Create the three prompts for Section II of a Leaving Certificate German oral mock based on a student's cultural project.
+      Project title: ${title}. Student notes: ${notes || 'No additional notes supplied.'}
+      Prompt 1 must invite an uninterrupted presentation of no more than two minutes. Prompt 2 must clarify content or ask about the project process. Prompt 3 must ask for an opinion on a related wider issue, ideally comparing a German-speaking country and Ireland where natural.
+      Use concise, natural formal German (Sie) and return JSON only: {"prompts":["...","...","..."]}.
+    `);
+    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    return Array.isArray(data.prompts) && data.prompts.length === 3 ? data.prompts : fallbacks;
+  } catch (e) {
+    console.warn('Project follow-up generation failed; using fallback prompts.', e);
+    return fallbacks;
+  }
+}
+
+function currentGermanFullMockPrompt() {
+  if (!germanFullMock) return '';
+  if (germanFullMock.phase === 'conversation') return germanFullMock.conversationPrompts[germanFullMock.index];
+  if (germanFullMock.phase === 'partTwo') return germanFullMock.partTwoPrompts[germanFullMock.index];
+  return germanFullMock.roleplayPrompts[germanFullMock.index];
+}
+
+function showGermanFullMockStep() {
+  const mock = germanFullMock;
+  if (!mock) return;
+  const section = document.getElementById('fullMockSection');
+  const progress = document.getElementById('fullMockProgress');
+  const context = document.getElementById('fullMockContext');
+  const prompt = document.getElementById('fullMockPrompt');
+  const completed = mock.answers.conversation.length + mock.answers.partTwo.length + mock.answers.roleplay.length;
+  document.getElementById('fullMockProgressBar').style.width = `${Math.round((completed / 14) * 100)}%`;
+  context.style.display = 'none'; context.textContent = '';
+
+  if (mock.phase === 'conversation') {
+    section.textContent = 'PART 1 · GENERAL CONVERSATION · 40 MARKS';
+    progress.textContent = `Question ${mock.index + 1} of 6`;
+  } else if (mock.phase === 'partTwo') {
+    const partLabel = mock.route === 'picture' ? 'PICTURE SEQUENCE' : 'PROJECT';
+    section.textContent = `PART 2 · ${partLabel} · 30 MARKS`;
+    progress.textContent = `Prompt ${mock.index + 1} of 3`;
+    context.style.display = 'block';
+    context.textContent = mock.route === 'picture'
+      ? `Selected at random: ${STORIE_DATA[mock.selectedStory].title}. Use your official picture card while answering.`
+      : `Project: ${mock.projectTitle}`;
+  } else {
+    section.textContent = 'PART 3 · ROLEPLAY · 30 MARKS';
+    progress.textContent = `Turn ${mock.index + 1} of 5`;
+    context.style.display = 'block';
+    context.textContent = `Selected at random: ${FULL_MOCK_ROLEPLAY_LABELS[mock.selectedRoleplay - 1]}. ${RP_DATA[mock.selectedRoleplay].context}`;
+  }
+  prompt.textContent = currentGermanFullMockPrompt();
+  document.getElementById('fullMockInput').value = '';
+  document.getElementById('fullMockNextBtn').textContent = completed === 13 ? 'Finish and see result' : 'Save answer and continue';
+  scrollToVisibleSection('fullMockArea');
+}
+
+function speakGermanFullMockPrompt() {
+  speakWithBrowserTTS(currentGermanFullMockPrompt());
+}
+
+function speakGermanFullMockResponse() {
+  speakWithBrowserTTS(document.getElementById('fullMockInput').value);
+}
+
+async function submitGermanFullMockAnswer() {
+  const input = document.getElementById('fullMockInput');
+  const answer = input.value.trim();
+  if (answer.length < 5) return alert('Bitte geben Sie eine etwas längere Antwort.');
+  const mock = germanFullMock;
+  const record = { prompt: currentGermanFullMockPrompt(), answer };
+  if (mock.phase === 'conversation') {
+    mock.answers.conversation.push(record);
+    mock.index++;
+    if (mock.index >= mock.conversationPrompts.length) { mock.phase = 'partTwo'; mock.index = 0; }
+  } else if (mock.phase === 'partTwo') {
+    mock.answers.partTwo.push(record);
+    mock.index++;
+    if (mock.index >= mock.partTwoPrompts.length) { mock.phase = 'roleplay'; mock.index = 0; }
+  } else {
+    mock.answers.roleplay.push(record);
+    mock.index++;
+    if (mock.index >= mock.roleplayPrompts.length) return evaluateGermanFullMock();
+  }
+  showGermanFullMockStep();
+}
+
+async function evaluateGermanFullMock() {
+  const mock = germanFullMock;
+  document.getElementById('fullMockArea').style.display = 'none';
+  document.getElementById('fullMockLoading').style.display = 'block';
+  scrollToVisibleSection('fullMockLoading');
+  const routeName = mock.route === 'picture' ? 'Picture Sequence' : 'Project';
+  const prompt = `
+    Act as a fair Leaving Certificate German oral examiner in Ireland. Assess this complete mock at ${currentLevel} level.
+    Official structure: General Conversation /40; ${routeName} /30; Roleplay /30. Total /100.
+    Conversation: ${JSON.stringify(mock.answers.conversation)}
+    ${routeName}: ${JSON.stringify(mock.answers.partTwo)}
+    Roleplay context: ${RP_DATA[mock.selectedRoleplay].context}
+    Roleplay turns: ${JSON.stringify(mock.answers.roleplay)}
+    For the roleplay, give most weight to successful communicative completion across the five turns (up to 20), then range and accuracy visible in the transcription (up to 10). For the project/picture section, balance the uninterrupted presentation, follow-up/clarification and wider opinion, each approximately 10 marks. Assess general conversation for relevance, independence, range, accuracy and fluency visible in the text.
+    Apply level-appropriate expectations. Do not expect native-speaker performance. Ignore punctuation, capitalisation and likely speech-recognition artefacts. Do not assess pronunciation, accent, prosody or listening from text, and explicitly acknowledge this limitation. Address the learner using formal Sie.
+    Return valid JSON only: {"conversation_score":0,"part_two_score":0,"roleplay_score":0,"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+    Keep each array to a maximum of four concise items. Do not invent errors.
+  `;
+  try {
+    const raw = await callSmartAI(prompt);
+    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    renderGermanFullMockResult(data);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('fullMockLoading').style.display = 'none';
+    document.getElementById('fullMockArea').style.display = 'block';
+    alert('⚠️ The final evaluation could not be completed: ' + e.message);
+  }
+}
+
+function renderGermanFullMockResult(data) {
+  const clamp = (value, max) => Math.max(0, Math.min(max, Math.round(Number(value) || 0)));
+  const conversation = clamp(data.conversation_score, 40);
+  const partTwo = clamp(data.part_two_score, 30);
+  const roleplay = clamp(data.roleplay_score, 30);
+  const total = conversation + partTwo + roleplay;
+  document.getElementById('mockConversationScore').textContent = `${conversation}/40`;
+  document.getElementById('mockPartTwoScore').textContent = `${partTwo}/30`;
+  document.getElementById('mockRoleplayScore').textContent = `${roleplay}/30`;
+  document.getElementById('mockTotalScore').textContent = `${total}/100`;
+  document.getElementById('mockPartTwoLabel').textContent = germanFullMock.route === 'picture' ? 'Picture Sequence' : 'Project';
+  const feedback = document.getElementById('fullMockFeedback');
+  feedback.replaceChildren();
+  addMockFeedbackSection(feedback, 'Feedback auf Deutsch', [data.summary_de]);
+  addMockFeedbackSection(feedback, 'English summary', [data.summary_en]);
+  addMockFeedbackSection(feedback, 'Strengths', data.strengths);
+  addMockFeedbackSection(feedback, 'Next steps', data.next_steps);
+  const corrections = Array.isArray(data.corrections) ? data.corrections.map(item => `${item.original || ''} → ${item.correction || ''}${item.explanation_en ? ` — ${item.explanation_en}` : ''}`) : [];
+  addMockFeedbackSection(feedback, 'Useful corrections', corrections);
+  document.getElementById('fullMockLoading').style.display = 'none';
+  document.getElementById('fullMockResult').style.display = 'block';
+  germanFullMock.active = false;
+  scrollToVisibleSection('fullMockResult');
+}
+
+function addMockFeedbackSection(parent, headingText, values) {
+  const items = (Array.isArray(values) ? values : []).filter(Boolean);
+  if (!items.length) return;
+  const section = document.createElement('section');
+  const heading = document.createElement('h3'); heading.textContent = headingText;
+  const list = document.createElement('ul');
+  items.forEach(value => { const item = document.createElement('li'); item.textContent = value; list.appendChild(item); });
+  section.append(heading, list); parent.appendChild(section);
+}
+
+function exitGermanFullMock() {
+  if (germanFullMock?.active && !window.confirm('Exit this mock? Your answers will not be saved.')) return;
+  germanFullMock = null;
+  document.getElementById('fullMockArea').style.display = 'none';
+  document.getElementById('fullMockLoading').style.display = 'none';
+  openGermanFullMockSetup();
+}
+
+function restartGermanFullMock() {
+  germanFullMock = null;
+  document.getElementById('fullMockResult').style.display = 'none';
+  openGermanFullMockSetup();
+}
+
 // Inicialización
 window.onload = initConv;

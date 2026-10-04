@@ -553,7 +553,9 @@ function toggleHint() {
 
 function speakText() { 
     const rawHTML = document.getElementById('qDisplay').innerHTML;
-    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
+    const mockPrompt = isMockExam && mockPhase === 'conversation' ? mockQuestions[mockIndex]?.prompt : null;
+    const source = mockPrompt || rawHTML;
+    const t = source.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
     
     if ('speechSynthesis' in window) { 
         window.speechSynthesis.cancel(); 
@@ -659,6 +661,7 @@ function showMockQuestion() {
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/6${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
     document.getElementById('userInput').value = '';
     showExamGuidance(item.guidance, item.topic ? getExamGuidanceBilingual(item.topic) : null);
+    scrollToVisibleSection('exerciseArea');
 }
 
 function nextMockQuestion() {

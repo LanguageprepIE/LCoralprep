@@ -360,7 +360,7 @@ function resetApp() {
 // ===========================================
 // FUNCIÓN ANALYZE (MODO EXAMEN)
 // ===========================================
-function analyze() {
+async function analyze() {
   const t = document.getElementById('userInput').value.trim();
   if (t.length < 5) return alert("Proszę napisać więcej...");
   const b = document.getElementById('btnAction');
@@ -457,7 +457,7 @@ function renderCheckpoints() {
   });
 }
 
-function askAIConcept(concept, kind = 'language') {
+async function askAIConcept(concept, kind = 'language') {
   const box = document.getElementById('aiExplanationBox');
   if (!box) return;
   box.style.display = 'block'; box.textContent = '⏳ Preparing a guided study plan...';

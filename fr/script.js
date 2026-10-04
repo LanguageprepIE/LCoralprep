@@ -63,10 +63,12 @@ function switchTab(tab) {
 let currentLevel = 'OL';
 let currentMode = 'exam';
 let currentTopic = null;
-let isMockExam = false; 
-let mockQuestions = []; 
-let mockIndex = 0;      
-
+let isMockExam = false;
+let mockQuestions = [];
+let mockIndex = 0;
+let mockWithDocument = false;
+let mockDocumentDescription = '';
+let mockEvaluations = [];
 // Base de datos de Conversación (15 Temas) + STUDY MODE CHECKPOINTS
 const DATA = [
   { 
@@ -286,7 +288,7 @@ function toggleHint() {
 }
 
 function speakText() {
-    const prompt = isMockExam ? mockQuestions[mockIndex] : (currentTopic ? currentTopic[currentLevel] : '');
+    const prompt = isMockExam ? currentMockQuestion()?.text : (currentTopic ? currentTopic[currentLevel] : '');
     const text = String(prompt || '')
         .replace(/\s*\((?:PASSÉ|FUTUR|OL|HL)\)\s*/gi, ' ')
         .replace(/\s+/g, ' ')
@@ -295,37 +297,135 @@ function speakText() {
 }
 
 // === MOCK EXAM ===
-function startMockExam() { 
-    setMode('exam');
-    isMockExam = true; 
-    mockIndex = 0; 
-    document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active')); 
-    
-    let i = [...Array(DATA.length).keys()].sort(() => Math.random() - 0.5); 
+function currentMockQuestion() {
+  const question = mockQuestions[mockIndex];
+  return typeof question === 'string' ? { text: question, section: 'Conversation' } : question;
+}
+
+function makeConversationMockQuestions() {
+  const widerIndexes = [0, 1, 2, 3, 6, 7, 9, 10, 11, 13, 14];
+  const shuffled = widerIndexes.sort(() => Math.random() - 0.5);
+  return [
+    { text: DATA[8][currentLevel], section: 'Ma vie quotidienne' },
+    { text: DATA[Math.random() < 0.5 ? 4 : 5][currentLevel], section: 'Ma ville / mon quartier / ma région' },
+    { text: DATA[12][currentLevel], section: "L'avenir" },
+    { text: DATA[shuffled[0]][currentLevel], section: 'Conversation générale' },
+    { text: DATA[shuffled[1]][currentLevel], section: 'Conversation générale' },
+    { text: PAST_Q[Math.floor(Math.random() * PAST_Q.length)] + ' (PASSÉ)', section: 'Conversation générale' }
+  ];
+}
+
+function startMockExam() {
+  setMode('exam');
+  isMockExam = true;
+  mockWithDocument = false;
+  mockEvaluations = [];
+  mockIndex = 0;
+  document.getElementById('mockSetup').style.display = 'none';
+  document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active'));
+  mockQuestions = makeConversationMockQuestions();
+  showMockQuestion();
+}
+
+function startDocumentMockSetup() {
+  setMode('exam');
+  isMockExam = false;
+  document.getElementById('exerciseArea').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('mockSetup').style.display = 'block';
+  document.getElementById('mockDocumentDescription').focus();
+}
+
+async function startDocumentMock() {
+  const description = document.getElementById('mockDocumentDescription').value.trim();
+  if (description.length < 8) return alert('Décrivez votre document en quelques mots avant de commencer.');
+  const button = document.getElementById('btnStartDocumentMock');
+  button.disabled = true;
+  const previous = button.innerText;
+  button.innerText = '⏳ Préparation du document...';
+  const prompt = `Act as a Leaving Certificate French oral examiner in Ireland. A candidate brings this optional document: "${description}".
+Return valid JSON only: {"questions":["...","..."]}.
+Write exactly two natural follow-up questions in French about the document. Use formal vous. The first should invite a clear description or explanation; the second should connect the document to a wider personal or social theme. Do not include numbering or commentary.`;
+  try {
+    const raw = await callSmartAI(prompt);
+    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    if (!Array.isArray(data.questions) || data.questions.length < 2) throw new Error('Two document questions were not returned.');
+    const widerIndexes = [0, 1, 2, 3, 6, 7, 9, 10, 11, 13, 14];
+    const wider = DATA[widerIndexes[Math.floor(Math.random() * widerIndexes.length)]][currentLevel];
     mockQuestions = [
-        DATA[i[0]][currentLevel],
-        DATA[i[1]][currentLevel],
-        DATA[i[2]][currentLevel],
-        PAST_Q[Math.floor(Math.random()*3)] + " (PASSÉ)",
-        FUT_Q[Math.floor(Math.random()*3)] + " (FUTUR)"
+      { text: DATA[8][currentLevel], section: 'Ma vie quotidienne' },
+      { text: DATA[Math.random() < 0.5 ? 4 : 5][currentLevel], section: 'Ma ville / mon quartier / ma région' },
+      { text: DATA[12][currentLevel], section: "L'avenir" },
+      { text: wider, section: 'Conversation générale' },
+      { text: data.questions[0], section: 'Le document' },
+      { text: data.questions[1], section: 'Le document' }
     ];
+    isMockExam = true;
+    mockWithDocument = true;
+    mockDocumentDescription = description;
+    mockEvaluations = [];
+    mockIndex = 0;
+    document.getElementById('mockSetup').style.display = 'none';
+    document.querySelectorAll('.topic-btn').forEach(x => x.classList.remove('active'));
     showMockQuestion();
+  } catch (error) {
+    console.error(error);
+    alert('⚠️ Impossible de préparer les questions du document : ' + error.message);
+  } finally {
+    button.disabled = false;
+    button.innerText = previous;
+  }
 }
 
 function showMockQuestion() {
-    document.getElementById('exerciseArea').style.display = 'block'; 
-    document.getElementById('result').style.display = 'none'; 
-    document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/5:</strong><br><br>${mockQuestions[mockIndex]}`;
-    document.getElementById('userInput').value = "";
-    
-    const btnHint = document.getElementById('btnHint');
-    const hintBox = document.getElementById('hintBox');
-    if(btnHint) btnHint.style.display = 'none';
-    if(hintBox) hintBox.style.display = 'none';
-    scrollToVisibleSection('exerciseArea');
+  const question = currentMockQuestion();
+  if (!question || !question.text) return showMockSummary();
+  document.getElementById('exerciseArea').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  const display = document.getElementById('qDisplay');
+  display.replaceChildren();
+  const heading = document.createElement('strong');
+  heading.textContent = `Question ${mockIndex + 1}/${mockQuestions.length} · ${question.section}`;
+  display.appendChild(heading, document.createElement('br'), document.createElement('br'), document.createTextNode(question.text));
+  document.getElementById('userInput').value = '';
+  const btnHint = document.getElementById('btnHint');
+  const hintBox = document.getElementById('hintBox');
+  if (btnHint) btnHint.style.display = 'none';
+  if (hintBox) hintBox.style.display = 'none';
+  scrollToVisibleSection('exerciseArea');
 }
 
-function nextMockQuestion() { mockIndex++; showMockQuestion(); }
+function nextMockQuestion() {
+  mockIndex++;
+  showMockQuestion();
+}
+
+function showMockSummary() {
+  const result = document.getElementById('result');
+  document.getElementById('exerciseArea').style.display = 'none';
+  result.style.display = 'block';
+  const scores = mockEvaluations.map(item => item.score).filter(Number.isFinite);
+  const average = scores.length ? Math.round(scores.reduce((total, score) => total + score, 0) / scores.length) : 0;
+  document.getElementById('userResponseText').textContent = mockWithDocument ? 'Mock de conversation avec document terminé.' : 'Mock de conversation terminé.';
+  const display = document.getElementById('scoreDisplay');
+  display.textContent = `Bilan du mock : ${average}%`;
+  display.style.color = average >= (currentLevel === 'HL' ? 75 : 85) ? '#166534' : (average >= 50 ? '#ca8a04' : '#991b1b');
+  document.getElementById('fbFR').textContent = '🌍 Estimation fondée sur vos six réponses écrites.';
+  document.getElementById('fbEN').textContent = 'Listen back to each answer to review pace, clarity and pronunciation; these cannot be graded reliably from a transcript.';
+  const list = document.getElementById('errorsList');
+  list.replaceChildren();
+  const info = document.createElement('div');
+  info.className = 'error-item';
+  info.textContent = `${scores.length}/${mockQuestions.length} réponses évaluées · ${mockWithDocument ? 'document inclus' : 'sans document'}`;
+  list.appendChild(info);
+  const next = document.createElement('div');
+  next.className = 'error-item';
+  next.textContent = 'Use the feedback from each question to choose one structure and one connector to improve next time.';
+  list.appendChild(next);
+  const reset = document.getElementById('btnReset');
+  reset.textContent = '🔄 Nouveau mock';
+  reset.onclick = resetApp;
+}
 
 function updateQuestion() { 
     document.getElementById('exerciseArea').style.display = 'block'; 
@@ -349,17 +449,21 @@ function updateQuestion() {
     }
 }
 
-function resetApp() { 
-    document.getElementById('result').style.display = 'none'; 
-    document.getElementById('exerciseArea').style.display = 'block'; 
-    if(isMockExam) {
+function resetApp() {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('exerciseArea').style.display = 'block';
+    document.getElementById('mockSetup').style.display = 'none';
+    if (isMockExam) {
         isMockExam = false;
-        document.getElementById('userInput').value = "";
-        document.getElementById('qDisplay').innerHTML = "Select a topic or start a new Mock Exam.";
+        mockWithDocument = false;
+        mockEvaluations = [];
+        mockQuestions = [];
+        document.getElementById('userInput').value = '';
+        document.getElementById('qDisplay').textContent = 'Sélectionnez un thème ou commencez un nouveau mock.';
         const btnHint = document.getElementById('btnHint');
-        if(btnHint) btnHint.style.display = 'none';
+        if (btnHint) btnHint.style.display = 'none';
     } else {
-        document.getElementById('userInput').value = "";
+        document.getElementById('userInput').value = '';
     }
 }
 
@@ -373,7 +477,8 @@ async function analyze() {
   b.disabled = true;
   const originalButtonText = b.innerText;
   b.innerText = "⏳ Evaluating...";
-  const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic?.[currentLevel];
+  const questionContext = isMockExam ? currentMockQuestion()?.text : currentTopic?.[currentLevel];
+  const documentContext = isMockExam && mockWithDocument ? mockDocumentDescription : '';
   const criteria = currentLevel === 'HL' || currentLevel === 'Advanced'
     ? (currentTopic?.check_HL || currentTopic?.checkpoints_HL || '')
     : '';
@@ -382,6 +487,7 @@ async function analyze() {
     Act as a fair Leaving Certificate French oral examiner in Ireland.
     Assess communicative success, relevance to the question, development, range, accuracy and comprehensibility at the stated level.
     Level: ${currentLevel}. Question: ${questionContext}
+    Optional document context (only if provided): ${documentContext}
     Learner response (raw speech transcription): ${t}
     Study guidance (optional support, never a compulsory checklist): ${criteria}
     Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
@@ -419,11 +525,17 @@ async function analyze() {
     addGroup('Corrections', j.errors, (row, item) => row.textContent = (item.original || '') + ' → ' + (item.correction || '') + ' (💡 ' + (item.explanation_en || '') + ')');
     if (!list.childElementCount) list.textContent = '✅ No clear corrections needed.';
     const btnReset = document.getElementById('btnReset');
-    if (isMockExam && mockIndex < 4) {
-      btnReset.innerText = "➡️ Question suivante";
-      btnReset.onclick = nextMockQuestion;
+    if (isMockExam) {
+      mockEvaluations.push({ score, question: questionContext, section: currentMockQuestion()?.section || 'Conversation' });
+      if (mockIndex < mockQuestions.length - 1) {
+        btnReset.innerText = "➡️ Question suivante";
+        btnReset.onclick = nextMockQuestion;
+      } else {
+        btnReset.innerText = "🏁 Voir le bilan";
+        btnReset.onclick = showMockSummary;
+      }
     } else {
-      btnReset.innerText = isMockExam ? "🏁 Terminer l’examen" : "🔄 Nouveau sujet";
+      btnReset.innerText = "🔄 Nouveau sujet";
       btnReset.onclick = resetApp;
     }
   } catch (e) {

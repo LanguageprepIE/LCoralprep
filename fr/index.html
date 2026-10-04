@@ -52,7 +52,16 @@
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <div class="mock-actions">
+      <button class="mock-btn" onclick="startMockExam()">🎲 Mock de conversation · 6 questions</button>
+      <button class="mock-btn" style="background:#0f766e;" onclick="startDocumentMockSetup()">📄 Mock avec document · 6 questions</button>
+    </div>
+    <div id="mockSetup" class="info-box" style="display:none; margin:12px 0; background:#f0fdfa; border-color:#99f6e4; color:#134e4a;">
+      <strong>📄 Mock avec document</strong>
+      <p style="margin:6px 0;">Décrivez votre document ou votre photo. Le mock comprendra quatre questions de conversation et deux questions liées au document.</p>
+      <textarea id="mockDocumentDescription" placeholder="Ex. C'est une photo de mon équipe de basket après la finale..." style="min-height:75px;"></textarea>
+      <button id="btnStartDocumentMock" class="btn-main" style="margin-top:10px; background:#0f766e;" onclick="startDocumentMock()">Commencer le mock avec document</button>
+    </div>
     
     <div class="topic-grid" id="topicGrid"></div>
 

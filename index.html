@@ -51,7 +51,13 @@
     
     .hero { padding: 60px 20px; background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); }
     h1 { font-size: 2.5rem; margin-bottom: 10px; letter-spacing: -1px; color: var(--text); }
-    .subtitle { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto 40px auto; line-height: 1.6; }
+    .subtitle { font-size: 1.1rem; color: #64748b; max-width: 680px; margin: 0 auto 18px auto; line-height: 1.6; }
+    .trust-points { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 18px; margin: 0 auto 40px; color: #475569; font-size: 0.86rem; font-weight: 700; }
+    .trust-points span { display: inline-flex; align-items: center; gap: 6px; }
+    .trust-points span::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .language-heading { max-width: 1000px; margin: 0 auto 18px; text-align: left; }
+    .language-heading h2 { margin: 0 0 5px; font-size: 1.25rem; }
+    .language-heading p { margin: 0; color: #64748b; font-size: 0.9rem; }
     
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; padding: 0 20px; }
     
@@ -60,8 +66,13 @@
     
     .flag { font-size: 3rem; margin-bottom: 15px; }
     .card h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
-    .card p { margin: 0; color: #64748b; font-size: 0.9rem; }
+    .card p { margin: 0; color: #64748b; font-size: 0.9rem; line-height: 1.5; }
     .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 15px; }
+    .badge-complete { background: #dcfce7; color: #166534; }
+    .badge-enhanced { background: #ede9fe; color: #6d28d9; }
+    .badge-beta { background: #fef3c7; color: #92400e; }
+    .badge-planned { background: #f1f5f9; color: #475569; }
+    .badge-support { background: #ccfbf1; color: #0f766e; }
 
     .latest-news { max-width: 1000px; margin: 28px auto 0; padding: 18px 20px 20px; text-align: left; background: #fffaf0; border: 1px solid #e7d7ad; border-radius: 16px; box-shadow: 0 10px 28px rgba(120, 83, 32, 0.08); }
     .latest-news-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
@@ -87,6 +98,9 @@
     .eal:hover { border-top: 5px solid #0d9488; }
 
     @media (max-width: 650px) {
+      .hero { padding-top: 42px; }
+      .trust-points { gap: 7px 14px; margin-bottom: 32px; }
+      .language-heading { text-align: center; }
       .latest-news-heading { display: block; }
       .latest-news-kicker { display: block; margin-bottom: 4px; }
       .news-scroll { max-height: 390px; }
@@ -120,57 +134,67 @@
   <div class="hero">
     <h1>LCOrals Ireland</h1>
     <p class="subtitle">
-      Free AI-powered oral preparation tools for Leaving Cert students.<br>
+      Practise your Leaving Cert oral with instant AI feedback. Full mocks, guided study and exam-focused practice, designed for students in Ireland.
     </p>
+    <div class="trust-points" aria-label="LCOrals benefits">
+      <span>Teacher-built</span>
+      <span>No account required</span>
+      <span>Free to practise</span>
+    </div>
+
+    <div class="language-heading">
+      <h2>Choose your language</h2>
+      <p>Each module shows exactly what is currently available.</p>
+    </div>
 
     <div class="grid">
       <a href="es/" class="card es">
         <div class="flag">🇪🇸</div>
         <h2>Spanish</h2>
-        <p>Full Mock Exam, Study Mode & Roleplays.</p>
-        <span class="badge" style="background:#ede9fe; color:#6d28d9;">Enhanced</span>
+        <p>Full mock exam, Study Mode, roleplays and Opinion Training.</p>
+        <span class="badge badge-enhanced">Enhanced · most complete</span>
       </a>
 
       <a href="fr/" class="card fr">
         <div class="flag">🇫🇷</div>
         <h2>French</h2>
-        <p>Document & Oral topics prep.</p>
-        <span class="badge" style="background:#dbeafe; color:#1e40af;">Ready</span>
-      </a>
-
-      <a href="ga/" class="card ga">
-        <div class="flag">🇮🇪</div>
-        <h2>Irish (Gaeilge)</h2>
-        <p>Sraith Pictiúr & Comhrá.</p>
-        <span class="badge" style="background:#dcfce7; color:#15803d;">Beta</span>
-      </a>
-
-      <a href="it/" class="card it">
-        <div class="flag">🇮🇹</div>
-        <h2>Italian</h2>
-        <p>Roleplays & Picture Sequences.</p>
-        <span class="badge" style="background:#fee2e2; color:#dc2626;">Ready</span>
+        <p>Conversation mocks with or without a personal document, plus Study Mode.</p>
+        <span class="badge badge-complete">Full mock available</span>
       </a>
 
       <a href="de/" class="card de">
         <div class="flag">🇩🇪</div>
         <h2>German</h2>
-        <p>Rollenspiele & Bildergeschichten.</p>
-        <span class="badge" style="background:#fef9c3; color:#a16207;">New!</span>
+        <p>Complete 100-mark mock: conversation, picture or project, and roleplay.</p>
+        <span class="badge badge-complete">Full mock available</span>
+      </a>
+
+      <a href="ga/" class="card ga">
+        <div class="flag">🇮🇪</div>
+        <h2>Irish (Gaeilge)</h2>
+        <p>Comhrá, poetry and Sraith Pictiúr practice with AI feedback.</p>
+        <span class="badge badge-beta">Beta</span>
+      </a>
+
+      <a href="it/" class="card it">
+        <div class="flag">🇮🇹</div>
+        <h2>Italian</h2>
+        <p>Conversation, roleplay and picture-sequence practice.</p>
+        <span class="badge badge-planned">Update planned</span>
       </a>
 
       <a href="pl/" class="card pl">
         <div class="flag">🇵🇱</div>
         <h2>Polish</h2>
-        <p>Interview & 2026 Topics.</p>
-        <span class="badge" style="background:#fee2e2; color:#dc2626;">New!</span>
+        <p>Conversation topics and a five-question mock with AI feedback.</p>
+        <span class="badge badge-planned">Update planned</span>
       </a>
 
       <a href="eal/" class="card eal">
         <div class="flag">🌍</div>
         <h2>EAL Support</h2>
-        <p>English for Newcomers.</p>
-        <span class="badge" style="background:#ccfbf1; color:#0f766e;">New!</span>
+        <p>English conversation and real-life situation practice for newcomers.</p>
+        <span class="badge badge-support">Practice tools</span>
       </a>
     </div>
 

@@ -2,6 +2,16 @@ function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
+function parseAIJSON(raw) {
+  const cleaned = String(raw || '').replace(/```json|```/gi, '').trim();
+  try { return JSON.parse(cleaned); } catch (_) {
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
+    throw new Error('The AI response was not structured as JSON.');
+  }
+}
+
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
@@ -453,7 +463,7 @@ async function askAIConcept(concept, kind = 'language') {
   `;
   try {
     const raw = await callSmartAI(prompt);
-    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const data = parseAIJSON(raw);
     box.replaceChildren();
     const heading = document.createElement('strong'); heading.textContent = '💡 ' + concept; box.appendChild(heading);
     const explanation = document.createElement('p'); explanation.textContent = data.explanation_en || ''; box.appendChild(explanation);
@@ -709,7 +719,7 @@ async function buildProjectPrompts(title, notes) {
       Prompt 1 must invite an uninterrupted presentation of no more than two minutes. Prompt 2 must clarify content or ask about the project process. Prompt 3 must ask for an opinion on a related wider issue, ideally comparing a German-speaking country and Ireland where natural.
       Use concise, natural formal German (Sie) and return JSON only: {"prompts":["...","...","..."]}.
     `);
-    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const data = parseAIJSON(raw);
     return Array.isArray(data.prompts) && data.prompts.length === 3 ? data.prompts : fallbacks;
   } catch (e) {
     console.warn('Project follow-up generation failed; using fallback prompts.', e);
@@ -808,7 +818,18 @@ async function evaluateGermanFullMock() {
   `;
   try {
     const raw = await callSmartAI(prompt);
-    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    let data;
+    try {
+      data = parseAIJSON(raw);
+    } catch (_) {
+      const repaired = await callSmartAI(`
+        Convert the assessment below into valid JSON only. Do not add markdown or commentary.
+        Required schema: {"conversation_score":0,"part_two_score":0,"roleplay_score":0,"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+        Keep conversation_score within 0-40 and both other scores within 0-30. Preserve the assessment's meaning and use empty arrays where details are absent.
+        Assessment to structure: ${raw}
+      `);
+      data = parseAIJSON(repaired);
+    }
     renderGermanFullMockResult(data);
   } catch (e) {
     console.error(e);

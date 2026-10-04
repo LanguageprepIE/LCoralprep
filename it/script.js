@@ -420,8 +420,13 @@ async function analyze() {
     addGroup('Corrections', j.errors, (row, item) => row.textContent = (item.original || '') + ' → ' + (item.correction || '') + ' (💡 ' + (item.explanation_en || '') + ')');
     if (!list.childElementCount) list.textContent = '✅ No clear corrections needed.';
     const btnReset = document.getElementById('btnReset');
-    btnReset.innerText = isMockExam ? '➡️ Next Question' : '🔄 Another topic';
-    btnReset.onclick = isMockExam ? nextMockQuestion : resetApp;
+    if (isMockExam && mockIndex < 4) {
+      btnReset.innerText = "➡️ Prossima domanda";
+      btnReset.onclick = nextMockQuestion;
+    } else {
+      btnReset.innerText = isMockExam ? "🏁 Fine esame" : "🔄 Altro argomento";
+      btnReset.onclick = resetApp;
+    }
   } catch (e) {
     console.error(e);
     alert('⚠️ Evaluation failed: ' + e.message);

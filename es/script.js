@@ -551,17 +551,32 @@ function toggleHint() {
     box.style.display = box.style.display === 'none' ? 'block' : 'none';
 }
 
-function speakText() { 
+let speechRequestId = 0;
+
+function speakWithBrowserTTS(text) {
+    const synth = window.speechSynthesis;
+    if (!synth || !text || !text.trim()) return;
+
+    const requestId = ++speechRequestId;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    utterance.onerror = event => console.warn('Speech playback failed:', event.error);
+
+    // A short delay helps mobile browsers finish cancelling before starting
+    // the replacement utterance.
+    window.setTimeout(() => {
+        if (requestId === speechRequestId) synth.speak(utterance);
+    }, 120);
+}
+
+function speakText() {
     const rawHTML = document.getElementById('qDisplay').innerHTML;
-    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, ""); 
-    
-    if ('speechSynthesis' in window) { 
-        window.speechSynthesis.cancel(); 
-        const u = new SpeechSynthesisUtterance(t); 
-        u.lang = 'es-ES'; 
-        u.rate = 0.9; 
-        window.speechSynthesis.speak(u); 
-    } 
+    const mockPrompt = isMockExam && mockPhase === 'conversation' ? mockQuestions[mockIndex]?.prompt : null;
+    const source = mockPrompt || rawHTML;
+    const t = source.replace(/<[^>]*>/g, " ").replace(/\(PASADO\)|\(FUTURO\)/g, "").replace(/HL|OL/g, "").replace(/[0-9]\./g, "");
+    speakWithBrowserTTS(t);
 }
 
 // === MOCK EXAM ===
@@ -659,6 +674,7 @@ function showMockQuestion() {
     document.getElementById('qDisplay').innerHTML = `<strong>Question ${mockIndex + 1}/6${item.label ? ` · ${escapeHTML(item.label)}` : ''}:</strong><br><br>${escapeHTML(item.prompt)}`;
     document.getElementById('userInput').value = '';
     showExamGuidance(item.guidance, item.topic ? getExamGuidanceBilingual(item.topic) : null);
+    scrollToVisibleSection('exerciseArea');
 }
 
 function nextMockQuestion() {
@@ -1357,10 +1373,8 @@ function mostrarSugerencia() {
 }
 
 function readMyInput() {
-    const text = document.getElementById("userInput").value; if (!text) return; 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-ES'; utterance.rate = 0.9;
-    window.speechSynthesis.speak(utterance);
+    const text = document.getElementById("userInput").value;
+    speakWithBrowserTTS(text);
 }
 
 // Inicialización

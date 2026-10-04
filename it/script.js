@@ -1,3 +1,7 @@
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
@@ -363,67 +367,67 @@ function resetApp() {
 // ===========================================
 // FUNCIÓN ANALYZE (MODO EXAMEN)
 // ===========================================
-async function analyze() {
-  const t = document.getElementById('userInput').value; 
-  if(t.length < 5) return alert("Please say something more...");
-  
-  const b = document.getElementById('btnAction'); 
-  b.disabled = true; b.innerText = "⏳ Grading...";
-
-  const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic[currentLevel];
-  let criteria = "Correct grammar (accordance, tenses) and vocabulary."; 
-  if (currentLevel === 'HL' && currentTopic && currentTopic.check_HL && !isMockExam) {
-      criteria = currentTopic.check_HL;
-  }
-
+function analyze() {
+  const t = document.getElementById('userInput').value.trim();
+  if (t.length < 5) return alert("Please say something more...");
+  const b = document.getElementById('btnAction');
+  b.disabled = true;
+  const originalButtonText = b.innerText;
+  b.innerText = "⏳ Evaluating...";
+  const questionContext = isMockExam ? mockQuestions[mockIndex] : currentTopic?.[currentLevel];
+  const criteria = currentLevel === 'HL' || currentLevel === 'Advanced'
+    ? (currentTopic?.check_HL || currentTopic?.checkpoints_HL || '')
+    : '';
+  const advanced = (currentLevel === 'HL');
   const prompt = `
-    ACT AS: Strict Leaving Cert Italian Oral Examiner (Ireland).
-    CONTEXT: RAW VOICE TRANSCRIPTION (No punctuation).
-    QUESTION: "${questionContext}"
-    LEVEL: ${currentLevel}.
-    STUDENT ANSWER: "${t}"
-    CHECKPOINTS: [ ${criteria} ].
-    INSTRUCTIONS: Ignore punctuation errors. Check Gender/Number Agreement.
-    OUTPUT JSON: { "score": 0-100, "feedback_it": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }
+    Act as a fair Leaving Certificate Italian oral examiner in Ireland.
+    Assess communicative success, relevance to the question, development, range, accuracy and comprehensibility at the stated level.
+    Level: ${currentLevel}. Question: ${questionContext}
+    Learner response (raw speech transcription): ${t}
+    Study guidance (optional support, never a compulsory checklist): ${criteria}
+    Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
+    Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
+    Address the learner consistently using Italian formal Lei; never switch to informal address.
+    Calibrate scores: 90-100 exceptional; 82-89 excellent; 75-81 very good; 65-74 competent; 50-64 adequate; below 50 needs substantial development. Reserve high scores for relevant, developed answers with generally effective language. Return feedback in Italian and concise English.
+    Return valid JSON only: {"score":0,"feedback_it":"...","feedback_en":"...","strengths":["..."],"next_steps":["..."],"connectors":["..."],"vocabulary_suggestions":[{"basic":"...","richer":"..."}],"errors":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+    Keep arrays concise (max 3 items each). Do not invent errors; use empty arrays when none are clear.
   `;
-
   try {
-    const rawText = await callSmartAI(prompt);
-    const cleanJson = rawText.replace(/```json|```/g, "").trim();
-    const j = JSON.parse(cleanJson);
-    
-    document.getElementById('exerciseArea').style.display = 'none'; 
+    const raw = await callSmartAI(prompt);
+    const j = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const score = Math.max(0, Math.min(100, Number(j.score) || 0));
+    document.getElementById('exerciseArea').style.display = 'none';
     document.getElementById('result').style.display = 'block';
     document.getElementById('userResponseText').innerText = t;
-    
-    const s = document.getElementById('scoreDisplay');
-    s.innerText = `Score: ${j.score}%`;
-    s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
-    document.getElementById('fbES').innerText = "🇮🇹 " + j.feedback_it; 
-    document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
-    
-    const l = document.getElementById('errorsList'); l.innerHTML = "";
-    if(j.errors && j.errors.length > 0) {
-        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`; });
-    } else {
-        l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Benissimo!</div>";
-    }
-
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    scoreDisplay.innerText = `Score: ${score}%`;
+    scoreDisplay.style.color = score >= (advanced ? 75 : 85) ? '#166534' : (score >= 50 ? '#ca8a04' : '#991b1b');
+    document.getElementById('fbES').innerText = '🌍 ' + (j.feedback_it || '');
+    document.getElementById('fbEN').innerText = '🇬🇧 ' + (j.feedback_en || '');
+    const list = document.getElementById('errorsList');
+    list.replaceChildren();
+    const addGroup = (heading, items, render) => {
+      if (!Array.isArray(items) || !items.length) return;
+      const section = document.createElement('section');
+      const title = document.createElement('strong'); title.textContent = heading; section.appendChild(title);
+      items.slice(0, 3).forEach(item => { const row = document.createElement('div'); row.className = 'error-item'; render(row, item); section.appendChild(row); });
+      list.appendChild(section);
+    };
+    addGroup('Strengths', j.strengths, (row, item) => row.textContent = item);
+    addGroup('Next steps', j.next_steps, (row, item) => row.textContent = item);
+    addGroup('Useful connectors', j.connectors, (row, item) => row.textContent = item);
+    addGroup('Vocabulary upgrades', j.vocabulary_suggestions, (row, item) => row.textContent = (item.basic || '') + ' → ' + (item.richer || ''));
+    addGroup('Corrections', j.errors, (row, item) => row.textContent = (item.original || '') + ' → ' + (item.correction || '') + ' (💡 ' + (item.explanation_en || '') + ')');
+    if (!list.childElementCount) list.textContent = '✅ No clear corrections needed.';
     const btnReset = document.getElementById('btnReset');
-    if (isMockExam) {
-        if (mockIndex < 4) {
-            btnReset.innerText = "➡️ Next Question"; btnReset.onclick = nextMockQuestion; 
-        } else {
-            btnReset.innerText = "🏁 Finish Exam"; btnReset.onclick = resetApp; 
-        }
-    } else {
-        btnReset.innerText = "🔄 Try another topic"; btnReset.onclick = resetApp; 
-    }
-  } catch (e) { 
-      console.error(e); 
-      alert("⚠️ Errore: " + e.message); 
-  } finally { 
-      b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
+    btnReset.innerText = isMockExam ? '➡️ Next Question' : '🔄 Another topic';
+    btnReset.onclick = isMockExam ? nextMockQuestion : resetApp;
+  } catch (e) {
+    console.error(e);
+    alert('⚠️ Evaluation failed: ' + e.message);
+  } finally {
+    b.disabled = false;
+    b.innerText = originalButtonText;
   }
 }
 
@@ -436,76 +440,56 @@ function initStudyHTML() {
 }
 
 function renderCheckpoints() {
-    const container = document.getElementById('studyContainer');
-    if (!container) return;
-
-    if (!currentTopic) {
-        container.innerHTML = "<p style='text-align:center; padding:20px; color:#64748b; font-weight:bold;'>👈 Please select a topic from the grid above to start studying.</p>";
-        return;
-    }
-    
-    container.innerHTML = `
-        <h3>📚 Study Mode: ${currentTopic.title}</h3>
-        <p class="small-text">Click on a concept to get an instant explanation.</p>
-        <div id="checkpointsList"></div> 
-        <div id="aiExplanationBox" class="ai-box" style="display:none;"></div>
-    `;
-
-    const list = document.getElementById('checkpointsList');
-    
-    const createSection = (title, items, cssClass) => {
-        if(!items || items.length === 0) return;
-        const h = document.createElement('h4');
-        h.innerText = title; h.style.margin = "15px 0 5px 0"; h.style.color = "#374151"; h.style.borderBottom = "1px solid #e5e7eb"; h.style.paddingBottom = "5px";
-        list.appendChild(h);
-        const grid = document.createElement('div'); grid.className = 'checklist-grid';
-        items.forEach(point => {
-            const btn = document.createElement('button'); btn.className = `check-btn ${cssClass}`; 
-            btn.innerHTML = cssClass === 'btn-top' ? point : `❓ ${point}`;
-            btn.onclick = () => askAIConcept(point);
-            grid.appendChild(btn);
-        });
-        list.appendChild(grid);
-    };
-
-    createSection("🧱 Le Basi (Foundations)", currentTopic.checkpoints_OL, "btn-ol");
-    if (currentLevel === 'HL') {
-        createSection("🔧 Livello Superiore (Higher Level)", currentTopic.checkpoints_HL, "btn-hl");
-        if(currentTopic.checkpoints_TOP) {
-            createSection("🚀 Frasi Top (Idioms & Grammar)", currentTopic.checkpoints_TOP, "btn-top");
-        }
-    }
+  const container = document.getElementById('studyContainer');
+  if (!container) return;
+  if (!currentTopic) { container.textContent = 'Please select a topic to study.'; return; }
+  container.replaceChildren();
+  const title = document.createElement('h3'); title.textContent = '📚 Study Mode: ' + currentTopic.title; container.appendChild(title);
+  const intro = document.createElement('p'); intro.className = 'small-text'; intro.textContent = 'Use these prompts as optional practice. Study points are guidance, not a checklist.'; container.appendChild(intro);
+  const list = document.createElement('div'); list.id = 'checkpointsList'; container.appendChild(list);
+  const box = document.createElement('div'); box.id = 'aiExplanationBox'; box.className = 'ai-box'; box.style.display = 'none'; container.appendChild(box);
+  const groups = [
+    ['Practice question', [currentTopic[currentLevel]], 'question'],
+    ['Language foundations', currentTopic.checkpoints_OL || currentTopic.checkpoints_TOP, 'language'],
+    ['Develop your answer', currentTopic.checkpoints_HL || currentTopic.check_HL, 'language']
+  ];
+  groups.forEach(([heading, items, kind]) => {
+    const values = (Array.isArray(items) ? items : items ? [items] : []).filter(Boolean);
+    if (!values.length) return;
+    const h = document.createElement('h4'); h.textContent = heading; list.appendChild(h);
+    values.forEach(value => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'checkpoint-btn'; button.textContent = value;
+      button.addEventListener('click', () => askAIConcept(value, kind)); list.appendChild(button);
+    });
+  });
 }
 
-async function askAIConcept(concept) {
-    const box = document.getElementById('aiExplanationBox');
-    box.style.display = 'block'; 
-    box.innerHTML = "⏳ <b>Consultazione Prof. AI...</b>";
-
-    const prompt = `
-        ACT AS: Italian Teacher.
-        TOPIC: "${currentTopic ? currentTopic.title : 'General'}".
-        CONCEPT: "${concept}".
-        INSTRUCTIONS: Explain in English (max 50 words). Provide 2 Italian examples with English translation.
-        OUTPUT HTML: <p><b>Explanation:</b> ...</p><ul><li>...</li></ul>
-    `;
-
-    try {
-        const text = await callSmartAI(prompt);
-        const cleanText = text.replace(/```html|```/g, "").trim();
-        
-        box.innerHTML = `
-            <div style="display:flex; justify-content:space-between;">
-                <strong>💡 Concept: ${concept}</strong>
-                <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
-            </div>
-            <hr>
-            ${cleanText}
-        `;
-    } catch (e) {
-        console.error(e);
-        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
-    }
+function askAIConcept(concept, kind = 'language') {
+  const box = document.getElementById('aiExplanationBox');
+  if (!box) return;
+  box.style.display = 'block'; box.textContent = '⏳ Preparing a guided study plan...';
+  const prompt = `
+    You are a supportive Italian oral-exam tutor. Topic: ${currentTopic?.title || 'General'}.
+    Learner level: ${currentLevel}. Practice item: ${concept}. Type: ${kind}.
+    Explain the idea briefly in English, then provide a 3-step speaking plan (keywords, not a memorised script) and up to two natural Italian examples with English translations.
+    Keep Italian formal Lei register throughout all target-language examples and never use informal address. Treat topic guidance as optional; do not imply that every bullet is required.
+    Return valid JSON only: {"explanation_en":"...","speaking_plan":["..."],"examples":[{"target":"...","en":"..."}],"optional_challenge":"..."}.
+  `;
+  try {
+    const raw = await callSmartAI(prompt);
+    const data = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    box.replaceChildren();
+    const heading = document.createElement('strong'); heading.textContent = '💡 ' + concept; box.appendChild(heading);
+    const explanation = document.createElement('p'); explanation.textContent = data.explanation_en || ''; box.appendChild(explanation);
+    const planTitle = document.createElement('strong'); planTitle.textContent = 'Speaking plan'; box.appendChild(planTitle);
+    const plan = document.createElement('ol');
+    (Array.isArray(data.speaking_plan) ? data.speaking_plan : []).slice(0,3).forEach(item => { const li=document.createElement('li'); li.textContent=item; plan.appendChild(li); });
+    box.appendChild(plan);
+    (Array.isArray(data.examples) ? data.examples : []).slice(0,2).forEach(item => { const p=document.createElement('p'); p.textContent=(item.target || '') + ' — ' + (item.en || ''); box.appendChild(p); });
+    if (data.optional_challenge) { const p=document.createElement('p'); p.textContent='Optional challenge: ' + data.optional_challenge; box.appendChild(p); }
+  } catch (e) {
+    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + e.message;
+  }
 }
 
 // ===========================================

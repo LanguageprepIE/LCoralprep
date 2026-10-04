@@ -53,12 +53,93 @@
       <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Erweitert (Higher)</button>
     </div>
 
+    <button class="mock-btn full-mock-btn" onclick="openGermanFullMockSetup()">🏁 Full Mock Exam · 100 marks</button>
+
+    <div id="fullMockSetup" class="full-mock-panel" style="display:none;">
+      <div class="full-mock-heading">
+        <div>
+          <span class="section-kicker">2026 FORMAT</span>
+          <h2>Configure your German mock</h2>
+        </div>
+        <button type="button" class="icon-close" onclick="closeGermanFullMockSetup()" aria-label="Close full mock setup">×</button>
+      </div>
+      <p class="mock-explainer">The exam has three parts: General Conversation (40), Picture Sequence or Project (30), and Roleplay (30).</p>
+
+      <fieldset class="mock-fieldset">
+        <legend>Part 2 · Choose your route</legend>
+        <label class="choice-card"><input type="radio" name="partTwoRoute" value="picture" checked onchange="toggleGermanPartTwoSetup()"> <span><strong>Bilderserie</strong><small>Choose the three picture sequences you prepared.</small></span></label>
+        <label class="choice-card"><input type="radio" name="partTwoRoute" value="project" onchange="toggleGermanPartTwoSetup()"> <span><strong>Projekt</strong><small>Enter the topic of your cultural project.</small></span></label>
+      </fieldset>
+
+      <fieldset id="pictureSetup" class="mock-fieldset">
+        <legend>Your 3 prepared picture sequences</legend>
+        <p class="field-help">Select exactly three. The mock will choose one at random.</p>
+        <div id="mockStoryChoices" class="mock-choice-grid"></div>
+      </fieldset>
+
+      <fieldset id="projectSetup" class="mock-fieldset" style="display:none;">
+        <legend>Your project</legend>
+        <label for="mockProjectTitle">Project title or topic</label>
+        <input id="mockProjectTitle" class="mock-text-input" type="text" maxlength="120" placeholder="e.g. Berlin: eine nachhaltige Stadt">
+        <label for="mockProjectNotes">A few details to help create relevant follow-up questions</label>
+        <textarea id="mockProjectNotes" maxlength="700" placeholder="What did you research? What interested you? How did you prepare it?"></textarea>
+      </fieldset>
+
+      <fieldset class="mock-fieldset">
+        <legend>Your 3 prepared roleplays</legend>
+        <p class="field-help">Select exactly three. The mock will choose one at random.</p>
+        <div id="mockRoleplayChoices" class="mock-choice-grid"></div>
+      </fieldset>
+
+      <p id="fullMockSetupError" class="form-error" role="alert"></p>
+      <button id="startFullMockBtn" class="btn-main" onclick="startGermanFullMock()">Start full mock</button>
+    </div>
+
+    <div id="fullMockArea" class="full-mock-panel" style="display:none;">
+      <div class="mock-progress-row">
+        <div>
+          <span id="fullMockSection" class="section-kicker"></span>
+          <h2 id="fullMockProgress">Full Mock Exam</h2>
+        </div>
+        <button type="button" class="exit-mock-btn" onclick="exitGermanFullMock()">Exit mock</button>
+      </div>
+      <div class="mock-progress-track" aria-hidden="true"><span id="fullMockProgressBar"></span></div>
+      <p id="fullMockContext" class="mock-context" style="display:none;"></p>
+      <div class="question-card">
+        <div id="fullMockPrompt" class="mock-prompt"></div>
+        <button type="button" class="audio-btn" onclick="speakGermanFullMockPrompt()">🔊 Anhören (Listen)</button>
+      </div>
+      <textarea id="fullMockInput" placeholder="Schreiben Sie Ihre Antwort hier..."></textarea>
+      <button type="button" class="listen-response-btn" onclick="speakGermanFullMockResponse()">👂 Listen to my response</button>
+      <button id="fullMockNextBtn" class="btn-main" onclick="submitGermanFullMockAnswer()">Save answer and continue</button>
+    </div>
+
+    <div id="fullMockLoading" class="full-mock-panel mock-loading" style="display:none;" aria-live="polite">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <h2>Preparing your final result…</h2>
+      <p>The six conversation answers and both prepared sections are being assessed together.</p>
+    </div>
+
+    <div id="fullMockResult" class="full-mock-panel" style="display:none;">
+      <span class="section-kicker">FINAL ESTIMATE</span>
+      <h2>German Full Mock Result</h2>
+      <div class="mock-score-grid">
+        <div><strong id="mockConversationScore">—/40</strong><span>Conversation</span></div>
+        <div><strong id="mockPartTwoScore">—/30</strong><span id="mockPartTwoLabel">Picture / Project</span></div>
+        <div><strong id="mockRoleplayScore">—/30</strong><span>Roleplay</span></div>
+        <div class="total"><strong id="mockTotalScore">—/100</strong><span>Total</span></div>
+      </div>
+      <p class="pronunciation-note">This is a text-based estimate. Pronunciation, accent and live interaction cannot be marked from the transcription.</p>
+      <div id="fullMockFeedback" class="mock-feedback"></div>
+      <button type="button" class="btn-main" onclick="restartGermanFullMock()">🔄 Try another full mock</button>
+    </div>
+
     <div class="mode-selector">
         <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Mode</button>
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <button class="mock-btn conversation-mock-btn" onclick="startMockExam()">🎲 Conversation Practice Mock (5 Questions)</button>
     
     <div class="topic-grid" id="topicGrid"></div>
 
@@ -221,7 +302,7 @@
 
 </div>
 
-<script src="script.js?v=mock-navigation-audio-20261004"></script>
+<script src="script.js?v=german-full-mock-20261004"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>

@@ -42,16 +42,20 @@
     .card p { margin: 0; color: #64748b; font-size: 0.9rem; }
     .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 15px; }
 
-    .latest-news { max-width: 1000px; margin: 28px auto 0; padding: 18px 20px; text-align: left; background: #fafbff; border: 1px solid #e2e8f0; border-radius: 16px; }
+    .latest-news { max-width: 1000px; margin: 28px auto 0; padding: 18px 20px 20px; text-align: left; background: #fffaf0; border: 1px solid #e7d7ad; border-radius: 16px; box-shadow: 0 10px 28px rgba(120, 83, 32, 0.08); }
     .latest-news-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
-    .latest-news h2 { margin: 0; color: #4f46e5; font-size: 1.15rem; }
-    .latest-news-kicker { color: #7c3aed; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; }
-    .latest-news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
-    .latest-news-item { padding: 11px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 11px; }
-    .latest-news-item strong { color: #334155; font-size: 0.9rem; }
-    .latest-news-item p { margin: 4px 0 0; color: #64748b; font-size: 0.82rem; line-height: 1.45; }
-    .latest-news-item.highlight { border-color: #c7d2fe; background: #f8faff; }
-    .latest-news-note { margin: 12px 0 0; color: #64748b; font-size: 0.8rem; line-height: 1.5; }
+    .latest-news h2 { margin: 0; color: #7c4a18; font-size: 1.15rem; }
+    .latest-news-kicker { color: #a16207; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; }
+    .news-scroll { position: relative; max-height: 340px; overflow-y: auto; padding: 2px 12px 2px 2px; scrollbar-color: #c4a46b #f3e7c9; scrollbar-width: thin; }
+    .news-scroll::after { content: ""; position: sticky; display: block; bottom: 0; height: 24px; margin-top: -24px; pointer-events: none; background: linear-gradient(transparent, #fffaf0); }
+    .news-timeline { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid #d8bf88; }
+    .latest-news-item { position: relative; padding: 12px 14px; margin: 0 0 10px 12px; background: rgba(255,255,255,0.78); border: 1px solid #eadcbc; border-radius: 11px; }
+    .latest-news-item::before { content: ""; position: absolute; left: -20px; top: 17px; width: 10px; height: 10px; border-radius: 50%; background: #b7791f; border: 3px solid #fffaf0; }
+    .latest-news-item time { display: block; margin-bottom: 3px; color: #a16207; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+    .latest-news-item strong { color: #49331f; font-size: 0.9rem; }
+    .latest-news-item p { margin: 4px 0 0; color: #6b5a45; font-size: 0.82rem; line-height: 1.45; }
+    .latest-news-item.highlight { border-color: #d6b46d; background: #fffdf7; box-shadow: 0 4px 12px rgba(120,83,32,0.08); }
+    .latest-news-note { margin: 12px 0 0; color: #7c6b55; font-size: 0.8rem; line-height: 1.5; }
     
     .es:hover { border-top: 5px solid var(--orange); }
     .fr:hover { border-top: 5px solid var(--blue); }
@@ -62,9 +66,9 @@
     .eal:hover { border-top: 5px solid #0d9488; }
 
     @media (max-width: 650px) {
-      .latest-news-grid { grid-template-columns: 1fr; }
       .latest-news-heading { display: block; }
       .latest-news-kicker { display: block; margin-bottom: 4px; }
+      .news-scroll { max-height: 390px; }
     }
 
     /* ESTILOS DEL FOOTER Y SOPORTE */
@@ -154,21 +158,46 @@
         <span class="latest-news-kicker">LCORALS NEWS</span>
         <h2 id="latestNewsTitle">📌 Latest updates</h2>
       </div>
-      <div class="latest-news-grid">
-        <article class="latest-news-item highlight">
-          <strong>Spanish: enhanced version</strong>
-          <p>Full Mock Exam, improved Higher Level feedback, upgraded Study Mode and extra Opinion Training.</p>
-        </article>
-        <article class="latest-news-item">
-          <strong>Mock Exam improvements</strong>
-          <p>Six conversation questions, three role-play choices and a final /70 + /30 result.</p>
-        </article>
-        <article class="latest-news-item">
-          <strong>Independent project</strong>
-          <p>LCorals is teacher-made and has no sponsor or external funding. Support helps cover its running costs.</p>
-        </article>
+      <div class="news-scroll" tabindex="0" aria-label="LCOrals update history. Newest updates appear first.">
+        <ol class="news-timeline">
+          <li class="latest-news-item highlight">
+            <time datetime="2026-10-04">4 October 2026</time>
+            <strong>German: complete 100-mark mock</strong>
+            <p>Practice the official 40/30/30 structure with General Conversation, Picture Sequence or Project, and a randomly selected Roleplay.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-04">4 October 2026</time>
+            <strong>French: complete mock with optional document</strong>
+            <p>Choose a six-question conversation mock or a document route with four general questions and two document follow-ups.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-04">4 October 2026</time>
+            <strong>Multilingual feedback and Study Mode</strong>
+            <p>German, French, Italian and Polish now include calibrated feedback, clearer corrections and guided study support.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-04">4 October 2026</time>
+            <strong>Smoother mocks on mobile</strong>
+            <p>Questions move into view automatically and audio plays only the question or learner response.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-03">3 October 2026</time>
+            <strong>Spanish: enhanced version</strong>
+            <p>Full Mock Exam, improved Higher Level feedback, upgraded Study Mode and extra Opinion Training.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-03">3 October 2026</time>
+            <strong>Spanish Mock Exam improvements</strong>
+            <p>Six conversation questions, three role-play choices and a final /70 + /30 result.</p>
+          </li>
+          <li class="latest-news-item">
+            <time datetime="2026-10-03">3 October 2026</time>
+            <strong>Independent project</strong>
+            <p>LCOrals is teacher-made and has no sponsor or external funding. Support helps cover its running costs.</p>
+          </li>
+        </ol>
       </div>
-      <p class="latest-news-note">More language modules are being developed and updated progressively.</p>
+      <p class="latest-news-note">Newest first · Scroll to explore earlier updates. More language modules are being developed progressively.</p>
     </section>
   </div>
 

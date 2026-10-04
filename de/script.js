@@ -18,6 +18,28 @@ async function callSmartAI(prompt) {
     }
 }
 
+let speechRequestId = 0;
+
+function scrollToVisibleSection(id) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    window.requestAnimationFrame(() => element.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+}
+
+function speakWithBrowserTTS(text) {
+    const synth = window.speechSynthesis;
+    if (!synth || !text || !text.trim()) return;
+    const requestId = ++speechRequestId;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text.trim());
+    utterance.lang = 'de-DE';
+    utterance.rate = 0.9;
+    utterance.onerror = event => console.warn('Speech playback failed:', event.error);
+    window.setTimeout(() => {
+        if (requestId === speechRequestId) synth.speak(utterance);
+    }, 120);
+}
+
 // --- NAVEGACIÓN ---
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
@@ -231,17 +253,13 @@ function toggleHint() {
     box.style.display = box.style.display === 'none' ? 'block' : 'none';
 }
 
-function speakText() { 
-    const rawHTML = document.getElementById('qDisplay').innerHTML;
-    const t = rawHTML.replace(/<[^>]*>/g, " ").replace(/\(OL\)|\(HL\)/g, "").replace(/OL|HL/g, "").replace(/[0-9]\./g, ""); 
-    
-    if ('speechSynthesis' in window) { 
-        window.speechSynthesis.cancel(); 
-        const u = new SpeechSynthesisUtterance(t); 
-        u.lang = 'de-DE'; 
-        u.rate = 0.9; 
-        window.speechSynthesis.speak(u); 
-    } 
+function speakText() {
+    const prompt = isMockExam ? mockQuestions[mockIndex] : (currentTopic ? currentTopic[currentLevel] : '');
+    const text = String(prompt || '')
+        .replace(/\s*\((?:OL|HL|VERGANGENHEIT|ZUKUNFT)\)\s*/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    speakWithBrowserTTS(text);
 }
 
 // === MOCK EXAM ===
@@ -272,6 +290,7 @@ function showMockQuestion() {
     const hintBox = document.getElementById('hintBox');
     if(btnHint) btnHint.style.display = 'none';
     if(hintBox) hintBox.style.display = 'none';
+    scrollToVisibleSection('exerciseArea');
 }
 
 function nextMockQuestion() { mockIndex++; showMockQuestion(); }
@@ -564,8 +583,8 @@ async function analyzeStory() {
 function resetStory() { document.getElementById('resultStory').style.display = 'none'; document.getElementById('storyArea').style.display = 'block'; document.getElementById('userInputStory').value = ""; }
 
 function readMyInput() {
-    const text = document.getElementById("userInput").value; if (!text) return; 
-    window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 0.9; window.speechSynthesis.speak(u);
+    const text = document.getElementById('userInput').value;
+    speakWithBrowserTTS(text);
 }
 
 // Inicialización

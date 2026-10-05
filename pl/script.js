@@ -403,6 +403,7 @@ function setMode(mode) {
 
     if (mode === 'exam') {
         studyContainer.style.display = 'none';
+        if (currentTopic && !isMockExam) { updateQuestion(); return; }
         if (document.getElementById('scoreDisplay').innerText !== "") {
              resultArea.style.display = 'block';
              exerciseArea.style.display = 'none';

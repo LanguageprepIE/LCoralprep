@@ -2,15 +2,15 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert French Oral Mock & Document Practice | LCOrals</title>
   <link rel="canonical" href="https://lcorals.ie/fr/">
-  <meta name="description" content="Free Leaving Cert French oral practice: six-question conversation mock, optional document route, Study Mode and AI feedback for Irish students.">
+  <meta name="description" content="Free Leaving Cert French oral practice: adaptive conversation mock, optional document route, Study Mode and AI feedback for Irish students.">
 <meta name="keywords" content="Leaving Cert French, French Oral, Français, Document, Conversation Topics, Revision, Oral Exam, AI, Study, LCOrals">
 <meta name="author" content="David Martín">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇫🇷</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=french-conversation-20261005">
   <link rel="stylesheet" href="../guides/link.css">
 </head>
 <body>
@@ -32,7 +32,8 @@
   <ul>
     <li>⌨️ <strong>Important:</strong> Add the <strong>French Keyboard</strong> to your device settings. Use the 🎤 microphone on the French keyboard for accurate voice-to-text.</li>
     <li>🗣️ <strong>Conversation:</strong> Select a topic. Answer the question aloud or type it to check your grammar.</li>
-    <li>📚 <strong>Study Mode:</strong> Review key vocabulary and grammar with AI help.</li>
+    <li>📚 <strong>Study Mode:</strong> Prepare ideas, questions and useful language with AI support. Broader opinion topics are optional practice, not guaranteed exam questions.</li>
+    <li>🎤 <strong>Mock:</strong> No hints or corrections during the conversation. The examiner may follow up on your answer; feedback comes at the end.</li>
     <li>🎭 <strong>Document:</strong> Practice your personal document. Ask the AI questions and improve your answers.</li>
   </ul>
 </div>
@@ -46,26 +47,27 @@
   <div id="sectionConversation">
     
     <div class="level-selector">
-      <button class="level-btn active" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
-      <button class="level-btn hl" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
+      <button class="level-btn" id="btnOL" onclick="setLevel('OL')">Ordinary Level</button>
+      <button class="level-btn hl active" id="btnHL" onclick="setLevel('HL')">Higher Level</button>
     </div>
 
     <div class="mode-selector">
-        <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Mode</button>
+        <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Practice</button>
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
     <div class="mock-actions">
-      <button class="mock-btn" onclick="startMockExam()">🎲 Mock de conversation · 6 questions</button>
-      <button class="mock-btn" style="background:#0f766e;" onclick="startDocumentMockSetup()">📄 Mock avec document · 6 questions</button>
+      <button class="mock-btn" onclick="startMockExam()">🎲 Mock de conversation · 6 thèmes</button>
+      <button class="mock-btn" style="background:#0f766e;" onclick="startDocumentMockSetup()">📄 Mock avec document · 6 thèmes</button>
     </div>
     <div id="mockSetup" class="info-box" style="display:none; margin:12px 0; background:#f0fdfa; border-color:#99f6e4; color:#134e4a;">
       <strong>📄 Mock avec document</strong>
-      <p style="margin:6px 0;">Décrivez votre document ou votre photo. Le mock comprendra quatre questions de conversation et deux questions liées au document.</p>
+      <p style="margin:6px 0;">Décrivez votre document ou votre photo. Le mock comprendra quatre thèmes de conversation et deux questions liées au document, avec des relances possibles.</p>
       <textarea id="mockDocumentDescription" placeholder="Ex. C'est une photo de mon équipe de basket après la finale..." style="min-height:75px;"></textarea>
       <button id="btnStartDocumentMock" class="btn-main" style="margin-top:10px; background:#0f766e;" onclick="startDocumentMock()">Commencer le mock avec document</button>
     </div>
     
+    <p class="practice-note">Study Mode gives you ideas and language support. Exam Practice evaluates one answer. In a mock, answer one question at a time, with possible follow-ups and feedback at the end. Six themes form a shortened practice session, not the exact length or format of the real exam.</p>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>
@@ -84,7 +86,7 @@
       <textarea id="userInput" placeholder="Écrivez votre réponse ici..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
-        👂 Écouter ma prononciation
+        👂 Écouter ma réponse (voix de synthèse)
       </button>
 
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Vérifier (Evaluate)</button>
@@ -197,7 +199,7 @@
 
 </div>
 
-<script src="script.js?v=mock-navigation-audio-20261004"></script>
+<script src="script.js?v=french-conversation-20261005"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>

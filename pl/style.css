@@ -109,3 +109,26 @@ textarea:focus { border-color: var(--primary); outline: none; }
 .feedback-section { margin-top: 35px; border-top: 1px dashed #cbd5e1; padding-top: 25px; }
 .legal-section { margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px; font-size: 0.75rem; color: #94a3b8; line-height: 1.5; }
 .legal-section p { margin: 5px 0; }
+
+
+[hidden] { display: none !important; }
+.opinion-unit { grid-column: 1 / -1; }
+.opinion-toggle { width: 100%; text-align: left; background: #eff6ff; color: #1e40af; padding: 15px; border: 1px solid #bfdbfe; border-radius: 12px; font: inherit; font-weight: 700; cursor: pointer; }
+.opinion-unit .topic-grid { margin: 12px 0 0; }
+.checkpoint-btn { display: block; width: 100%; background: white; color: #4c1d95; border: 1px solid #ddd6fe; border-radius: 10px; padding: 12px; margin: 8px 0; text-align: left; font: inherit; cursor: pointer; }
+.feedback-section-card { padding: 15px; margin: 12px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
+.practice-note { color: #475569; font-size: .9rem; line-height: 1.6; }
+#exerciseArea, #result, #studyContainer { scroll-margin-top: 16px; }
+#qDisplay, .student-response-box, .feedback-section-card, .ai-box { overflow-wrap: anywhere; line-height: 1.6; }
+button:focus-visible, a:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+.level-btn:disabled { opacity: .6; cursor: default; }
+@media (max-width: 520px) {
+  body { padding: 8px; }
+  .container { padding: 16px; border-radius: 14px; }
+  .question-card, .feedback-box, .study-box { padding: 16px; }
+  .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mode-btn, .level-btn, .tab-btn { min-height: 44px; }
+  .footer-section { padding: 30px 8px 16px; }
+}
+
+#mockSetup textarea, #mockSetup select { width:100%; box-sizing:border-box; margin:12px 0; padding:12px; font:inherit; }

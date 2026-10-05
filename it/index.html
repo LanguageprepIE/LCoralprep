@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert Italian Oral Practice & Mock Exam | LCOrals</title>
   <link rel="canonical" href="https://lcorals.ie/it/">
   <meta name="description" content="Prepare for your Leaving Cert Italian Oral Exam. Practice Roleplays, Picture Sequences, and Conversation topics with AI feedback. Free study tool for Irish students.">
@@ -60,8 +60,9 @@
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam</button>
     
+    <div id="mockSetup" class="study-box" style="display:none;"><h3>Mock exam setup</h3><p>Conversation and opinion → roleplay → picture sequence. No hints or corrections during the mock.</p><label for="mockRole">Practice roleplay</label><select id="mockRole"><option value="1">Albergo</option><option value="2">Treno</option><option value="3">Farmacia</option><option value="4">Passaporto</option><option value="5">Colloquio di lavoro</option></select><p class="practice-note">These are LCorals practice scenarios, not a reproduction of current SEC task cards. Use your teacher’s current prescribed materials for official preparation. Keep your chosen picture sequence beside you; this tool does not display or see the images.</p><label for="mockContext">Briefly describe your picture sequence (people, events and ending; Italian or English)</label><textarea id="mockContext" rows="4" placeholder="Use non-sensitive details; no upload is needed."></textarea><button class="mock-btn" onclick="beginMockExam()">▶️ Begin mock</button><p class="practice-note">A shortened, text-based practice mock with optional answer-dependent follow-ups. Final score is a practice estimate, not an official oral mark. Check dictation before submitting.</p></div>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>

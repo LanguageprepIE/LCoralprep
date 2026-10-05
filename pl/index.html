@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert Polish Oral Practice | LCOrals Ireland</title>
   <link rel="canonical" href="https://lcorals.ie/pl/">
   <meta name="description" content="Prepare for your Leaving Cert Polish Oral Exam. Practice Oral topics and conversation with AI feedback. Free study tool for Polish students in Ireland.">
@@ -59,8 +59,9 @@
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam</button>
     
+    <div id="mockSetup" class="study-box" style="display:none;"><h3>Mock exam setup</h3><p>Conversation and opinion → portfolio discussion → learning reflection. No hints or corrections during the mock.</p><p class="practice-note">Use an item from your own language portfolio: a project, text, recording, cultural activity or learning reflection. Discussing it is the task; the portfolio itself is not graded here. General and Discussion are practice labels, not official examination levels.</p><label for="mockContext">Describe your chosen portfolio item: its topic, what you did and what you learned (Polish or English)</label><textarea id="mockContext" rows="4" placeholder="Use non-sensitive details; no upload is needed."></textarea><button class="mock-btn" onclick="beginMockExam()">▶️ Begin mock</button><p class="practice-note">A shortened, text-based practice mock with optional answer-dependent follow-ups. Final score is a practice estimate, not an official oral mark. Check dictation before submitting.</p></div>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>

@@ -73,6 +73,8 @@ let mockFollowUp = null;
 let mockBusy = false;
 let mockComplete = false;
 let studyRequestId = 0;
+let optionalOpinionPractice = false;
+let mockSummaryData = null;
 
 function parseAIJSON(raw) {
   const clean = raw.replace(/```json|```/g, '').trim();
@@ -93,6 +95,9 @@ async function callJSONAI(prompt) {
 
 function clearMock() {
   isMockExam = false;
+  optionalOpinionPractice = false;
+  mockSummaryData = null;
+  document.getElementById('optionalOpinion').style.display = 'none';
   mockComplete = false;
   mockFollowUp = null;
   mockIndex = 0;
@@ -427,7 +432,7 @@ function makeConversationMockQuestions() {
     question(pick(DATA.slice(6, 10)), 'École et loisirs'),
     { text: pick(PAST_Q), section: 'Une expérience passée' },
     question(DATA[12], "L'avenir"),
-    question(pick(currentLevel === 'HL' ? OPINION_TOPICS : [DATA[9], DATA[10]]), currentLevel === 'HL' ? 'Une opinion' : 'Vie personnelle')
+    question(DATA[10], 'Vie personnelle')
   ];
 }
 
@@ -562,11 +567,31 @@ async function showMockSummary() {
   const button = document.getElementById('btnReset'); button.disabled = true;
   try {
     const data = await callJSONAI(assessmentPrompt('Evaluate the completed conversation as a whole, including any document discussion. Do not average separate question scores. Assess development across the whole exchange; a short answer to a narrow follow-up is appropriate.', JSON.stringify(mockEvaluations), mockWithDocument ? mockDocumentDescription : ''));
+    mockSummaryData = data;
     renderFeedback(data, mockEvaluations.map(x => x.question + '\n' + x.answer).join('\n\n'), true);
+    document.getElementById('optionalOpinion').style.display = currentLevel === 'HL' && !mockWithDocument ? 'block' : 'none';
     button.textContent = '🔄 Nouveau mock'; button.onclick = resetApp;
   } catch (error) {
     alert('⚠️ Impossible de charger le bilan. Vos réponses restent disponibles : réessayez.');
   } finally { mockBusy = false; button.disabled = false; }
+}
+
+function startOptionalOpinion() {
+  if (mockBusy || !mockComplete || currentLevel !== 'HL' || mockWithDocument) return;
+  isMockExam = false;
+  optionalOpinionPractice = true;
+  currentTopic = OPINION_TOPICS[Math.floor(Math.random() * OPINION_TOPICS.length)];
+  document.getElementById('optionalOpinion').style.display = 'none';
+  document.getElementById('btnAction').textContent = '✨ Évaluer la réponse';
+  updateQuestion();
+}
+
+function returnToMockSummary() {
+  optionalOpinionPractice = false;
+  isMockExam = true;
+  renderFeedback(mockSummaryData, mockEvaluations.map(x => x.question + '\n' + x.answer).join('\n\n'), true);
+  const button = document.getElementById('btnReset');
+  button.textContent = '🔄 Nouveau mock'; button.onclick = resetApp;
 }
 
 function updateQuestion() { 
@@ -648,7 +673,11 @@ async function analyze() {
     else {
       const data = await callJSONAI(assessmentPrompt(currentTopic[currentLevel], text));
       renderFeedback(data, text);
-      const reset = document.getElementById('btnReset'); reset.textContent = '🔄 Réessayer'; reset.onclick = updateQuestion;
+      const reset = document.getElementById('btnReset');
+      if (optionalOpinionPractice) {
+        document.getElementById('fbEN').textContent += ' Optional opinion practice: this separate estimate does not change your mock result.';
+        reset.textContent = '↩️ Revenir au bilan du mock'; reset.onclick = returnToMockSummary;
+      } else { reset.textContent = '🔄 Réessayer'; reset.onclick = updateQuestion; }
     }
   } catch (error) { alert('⚠️ Impossible de continuer : ' + error.message); }
   finally { mockBusy = false; button.disabled = false; button.textContent = isMockExam ? '➡️ Envoyer et continuer' : original; }

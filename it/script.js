@@ -74,6 +74,8 @@ let mockFollowUp = null;
 let mockBusy = false;
 let mockComplete = false;
 let studyRequestId = 0;
+let optionalOpinionPractice = false;
+let mockSummaryData = null;
 
 function parseAIJSON(raw) {
   const clean = raw.replace(/```json|```/g, '').trim();
@@ -94,6 +96,9 @@ async function callJSONAI(prompt) {
 
 function clearMock() {
   isMockExam = false;
+  optionalOpinionPractice = false;
+  mockSummaryData = null;
+  document.getElementById('optionalOpinion').style.display = 'none';
   mockComplete = false;
   mockFollowUp = null;
   mockIndex = 0;
@@ -494,7 +499,7 @@ function beginMockExam() {
   clearMock(); mockContext = context; isMockExam = true;
   const personal = DATA.filter(x => !x.opinion && !/Portfolio/.test(x.title)).sort(() => Math.random() - .5);
   mockQuestions = [personal[0], personal[1]].map(x => ({text:x[currentLevel], section:'Conversation'}));
-  mockQuestions.push({text:PAST_Q[Math.floor(Math.random()*PAST_Q.length)],section:'Conversation'}, {text:FUT_Q[Math.floor(Math.random()*FUT_Q.length)],section:'Conversation'}, {text:OPINION_TOPICS[Math.floor(Math.random()*OPINION_TOPICS.length)][currentLevel],section:'Opinion'});
+  mockQuestions.push({text:PAST_Q[Math.floor(Math.random()*PAST_Q.length)],section:'Conversation'}, {text:FUT_Q[Math.floor(Math.random()*FUT_Q.length)],section:'Conversation'});
   const role = RP_DB[document.getElementById('mockRole').value];
   mockContext = 'Roleplay: ' + role.context + '\nPicture sequence described by learner: ' + context;
   role.dialogs.forEach((text,i) => mockQuestions.push({text:(i === 0 ? role.context + '\n' : '') + (Array.isArray(text) ? text[0] : text),section:'Roleplay',adaptive:false}));
@@ -571,11 +576,31 @@ async function showMockSummary() {
   const button = document.getElementById('btnReset'); button.disabled = true;
   try {
     const data = await callJSONAI(assessmentPrompt('Evaluate the completed mock as a whole, including all task sections. Do not average separate question scores. Assess development across the whole exchange; a short answer to a narrow follow-up is appropriate.', JSON.stringify(mockEvaluations), mockContext));
+    mockSummaryData = data;
     renderFeedback(data, mockEvaluations.map(x => x.question + '\n' + x.answer).join('\n\n'), true);
+    document.getElementById('optionalOpinion').style.display = currentLevel === 'HL' ? 'block' : 'none';
     button.textContent = '🔄 New mock'; button.onclick = resetApp;
   } catch (error) {
     alert('⚠️ Could not load feedback. Your responses are retained; please retry.');
   } finally { mockBusy = false; button.disabled = false; }
+}
+
+function startOptionalOpinion() {
+  if (mockBusy || !mockComplete || currentLevel !== 'HL') return;
+  isMockExam = false;
+  optionalOpinionPractice = true;
+  currentTopic = OPINION_TOPICS[Math.floor(Math.random() * OPINION_TOPICS.length)];
+  document.getElementById('optionalOpinion').style.display = 'none';
+  document.getElementById('btnAction').textContent = '✨ Evaluate answer';
+  updateQuestion();
+}
+
+function returnToMockSummary() {
+  optionalOpinionPractice = false;
+  isMockExam = true;
+  renderFeedback(mockSummaryData, mockEvaluations.map(x => x.question + '\n' + x.answer).join('\n\n'), true);
+  const button = document.getElementById('btnReset');
+  button.textContent = '🔄 New mock'; button.onclick = resetApp;
 }
 
 function updateQuestion() {
@@ -658,7 +683,11 @@ async function analyze() {
     else {
       const data = await callJSONAI(assessmentPrompt(currentTopic[currentLevel], text));
       renderFeedback(data, text);
-      const reset = document.getElementById('btnReset'); reset.textContent = '🔄 Try again'; reset.onclick = updateQuestion;
+      const reset = document.getElementById('btnReset');
+      if (optionalOpinionPractice) {
+        document.getElementById('fbEN').textContent += ' Optional opinion practice: this separate estimate does not change your mock result.';
+        reset.textContent = '↩️ Return to mock feedback'; reset.onclick = returnToMockSummary;
+      } else { reset.textContent = '🔄 Try again'; reset.onclick = updateQuestion; }
     }
   } catch (error) { alert('⚠️ Could not continue: ' + error.message); }
   finally { mockBusy = false; button.disabled = false; button.textContent = isMockExam ? '➡️ Submit and continue' : original; }

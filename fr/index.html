@@ -67,7 +67,7 @@
       <button id="btnStartDocumentMock" class="btn-main" style="margin-top:10px; background:#0f766e;" onclick="startDocumentMock()">Commencer le mock avec document</button>
     </div>
     
-    <p class="practice-note">Study Mode gives you ideas and language support. Exam Practice evaluates one answer. In a mock, answer one question at a time, with possible follow-ups and feedback at the end. Six themes form a shortened practice session, not the exact length or format of the real exam.</p>
+    <p class="practice-note">Study Mode gives you ideas and language support. Exam Practice evaluates one answer. In a mock, answer one question at a time, with possible follow-ups and feedback at the end. Past and future questions are included. At HL, a separate optional opinion question is available after the conversation mock feedback and does not affect its result. Six themes form a shortened practice session, not the exact length or format of the real exam.</p>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>
@@ -93,6 +93,11 @@
     </div>
 
     <div id="result" style="display:none;">
+      <div id="optionalOpinion" class="info-box" style="display:none;">
+        <strong>Pratique supplémentaire facultative · HL</strong>
+        <p>Essayez une question d’opinion après le mock. Elle ne modifie pas votre résultat.</p>
+        <button class="btn-main" onclick="startOptionalOpinion()">Essayer une question d’opinion</button>
+      </div>
       <div class="student-response-box"><strong>Vous avez dit:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>

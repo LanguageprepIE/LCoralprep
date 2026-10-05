@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert Polish Oral Practice | LCOrals Ireland</title>
   <link rel="canonical" href="https://lcorals.ie/pl/">
   <meta name="description" content="Prepare for your Leaving Cert Polish Oral Exam. Practice Oral topics and conversation with AI feedback. Free study tool for Polish students in Ireland.">
@@ -59,8 +59,9 @@
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
     </div>
 
-    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam (5 Questions)</button>
+    <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam</button>
     
+    <div id="mockSetup" class="study-box" style="display:none;"><h3>Mock exam setup</h3><p>Conversation → portfolio discussion → learning reflection. No hints or corrections during the mock.</p><p class="practice-note">Use an item from your own language portfolio: a project, text, recording, cultural activity or learning reflection. Discussing it is the task; the portfolio itself is not graded here. General and Discussion are practice labels, not official examination levels.</p><label for="mockContext">Describe your chosen portfolio item: its topic, what you did and what you learned (Polish or English)</label><textarea id="mockContext" rows="4" placeholder="Use non-sensitive details; no upload is needed."></textarea><button class="mock-btn" onclick="beginMockExam()">▶️ Begin mock</button><p class="practice-note">A shortened, text-based practice mock with optional answer-dependent follow-ups. A separate optional opinion extension is available after the feedback and does not affect the mock result. Final score is a practice estimate, not an official oral mark. Check dictation before submitting.</p></div>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>
@@ -79,13 +80,18 @@
       <textarea id="userInput" placeholder="Proszę wpisać odpowiedź (Type here)..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
-        👂 Check my pronunciation
+        👂 Listen to my answer
       </button>
 
       <button class="btn-main" id="btnAction" onclick="analyze()">✨ Proszę sprawdzić (Evaluate)</button>
     </div>
 
     <div id="result" style="display:none;">
+      <div id="optionalOpinion" class="study-box" style="display:none;">
+        <strong>Optional opinion extension</strong>
+        <p>Extra practice after the mock. This separate answer does not change your mock result.</p>
+        <button class="btn-main" onclick="startOptionalOpinion()">Try an opinion question</button>
+      </div>
       <div class="student-response-box"><strong>Pański/Pani tekst:</strong> <span id="userResponseText"></span></div>
       <div class="feedback-box">
         <div id="scoreDisplay" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 15px;"></div>

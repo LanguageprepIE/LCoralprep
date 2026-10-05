@@ -506,7 +506,7 @@ function showMockQuestion() {
   display.replaceChildren();
   const heading = document.createElement('strong');
   heading.textContent = `Thème ${mockIndex + 1}/${mockQuestions.length} · ${question.section}${mockFollowUp ? ' · Relance' : ''}`;
-  display.appendChild(heading, document.createElement('br'), document.createElement('br'), document.createTextNode(question.text));
+  display.append(heading, document.createElement('br'), document.createElement('br'), document.createTextNode(question.text));
   document.getElementById('userInput').value = '';
   const btnHint = document.getElementById('btnHint');
   const hintBox = document.getElementById('hintBox');
@@ -696,7 +696,7 @@ async function askAIConcept(concept, kind = 'language') {
   const prompt = `
     You are a supportive French oral-exam tutor. Topic: ${currentTopic?.title || 'General'}.
     Learner level: ${currentLevel}. Practice item: ${concept}. Type: ${kind}.
-    Explain the idea briefly in English, then provide a 3-step speaking plan (keywords, not a memorised script) and up to two natural French examples with English translations.
+    Keep narrow language items narrow: introducing a name needs a short natural introduction, never name etymology or an essay about identity. Do not artificially inflate the difficulty at HL. Explain the idea briefly in English, then provide a 3-step speaking plan (keywords, not a memorised script) and up to two natural French examples with English translations.
     Address the learner and phrase examiner questions with formal vous. Model learner answers in first person je. OL support must stay simple; HL can develop reasons, examples and comparisons. Advanced idioms are optional enrichment, never necessary for high marks. Treat topic guidance as optional; do not imply that every bullet is required.
     Return valid JSON only: {"explanation_en":"...","speaking_plan":["..."],"examples":[{"target":"...","en":"..."}],"optional_challenge":"..."}.
   `;

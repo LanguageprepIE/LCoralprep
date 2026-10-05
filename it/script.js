@@ -473,6 +473,10 @@ function speakText() {
 }
 
 let mockContext = '';
+function hasInformalAddress(text) {
+  const words = text.toLowerCase().match(/\p{L}+/gu) || [];
+  return words.some(word => ['tu','tuo','tua','tuoi','tue','ti','dimmi','raccontami','parlami','hai','pensi','fai'].includes(word));
+}
 function currentMockQuestion() { return mockFollowUp || mockQuestions[mockIndex]; }
 function startMockExam() {
   if (mockBusy) return;
@@ -535,7 +539,7 @@ Task context: ${JSON.stringify(mockContext)}
 Previous conversation: ${JSON.stringify(mockEvaluations)}`);
       if (typeof reply.question !== 'string') throw new Error('Invalid follow-up');
       const text = reply.question.trim();
-      if (text && text.length <= 350 && !mockEvaluations.some(x => x.question === text) && text !== question.text) nextFollowUp = { text, section: question.section };
+      if (text && !hasInformalAddress(text) && text.length <= 350 && !mockEvaluations.some(x => x.question === text) && text !== question.text) nextFollowUp = { text, section: question.section };
     } catch (error) {
       // Keep the exam usable when the adaptive service is unavailable.
       console.warn('Follow-up unavailable; moving to next topic.', error);
@@ -837,11 +841,12 @@ async function analyzeStory() {
   const t = document.getElementById('userInputStory').value; if(t.length < 5) return alert("Scrivi o dì qualcosa di più...");
   const b = document.getElementById('btnActionStory'); b.disabled = true; b.innerText = "⏳ Valutando...";
 
-  const prompt = `ACT AS: Italian Leaving Cert Examiner. TASK: Picture Sequence "${currentStoryTitle}". STUDENT: "${t}". OUTPUT JSON: { "score": 0-100, "feedback_it": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }`;
+  const prompt = assessmentPrompt('Picture sequence practice: ' + currentStoryTitle + '. Assess the narrative language only; the actual images are not available.', t);
 
   try {
-    const rawText = await callSmartAI(prompt);
-    const j = JSON.parse(rawText.replace(/```json|```/g, "").trim());
+    const j = await callJSONAI(prompt);
+    if (!Number.isFinite(Number(j.score))) throw new Error('Invalid evaluation score');
+    j.score = Math.max(0, Math.min(100, Number(j.score)));
 
     document.getElementById('storyArea').style.display = 'none'; document.getElementById('resultStory').style.display = 'block';
     document.getElementById('userResponseTextStory').innerText = t;
@@ -849,7 +854,7 @@ async function analyzeStory() {
     document.getElementById('scoreDisplayStory').style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
     document.getElementById('fbITStory').innerText = "🇮🇹 " + j.feedback_it;
     document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en;
-    document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Eccellente!";
+    document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Eccellente!";
   } catch (e) { console.error(e); alert("⚠️ Errore: " + e.message); } finally { b.disabled = false; b.innerText = "✨ Evaluate Description"; }
 }
 

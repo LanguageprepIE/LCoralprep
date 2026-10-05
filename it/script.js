@@ -703,6 +703,7 @@ async function askAIConcept(concept, kind = 'language') {
     Learner level: ${currentLevel}. Practice item: ${concept}. Type: ${kind}.
     Keep narrow language items narrow: introducing a name needs a short natural introduction, never name etymology or an essay about identity. Do not artificially inflate the difficulty at the higher practice setting. Explain the idea briefly in English, then provide a 3-step speaking plan (keywords, not a memorised script) and up to two natural Italian examples with English translations.
     Address the learner and phrase examiner questions with formal Lei. Model learner answers in first person io. OL support must stay simple; HL can develop reasons, examples and comparisons. Advanced idioms are optional enrichment, never necessary for high marks. Treat topic guidance as optional; do not imply that every bullet is required.
+    Speaking-plan items must be short English keywords or instructions, without numbering or Markdown. Examples must contain ONLY a learner answer in the first person; no examiner dialogue, names, speaker labels or questions. At OL/General give two short sentences per example with everyday vocabulary. Do not invent complex research or advanced analysis as the expected standard. At HL/Discussion develop a reason and a concrete example in accessible senior-cycle language.
     Return valid JSON only: {"explanation_en":"...","speaking_plan":["..."],"examples":[{"target":"...","en":"..."}],"optional_challenge":"..."}.
   `;
   try {

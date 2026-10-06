@@ -54,6 +54,7 @@
       <button class="level-btn hl" id="btnHL" onclick="setLevel('Advanced')">Discussion (Rozszerzony)</button>
     </div>
 
+    <p class="practice-note">Common transcript estimate /100. General and Discussion change practice support, not the official oral scale. Study guidance has no mark.</p>
     <div class="mode-selector">
         <button class="mode-btn active" id="modeExam" onclick="setMode('exam')">🎤 Exam Mode</button>
         <button class="mode-btn" id="modeStudy" onclick="setMode('study')">📚 Study Mode</button>
@@ -61,7 +62,7 @@
 
     <button class="mock-btn" onclick="startMockExam()">🎲 Start Mock Exam</button>
     
-    <div id="mockSetup" class="study-box" style="display:none;"><h3>Mock exam setup</h3><p>Conversation → portfolio discussion → learning reflection. No hints or corrections during the mock.</p><p class="practice-note">Use an item from your own language portfolio: a project, text, recording, cultural activity or learning reflection. Discussing it is the task; the portfolio itself is not graded here. General and Discussion are practice labels, not official examination levels.</p><label for="mockContext">Describe your chosen portfolio item: its topic, what you did and what you learned (Polish or English)</label><textarea id="mockContext" rows="4" placeholder="Use non-sensitive details; no upload is needed."></textarea><button class="mock-btn" onclick="beginMockExam()">▶️ Begin mock</button><p class="practice-note">A shortened, text-based practice mock with optional answer-dependent follow-ups. A separate optional opinion extension is available after the feedback and does not affect the mock result. Final score is a practice estimate, not an official oral mark. Check dictation before submitting.</p></div>
+    <div id="mockSetup" class="study-box" style="display:none;"><h3>Mock exam setup</h3><p>Conversation → portfolio discussion → learning reflection. No hints or corrections during the mock.</p><p class="practice-note">Use an item from your own language portfolio: a project, text, recording, cultural activity or learning reflection. Discussing it is the task; the portfolio itself is not graded here. General and Discussion are practice labels, not official examination levels.</p><label for="polishExamLevel">Exam weighting (separate from practice difficulty)</label><select id="polishExamLevel"><option value="common">Common oral estimate /100</option><option value="OL">Ordinary Level · /100 contribution</option><option value="HL">Higher Level · /100 estimate and /120 contribution</option></select><label for="mockContext">Describe your chosen portfolio item: its topic, what you did and what you learned (Polish or English)</label><textarea id="mockContext" rows="4" placeholder="Use non-sensitive details; no upload is needed."></textarea><button class="mock-btn" onclick="beginMockExam()">▶️ Begin mock</button><p class="practice-note">A shortened, text-based practice mock with optional answer-dependent follow-ups. A separate optional opinion extension is available after the feedback and does not affect the mock result. Final score is a practice estimate, not an official oral mark. Check dictation before submitting.</p></div>
     <div class="topic-grid" id="topicGrid"></div>
 
     <div id="studyContainer" class="study-box" style="display:none;"></div>
@@ -150,7 +151,8 @@
 
 </div>
 
-<script src="script.js?v=mock-navigation-audio-20261004"></script>
+<script src="../oral-scoring.js?v=20261006"></script>
+<script src="script.js?v=scoring-preview-20261006"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>

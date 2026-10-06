@@ -1,0 +1,25 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const ctx = vm.createContext({});
+vm.runInContext(fs.readFileSync('oral-scoring.js','utf8')+';globalThis.S=LCOralScoring;',ctx);
+const S=ctx.S;
+(async()=>{
+  const draft={band:'competent',score:75,feedback_pl:'Dobry tekst.',feedback_en:'Good text.',errors:[{original:'ja iść szkoła',correction:'szłem do szkoły',explanation_en:'Use the accusative.'}],next_steps:[],vocabulary_suggestions:[]};
+  const checked=await S.reviewFeedback('pl',draft,'Wczoraj ja iść szkoła',async()=>({...draft,band:'excellent',score:100,feedback_en:'A past-tense correction is useful.',errors:[{original:'ja iść szkoła',correction:'szedłem do szkoły / szłam do szkoły',explanation_en:'Use a conjugated past verb; do takes the genitive.'},{original:'Wczoraj',correction:'Dzisiaj',explanation_en:'Invented change.'}]}));
+  assert.equal(checked.score,75);assert.equal(checked.band,'competent');
+  assert.equal(checked.errors.length,1);assert.equal(checked.errors[0].correction,'szedłem do szkoły / szłam do szkoły');
+  const failed=await S.reviewFeedback('pl',draft,'Wczoraj ja iść szkoła',async()=>{throw Error('network failure')});
+  assert.equal(failed.score,75);assert.equal(failed.errors.length,0);assert.equal(failed.next_steps.length,0);assert(failed.feedback_en.includes('Please retry'));
+  const malformed=await S.reviewFeedback('pl',draft,'Wczoraj ja iść szkoła',async()=>({score:100}));
+  assert.equal(malformed.score,75);assert.equal(malformed.errors.length,0);assert(malformed.feedback_en.includes('Please retry'));
+  let calls=0;
+  await S.reviewFeedback('pl',{...draft,errors:[]},'Correct answer',async()=>{calls++;});assert.equal(calls,0);
+  const mock={conversation:{band:'excellent',score:40},part_two:{band:'strong',score:25},roleplay:{band:'strong',score:25},summary_de:'Gut',summary_en:'Good',corrections:[{original:'es war gut',correction:'es hat mir gefallen',explanation_en:'More natural.'}]};
+  const reviewed=await S.reviewFeedback('de',mock,'es war gut',async()=>({...mock,conversation:{band:'limited',score:0},summary_en:'The original is correct.',corrections:[]}));
+  assert.equal(S.read('de','mock',reviewed).score,90);assert.equal(reviewed.corrections.length,0);
+  let seen='';
+  await S.reviewFromPrompt('pl',draft,'Transcript: '+JSON.stringify(JSON.stringify([{question:'Untrusted examiner quote',answer:'Wczoraj ja iść szkoła'}])),async prompt=>{seen=prompt;return draft;});
+  assert(!seen.includes('Untrusted examiner quote'));assert(seen.includes('Wczoraj ja iść szkoła'));
+  console.log('Feedback review checks passed: immutable marks, source quotes, empty-review skip, conservative failure, mock fields and learner-only text.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

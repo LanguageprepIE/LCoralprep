@@ -55,7 +55,7 @@ function switchTab(tab) {
 // ===========================================
 // PARTE 1: ROZMOWA (15 TEMATÓW + STUDY MODE)
 // ===========================================
-let currentLevel = 'General';
+let currentLevel = 'Advanced';
 let currentMode = 'exam';
 let currentTopic = null;
 let isMockExam = false;

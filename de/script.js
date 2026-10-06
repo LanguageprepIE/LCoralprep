@@ -72,7 +72,7 @@ function switchTab(tab) {
 // ===========================================
 // PARTE 1: CONVERSATION (AI - GEMINI)
 // ===========================================
-let currentLevel = 'OL';
+let currentLevel = 'HL';
 let currentMode = 'exam';
 let currentTopic = null;
 let isMockExam = false; 

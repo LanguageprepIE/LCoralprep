@@ -369,15 +369,7 @@ async function analyze() {
     Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
     Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
     Address the learner consistently using German formal Sie; never switch to informal address.
-    Be generously fair: reward what the learner successfully communicates and demonstrates. Do not search for imperfections merely to hold back a high mark, but do not hide clear weaknesses. Judge against realistic Leaving Certificate senior-cycle performance, not native-speaker perfection.
-Use the whole 0–100 scale. Treat these bands as practice guidance inspired by Leaving Certificate MFL oral descriptors, not as a mathematical conversion of an official mark:
-- 90–100: top-band senior-cycle performance: sustained, well-developed, autonomous/proactive and generally well controlled. Occasional slips or minor grammatical inaccuracies are fully compatible with this band when they do not undermine communication or overall control. 100 does NOT mean error-free, native or bilingual speech.
-- 82–89: excellent/effective performance: clear, developed and independent, with good range and control. Inaccuracies may occur but communication remains secure.
-- 72–81: very good/competent performance: relevant and generally developed, with successful communication. Noticeable inaccuracies or uneven control may be present, but meaning is normally clear.
-- 60–71: adequate/competent performance: straightforward communication succeeds, though development, range or control is limited and inaccuracies may recur.
-- 40–59: limited performance: communication is possible but substantial support, simplification or recurring errors may be needed; inaccuracies can impede communication.
-- Below 40: substantial difficulty communicating a relevant, comprehensible response.
-Do not lower a score simply because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added. For a strong response, next steps may be optional enrichment rather than reasons for withholding marks. Return feedback in German and concise English.
+    Calibrate scores: 90-100 exceptional; 82-89 excellent; 75-81 very good; 65-74 competent; 50-64 adequate; below 50 needs substantial development. Reserve high scores for relevant, developed answers with generally effective language. Return feedback in German and concise English.
     Return valid JSON only: {"score":0,"feedback_de":"...","feedback_en":"...","strengths":["..."],"next_steps":["..."],"connectors":["..."],"vocabulary_suggestions":[{"basic":"...","richer":"..."}],"errors":[{"original":"...","correction":"...","explanation_en":"..."}]}.
     Keep arrays concise (max 3 items each). Do not invent errors; use empty arrays when none are clear.
   `;

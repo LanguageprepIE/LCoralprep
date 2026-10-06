@@ -61,7 +61,7 @@ function switchTab(tab) {
 // ===========================================
 // PARTE 1: CONVERSATION
 // ===========================================
-let currentLevel = 'OL';
+let currentLevel = 'HL';
 let currentMode = 'exam';
 let currentTopic = null;
 let isMockExam = false;

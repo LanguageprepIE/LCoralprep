@@ -19,8 +19,8 @@ export const handler = async (event, context) => {
         const body = JSON.parse(event.body);
         const contents = body.contents;
 
-        // 4. Llamamos a Google Gemini (Modelo 2.0 Flash)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        // 4. Llamamos a Google Gemini (prueba temporal con Gemini 3.5 Flash-Lite)
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ contents })

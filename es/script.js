@@ -823,6 +823,15 @@ async function analyze() {
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - Avoid demanding memorised idioms or unnatural language.
+
+    ACCURACY AUDIT BEFORE SCORING:
+    - Before choosing the numerical score, silently check the whole transcript for: subject-verb agreement; noun-adjective agreement; verb formation and tense/time-reference consistency; articles and prepositions; pronouns; and clearly unnatural or incorrect word choice.
+    - Distinguish between ATTEMPTED RANGE and CONTROLLED RANGE. For example, using present, past and future forms is evidence of range only when the forms are sufficiently controlled; incorrect tense switching must not be praised as effective control of time frames.
+    - Make the praise, corrections and score logically consistent. Never say "accurate grammar throughout", "strong control" or equivalent if you have identified clear basic grammar errors that contradict that claim.
+    - At HL, several clear basic errors or recurring problems in core grammar must materially affect the accuracy judgement and should normally move the response out of the "excellent / strong control" bands, even when communication is successful.
+    - Do not lower a mark merely because a response is not sophisticated or native-like. Accuracy is one part of the judgement alongside communication, relevance, development and range.
+    - In "errors", include the important clear, teachable errors you can substantiate from the transcript (up to 6 distinct corrections). Do not invent errors to justify a score, and do not list punctuation, capitalisation or accent marks from speech-to-text.
+    - Choose the score only after this audit, using the HL calibration below where applicable.
     ${scoreCalibration}
     - Return valid JSON only, with no markdown.
 

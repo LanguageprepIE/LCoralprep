@@ -793,15 +793,25 @@ async function analyze() {
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
       : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
   const scoreCalibration = currentLevel === 'HL' ? `
-    HL SCORE CALIBRATION (use these Leaving Cert learner benchmarks, not native-speaker expectations):
-    - Keep the numerical score consistent with the written feedback. If the response is described as very good, communicates substantial relevant information and has no significant language errors, do not award a mark in the mid-60s merely because it could include more examples, connectors or vocabulary variety.
-    - 90-100: exceptional senior-cycle response: sustained, highly controlled, richly developed and consistently accurate. It does not need to sound bilingual.
-    - 82-89: excellent response: autonomous, detailed and varied, with strong control; minor limitations do not impede it.
-    - 75-81: very good response: clearly relevant and developed, gives substantial information and some reasons, opinions or examples, uses useful vocabulary, and has few or no significant errors. Some repetition, ordinary vocabulary or missed opportunities for further detail are compatible with this band.
-    - 65-74: competent response but with noticeable limitations in development, range, relevance or accuracy. Communication remains successful.
-    - 50-64: adequate response relying mainly on simple or brief language, with limited development or recurring inaccuracies.
-    - Below 50: substantial difficulty communicating a relevant, comprehensible response.
-    - A response should normally receive at least 75 when it answers the topic directly, provides several relevant details, sustains communication and contains no significant language errors, even if wider linking, more varied vocabulary or an additional example would improve it.` : '';
+    HL OFFICIAL-BAND EXPERIMENT — GENERAL CONVERSATION /70:
+    First decide which Leaving Certificate conversation band best matches the performance. Only then choose a mark within that band. Do NOT start from a percentage and convert it.
+
+    Use these official-style band anchors:
+    - BAND 1 — FLUENT — 65-70: pro-active; significant autonomy/spontaneity; expands and develops ideas with at most occasional prompting; grammatical inaccuracies are mostly slip-of-the-tongue type; self-correction may occur. From a transcript, judge only what is visible in the language and development; do not infer pronunciation, intonation or actual examiner prompting.
+    - BAND 2 — EFFECTIVE / COMPETENT — 55-60: ready, effective communication; syntax and idiom generally sound; inaccuracies do not impede communication; awareness or attempted correction may be present.
+    - BAND 3 — COMPETENT / ADEQUATE — 45-50: generally good comprehension/response; straightforward expression; some hesitation or increasing inaccuracies may be evident, but meaning remains clear.
+    - BAND 4 — ADEQUATE / LIMITED — 30-40: understandable in uncomplicated contexts but with noticeable syntactic lapses; inaccuracies impede at times but do not usually distort communication.
+    - BAND 5 — LIMITED / DEFICIENT — 20-25: hesitant, disjointed or incomplete response; recurrent inaccuracies tend to distort meaning and substantially reduce coherent communication.
+    - BAND 6 — MINIMAL — 10-15: very limited comprehensible language; often inadequate or incoherent; accuracy is scarcely relevant.
+    - BAND 7 — NON-PERFORMING — 0-5.
+
+    IMPORTANT:
+    - A top-band mark does NOT require error-free, native-speaker or C1/C2 Spanish. The official top band explicitly allows grammatical inaccuracies, mainly slips.
+    - Do not withhold Band 1 merely because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added.
+    - Evaluate what the learner successfully communicates and how securely they control it. Weigh inaccuracies by frequency, seriousness and effect on communication.
+    - Because this is a transcript, do not assess pronunciation, intonation, pauses, real-time fluency or examiner support.
+    - Examiners may award any whole-number mark within the selected band's range; marks are not restricted to multiples of five.
+    - Also return the chosen band number (1-7). The numerical mark must be an integer within that band's range.` : '';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -823,11 +833,25 @@ async function analyze() {
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - Avoid demanding memorised idioms or unnatural language.
+    - Do not invent improvement targets just because the output schema allows them. For an already excellent response, next_steps may contain only one maintenance/enrichment suggestion, or be empty if there is no meaningful next step supported by the transcript.
+    - Do not present a specific structure (for example subjunctive, idioms, rarer tenses or regional expressions) as a requirement for a higher mark. Such features may be optional enrichment only when genuinely useful.
+    - In connectors, suggest only connectors that would add something useful and that the learner has not already used effectively in this response. Use an empty array if there is no worthwhile suggestion.
+    - In vocabulary_suggestions, only suggest natural alternatives that preserve the intended meaning, intensity and register. Do not replace a correct everyday word merely with a stronger or more formal word. Use an empty array if no genuine improvement is needed.
     ${scoreCalibration}
     - Return valid JSON only, with no markdown.
 
     OUTPUT SCHEMA:
-    {
+    ${currentLevel === 'HL' ? `{
+      "band": 1-7,
+      "score": "an integer within the selected band's /70 range",
+      "feedback_es": "Short encouraging overview in Spanish",
+      "feedback_en": "Short clear overview in English",
+      "strengths": [{"es":"fortaleza específica en español","en":"matching English translation"}],
+      "next_steps": [{"es":"0-2 mejoras realmente útiles; pueden ser mantenimiento o enriquecimiento opcional","en":"matching English translation"}],
+      "connectors": ["up to 3 suitable Spanish connectors"],
+      "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
+      "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
+    }` : `{
       "score": 0-100,
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
@@ -836,7 +860,8 @@ async function analyze() {
       "connectors": ["up to 3 suitable Spanish connectors"],
       "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
       "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
-    }
+    }`}
+
   `;
 
   try {
@@ -850,20 +875,32 @@ async function analyze() {
     document.getElementById('userResponseText').innerText = t;
     
     const s = document.getElementById('scoreDisplay');
-    const safeScore = Math.max(0, Math.min(100, Number(j.score) || 0));
-    s.innerText = optionalOpinion ? `Optional practice: ${safeScore}%` : `Score: ${safeScore}%`;
-    const positiveScoreThreshold = currentLevel === 'HL' ? 75 : 85;
-    s.style.color = safeScore >= positiveScoreThreshold ? "#166534" : (safeScore >= 50 ? "#ca8a04" : "#991b1b");
+    const rawScore = Number(j.score) || 0;
+    const safeScore = currentLevel === 'HL'
+        ? Math.max(0, Math.min(70, rawScore))
+        : Math.max(0, Math.min(100, rawScore));
+    const scorePercent = currentLevel === 'HL' ? (safeScore / 70) * 100 : safeScore;
+    s.innerText = currentLevel === 'HL'
+        ? (optionalOpinion ? `Optional practice: ${safeScore}/70` : `Score: ${safeScore}/70`)
+        : (optionalOpinion ? `Optional practice: ${safeScore}%` : `Score: ${safeScore}%`);
+    const positiveScoreThreshold = currentLevel === 'HL' ? (55 / 70 * 100) : 85;
+    s.style.color = scorePercent >= positiveScoreThreshold ? "#166534" : (scorePercent >= 50 ? "#ca8a04" : "#991b1b");
 
     document.getElementById('fbES').innerText = "🇪🇸 " + j.feedback_es;
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
     
     const l = document.getElementById('errorsList'); l.innerHTML = "";
     if (j.strengths && j.strengths.length) {
-        l.innerHTML += `<div class="feedback-section-card feedback-strength"><strong>✅ What worked well</strong><ul>${j.strengths.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+        l.innerHTML += `<div class="feedback-section-card feedback-strength"><strong>✅ What worked well</strong><ul>${j.strengths.map(x => {
+            if (x && typeof x === 'object') return `<li><span class="target-language">${escapeHTML(x.es || '')}</span>${x.en ? `<span class="english-support">${escapeHTML(x.en)}</span>` : ''}</li>`;
+            return `<li>${escapeHTML(x)}</li>`;
+        }).join('')}</ul></div>`;
     }
     if (j.next_steps && j.next_steps.length) {
-        l.innerHTML += `<div class="feedback-section-card feedback-next"><strong>🎯 Next steps</strong><ul>${j.next_steps.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+        l.innerHTML += `<div class="feedback-section-card feedback-next"><strong>🎯 Next steps</strong><ul>${j.next_steps.map(x => {
+            if (x && typeof x === 'object') return `<li><span class="target-language">${escapeHTML(x.es || '')}</span>${x.en ? `<span class="english-support">${escapeHTML(x.en)}</span>` : ''}</li>`;
+            return `<li>${escapeHTML(x)}</li>`;
+        }).join('')}</ul></div>`;
     }
     if (j.connectors && j.connectors.length) {
         l.innerHTML += `<div class="feedback-section-card"><strong>🔗 Connectors to try</strong><p>${j.connectors.map(escapeHTML).join(' · ')}</p></div>`;
@@ -884,7 +921,7 @@ async function analyze() {
             number: mockIndex + 1,
             label: mockItem.label || (mockItem.topic ? mockItem.topic.title : `Question ${mockIndex + 1}`),
             prompt: mockItem.prompt,
-            score: safeScore,
+            score: currentLevel === 'HL' ? scorePercent : safeScore,
             feedback_es: j.feedback_es || ''
         });
         if (mockIndex < 5) {

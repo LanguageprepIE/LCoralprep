@@ -38,6 +38,28 @@ const optional = S.suggestions({band:'competent',score:37,errors:[
 assert.equal(optional.errors.length,1);
 assert.equal(optional.errors[0].correction,"Mi piace l'italiano");
 assert.equal(optional.score,37); assert.equal(optional.band,'competent');
+const stylistic = S.suggestions({corrections:[
+  {original:'möchte ich studieren',correction:'möchte ich an der Universität studieren',explanation_en:'The original is broadly acceptable here.'},
+  {original:'es war gut',correction:'es hat mir gut gefallen',explanation_en:'This sounds more natural in German.'},
+  {original:'Ich gehen',correction:'Ich gehe',explanation_en:'Conjugate the verb for the first-person subject.'},
+  {original:'examiner text',correction:'something else',explanation_en:'Incorrect.'}
+]}, 'möchte ich studieren. es war gut. Ich gehen');
+assert.equal(stylistic.corrections.length,1);
+assert.equal(stylistic.corrections[0].correction,'Ich gehe');
+const vocab=S.suggestions({vocabulary_suggestions:[{basic:'fajnie',richer:'interesująco'},{basic:'dobrze',richer:'świetnie'}]},'Było dobrze.');
+assert.equal(vocab.vocabulary_suggestions.length,1);
+assert.equal(vocab.vocabulary_suggestions[0].basic,'dobrze');
+// Support settings must not change assessment prompts for the same task and text.
+for (const lang of ['it','fr','de','pl']) {
+  const ctx=vm.createContext({window:{},document:{addEventListener:()=>{}},navigator:{},console,setTimeout,clearTimeout});
+  vm.runInContext(fs.readFileSync('oral-scoring.js','utf8'),ctx);
+  vm.runInContext(fs.readFileSync(`${lang}/script.js`,'utf8'),ctx);
+  const fn=lang==='de'?'germanAssessmentPrompt':'assessmentPrompt';
+  vm.runInContext(`currentLevel='${lang==='pl'?'Basic':'OL'}'`,ctx);
+  const simple=vm.runInContext(`${fn}('School question','Same learner response')`,ctx);
+  vm.runInContext(`currentLevel='${lang==='pl'?'Advanced':'HL'}'`,ctx);
+  assert.equal(vm.runInContext(`${fn}('School question','Same learner response')`,ctx),simple);
+}
 for (const lang of ['it','fr','de','pl']) {
   const html=fs.readFileSync(`${lang}/index.html`,'utf8');
   assert(html.indexOf('../oral-scoring.js') < html.indexOf('src="script.js'));

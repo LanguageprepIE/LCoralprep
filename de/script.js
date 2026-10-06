@@ -352,10 +352,10 @@ function germanAssessmentPrompt(question, transcript, scoringTask = 'conversatio
   return `
     Act as a fair Leaving Certificate German oral examiner in Ireland.
     Assess communicative success, relevance to the question, development, range, accuracy and comprehensibility at the stated level.
-    Level: ${currentLevel}. Question: ${JSON.stringify(question)}
+    Question: ${JSON.stringify(question)}
     Learner response (raw speech transcription): ${JSON.stringify(transcript)}
     Study guidance (optional support, never a compulsory checklist): ${JSON.stringify(guidance)}
-    Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
+    Apply common senior-cycle oral expectations. Do not expect native-speaker performance or require every suggested content point. Keep advice achievable for the language actually demonstrated.
     Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
     Address the learner consistently using German formal Sie; never switch to informal address.
 ${LCOralScoring.instructions('de', scoringTask)}
@@ -379,7 +379,7 @@ async function analyze() {
   const prompt = germanAssessmentPrompt(questionContext, t, 'conversation', criteria);
   try {
     const raw = await callSmartAI(prompt);
-    const j = LCOralScoring.suggestions(parseAIJSON(raw), t);
+    const j = await LCOralScoring.reviewFeedback('de', parseAIJSON(raw), t, async review => parseAIJSON(await callSmartAI(review)));
     const assessment = LCOralScoring.read('de', 'conversation', j);
     const score = assessment.score;
     document.getElementById('exerciseArea').style.display = 'none';
@@ -583,7 +583,7 @@ async function analyzeStory() {
 
   try {
     const rawText = await callSmartAI(prompt);
-    const j = LCOralScoring.suggestions(parseAIJSON(rawText), t);
+    const j = await LCOralScoring.reviewFeedback('de', parseAIJSON(rawText), t, async review => parseAIJSON(await callSmartAI(review)));
     const assessment = LCOralScoring.read('de', 'picture', j);
     document.getElementById('storyArea').style.display = 'none'; document.getElementById('resultStory').style.display = 'block';
     document.getElementById('userResponseTextStory').innerText = t;
@@ -815,14 +815,14 @@ async function evaluateGermanFullMock() {
   scrollToVisibleSection('fullMockLoading');
   const routeName = mock.route === 'picture' ? 'Picture Sequence' : 'Project';
   const prompt = `
-    Act as a fair Leaving Certificate German oral examiner in Ireland. Assess this complete mock at ${currentLevel} level.
+    Act as a fair Leaving Certificate German oral examiner in Ireland. Assess this complete mock using the common oral standard.
     Official structure: General Conversation /40; ${routeName} /30; Roleplay /30. Total /100.
     Conversation: ${JSON.stringify(mock.answers.conversation)}
     ${routeName}: ${JSON.stringify(mock.answers.partTwo)}
     Roleplay context: ${RP_DATA[mock.selectedRoleplay].context}
     Roleplay turns: ${JSON.stringify(mock.answers.roleplay)}
     ${LCOralScoring.instructions('de', 'mock')}
-    Apply level-appropriate expectations. Do not expect native-speaker performance. Ignore punctuation, capitalisation and likely speech-recognition artefacts. Do not assess pronunciation, accent, prosody or listening from text, and explicitly acknowledge this limitation. Address the learner using formal Sie.
+    Do not expect native-speaker performance. Ignore punctuation, capitalisation and likely speech-recognition artefacts. Do not assess pronunciation, accent, prosody or listening from text, and explicitly acknowledge this limitation. Address the learner using formal Sie.
     Return valid JSON only: {${JSON.stringify(LCOralScoring.schema('de', 'mock')).slice(1,-1)},"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
     Keep each array to a maximum of four concise items. Do not invent errors.
     ${LCOralScoring.finalCheck()}
@@ -842,6 +842,8 @@ async function evaluateGermanFullMock() {
       `);
       data = parseAIJSON(repaired);
     }
+    const answers = Object.values(mock.answers).flat().map(item => item.answer).join('\n');
+    data = await LCOralScoring.reviewFeedback('de', data, answers, async review => parseAIJSON(await callSmartAI(review)));
     renderGermanFullMockResult(data);
   } catch (e) {
     console.error(e);
@@ -852,6 +854,8 @@ async function evaluateGermanFullMock() {
 }
 
 function renderGermanFullMockResult(data) {
+  const answers = Object.values(germanFullMock.answers).flat().map(item => item.answer).join('\n');
+  data = LCOralScoring.suggestions(data, answers);
   const assessment = LCOralScoring.read('de', 'mock', data);
   const [conversation, partTwo, roleplay] = assessment.parts.map(part => part.score);
   const total = assessment.score;

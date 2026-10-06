@@ -2,6 +2,23 @@
 
 Tested commit: 722a59e218d0f7c0e38bb9955b51c4b58f88d776, PR #19. No production merge.
 
+## Follow-up changes and verification
+
+The original findings below describe the baseline commit, not the final implementation. The follow-up keeps all component maxima/ranges, Spanish and the Gemini proxy/model unchanged.
+
+- Removed HL/OL and General/Discussion labels from assessment inputs and removed conflicting level-dependent marking instructions. Question choice and Study support remain adaptive. A regression checks that the same question/text produces identical assessment prompts across support settings. This removes a systematic prompt difference; it cannot eliminate stochastic model variation.
+- Clarified narrative assessment: a coherent present tense is valid; unseen details, extra feelings and an opinion are not compulsory. Distinguish simple correct control from pervasive core errors. Follow-up correct narratives scored 18 then 23–24/25; error-heavy versions 12–16/25. Ordering held in the targeted repeats and final pipeline.
+- Applied source-quote/style filtering to the German full mock's corrections as well as ordinary practice. Vocabulary proposals without an actual quoted source phrase are filtered.
+- Added a focused feedback proofreading call with the same Gemini model when corrections/advice or a claim of language errors needs review. It checks bilingual summaries, examples, explanations and proposals, but its output cannot change bands or scores. No new correction quotes can be introduced. If review fails, marks remain intact and the UI requests a retry while withholding unverified comments. Excellent answers without proposals or error claims skip this call. Other feedback can take longer and use an additional API request.
+
+Unit tests cover unchanged marks/component objects, malformed or failed review, unsupported original quotes, the empty-review skip and learner-only mock text. DOM checks verify that German stylistic corrections disappear while a genuine conjugation correction remains. Syntax and whitespace checks pass.
+
+Live feedback regressions corrected Polish szłem → szedłem, retained both szedłem/szłam when gender was unknown, corrected the explanation of do szkoły to genitive, and preserved nauczyciel as singular. The German review removed the false studieren correction and unsupported grammar criticism, and corrected the war/Perfekt label. All bands and marks stayed unchanged by review. French singular professeur agreement was also targeted for review.
+
+A final pipeline sample produced Italian conversation 38/50, correct narrative 24/25 and error-heavy narrative 15/25; French error-heavy 50/80; German correct simple conversation 34/40; Polish error-heavy 65/100. Short integrated medium mocks produced Italian 86/100, German 82/100 and Polish 74/100. These are observed estimates, not target marks. Repeated focused assessment still varied: Italian medium 37–42/50, French error-heavy 48–55/80 and German medium 28–34/40. The proofreading step deliberately does not rescore them.
+
+**Remaining limitation:** feedback accuracy improved on reproduced faults, but model scoring is not deterministic and proofreading is also probabilistic. French structural-band variability remains a review point before production approval. Do not claim stable exact marks or universal correction accuracy from these tests. No temperature/backend change was made: Google recommends default sampling settings for Gemini 3.x (https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.5).
+
 ## Method
 
 48 synthetic evaluations through the deploy-preview-19 Gemini proxy, using prompts generated from the actual frontend functions: 24 repeated conversation evaluations, 10 integrated mock/document evaluations, 6 Italian roleplay/picture evaluations, 4 lower-support conversation evaluations and 4 targeted Italian repetitions. No student data. All 48 outputs passed language-specific band/mark contracts.

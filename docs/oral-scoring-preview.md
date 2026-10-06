@@ -31,6 +31,8 @@ Annual task selections and Polish prescribed topics are unchanged. This branch d
 
 ## Validation
 
+See [follow-up validation and remaining limitations](oral-scoring-validation.md) before production approval. Feedback proofreading is now a separate step with immutable marks; repeated model scores remain variable.
+
 Run `node tests/oral-scoring.test.cjs` for integer coverage, component totals, unsupported Spanish contracts, invalid output and display filtering. All five changed JavaScript files pass `node --check`.
 
 DOM checks against the real HTML and rendering functions passed: Italian /50 and /100 plus five-turn roleplay feedback /25; French /80 breakdown; Polish /100, HL /120 and unweighted optional practice; German /40 and full /100. These checks used a DOM emulator; a visual browser check remains part of user preview review.

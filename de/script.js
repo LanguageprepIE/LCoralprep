@@ -348,6 +348,23 @@ function resetApp() {
 // ===========================================
 // FUNCIÓN ANALYZE (MODO EXAMEN)
 // ===========================================
+function germanAssessmentPrompt(question, transcript, scoringTask = 'conversation', guidance = '') {
+  return `
+    Act as a fair Leaving Certificate German oral examiner in Ireland.
+    Assess communicative success, relevance to the question, development, range, accuracy and comprehensibility at the stated level.
+    Level: ${currentLevel}. Question: ${JSON.stringify(question)}
+    Learner response (raw speech transcription): ${JSON.stringify(transcript)}
+    Study guidance (optional support, never a compulsory checklist): ${JSON.stringify(guidance)}
+    Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
+    Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
+    Address the learner consistently using German formal Sie; never switch to informal address.
+${LCOralScoring.instructions('de', scoringTask)}
+    Return valid JSON only: {${JSON.stringify(LCOralScoring.schema('de', scoringTask)).slice(1,-1)},"feedback_de":"...","feedback_en":"...","strengths":["..."],"next_steps":["..."],"connectors":["..."],"vocabulary_suggestions":[{"basic":"...","richer":"..."}],"errors":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+    Keep arrays concise (max 3 items each). Do not invent errors; use empty arrays when none are clear.
+    ${LCOralScoring.finalCheck()}
+  `;
+}
+
 async function analyze() {
   const t = document.getElementById('userInput').value.trim();
   if (t.length < 5) return alert("Bitte sagen Sie etwas mehr...");
@@ -359,32 +376,20 @@ async function analyze() {
   const criteria = currentLevel === 'HL' || currentLevel === 'Advanced'
     ? (currentTopic?.check_HL || currentTopic?.checkpoints_HL || '')
     : '';
-  const advanced = (currentLevel === 'HL');
-  const prompt = `
-    Act as a fair Leaving Certificate German oral examiner in Ireland.
-    Assess communicative success, relevance to the question, development, range, accuracy and comprehensibility at the stated level.
-    Level: ${currentLevel}. Question: ${questionContext}
-    Learner response (raw speech transcription): ${t}
-    Study guidance (optional support, never a compulsory checklist): ${criteria}
-    Apply level-appropriate expectations. Ordinary/OL answers should be judged for clear basic communication; HL/Advanced answers can show more development and range, but do not expect native-speaker performance. Do not require every suggested content point.
-    Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
-    Address the learner consistently using German formal Sie; never switch to informal address.
-    Calibrate scores: 90-100 exceptional; 82-89 excellent; 75-81 very good; 65-74 competent; 50-64 adequate; below 50 needs substantial development. Reserve high scores for relevant, developed answers with generally effective language. Return feedback in German and concise English.
-    Return valid JSON only: {"score":0,"feedback_de":"...","feedback_en":"...","strengths":["..."],"next_steps":["..."],"connectors":["..."],"vocabulary_suggestions":[{"basic":"...","richer":"..."}],"errors":[{"original":"...","correction":"...","explanation_en":"..."}]}.
-    Keep arrays concise (max 3 items each). Do not invent errors; use empty arrays when none are clear.
-  `;
+  const prompt = germanAssessmentPrompt(questionContext, t, 'conversation', criteria);
   try {
     const raw = await callSmartAI(prompt);
-    const j = JSON.parse(raw.replace(/```json|```/g, '').trim());
-    const score = Math.max(0, Math.min(100, Number(j.score) || 0));
+    const j = LCOralScoring.suggestions(parseAIJSON(raw), t);
+    const assessment = LCOralScoring.read('de', 'conversation', j);
+    const score = assessment.score;
     document.getElementById('exerciseArea').style.display = 'none';
     document.getElementById('result').style.display = 'block';
     document.getElementById('userResponseText').innerText = t;
     const scoreDisplay = document.getElementById('scoreDisplay');
-    scoreDisplay.innerText = `Ergebnis: ${score}%`;
-    scoreDisplay.style.color = score >= (advanced ? 75 : 85) ? '#166534' : (score >= 50 ? '#ca8a04' : '#991b1b');
+    scoreDisplay.innerText = `Conversation estimate: ${score}/40`;
+    scoreDisplay.style.color = LCOralScoring.color(assessment);
     document.getElementById('fbDE').innerText = '🌍 ' + (j.feedback_de || '');
-    document.getElementById('fbEN').innerText = '🇬🇧 ' + (j.feedback_en || '');
+    document.getElementById('fbEN').innerText = '🇬🇧 ' + (j.feedback_en || '') + '\n' + LCOralScoring.detail(assessment);
     const list = document.getElementById('errorsList');
     list.replaceChildren();
     const addGroup = (heading, items, render) => {
@@ -574,17 +579,18 @@ async function analyzeStory() {
   const t = document.getElementById('userInputStory').value; if(t.length < 5) return alert("Bitte schreiben Sie etwas mehr...");
   const b = document.getElementById('btnActionStory'); b.disabled = true; b.innerText = "⏳ Korrigiere...";
 
-  const prompt = `ACT AS: German Leaving Cert Examiner. TASK: Picture Sequence "${currentStoryTitle}". STUDENT: "${t}". INSTRUCTIONS: Maintain 'Sie' form perspective if addressing the student in feedback. OUTPUT JSON: { "score": 0-100, "feedback_de": "...", "feedback_en": "...", "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }] }`;
+  const prompt = germanAssessmentPrompt('Picture narrative: ' + currentStoryTitle + '. Images are not available; assess narrative language only, not accuracy against unseen pictures.', t, 'picture');
 
   try {
     const rawText = await callSmartAI(prompt);
-    const j = JSON.parse(rawText.replace(/```json|```/g, "").trim());
+    const j = LCOralScoring.suggestions(parseAIJSON(rawText), t);
+    const assessment = LCOralScoring.read('de', 'picture', j);
     document.getElementById('storyArea').style.display = 'none'; document.getElementById('resultStory').style.display = 'block';
     document.getElementById('userResponseTextStory').innerText = t;
-    document.getElementById('scoreDisplayStory').innerText = `Ergebnis: ${j.score}%`;
-    document.getElementById('scoreDisplayStory').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
+    document.getElementById('scoreDisplayStory').innerText = `Picture narrative estimate: ${assessment.score}/30`;
+    document.getElementById('scoreDisplayStory').style.color = LCOralScoring.color(assessment);
     document.getElementById('fbDEStory').innerText = "🇩🇪 " + j.feedback_de; 
-    document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en;
+    document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en + "\n" + LCOralScoring.detail(assessment);
     document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Super!";
   } catch (e) { console.error(e); alert("⚠️ Fehler: " + e.message); } finally { b.disabled = false; b.innerText = "✨ Prüfen"; }
 }
@@ -777,6 +783,10 @@ function speakGermanFullMockResponse() {
 }
 
 async function submitGermanFullMockAnswer() {
+  // A failed final assessment can be retried without saving the last answer twice.
+  if (germanFullMock?.phase === 'roleplay' && germanFullMock.index >= germanFullMock.roleplayPrompts.length) {
+    return evaluateGermanFullMock();
+  }
   const input = document.getElementById('fullMockInput');
   const answer = input.value.trim();
   if (answer.length < 5) return alert('Bitte geben Sie eine etwas längere Antwort.');
@@ -811,10 +821,11 @@ async function evaluateGermanFullMock() {
     ${routeName}: ${JSON.stringify(mock.answers.partTwo)}
     Roleplay context: ${RP_DATA[mock.selectedRoleplay].context}
     Roleplay turns: ${JSON.stringify(mock.answers.roleplay)}
-    For the roleplay, give most weight to successful communicative completion across the five turns (up to 20), then range and accuracy visible in the transcription (up to 10). For the project/picture section, balance the uninterrupted presentation, follow-up/clarification and wider opinion, each approximately 10 marks. Assess general conversation for relevance, independence, range, accuracy and fluency visible in the text.
+    ${LCOralScoring.instructions('de', 'mock')}
     Apply level-appropriate expectations. Do not expect native-speaker performance. Ignore punctuation, capitalisation and likely speech-recognition artefacts. Do not assess pronunciation, accent, prosody or listening from text, and explicitly acknowledge this limitation. Address the learner using formal Sie.
-    Return valid JSON only: {"conversation_score":0,"part_two_score":0,"roleplay_score":0,"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+    Return valid JSON only: {${JSON.stringify(LCOralScoring.schema('de', 'mock')).slice(1,-1)},"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
     Keep each array to a maximum of four concise items. Do not invent errors.
+    ${LCOralScoring.finalCheck()}
   `;
   try {
     const raw = await callSmartAI(prompt);
@@ -824,8 +835,9 @@ async function evaluateGermanFullMock() {
     } catch (_) {
       const repaired = await callSmartAI(`
         Convert the assessment below into valid JSON only. Do not add markdown or commentary.
-        Required schema: {"conversation_score":0,"part_two_score":0,"roleplay_score":0,"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
-        Keep conversation_score within 0-40 and both other scores within 0-30. Preserve the assessment's meaning and use empty arrays where details are absent.
+        Required schema: {${JSON.stringify(LCOralScoring.schema('de', 'mock')).slice(1,-1)},"summary_de":"...","summary_en":"...","strengths":["..."],"next_steps":["..."],"corrections":[{"original":"...","correction":"...","explanation_en":"..."}]}.
+        ${LCOralScoring.instructions('de', 'mock')}
+        Preserve the assessment's meaning, including bands and marks. Do not invent absent assessment evidence.
         Assessment to structure: ${raw}
       `);
       data = parseAIJSON(repaired);
@@ -840,11 +852,9 @@ async function evaluateGermanFullMock() {
 }
 
 function renderGermanFullMockResult(data) {
-  const clamp = (value, max) => Math.max(0, Math.min(max, Math.round(Number(value) || 0)));
-  const conversation = clamp(data.conversation_score, 40);
-  const partTwo = clamp(data.part_two_score, 30);
-  const roleplay = clamp(data.roleplay_score, 30);
-  const total = conversation + partTwo + roleplay;
+  const assessment = LCOralScoring.read('de', 'mock', data);
+  const [conversation, partTwo, roleplay] = assessment.parts.map(part => part.score);
+  const total = assessment.score;
   document.getElementById('mockConversationScore').textContent = `${conversation}/40`;
   document.getElementById('mockPartTwoScore').textContent = `${partTwo}/30`;
   document.getElementById('mockRoleplayScore').textContent = `${roleplay}/30`;
@@ -853,7 +863,7 @@ function renderGermanFullMockResult(data) {
   const feedback = document.getElementById('fullMockFeedback');
   feedback.replaceChildren();
   addMockFeedbackSection(feedback, 'Feedback auf Deutsch', [data.summary_de]);
-  addMockFeedbackSection(feedback, 'English summary', [data.summary_en]);
+  addMockFeedbackSection(feedback, 'English summary', [data.summary_en, LCOralScoring.detail(assessment)]);
   addMockFeedbackSection(feedback, 'Strengths', data.strengths);
   addMockFeedbackSection(feedback, 'Next steps', data.next_steps);
   const corrections = Array.isArray(data.corrections) ? data.corrections.map(item => `${item.original || ''} → ${item.correction || ''}${item.explanation_en ? ` — ${item.explanation_en}` : ''}`) : [];

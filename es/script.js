@@ -842,8 +842,8 @@ async function analyze() {
       "score": "an integer within the selected band's /70 range",
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
-      "strengths": ["up to 3 specific strengths"],
-      "next_steps": ["up to 2 achievable improvements"],
+      "strengths": [{"es":"fortaleza específica en español","en":"matching English translation"}],
+      "next_steps": [{"es":"mejora alcanzable en español","en":"matching English translation"}],
       "connectors": ["up to 3 suitable Spanish connectors"],
       "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
       "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
@@ -887,10 +887,16 @@ async function analyze() {
     
     const l = document.getElementById('errorsList'); l.innerHTML = "";
     if (j.strengths && j.strengths.length) {
-        l.innerHTML += `<div class="feedback-section-card feedback-strength"><strong>✅ What worked well</strong><ul>${j.strengths.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+        l.innerHTML += `<div class="feedback-section-card feedback-strength"><strong>✅ What worked well</strong><ul>${j.strengths.map(x => {
+            if (x && typeof x === 'object') return `<li><span class="target-language">${escapeHTML(x.es || '')}</span>${x.en ? `<span class="english-support">${escapeHTML(x.en)}</span>` : ''}</li>`;
+            return `<li>${escapeHTML(x)}</li>`;
+        }).join('')}</ul></div>`;
     }
     if (j.next_steps && j.next_steps.length) {
-        l.innerHTML += `<div class="feedback-section-card feedback-next"><strong>🎯 Next steps</strong><ul>${j.next_steps.map(x => `<li>${escapeHTML(x)}</li>`).join('')}</ul></div>`;
+        l.innerHTML += `<div class="feedback-section-card feedback-next"><strong>🎯 Next steps</strong><ul>${j.next_steps.map(x => {
+            if (x && typeof x === 'object') return `<li><span class="target-language">${escapeHTML(x.es || '')}</span>${x.en ? `<span class="english-support">${escapeHTML(x.en)}</span>` : ''}</li>`;
+            return `<li>${escapeHTML(x)}</li>`;
+        }).join('')}</ul></div>`;
     }
     if (j.connectors && j.connectors.length) {
         l.innerHTML += `<div class="feedback-section-card"><strong>🔗 Connectors to try</strong><p>${j.connectors.map(escapeHTML).join(' · ')}</p></div>`;

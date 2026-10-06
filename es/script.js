@@ -793,15 +793,16 @@ async function analyze() {
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
       : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
   const scoreCalibration = currentLevel === 'HL' ? `
-    HL SCORE CALIBRATION (use these Leaving Cert learner benchmarks, not native-speaker expectations):
-    - Keep the numerical score consistent with the written feedback. If the response is described as very good, communicates substantial relevant information and has no significant language errors, do not award a mark in the mid-60s merely because it could include more examples, connectors or vocabulary variety.
-    - 90-100: exceptional senior-cycle response: sustained, highly controlled, richly developed and consistently accurate. It does not need to sound bilingual.
-    - 82-89: excellent response: autonomous, detailed and varied, with strong control; minor limitations do not impede it.
-    - 75-81: very good response: clearly relevant and developed, gives substantial information and some reasons, opinions or examples, uses useful vocabulary, and has few or no significant errors. Some repetition, ordinary vocabulary or missed opportunities for further detail are compatible with this band.
-    - 65-74: competent response but with noticeable limitations in development, range, relevance or accuracy. Communication remains successful.
-    - 50-64: adequate response relying mainly on simple or brief language, with limited development or recurring inaccuracies.
-    - Below 50: substantial difficulty communicating a relevant, comprehensible response.
-    - A response should normally receive at least 75 when it answers the topic directly, provides several relevant details, sustains communication and contains no significant language errors, even if wider linking, more varied vocabulary or an additional example would improve it.` : '';
+    HL SCORE CALIBRATION:
+    Be generously fair: reward what the learner successfully communicates and demonstrates. Do not search for imperfections merely to hold back a high mark, but do not hide clear weaknesses. Judge against realistic Leaving Certificate senior-cycle performance, not native-speaker perfection.
+Use the whole 0–100 scale. Treat these bands as practice guidance inspired by Leaving Certificate MFL oral descriptors, not as a mathematical conversion of an official mark:
+- 90–100: top-band senior-cycle performance: sustained, well-developed, autonomous/proactive and generally well controlled. Occasional slips or minor grammatical inaccuracies are fully compatible with this band when they do not undermine communication or overall control. 100 does NOT mean error-free, native or bilingual speech.
+- 82–89: excellent/effective performance: clear, developed and independent, with good range and control. Inaccuracies may occur but communication remains secure.
+- 72–81: very good/competent performance: relevant and generally developed, with successful communication. Noticeable inaccuracies or uneven control may be present, but meaning is normally clear.
+- 60–71: adequate/competent performance: straightforward communication succeeds, though development, range or control is limited and inaccuracies may recur.
+- 40–59: limited performance: communication is possible but substantial support, simplification or recurring errors may be needed; inaccuracies can impede communication.
+- Below 40: substantial difficulty communicating a relevant, comprehensible response.
+Do not lower a score simply because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added. For a strong response, next steps may be optional enrichment rather than reasons for withholding marks.` : '';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -828,7 +829,7 @@ async function analyze() {
     - Before choosing the numerical score, silently check the whole transcript for: subject-verb agreement; noun-adjective agreement; verb formation and tense/time-reference consistency; articles and prepositions; pronouns; and clearly unnatural or incorrect word choice.
     - Distinguish between ATTEMPTED RANGE and CONTROLLED RANGE. For example, using present, past and future forms is evidence of range only when the forms are sufficiently controlled; incorrect tense switching must not be praised as effective control of time frames.
     - Make the praise, corrections and score logically consistent. Never say "accurate grammar throughout", "strong control" or equivalent if you have identified clear basic grammar errors that contradict that claim.
-    - At HL, several clear basic errors or recurring problems in core grammar must materially affect the accuracy judgement and should normally move the response out of the "excellent / strong control" bands, even when communication is successful.
+    - At HL, weigh clear basic or recurring errors by their frequency, seriousness and effect on communication and overall control. Several errors should matter, but the mere presence of inaccuracies does not automatically exclude a response from a high band.
     - Do not lower a mark merely because a response is not sophisticated or native-like. Accuracy is one part of the judgement alongside communication, relevance, development and range.
     - In "errors", include the important clear, teachable errors you can substantiate from the transcript (up to 6 distinct corrections). Do not invent errors to justify a score, and do not list punctuation, capitalisation or accent marks from speech-to-text.
     - Choose the score only after this audit, using the HL calibration below where applicable.

@@ -833,6 +833,10 @@ async function analyze() {
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - Avoid demanding memorised idioms or unnatural language.
+    - Do not invent improvement targets just because the output schema allows them. For an already excellent response, next_steps may contain only one maintenance/enrichment suggestion, or be empty if there is no meaningful next step supported by the transcript.
+    - Do not present a specific structure (for example subjunctive, idioms, rarer tenses or regional expressions) as a requirement for a higher mark. Such features may be optional enrichment only when genuinely useful.
+    - In connectors, suggest only connectors that would add something useful and that the learner has not already used effectively in this response. Use an empty array if there is no worthwhile suggestion.
+    - In vocabulary_suggestions, only suggest natural alternatives that preserve the intended meaning, intensity and register. Do not replace a correct everyday word merely with a stronger or more formal word. Use an empty array if no genuine improvement is needed.
     ${scoreCalibration}
     - Return valid JSON only, with no markdown.
 
@@ -843,7 +847,7 @@ async function analyze() {
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": [{"es":"fortaleza específica en español","en":"matching English translation"}],
-      "next_steps": [{"es":"mejora alcanzable en español","en":"matching English translation"}],
+      "next_steps": [{"es":"0-2 mejoras realmente útiles; pueden ser mantenimiento o enriquecimiento opcional","en":"matching English translation"}],
       "connectors": ["up to 3 suitable Spanish connectors"],
       "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
       "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]

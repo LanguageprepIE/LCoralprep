@@ -797,21 +797,21 @@ async function analyze() {
     First decide which Leaving Certificate conversation band best matches the performance. Only then choose a mark within that band. Do NOT start from a percentage and convert it.
 
     Use these official-style band anchors:
-    - BAND 1 — FLUENT — 65 or 70: pro-active; significant autonomy/spontaneity; expands and develops ideas with at most occasional prompting; grammatical inaccuracies are mostly slip-of-the-tongue type; self-correction may occur. From a transcript, judge only what is visible in the language and development; do not infer pronunciation, intonation or actual examiner prompting.
-    - BAND 2 — EFFECTIVE / COMPETENT — 55 or 60: ready, effective communication; syntax and idiom generally sound; inaccuracies do not impede communication; awareness or attempted correction may be present.
-    - BAND 3 — COMPETENT / ADEQUATE — 45 or 50: generally good comprehension/response; straightforward expression; some hesitation or increasing inaccuracies may be evident, but meaning remains clear.
-    - BAND 4 — ADEQUATE / LIMITED — 30, 35 or 40: understandable in uncomplicated contexts but with noticeable syntactic lapses; inaccuracies impede at times but do not usually distort communication.
-    - BAND 5 — LIMITED / DEFICIENT — 20 or 25: hesitant, disjointed or incomplete response; recurrent inaccuracies tend to distort meaning and substantially reduce coherent communication.
-    - BAND 6 — MINIMAL — 10 or 15: very limited comprehensible language; often inadequate or incoherent; accuracy is scarcely relevant.
-    - BAND 7 — NON-PERFORMING — 0 or 5.
+    - BAND 1 — FLUENT — 65-70: pro-active; significant autonomy/spontaneity; expands and develops ideas with at most occasional prompting; grammatical inaccuracies are mostly slip-of-the-tongue type; self-correction may occur. From a transcript, judge only what is visible in the language and development; do not infer pronunciation, intonation or actual examiner prompting.
+    - BAND 2 — EFFECTIVE / COMPETENT — 55-60: ready, effective communication; syntax and idiom generally sound; inaccuracies do not impede communication; awareness or attempted correction may be present.
+    - BAND 3 — COMPETENT / ADEQUATE — 45-50: generally good comprehension/response; straightforward expression; some hesitation or increasing inaccuracies may be evident, but meaning remains clear.
+    - BAND 4 — ADEQUATE / LIMITED — 30-40: understandable in uncomplicated contexts but with noticeable syntactic lapses; inaccuracies impede at times but do not usually distort communication.
+    - BAND 5 — LIMITED / DEFICIENT — 20-25: hesitant, disjointed or incomplete response; recurrent inaccuracies tend to distort meaning and substantially reduce coherent communication.
+    - BAND 6 — MINIMAL — 10-15: very limited comprehensible language; often inadequate or incoherent; accuracy is scarcely relevant.
+    - BAND 7 — NON-PERFORMING — 0-5.
 
     IMPORTANT:
     - A top-band mark does NOT require error-free, native-speaker or C1/C2 Spanish. The official top band explicitly allows grammatical inaccuracies, mainly slips.
     - Do not withhold Band 1 merely because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added.
     - Evaluate what the learner successfully communicates and how securely they control it. Weigh inaccuracies by frequency, seriousness and effect on communication.
     - Because this is a transcript, do not assess pronunciation, intonation, pauses, real-time fluency or examiner support.
-    - Return one of these marks only: 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70.
-    - Also return the chosen band number (1-7). The numerical mark must belong to that band.` : '';
+    - Examiners may award any whole-number mark within the selected band's range; marks are not restricted to multiples of five.
+    - Also return the chosen band number (1-7). The numerical mark must be an integer within that band's range.` : '';
 
   const prompt = `
     ROLE: You are a supportive but realistic Leaving Certificate Spanish oral teacher in Ireland.
@@ -839,7 +839,7 @@ async function analyze() {
     OUTPUT SCHEMA:
     ${currentLevel === 'HL' ? `{
       "band": 1-7,
-      "score": "one allowed mark from the /70 band scale",
+      "score": "an integer within the selected band's /70 range",
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": ["up to 3 specific strengths"],

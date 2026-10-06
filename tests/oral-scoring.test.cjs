@@ -30,6 +30,14 @@ const filtered = S.suggestions({connectors:['Invece','Inoltre'],errors:[
 ]}, 'Io andare. Invece ... byłem');
 assert.equal(JSON.stringify(filtered.connectors),JSON.stringify(['Inoltre']));
 assert.equal(filtered.errors.length,1);
+const optional = S.suggestions({band:'competent',score:37,errors:[
+  {original:'e era bello',correction:'ed era bello',explanation_en:'This improves flow.'},
+  {original:'Mi piace italiano',correction:"Mi piace l'italiano",explanation_en:'Use the article.'},
+  {original:'era bello',correction:'è stato bello',explanation_en:'The original is not strictly incorrect.'}
+]}, 'Mi piace italiano. e era bello');
+assert.equal(optional.errors.length,1);
+assert.equal(optional.errors[0].correction,"Mi piace l'italiano");
+assert.equal(optional.score,37); assert.equal(optional.band,'competent');
 for (const lang of ['it','fr','de','pl']) {
   const html=fs.readFileSync(`${lang}/index.html`,'utf8');
   assert(html.indexOf('../oral-scoring.js') < html.indexOf('src="script.js'));

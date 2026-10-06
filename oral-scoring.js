@@ -77,7 +77,9 @@ Scoring JSON fields (in addition to the existing bilingual feedback fields): ${J
     return `FINAL CHECK BEFORE RETURNING JSON:
 Within the excellent band, award the maximum when the task is fully accomplished with relevant development and secure language control. Occasional minor slips are allowed even at maximum. Do not automatically choose the bottom/middle of excellent or reserve the maximum for perfection. If there is a real limitation, reflect its extent, not hypothetical missing enrichment.
 Default next_steps, connectors and vocabulary_suggestions to []. Add an item ONLY if it fixes a specific material weakness or gives a genuinely useful next step for THIS response. For an already excellent answer with no material weakness, keep these three arrays empty. Do not suggest rarer synonyms, hypothetical structures or broader opinions simply to make the answer more impressive. Never suggest connectors already used in the transcript.
-Errors must be genuine language errors with an original quote actually present in the transcript. A correct phrase with a more elegant alternative is NOT an error. Do not replace an acceptable tense just because another also fits; do not treat an optional e/ed change in Italian as an error. Follow the grammatical gender actually expressed by the learner: never change masculine to feminine or the reverse on a hypothetical assumption. Keep feedback consistent with the band. Use the requested formal address consistently, do not guess gender, and do not refer to real spoken fluency, pronunciation or delivery. Return only the JSON object, no code fences.`;
+Errors must be genuine language errors with an original quote actually present in the transcript. A correct phrase with a more elegant alternative is NOT an error. Do not replace an acceptable tense just because another also fits; do not treat an optional e/ed change in Italian as an error. Follow the grammatical gender actually expressed by the learner: never change masculine to feminine or the reverse on a hypothetical assumption.
+Proofread every proposed correction: it must itself be grammatical and preserve the learner's intended meaning. Italian example: "Mi piace italiano" → "Mi piace l'italiano", NEVER "Mi piacere l'italiano". "Era bello" is a valid imperfect construction, not an auxiliary/participle agreement error; "e era bello" needs no correction to "ed era bello". Advice about agreement must cite an actual agreement error in the response. Remove any unsupported criticism from BOTH bilingual summaries and next_steps.
+Vocabulary advice must solve an actual problem while preserving meaning and suitable oral register: do not change "grande" to "enorme" or "bello" to "fantastico" merely to intensify meaning, or "vado" to "mi reco" merely to sound more formal. Prefer no suggestion. Keep feedback consistent with the band. Use the requested formal address consistently, do not guess gender (Italian: "Molto bene", rather than guessing "Bravo/Brava"), and do not refer to real spoken fluency, pronunciation or delivery. Return only the JSON object, no code fences.`;
   }
   function suggestions(data, transcript) {
     const clean = value => String(value || '').normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
@@ -89,7 +91,9 @@ Errors must be genuine language errors with an original quote actually present i
     const errors = Array.isArray(data.errors) ? data.errors.filter(item => {
       const quote = clean(item?.original);
       const explanation = String(item?.explanation_en || '');
-      return quote && text.includes(` ${quote} `) && !/if you are (?:fe)?male|not (?:grammatically )?(?:incorrect|wrong)|(?:more (?:natural|elegant)|stylistic) (?:alternative|option)|optional (?:change|improvement)/i.test(explanation);
+      const correction = clean(item?.correction);
+      const optionalItalianEd = quote !== correction && quote.replace(/\bed(?= [aeiou])/g,'e') === correction.replace(/\bed(?= [aeiou])/g,'e');
+      return quote && correction && !optionalItalianEd && text.includes(` ${quote} `) && !/if you are (?:fe)?male|not (?:(?:grammatically|strictly|necessarily) )?(?:incorrect|wrong)|(?:more (?:natural|elegant)|stylistic) (?:alternative|option)|optional (?:change|improvement)/i.test(explanation);
     }) : [];
     return {...data, connectors, errors};
   }

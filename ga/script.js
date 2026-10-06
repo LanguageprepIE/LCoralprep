@@ -42,7 +42,7 @@ function setupYouTubePlayer(videoId, containerId) {
         <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid #16a34a; background: #000;">
             <iframe 
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
-                src="https://www.youtube.com/embed/${videoId}?rel=0" 
+                src="https://www.youtube-nocookie.com/embed/${videoId}?rel=0" 
                 title="YouTube video player" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 

@@ -1,6 +1,12 @@
 # Preview validation — 6 October 2026
 
-Tested commit: 722a59e218d0f7c0e38bb9955b51c4b58f88d776, PR #19. No production merge.
+Baseline tested commit: 722a59e218d0f7c0e38bb9955b51c4b58f88d776. Final implementation checked: 56899247479ba4c3cc4209442a3e01a2f39e6982, PR #19.
+
+## Release decision
+
+On 6 October 2026, David confirmed that the Italian 50+25+25 allocation remains current and unchanged, accepted the observed bounded variation as compatible with practice estimates, and authorised merging after successful final checks. This is a current teacher confirmation, not a claim that the newer SEC documents below publish the allocation.
+
+Final integer/component, feedback-review, frontend DOM, JavaScript syntax and whitespace checks passed. The changed-file review confirmed that Spanish and netlify/functions/gemini.js are untouched. French displays a fixed English notice explaining the /80 estimate and the unassessed pronunciation /20. The baseline findings and preview-only recommendation below are retained as historical evidence; the targeted follow-up fixes and release decision supersede them.
 
 ## Follow-up changes and verification
 
@@ -17,7 +23,7 @@ Live feedback regressions corrected Polish szłem → szedłem, retained both sz
 
 A final pipeline sample produced Italian conversation 38/50, correct narrative 24/25 and error-heavy narrative 15/25; French error-heavy 50/80; German correct simple conversation 34/40; Polish error-heavy 65/100. Short integrated medium mocks produced Italian 86/100, German 82/100 and Polish 74/100. These are observed estimates, not target marks. Repeated focused assessment still varied: Italian medium 37–42/50, French error-heavy 48–55/80 and German medium 28–34/40. The proofreading step deliberately does not rescore them.
 
-**Remaining limitation:** feedback accuracy improved on reproduced faults, but model scoring is not deterministic and proofreading is also probabilistic. French structural-band variability remains a review point before production approval. Do not claim stable exact marks or universal correction accuracy from these tests. No temperature/backend change was made: Google recommends default sampling settings for Gemini 3.x (https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.5).
+**Remaining limitation:** feedback accuracy improved on reproduced faults, but model scoring is not deterministic and proofreading is also probabilistic. David reviewed and accepted the observed variation for practice estimates; this does not establish examiner-equivalent reliability. Do not claim stable exact marks or universal correction accuracy from these tests. No temperature/backend change was made: Google recommends default sampling settings for Gemini 3.x (https://ai.google.dev/gemini-api/docs/whats-new-gemini-3.5).
 
 ## Method
 

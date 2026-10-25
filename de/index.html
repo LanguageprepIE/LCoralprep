@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert German Oral Mock Exam & Practice | LCOrals</title>
   <link rel="canonical" href="https://lcorals.ie/de/">
   <meta name="description" content="Free Leaving Cert German oral practice with a complete 40/30/30 mock, conversation, picture sequences, projects, roleplays and AI feedback.">
@@ -17,6 +17,7 @@
     .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
   </style>
   <link rel="stylesheet" href="../guides/link.css">
+  <link rel="stylesheet" href="../accessibility.css">
 </head>
 <body>
 
@@ -112,12 +113,13 @@
         <div id="fullMockPrompt" class="mock-prompt"></div>
         <button type="button" class="audio-btn" onclick="speakGermanFullMockPrompt()">🔊 Anhören (Listen)</button>
       </div>
-      <textarea id="fullMockInput" placeholder="Schreiben Sie Ihre Antwort hier..."></textarea>
+      <label class="response-label" lang="en" for="fullMockInput">Your mock-exam answer</label>
+      <textarea id="fullMockInput" aria-describedby="fullMockPrompt fullMockProgress fullMockContext" placeholder="Schreiben Sie Ihre Antwort hier..."></textarea>
       <button type="button" class="listen-response-btn" onclick="speakGermanFullMockResponse()">👂 Listen to my response</button>
       <button id="fullMockNextBtn" class="btn-main" onclick="submitGermanFullMockAnswer()">Save answer and continue</button>
     </div>
 
-    <div id="fullMockLoading" class="full-mock-panel mock-loading" style="display:none;" aria-live="polite">
+    <div id="fullMockLoading" class="full-mock-panel mock-loading" style="display:none;">
       <div class="loading-spinner" aria-hidden="true"></div>
       <h2>Preparing your final result…</h2>
       <p>The six conversation answers and both prepared sections are being assessed together.</p>
@@ -160,7 +162,8 @@
       </button>
       <div id="hintBox" style="display:none; background:#fffbeb; border-left:4px solid #f59e0b; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#92400e;"></div>
       
-      <textarea id="userInput" placeholder="Schreiben Sie Ihre Antwort hier..."></textarea>
+      <label class="response-label" lang="en" for="userInput">Your answer</label>
+      <textarea id="userInput" aria-describedby="qDisplay" placeholder="Schreiben Sie Ihre Antwort hier..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Check my pronunciation
@@ -184,11 +187,11 @@
 
   <div id="sectionRoleplay" style="display:none;">
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">🐕 1. Hund</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">📰 2. Redaktion</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">📺 3. Interview</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">👨‍👩‍👦 4. Eltern</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">💼 5. Ferienjob</div>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(1, this)">🐕 1. Hund</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(2, this)">📰 2. Redaktion</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(3, this)">📺 3. Interview</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(4, this)">👨‍👩‍👦 4. Eltern</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(5, this)">💼 5. Ferienjob</button>
     </div>
 
     <div id="rpArea" style="display:none;">
@@ -199,7 +202,8 @@
       <div class="rp-controls">
         <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirInterventoExaminer()">▶️ Play Examiner Audio</button>
         
-        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        <label class="response-label" lang="en" for="rpInput">Your role-play response</label>
+      <textarea id="rpInput" aria-describedby="rpContext rpInstructionBox" placeholder="Listen first, then type..." disabled></textarea>
         
         <div style="display:flex; gap:10px;">
           <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fffbeb; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Tipp / Hint</button>
@@ -219,11 +223,11 @@
     </div>
 
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="selectStory(0, this)">📱 1. Mobbing</div>
-      <div class="rp-btn-select" onclick="selectStory(1, this)">🎓 2. Chancen</div>
-      <div class="rp-btn-select" onclick="selectStory(2, this)">🚌 3. Abi-Tour</div>
-      <div class="rp-btn-select" onclick="selectStory(3, this)">🎁 4. Geburtstag</div>
-      <div class="rp-btn-select" onclick="selectStory(4, this)">🌬️ 5. Windkraft</div>
+      <button type="button" class="rp-btn-select" onclick="selectStory(0, this)">📱 1. Mobbing</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(1, this)">🎓 2. Chancen</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(2, this)">🚌 3. Abi-Tour</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(3, this)">🎁 4. Geburtstag</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(4, this)">🌬️ 5. Windkraft</button>
     </div>
 
     <div id="storyArea" style="display:none;">
@@ -237,7 +241,8 @@
         <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Anhören (Listen)</button>
       </div>
 
-      <textarea id="userInputStory" placeholder="Auf dem ersten Bild sehe ich... (In the first picture I see...)"></textarea>
+      <label class="response-label" lang="en" for="userInputStory">Your picture-sequence answer</label>
+      <textarea id="userInputStory" aria-describedby="storyTitle" placeholder="Auf dem ersten Bild sehe ich... (In the first picture I see...)"></textarea>
 
       <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
          👂 Check my pronunciation
@@ -285,7 +290,8 @@
       <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
       
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
     </div>
@@ -309,5 +315,6 @@
 <script src="script.js?v=scoring-preview-20261006"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+  <script src="../accessibility.js" defer></script>
 </body>
 </html>

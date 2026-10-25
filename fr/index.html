@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=french-conversation-20261005">
   <link rel="stylesheet" href="../guides/link.css">
+  <link rel="stylesheet" href="../accessibility.css">
 </head>
 <body>
 
@@ -64,6 +65,7 @@
     <div id="mockSetup" class="info-box" style="display:none; margin:12px 0; background:#f0fdfa; border-color:#99f6e4; color:#134e4a;">
       <strong>📄 Mock avec document</strong>
       <p style="margin:6px 0;">Décrivez votre document ou votre photo. Le mock comprendra quatre thèmes de conversation et deux questions liées au document, avec des relances possibles.</p>
+      <label class="response-label" lang="en" for="mockDocumentDescription">Describe your document or photo</label>
       <textarea id="mockDocumentDescription" placeholder="Ex. C'est une photo de mon équipe de basket après la finale..." style="min-height:75px;"></textarea>
       <button id="btnStartDocumentMock" class="btn-main" style="margin-top:10px; background:#0f766e;" onclick="startDocumentMock()">Commencer le mock avec document</button>
     </div>
@@ -84,7 +86,8 @@
       </button>
       <div id="hintBox" style="display:none; background:#eff6ff; border-left:4px solid #2563eb; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#1e40af;"></div>
       
-      <textarea id="userInput" placeholder="Écrivez votre réponse ici..."></textarea>
+      <label class="response-label" lang="en" for="userInput">Your answer</label>
+      <textarea id="userInput" aria-describedby="qDisplay" placeholder="Écrivez votre réponse ici..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Écouter ma réponse (voix de synthèse)
@@ -130,6 +133,7 @@
 
     <div id="docStep2" class="doc-step" style="display:none;">
       <h3 style="color:#475569;">2. Describe it briefly (in French or English):</h3>
+      <label class="response-label" lang="en" for="docDescription">Describe your document or photo</label>
       <textarea id="docDescription" placeholder="Ex: C'est une photo de mon équipe de basket. Nous avons gagné la finale..." style="min-height:80px;"></textarea>
       <button class="mock-btn" onclick="generateDocQuestions()">🔮 Générer Questions</button>
     </div>
@@ -142,7 +146,8 @@
       </div>
       
       <p style="text-align:center; font-weight:bold; color:#475569;">Maintenant, répondez à l'une de ces questions :</p>
-      <textarea id="userInputDoc" placeholder="Répondez ici..."></textarea>
+      <label class="response-label" lang="en" for="userInputDoc">Your document answer</label>
+      <textarea id="userInputDoc" aria-describedby="aiQuestions" placeholder="Répondez ici..."></textarea>
       <button class="btn-main" id="btnActionDoc" onclick="analyzeDoc()">✨ Vérifier (Evaluate)</button>
     </div>
 
@@ -185,7 +190,8 @@
       <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
       
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
     </div>
@@ -209,5 +215,6 @@
 <script src="script.js?v=scoring-preview-20261006"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+  <script src="../accessibility.js" defer></script>
 </body>
 </html>

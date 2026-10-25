@@ -17,6 +17,7 @@
     .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
   </style>
   <link rel="stylesheet" href="../guides/link.css">
+  <link rel="stylesheet" href="../accessibility.css">
 </head>
 <body>
 
@@ -74,12 +75,13 @@
         <button class="audio-btn" onclick="speakText()">🔊 Listen to Question</button>
       </div>
       
-      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#ea580c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
+      <button id="btnHint" onclick="toggleHint()" style="display:none; background:none; border:none; color:#c2410c; cursor:pointer; font-size:0.9rem; margin-bottom:10px; text-decoration:underline; font-weight:600; width:100%; text-align:left;">
         💡 Cosa devo dire? / What to include? (Key Points)
       </button>
       <div id="hintBox" style="display:none; background:#fff7ed; border-left:4px solid #ea580c; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#9a3412;"></div>
       
-      <textarea id="userInput" placeholder="Type or use your microphone..."></textarea>
+      <label class="response-label" lang="en" for="userInput">Your answer</label>
+      <textarea id="userInput" aria-describedby="qDisplay" placeholder="Type or use your microphone..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Listen to my answer
@@ -108,11 +110,11 @@
 
   <div id="sectionRoleplay" style="display:none;">
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="seleccionarRP(1, this)">☕ 1. Albergo</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(2, this)">🎫 2. Treno</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(3, this)">🏨 3. Farmacia</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(4, this)">🩺 4. Passaporto</div>
-      <div class="rp-btn-select" onclick="seleccionarRP(5, this)">👕 5. Colloquio</div>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(1, this)">☕ 1. Albergo</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(2, this)">🎫 2. Treno</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(3, this)">🏨 3. Farmacia</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(4, this)">🩺 4. Passaporto</button>
+      <button type="button" class="rp-btn-select" onclick="seleccionarRP(5, this)">👕 5. Colloquio</button>
     </div>
 
     <div id="rpArea" style="display:none;">
@@ -123,7 +125,8 @@
       <div class="rp-controls">
         <button id="nextAudioBtn" class="audio-btn" style="width:100%; margin-bottom:10px; background:var(--primary); color:white; border:none;" onclick="reproducirInterventoExaminer()">▶️ Play Examiner Audio</button>
         
-        <textarea id="rpInput" placeholder="Listen first, then type..." disabled></textarea>
+        <label class="response-label" lang="en" for="rpInput">Your role-play response</label>
+      <textarea id="rpInput" aria-describedby="rpContext rpInstructionBox" placeholder="Listen first, then type..." disabled></textarea>
         
         <div style="display:flex; gap:10px;">
           <button id="hintBtn" onclick="mostrarSugerencia()" style="flex:1; background:#fef3c7; color:#92400e; border:none; border-radius:10px; font-weight:600; cursor:pointer; display:none;">💡 Suggerimento</button>
@@ -143,11 +146,11 @@
     </div>
 
     <div class="rp-selector">
-      <div class="rp-btn-select" onclick="selectStory(0, this)">🛒 1. La Spesa</div>
-      <div class="rp-btn-select" onclick="selectStory(1, this)">🤕 2. L'Incidente</div>
-      <div class="rp-btn-select" onclick="selectStory(2, this)">👛 3. Il Portafoglio</div>
-      <div class="rp-btn-select" onclick="selectStory(3, this)">🎉 4. La Festa</div>
-      <div class="rp-btn-select" onclick="selectStory(4, this)">🚌 5. La Gita</div>
+      <button type="button" class="rp-btn-select" onclick="selectStory(0, this)">🛒 1. La Spesa</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(1, this)">🤕 2. L'Incidente</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(2, this)">👛 3. Il Portafoglio</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(3, this)">🎉 4. La Festa</button>
+      <button type="button" class="rp-btn-select" onclick="selectStory(4, this)">🚌 5. La Gita</button>
     </div>
 
     <div id="storyArea" style="display:none;">
@@ -161,7 +164,8 @@
         <button class="audio-btn" onclick="speakStoryPrompt()">🔊 Ascolti (Listen)</button>
       </div>
 
-      <textarea id="userInputStory" placeholder="Nella prima immagine vedo... (In the first picture I see...)"></textarea>
+      <label class="response-label" lang="en" for="userInputStory">Your picture-sequence answer</label>
+      <textarea id="userInputStory" aria-describedby="storyTitle" placeholder="Nella prima immagine vedo... (In the first picture I see...)"></textarea>
 
       <button onclick="readMyStoryInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
          👂 Listen to my description
@@ -209,7 +213,8 @@
       <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
       
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
     </div>
@@ -233,5 +238,6 @@
 <script src="script.js?v=scoring-preview-20261006"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+  <script src="../accessibility.js" defer></script>
 </body>
 </html>

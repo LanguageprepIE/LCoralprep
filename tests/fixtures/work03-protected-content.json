@@ -1,0 +1,38 @@
+{
+  "base": "5fd37022c38142771860d07580fa20ea30aab9d8",
+  "modules": {
+    "es": {
+      "count": 12,
+      "hash": "f9218efdaf57292d27ed6405b49d1c73a348d64bad656a56ef09b46ed5f1d59e"
+    },
+    "fr": {
+      "count": 12,
+      "hash": "101548c1aea5f85b38ddfe50fd9cc2892b6127cfc4af3eab695ecf76cea00c32"
+    },
+    "de": {
+      "count": 18,
+      "hash": "1f39c38064f228c4699455ef5a684b743cf09b2b20fc5f4e66d1c44d364ac1a9"
+    },
+    "it": {
+      "count": 12,
+      "hash": "4bcd6a0673fd0f0871bfb85ec1a7d3fa15d88b6abee4135fa56da7009dadf144"
+    },
+    "pl": {
+      "count": 9,
+      "hash": "fb45fa73c83c60af745b5adb6f3611068ef5443505ef24aeb55e22a35b6eda6f"
+    },
+    "ga": {
+      "count": 10,
+      "hash": "38e15d2fe359a17382df8fb9dbf136ca4b2687ad01b292fc88083433d0a85a41"
+    },
+    "eal": {
+      "count": 5,
+      "hash": "d1264b1317b1e2017c21bd79af872eaf86a8a9026f068c403e0ff9757c563d29"
+    }
+  },
+  "files": {
+    "oral-scoring.js": "2e70e608bf98a780ad58cc0774c25af37391745678cdd2e9b6ecd09e39a76473",
+    "accessibility.js": "9d1f3e8e50ab11bf2673e53273411a7d322ea21acd84912a6b23a0e9d4649297",
+    "privacy.html": "5c1c143ee83dc114797b6f5be472249143da769a4cc9ea96679aa7e74dcdf1f0"
+  }
+}

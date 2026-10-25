@@ -2,20 +2,7 @@
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 // ===========================================
@@ -868,7 +855,7 @@ async function analyze() {
     const rawText = await callSmartAI(prompt);
     
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
-    const j = JSON.parse(cleanJson);
+    const j = LCSecurity.feedback(JSON.parse(cleanJson), ["feedback_es", "feedback_en"]);
     
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
@@ -941,7 +928,7 @@ async function analyze() {
 
   } catch (e) { 
     console.error(e); 
-    alert(`⚠️ Error: ${e.message}`);
+    alert(`⚠️ Error: ${escapeHTML(LCSecurity.message(e))}`);
   } finally { 
     b.disabled = false; b.innerText = "✨ Evaluate Answer"; 
   }
@@ -1006,7 +993,7 @@ async function askAIConcept(concept, kind = 'language') {
 
     } catch (e) {
         console.error(e);
-        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
+        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${escapeHTML(LCSecurity.message(e))}</div>`;
     }
 }
 
@@ -1334,12 +1321,12 @@ The turns array must contain exactly five objects and each score must be an inte
     try {
         const rawText = await callSmartAI(prompt);
         const cleanJson = rawText.replace(/```json|```/g, '').trim();
-        const evaluation = JSON.parse(cleanJson);
+        const evaluation = LCSecurity.roleplay(JSON.parse(cleanJson));
         renderRoleplayEvaluation(evaluation);
     } catch (e) {
         console.error('Roleplay evaluation failed:', e);
         const loading = document.getElementById('rpEvaluationLoading');
-        if (loading) loading.innerHTML = `<b>⚠️ We could not evaluate this role play.</b><br><span>${escapeHTML(e.message)}</span><br><button class="btn-main rp-retry" onclick="evaluarRoleplay()">🔄 Try again</button>`;
+        if (loading) loading.innerHTML = `<b>⚠️ We could not evaluate this role play.</b><br><span>${escapeHTML(LCSecurity.message(e))}</span><br><button class="btn-main rp-retry" onclick="evaluarRoleplay()">🔄 Try again</button>`;
     } finally {
         rpEvaluationInProgress = false;
     }

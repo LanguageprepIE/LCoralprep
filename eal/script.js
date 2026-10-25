@@ -1,21 +1,10 @@
+function escapeHTML(value) { return LCSecurity.escape(value); }
+
 // ===========================================
 // CONFIGURACIÓN (BACKEND NETLIFY ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 // ===========================================
@@ -348,7 +337,7 @@ async function translateQuestion() {
   try {
     const text = await callSmartAI(prompt);
     box.innerText = text;
-  } catch(e) { box.innerText = "⚠️ AI is busy. Please try again."; }
+  } catch(e) { box.innerText = "⚠️ " + LCSecurity.message(e); }
 }
 
 // ===========================================
@@ -380,7 +369,7 @@ async function analyze() {
 
   try {
     const rawText = await callSmartAI(prompt);
-    const j = JSON.parse(rawText.replace(/```json|```/g, "").trim());
+    const j = LCSecurity.feedback(JSON.parse(rawText.replace(/```json|```/g, "").trim()), ["feedback_native", "feedback_en"]);
     
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
@@ -390,18 +379,18 @@ async function analyze() {
     s.innerText = `Score: ${j.score}%`;
     s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
 
-    document.getElementById('fbNative').innerHTML = `<strong>Teacher:</strong> ${j.feedback_native}`; 
+    document.getElementById('fbNative').innerHTML = `<strong>Teacher:</strong> ${escapeHTML(j.feedback_native)}`;
     document.getElementById('fbEN').innerText = j.feedback_en;
     
     const l = document.getElementById('errorsList'); l.innerHTML = "";
     if(j.errors && j.errors.length > 0) {
-        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> <br><small style="color:#475569;">💡 ${e.explanation_native}</small></div>`; });
+        j.errors.forEach(e => { l.innerHTML += `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> <br><small style="color:#475569;">💡 ${escapeHTML(e.explanation_native)}</small></div>`; });
     } else {
         l.innerHTML = "<div style='color:#166534; font-weight:bold;'>✅ Perfect! No major errors found.</div>";
     }
 
   } catch (e) { 
-    console.error(e); alert(`⚠️ Error: Could not check answer right now.`);
+    console.error(e); alert("⚠️ " + LCSecurity.message(e));
   } finally { 
     b.disabled = false; b.innerText = "✨ Check my English"; 
   }
@@ -425,9 +414,9 @@ async function askAIConcept(concept) {
 
     try {
         const text = await callSmartAI(prompt);
-        box.innerHTML = `<div style="display:flex; justify-content:space-between;"><strong>💡 Concept: ${concept}</strong><button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button></div><hr>${text.replace(/```html|```/g, "").trim()}`;
+        box.innerHTML = `<div style="display:flex; justify-content:space-between;"><strong>💡 Concept: ${escapeHTML(concept)}</strong><button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button></div><hr><div class="safe-study-output">${LCSecurity.studyHTML(text.replace(/```html|```/g, "").trim())}</div>`;
     } catch (e) {
-        box.innerHTML = `<div style="color:#dc2626;">⚠️ Error connecting to AI.</div>`;
+        box.innerHTML = `<div style="color:#dc2626;">⚠️ ${escapeHTML(LCSecurity.message(e))}</div>`;
     }
 }
 
@@ -524,7 +513,7 @@ function habilitarInput() {
 
 function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput'); const txt = inp.value.trim(); if(!txt) return;
-    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${txt}</div>`; chat.scrollTop = chat.scrollHeight;
+    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${escapeHTML(txt)}</div>`; chat.scrollTop = chat.scrollHeight;
     
     inp.value = ""; inp.disabled = true; 
     document.getElementById('rpSendBtn').disabled = true; 

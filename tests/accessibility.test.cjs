@@ -71,7 +71,7 @@ async function fixture(lang) {
   const css = w.document.createElement('style');
   css.textContent = read(`${lang}/style.css`) + '\n' + read('accessibility.css');
   w.document.head.appendChild(css);
-  w.eval(read('oral-scoring.js') + '\n' + read(`${lang}/script.js`) + '\n' + read('accessibility.js'));
+  w.eval(read('security.js') + '\n' + read('oral-scoring.js') + '\n' + read(`${lang}/script.js`) + '\n' + read('accessibility.js'));
   await new Promise(resolve => w.addEventListener('load', resolve, { once: true }));
   await tick();
   return { w, d: w.document, errors, close: () => w.close() };

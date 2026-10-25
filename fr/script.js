@@ -6,20 +6,7 @@ function escapeHTML(value) {
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 let speechRequestId = 0;
@@ -80,7 +67,7 @@ function parseAIJSON(raw) {
   const clean = raw.replace(/```json|```/g, '').trim();
   const start = clean.indexOf('{');
   const end = clean.lastIndexOf('}');
-  return JSON.parse(start >= 0 && end > start ? clean.slice(start, end + 1) : clean);
+  return LCSecurity.object(JSON.parse(start >= 0 && end > start ? clean.slice(start, end + 1) : clean));
 }
 
 // Retry a formatting failure once, without changing the shared Gemini proxy.
@@ -493,7 +480,7 @@ Write exactly two natural follow-up questions in French about the document. Use 
     showMockQuestion();
   } catch (error) {
     console.error(error);
-    alert('⚠️ Impossible de préparer les questions du document : ' + error.message);
+    alert('⚠️ Impossible de préparer les questions du document : ' + LCSecurity.message(error));
   } finally {
     mockBusy = false;
     button.disabled = false;
@@ -683,7 +670,7 @@ async function analyze() {
         reset.textContent = '↩️ Revenir au bilan du mock'; reset.onclick = returnToMockSummary;
       } else { reset.textContent = '🔄 Réessayer'; reset.onclick = updateQuestion; }
     }
-  } catch (error) { alert('⚠️ Impossible de continuer : ' + error.message); }
+  } catch (error) { alert('⚠️ Impossible de continuer : ' + LCSecurity.message(error)); }
   finally { mockBusy = false; button.disabled = false; button.textContent = isMockExam ? '➡️ Envoyer et continuer' : original; }
 }
 
@@ -747,7 +734,7 @@ async function askAIConcept(concept, kind = 'language') {
     if (data.optional_challenge) { const p=document.createElement('p'); p.textContent='Optional challenge: ' + data.optional_challenge; box.appendChild(p); }
   } catch (e) {
     if (requestId !== studyRequestId) return;
-    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + e.message;
+    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + LCSecurity.message(e);
   }
 }
 
@@ -778,7 +765,7 @@ async function generateDocQuestions() {
     document.getElementById('aiQuestions').innerText = currentQuestionsText;
   } catch(e) { 
       console.error(e); 
-      alert("⚠️ Erreur: " + e.message);
+      alert("⚠️ Erreur: " + LCSecurity.message(e));
   } finally { b.disabled = false; b.innerText = "🔮 Générer Questions"; }
 }
 
@@ -807,10 +794,10 @@ async function analyzeDoc() {
     document.getElementById('scoreDisplayDoc').style.color = LCOralScoring.color(assessment);
     document.getElementById('fbFRDoc').innerText = "🇫🇷 " + j.feedback_fr;
     document.getElementById('fbENDoc').innerText = "🇬🇧 " + j.feedback_en + "\n" + LCOralScoring.detail(assessment);
-    document.getElementById('errorsListDoc').innerHTML = j.errors?.map(e=>`<div class="error-item"><span style="text-decoration:line-through">${e.original}</span> ➡️ <b>${e.correction}</b> (${e.explanation_en})</div>`).join('') || "✅ Très bien!";
+    document.getElementById('errorsListDoc').innerHTML = j.errors?.map(e=>`<div class="error-item"><span style="text-decoration:line-through">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Très bien!";
   } catch(e) { 
       console.error(e); 
-      alert("⚠️ Erreur: " + e.message);
+      alert("⚠️ Erreur: " + LCSecurity.message(e));
   } finally { b.disabled=false; b.innerText="✨ Vérifier"; }
 }
 

@@ -1,21 +1,10 @@
+function escapeHTML(value) { return LCSecurity.escape(value); }
+
 // ===========================================
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 // --- DETECCIÓN DE VOZ IRLANDESA (TTS) ---
@@ -368,15 +357,15 @@ async function askAIConcept(concept) {
         
         box.innerHTML = `
             <div style="display:flex; justify-content:space-between;">
-                <strong>💡 Concept: ${concept}</strong>
+                <strong>💡 Concept: ${escapeHTML(concept)}</strong>
                 <button onclick="this.parentElement.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;">✖️</button>
             </div>
-            <hr>
-            ${cleanText}
+            <hr><div class="safe-study-output">
+            ${LCSecurity.studyHTML(cleanText)}</div>
         `;
     } catch (e) {
         console.error(e);
-        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${e.message}</div>`;
+        box.innerHTML = `<div style="color:#dc2626; font-weight:bold; padding:10px; background:#fee2e2; border-radius:5px;">⚠️ Error: ${escapeHTML(LCSecurity.message(e))}</div>`;
     }
 }
 
@@ -415,7 +404,7 @@ async function analyze() {
   try {
     const rawText = await callSmartAI(prompt);
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
-    const j = JSON.parse(cleanJson);
+    const j = LCSecurity.feedback(JSON.parse(cleanJson), ["feedback_ga", "feedback_en"]);
     
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
@@ -426,7 +415,7 @@ async function analyze() {
     s.style.color = j.score >= 85 ? "#166534" : (j.score >= 50 ? "#ca8a04" : "#991b1b");
     document.getElementById('fbGA').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbEN').innerText = "🇬🇧 " + j.feedback_en;
-    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
+    document.getElementById('errorsList').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Ar fheabhas!";
     
     const btnReset = document.getElementById('btnReset');
     if (isMockExam && mockIndex < 4) { 
@@ -438,7 +427,7 @@ async function analyze() {
     }
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ The AI is a bit busy right now. (" + e.message + ")"); 
+      alert("⚠️ The AI is a bit busy right now. (" + LCSecurity.message(e) + ")");
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
   }
@@ -644,7 +633,7 @@ async function analyzeSraith() {
 
   try {
     const rawText = await callSmartAI(prompt);
-    const j = JSON.parse(rawText.replace(/```json|```/g, "").trim());
+    const j = LCSecurity.feedback(JSON.parse(rawText.replace(/```json|```/g, "").trim()), ["feedback_ga", "feedback_en"]);
     document.getElementById('sraithArea').style.display = 'none'; 
     document.getElementById('resultSraith').style.display = 'block';
     document.getElementById('userResponseTextSraith').innerText = t;
@@ -652,10 +641,10 @@ async function analyzeSraith() {
     document.getElementById('scoreDisplaySraith').style.color = j.score >= 85 ? "#166534" : "#ca8a04";
     document.getElementById('fbGASraith').innerText = "🇮🇪 " + j.feedback_ga; 
     document.getElementById('fbENSraith').innerText = "🇬🇧 " + j.feedback_en;
-    document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Ar fheabhas!";
+    document.getElementById('errorsListSraith').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Ar fheabhas!";
   } catch (e) { 
       console.error(e); 
-      alert("⚠️ Earráid: " + e.message); 
+      alert("⚠️ Earráid: " + LCSecurity.message(e));
   } finally { 
       b.disabled = false; b.innerText = "✨ Ceartaigh"; 
   }

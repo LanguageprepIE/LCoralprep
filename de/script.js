@@ -4,10 +4,10 @@ function escapeHTML(value) {
 
 function parseAIJSON(raw) {
   const cleaned = String(raw || '').replace(/```json|```/gi, '').trim();
-  try { return JSON.parse(cleaned); } catch (_) {
+  try { return LCSecurity.object(JSON.parse(cleaned)); } catch (_) {
     const firstBrace = cleaned.indexOf('{');
     const lastBrace = cleaned.lastIndexOf('}');
-    if (firstBrace >= 0 && lastBrace > firstBrace) return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
+    if (firstBrace >= 0 && lastBrace > firstBrace) return LCSecurity.object(JSON.parse(cleaned.slice(firstBrace, lastBrace + 1)));
     throw new Error('The AI response was not structured as JSON.');
   }
 }
@@ -16,20 +16,7 @@ function parseAIJSON(raw) {
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 let speechRequestId = 0;
@@ -415,7 +402,7 @@ async function analyze() {
     }
   } catch (e) {
     console.error(e);
-    alert('⚠️ Evaluation failed: ' + e.message);
+    alert('⚠️ Evaluation failed: ' + LCSecurity.message(e));
   } finally {
     b.disabled = false;
     b.innerText = originalButtonText;
@@ -479,7 +466,7 @@ async function askAIConcept(concept, kind = 'language') {
     (Array.isArray(data.examples) ? data.examples : []).slice(0,2).forEach(item => { const p=document.createElement('p'); p.textContent=(item.target || '') + ' — ' + (item.en || ''); box.appendChild(p); });
     if (data.optional_challenge) { const p=document.createElement('p'); p.textContent='Optional challenge: ' + data.optional_challenge; box.appendChild(p); }
   } catch (e) {
-    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + e.message;
+    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + LCSecurity.message(e);
   }
 }
 
@@ -536,7 +523,7 @@ function habilitarInput() {
 
 function enviarRespuestaRP() {
     const inp = document.getElementById('rpInput'); const txt = inp.value.trim(); if(!txt) return;
-    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${txt}</div>`; chat.scrollTop = chat.scrollHeight;
+    const chat = document.getElementById('rpChat'); chat.innerHTML += `<div class="bubble st">${escapeHTML(txt)}</div>`; chat.scrollTop = chat.scrollHeight;
     inp.value = ""; inp.disabled = true; document.getElementById('rpSendBtn').disabled = true; document.getElementById('hintBtn').style.display = "none";
     const nextBtn = document.getElementById('nextAudioBtn'); nextBtn.style.display = "none";
     pasoActual++;
@@ -591,8 +578,8 @@ async function analyzeStory() {
     document.getElementById('scoreDisplayStory').style.color = LCOralScoring.color(assessment);
     document.getElementById('fbDEStory').innerText = "🇩🇪 " + j.feedback_de; 
     document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en + "\n" + LCOralScoring.detail(assessment);
-    document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${e.original}</span> ➡️ <b>${e.correction}</b> (💡 ${e.explanation_en})</div>`).join('') || "✅ Super!";
-  } catch (e) { console.error(e); alert("⚠️ Fehler: " + e.message); } finally { b.disabled = false; b.innerText = "✨ Prüfen"; }
+    document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Super!";
+  } catch (e) { console.error(e); alert("⚠️ Fehler: " + LCSecurity.message(e)); } finally { b.disabled = false; b.innerText = "✨ Prüfen"; }
 }
 
 function resetStory() { document.getElementById('resultStory').style.display = 'none'; document.getElementById('storyArea').style.display = 'block'; document.getElementById('userInputStory').value = ""; }
@@ -849,7 +836,7 @@ async function evaluateGermanFullMock() {
     console.error(e);
     document.getElementById('fullMockLoading').style.display = 'none';
     document.getElementById('fullMockArea').style.display = 'block';
-    alert('⚠️ The final evaluation could not be completed: ' + e.message);
+    alert('⚠️ The final evaluation could not be completed: ' + LCSecurity.message(e));
   }
 }
 

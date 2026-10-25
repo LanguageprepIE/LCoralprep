@@ -2,7 +2,7 @@
 <html lang="ga">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaving Cert Irish Oral Practice: Gaeilge | LCOrals</title>
   <link rel="canonical" href="https://lcorals.ie/ga/">
   <meta name="description" content="Prepare for your Leaving Cert Irish Oral Exam (Gaeilge). Practice Sraith Pictiúr and Comhrá topics with AI feedback. Free study tool for Irish students.">
@@ -18,6 +18,7 @@
     .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
   </style>
   <link rel="stylesheet" href="../guides/link.css">
+  <link rel="stylesheet" href="../accessibility.css">
 </head>
 <body>
 
@@ -95,7 +96,8 @@
       </button>
       <div id="hintBox" style="display:none; background:#f0fdf4; border-left:4px solid #16a34a; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#14532d;"></div>
       
-      <textarea id="userInput" placeholder="Scríobh do fhreagra anseo (Write your answer here)..."></textarea>
+      <label class="response-label" lang="en" for="userInput">Your answer</label>
+      <textarea id="userInput" aria-describedby="qDisplay" placeholder="Scríobh do fhreagra anseo (Write your answer here)..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f0fdf4; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; color:#166534; font-weight:600;">
         👂 Listen to what I wrote (TTS)
@@ -155,7 +157,8 @@
         <p>Examiner: "Inis dom an scéal."</p>
         <button class="audio-btn" onclick="speakSraithPrompt()">🔊 Listen (TTS)</button>
       </div>
-      <textarea id="userInputSraith" placeholder="Sa chéad phictiúr..."></textarea>
+      <label class="response-label" lang="en" for="userInputSraith">Your Sraith Pictiúr answer</label>
+      <textarea id="userInputSraith" aria-describedby="sraithTitle" placeholder="Sa chéad phictiúr..."></textarea>
       
       <button onclick="readMySraithInput()" style="margin: 10px 0; background: #fff7ed; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; color:#c2410c; font-weight:600;">
         👂 Listen to what I wrote (TTS)
@@ -203,7 +206,8 @@
       <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
       
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
     </div>
@@ -226,5 +230,6 @@
 <script src="script.js"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+  <script src="../accessibility.js" defer></script>
 </body>
 </html>

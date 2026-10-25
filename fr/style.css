@@ -34,7 +34,7 @@ h1 { margin: 0; color: var(--secondary); font-size: 2.2rem; letter-spacing: -1px
 .level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
 .level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
 .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.level-btn.hl.active { color: var(--accent); }
+.level-btn.hl.active { color: #dc2626; }
 
 /* MODE SELECTOR (NEW) */
 .mode-selector { display: flex; background: #f3f4f6; padding: 5px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e5e7eb; gap: 5px; }

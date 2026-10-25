@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leaving Cert Oral Practice & Mock Exams | LCOrals Ireland</title>
   <link rel="canonical" href="https://lcorals.ie/">
   
@@ -128,6 +128,7 @@
     footer { margin-top: 60px; padding: 40px 20px; color: #94a3b8; font-size: 0.75rem; border-top: 1px solid #e2e8f0; line-height: 1.6; }
     footer p { margin: 8px 0; }
   </style>
+  <link rel="stylesheet" href="accessibility.css">
 </head>
 <body>
 
@@ -316,7 +317,8 @@
   <div style="text-align: center; margin: 20px 20px; padding-top: 20px; border-top: 1px dashed #cbd5e1; max-width: 500px; margin: 0 auto;">
     <h3 style="color: #334155; margin-bottom: 5px;">🐛 Report a Bug / Feedback</h3>
     <form action="https://formspree.io/f/mjggeygj" method="POST" style="text-align: left;">
-      <textarea name="message" required placeholder="Type your suggestion here..." style="width: 100%; min-height: 100px; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.9rem; box-sizing: border-box;"></textarea>
+      <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" required placeholder="Type your suggestion here..." style="width: 100%; min-height: 100px; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.9rem; box-sizing: border-box;"></textarea>
       <button type="submit" style="width: 100%; background-color: #475569; color: white; padding: 12px; border: none; border-radius: 50px; cursor: pointer; font-weight: 700;">Send Feedback</button>
     </form>
   </div>
@@ -370,5 +372,6 @@
     });
   </script>
 
+  <script src="accessibility.js" defer></script>
 </body>
 </html>

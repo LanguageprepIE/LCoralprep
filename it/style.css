@@ -34,7 +34,7 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 .level-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
 .level-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; font-size: 0.9rem; color: #64748b; background: transparent; }
 .level-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.level-btn.hl.active { color: var(--secondary); }
+.level-btn.hl.active { color: #007a3c; }
 
 /* MODE SELECTOR (NEW) */
 .mode-selector { display: flex; background: #f8fafc; padding: 5px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
@@ -75,7 +75,7 @@ h1 { margin: 0; color: var(--primary); font-size: 2.2rem; letter-spacing: -1px; 
 /* ROLEPLAY & STORY STYLES */
 .rp-selector { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
 .rp-btn-select { min-width: 130px; padding: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: #475569; text-align: center; }
-.rp-btn-select.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+.rp-btn-select.active { background: #007a3c; color: white; border-color: #007a3c; }
 
 /* CHAT WINDOW */
 .rp-chat-window { background: #f8fafc; border-radius: 15px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; border: 1px solid #e2e8f0; max-height: 400px; min-height: 300px; margin-bottom: 15px; }

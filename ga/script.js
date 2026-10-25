@@ -62,6 +62,11 @@ function setupYouTubePlayer(videoId, containerId) {
 // ===========================================
 function toggleInfo() { const b = document.getElementById('infoBox'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
 
+function toggleHint() {
+    const box = document.getElementById('hintBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(tab === 'conv' ? 'tabConv' : (tab === 'poem' ? 'tabPoem' : 'tabSraith')).classList.add('active');
@@ -552,7 +557,8 @@ function renderPoemButtons() {
     
     container.innerHTML = "";
     list.forEach((poem, index) => {
-        const btn = document.createElement('div');
+        const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'rp-btn-select';
         btn.innerText = poem.title.split(" (")[0]; 
         btn.onclick = () => selectPoem(index, btn);
@@ -599,7 +605,8 @@ function initSraith() {
     if (!s) return;
     s.innerHTML = "";
     SRAITH_TITLES.forEach((title, index) => {
-        const d = document.createElement('div');
+        const d = document.createElement('button');
+        d.type = 'button';
         d.className = 'rp-btn-select';
         d.innerText = title;
         d.onclick = () => selectSraith(index, d);

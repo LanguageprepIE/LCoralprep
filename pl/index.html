@@ -17,6 +17,7 @@
     .bio-text { max-width: 600px !important; margin: 0 auto 25px auto !important; }
   </style>
   <link rel="stylesheet" href="../guides/link.css">
+  <link rel="stylesheet" href="../accessibility.css">
 </head>
 <body>
 
@@ -78,7 +79,8 @@
       </button>
       <div id="hintBox" style="display:none; background:#fef2f2; border-left:4px solid #dc2626; padding:15px; margin-bottom:15px; border-radius:5px; font-size:0.9rem; color:#991b1b;"></div>
       
-      <textarea id="userInput" placeholder="Proszę wpisać odpowiedź (Type here)..."></textarea>
+      <label class="response-label" lang="en" for="userInput">Your answer</label>
+      <textarea id="userInput" aria-describedby="qDisplay" placeholder="Proszę wpisać odpowiedź (Type here)..."></textarea>
       
       <button onclick="readMyInput()" style="margin: 10px 0; background: #f1f5f9; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width:100%; font-weight:600; color:#475569;">
         👂 Listen to my answer
@@ -131,7 +133,8 @@
       <p style="font-size: 0.8rem; color: #64748b; margin-top:0;">(Please do not share personal details like email or phone)</p>
       
       <form action="https://formspree.io/f/mjggeygj" method="POST" style="max-width: 450px; margin: 0 auto; text-align: left;">
-        <textarea name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
+        <label class="response-label" lang="en" for="feedbackMessage">Your feedback or suggestion</label>
+        <textarea id="feedbackMessage" name="message" placeholder="Type your suggestion..." required style="width: 100%; padding: 12px; min-height: 80px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #cbd5e1; box-sizing: border-box; font-family: inherit; font-size: 0.9rem;"></textarea>
         <button type="submit" style="width: 100%; background: #475569; color: white; border: none; padding: 10px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.9rem;">Send Feedback</button>
       </form>
     </div>
@@ -155,5 +158,6 @@
 <script src="script.js?v=scoring-preview-20261006"></script>
 <script data-goatcounter="https://lcoralprep.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+  <script src="../accessibility.js" defer></script>
 </body>
 </html>

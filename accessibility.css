@@ -45,3 +45,6 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible,
   textarea, select, input { max-width: 100%; box-sizing: border-box; }
   .question-card, .student-response-box, [id^="scoreDisplay"] { overflow-wrap: anywhere; }
 }
+
+/* Text from learners/AI retains its line breaks when escaped. */
+.error-item, .bubble.st, #fbNative, .safe-study-output { white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -6,20 +6,7 @@ function escapeHTML(value) {
 // CONFIGURACIÓN (BACKEND ACTIVADO 🔒)
 // ===========================================
 async function callSmartAI(prompt) {
-    try {
-        const response = await fetch('/.netlify/functions/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        if (!response.ok) throw new Error(`Netlify Error: ${response.statusText}`);
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message || "AI Error");
-        return data.candidates[0].content.parts[0].text;
-    } catch (e) {
-        console.error("AI Call Failed:", e);
-        throw e;
-    }
+    return LCSecurity.request(prompt);
 }
 
 let speechRequestId = 0;
@@ -81,7 +68,7 @@ function parseAIJSON(raw) {
   const clean = raw.replace(/```json|```/g, '').trim();
   const start = clean.indexOf('{');
   const end = clean.lastIndexOf('}');
-  return JSON.parse(start >= 0 && end > start ? clean.slice(start, end + 1) : clean);
+  return LCSecurity.object(JSON.parse(start >= 0 && end > start ? clean.slice(start, end + 1) : clean));
 }
 
 // Retry a formatting failure once, without changing the shared Gemini proxy.
@@ -693,7 +680,7 @@ async function analyze() {
         reset.textContent = '↩️ Return to mock feedback'; reset.onclick = returnToMockSummary;
       } else { reset.textContent = '🔄 Try again'; reset.onclick = updateQuestion; }
     }
-  } catch (error) { alert('⚠️ Could not continue: ' + error.message); }
+  } catch (error) { alert('⚠️ Could not continue: ' + LCSecurity.message(error)); }
   finally { mockBusy = false; button.disabled = false; button.textContent = isMockExam ? '➡️ Submit and continue' : original; }
 }
 
@@ -758,7 +745,7 @@ async function askAIConcept(concept, kind = 'language') {
     if (data.optional_challenge) { const p=document.createElement('p'); p.textContent='Optional challenge: ' + data.optional_challenge; box.appendChild(p); }
   } catch (e) {
     if (requestId !== studyRequestId) return;
-    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + e.message;
+    console.error(e); box.textContent = '⚠️ Could not load the study guidance: ' + LCSecurity.message(e);
   }
 }
 
@@ -872,7 +859,7 @@ async function evaluateItalianRoleplay(button) {
         document.getElementById('rpChat').appendChild(card);
         button.remove();
         card.scrollIntoView({behavior:'smooth', block:'nearest'});
-    } catch (error) { alert('Could not load roleplay feedback: ' + error.message); }
+    } catch (error) { alert('Could not load roleplay feedback: ' + LCSecurity.message(error)); }
     finally { italianRoleplayBusy = false; button.disabled = false; }
 }
 
@@ -921,7 +908,7 @@ async function analyzeStory() {
     document.getElementById('fbITStory').innerText = "🇮🇹 " + j.feedback_it;
     document.getElementById('fbENStory').innerText = "🇬🇧 " + j.feedback_en + "\n" + LCOralScoring.detail(assessment);
     document.getElementById('errorsListStory').innerHTML = j.errors?.map(e => `<div class="error-item"><span style="text-decoration: line-through;">${escapeHTML(e.original)}</span> ➡️ <b>${escapeHTML(e.correction)}</b> (💡 ${escapeHTML(e.explanation_en)})</div>`).join('') || "✅ Eccellente!";
-  } catch (e) { console.error(e); alert("⚠️ Errore: " + e.message); } finally { b.disabled = false; b.innerText = "✨ Evaluate Description"; }
+  } catch (e) { console.error(e); alert("⚠️ Errore: " + LCSecurity.message(e)); } finally { b.disabled = false; b.innerText = "✨ Evaluate Description"; }
 }
 
 function readMyInput() {

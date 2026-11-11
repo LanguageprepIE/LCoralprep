@@ -138,7 +138,7 @@ async function requestOpenAI(contents) {
             return reply(502, 'INVALID_RESPONSE', messages.response);
         }
         return { statusCode: 200,
-            headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+            headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-LCorals-Provider': 'openai-luna' },
             body: JSON.stringify({ candidates: [{ content: { parts: [{ text: texts.join('') }] } }] }) };
     } catch {
         diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');

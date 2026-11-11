@@ -866,7 +866,7 @@ async function analyze() {
     parsedEvaluation = parsed;
     evaluationStage = 'schema_validation';
     const normalized = LCSecurity.normalizeSpanishScore(parsed, currentLevel);
-    const j = LCSecurity.feedback(normalized, ["feedback_es", "feedback_en"]);
+    const j = LCSecurity.spanishAssessment(normalized, currentLevel);
     evaluationStage = 'render';
     
     document.getElementById('exerciseArea').style.display = 'none'; 

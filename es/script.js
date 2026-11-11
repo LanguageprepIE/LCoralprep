@@ -852,11 +852,13 @@ async function analyze() {
   `;
 
   let evaluationStage = 'request';
+  let parsedEvaluation;
   try {
     const rawText = await callSmartAI(prompt);
     evaluationStage = 'json_parse';
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(cleanJson);
+    parsedEvaluation = parsed;
     evaluationStage = 'schema_validation';
     const j = LCSecurity.feedback(parsed, ["feedback_es", "feedback_en"]);
     evaluationStage = 'render';
@@ -932,7 +934,8 @@ async function analyze() {
 
   } catch (e) {
     // No student input, AI output or exception details in diagnostic logs.
-    console.warn(`[lcorals:conversation] stage=${evaluationStage} code=${e?.code && ['INVALID_RESPONSE','TIMEOUT','NETWORK','BUSY','UNAVAILABLE','REQUEST_TOO_LARGE','INVALID_REQUEST'].includes(e.code) ? e.code : 'unexpected'}`);
+    const issue = evaluationStage === 'schema_validation' ? LCSecurity.feedbackIssue(parsedEvaluation, ['feedback_es', 'feedback_en']) : 'none';
+    console.warn(`[lcorals:conversation] stage=${evaluationStage} code=${e?.code && ['INVALID_RESPONSE','TIMEOUT','NETWORK','BUSY','UNAVAILABLE','REQUEST_TOO_LARGE','INVALID_REQUEST'].includes(e.code) ? e.code : 'unexpected'} issue=${issue}`);
     alert(`⚠️ Error: ${escapeHTML(LCSecurity.message(e))}`);
   } finally { 
     b.disabled = false; b.innerText = "✨ Evaluate Answer"; 

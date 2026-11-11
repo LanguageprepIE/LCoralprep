@@ -6,10 +6,17 @@ vm.runInContext(fs.readFileSync('oral-scoring.js','utf8')+';globalThis.S=LCOralS
 const S=ctx.S;
 const spanishConversation=fs.readFileSync('es/script.js','utf8');
 const polishConversation=fs.readFileSync('pl/script.js','utf8');
+const germanConversation=fs.readFileSync('de/script.js','utf8');
+const italianConversation=fs.readFileSync('it/script.js','utf8');
+const italianHomepage=fs.readFileSync('it/index.html','utf8');
 assert.match(spanishConversation,/OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive/);
 assert.match(spanishConversation,/Match the numerical score to the written feedback/);
 assert.match(spanishConversation,/At OL distinguish accuracy from completeness/);
 assert.match(spanishConversation,/"solemos" \(from soler\) is not reflexive/);
+assert.match(spanishConversation,/never praise or criticise pronunciation, clarity of speech/);
+assert.match(germanConversation,/Calibrate development against the breadth of the actual question/);
+assert.match(italianConversation,/Calibrate development against the breadth of the actual question/);
+assert.match(italianHomepage,/© 2026 LCorals\.ie/);
 assert.match(polishConversation,/Prefer natural gender-neutral\/impersonal constructions/);
 assert.match(polishConversation,/Do not infer personal gender identity/);
 assert.match(polishConversation,/If a gendered form is unavoidable, match explicit masculine\/feminine first-person forms/);

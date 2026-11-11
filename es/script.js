@@ -778,7 +778,7 @@ async function analyze() {
   const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
   const levelExpectation = currentLevel === 'HL'
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
-      : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
+      : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity. Score on a 0-100 practice scale, not a 0-10 scale.';
   const scoreCalibration = currentLevel === 'HL' ? `
     HL OFFICIAL-BAND EXPERIMENT — GENERAL CONVERSATION /70:
     First decide which Leaving Certificate conversation band best matches the performance. Only then choose a mark within that band. Do NOT start from a percentage and convert it.
@@ -815,22 +815,27 @@ async function analyze() {
     - At HL, reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
     - A high HL score does not require idioms, subjunctive, conditional forms, multiple tenses in every answer or native-like spontaneity. Advanced structures are optional evidence of extra control, not prerequisites for an H1-level performance.
     - At OL, reward clear communication and relevant basic information; suggestions must be simple and achievable.
+    - OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive (not 0 to 10). Around 85-100: clear, relevant, well-developed basic communication with good control; 65-84: relevant and mostly accurate communication that answers most parts of the question, though limited in detail or range; 40-64: partially developed but understandable response, including a single correct fact when the question asks for several pieces of information; 15-39: very limited information or repeated errors that materially obstruct communication; 0-14: almost no relevant comprehensible response. A short but correct and relevant response can earn more than 14 points; do not treat limited length alone as failure.
+    - At OL distinguish accuracy from completeness: one accurate sentence responding to only one part of a multi-part question deserves positive feedback on correctness but not a high mark for task completion. A single relevant fact without development will normally fall in the 40-64 range, not 65-84; do not apply this rule mechanically to a question that only asks for one fact.
+    - Match the numerical score to the written feedback: very positive feedback describing a clear and accurate response must not accompany a near-zero mark. If the response is too brief for a high score, explain the limitation clearly and proportionately. Before returning JSON, review the mark and feedback together for consistency.
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
+    - In strengths and corrections, only name a grammatical category when certain it is correct. Do not mislabel common conjugated verbs as reflexive: for example, "solemos" (from soler) is not reflexive, whereas "nos llevamos" is. When a precise grammatical label adds no value, praise the natural expression instead.
     - Avoid demanding memorised idioms or unnatural language.
     - Do not invent improvement targets just because the output schema allows them. For an already excellent response, next_steps may contain only one maintenance/enrichment suggestion, or be empty if there is no meaningful next step supported by the transcript.
     - Do not present a specific structure (for example subjunctive, idioms, rarer tenses or regional expressions) as a requirement for a higher mark. Such features may be optional enrichment only when genuinely useful.
     - In connectors, suggest only connectors that would add something useful and that the learner has not already used effectively in this response. Use an empty array if there is no worthwhile suggestion.
     - In vocabulary_suggestions, only suggest natural alternatives that preserve the intended meaning, intensity and register. Do not replace a correct everyday word merely with a stronger or more formal word. Use an empty array if no genuine improvement is needed.
     ${scoreCalibration}
+    - Return score as a JSON NUMBER (an integer, never a quoted string). The 0 in the schema is only a placeholder.
     - Return valid JSON only, with no markdown.
 
     OUTPUT SCHEMA:
     ${currentLevel === 'HL' ? `{
       "band": 1-7,
-      "score": "an integer within the selected band's /70 range",
+      "score": 0,
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": [{"es":"fortaleza específica en español","en":"matching English translation"}],
@@ -839,7 +844,7 @@ async function analyze() {
       "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
       "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
     }` : `{
-      "score": 0-100,
+      "score": 0,
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": ["up to 3 specific strengths"],
@@ -851,11 +856,18 @@ async function analyze() {
 
   `;
 
+  let evaluationStage = 'request';
+  let parsedEvaluation;
   try {
     const rawText = await callSmartAI(prompt);
-    
+    evaluationStage = 'json_parse';
     const cleanJson = rawText.replace(/```json|```/g, "").trim();
-    const j = LCSecurity.feedback(JSON.parse(cleanJson), ["feedback_es", "feedback_en"]);
+    const parsed = JSON.parse(cleanJson);
+    parsedEvaluation = parsed;
+    evaluationStage = 'schema_validation';
+    const normalized = LCSecurity.normalizeSpanishScore(parsed, currentLevel);
+    const j = LCSecurity.feedback(normalized, ["feedback_es", "feedback_en"]);
+    evaluationStage = 'render';
     
     document.getElementById('exerciseArea').style.display = 'none'; 
     document.getElementById('result').style.display = 'block';
@@ -926,8 +938,10 @@ async function analyze() {
         btnReset.innerText = "🔄 Try another topic"; btnReset.onclick = resetApp; 
     }
 
-  } catch (e) { 
-    console.error(e); 
+  } catch (e) {
+    // No student input, AI output or exception details in diagnostic logs.
+    const issue = evaluationStage === 'schema_validation' ? LCSecurity.feedbackIssue(parsedEvaluation, ['feedback_es', 'feedback_en']) : 'none';
+    console.warn(`[lcorals:conversation] stage=${evaluationStage} code=${e?.code && ['INVALID_RESPONSE','TIMEOUT','NETWORK','BUSY','UNAVAILABLE','REQUEST_TOO_LARGE','INVALID_REQUEST'].includes(e.code) ? e.code : 'unexpected'} issue=${issue}`);
     alert(`⚠️ Error: ${escapeHTML(LCSecurity.message(e))}`);
   } finally { 
     b.disabled = false; b.innerText = "✨ Evaluate Answer"; 

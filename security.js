@@ -71,6 +71,41 @@ const LCSecurity = (() => {
     return data;
   }
 
+  // Gemini occasionally serializes an integer mark as a string. Accept only
+  // canonical, in-range integer strings; malformed marks still fail validation.
+  function normalizeSpanishScore(data, level) {
+    if (!data || typeof data !== 'object' || Array.isArray(data) || typeof data.score !== 'string') return data;
+    const limit = level === 'HL' ? 70 : 100;
+    if (!/^(0|[1-9][0-9]{0,2})$/.test(data.score)) return data;
+    const score = Number(data.score);
+    if (score > limit) return data;
+    return { ...data, score };
+  }
+
+  // Diagnostic categories contain only fixed schema names, never learner/AI content.
+  // Mirrors feedback() rejection conditions without changing acceptance rules.
+  function feedbackIssue(data, fields) {
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return 'root_type';
+    for (const key of ['errors','corrections','strengths','next_steps','connectors','vocabulary_suggestions','examples','speaking_plan']) {
+      if (data[key] !== undefined && !Array.isArray(data[key])) return `${key}_not_array`;
+      if (data[key]?.some(item => item === null || !['string','object'].includes(typeof item) || Array.isArray(item))) return `${key}_item_type`;
+    }
+    for (const key of ['errors','corrections','vocabulary_suggestions','examples']) {
+      if (data[key]?.some(item => typeof item !== 'object' || Object.values(item).some(value => typeof value !== 'string'))) return `${key}_item_field_type`;
+    }
+    for (const key of ['errors','corrections']) {
+      if (data[key]?.some(item => typeof item.original !== 'string' || typeof item.correction !== 'string')) return `${key}_missing_correction_fields`;
+    }
+    for (const key of ['feedback_es','feedback_en','summary_es','summary_en']) {
+      if (data[key] !== undefined && typeof data[key] !== 'string') return `${key}_type`;
+    }
+    if (Object.keys(data).some(key => /^(feedback_|summary_)/.test(key) && typeof data[key] !== 'string')) return 'text_field_type';
+    if (typeof data.score !== 'number' || !Number.isFinite(data.score)) return 'score_type';
+    if (!Array.isArray(data.errors)) return 'errors_required';
+    for (const field of fields) if (typeof data[field] !== 'string') return field === 'feedback_es' ? 'feedback_es_required' : field === 'feedback_en' ? 'feedback_en_required' : 'feedback_required';
+    return 'unknown';
+  }
+
   function roleplay(data) {
     object(data);
     if (!Array.isArray(data.turns) || data.turns.length !== 5 ||
@@ -102,5 +137,5 @@ const LCSecurity = (() => {
     for (const child of template.content.childNodes) copy(child, output);
     return output.innerHTML;
   }
-  return { request, message, escape, object, feedback, roleplay, studyHTML };
+  return { request, message, escape, object, feedback, feedbackIssue, normalizeSpanishScore, roleplay, studyHTML };
 })();

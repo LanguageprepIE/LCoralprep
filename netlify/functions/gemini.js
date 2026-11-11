@@ -1,6 +1,8 @@
 // Keep the existing Lambda-compatible endpoint and the existing Gemini model.
 const MAX_BODY_BYTES = 1024 * 1024; // Whole prompt, including complete mocks and review context.
 const UPSTREAM_TIMEOUT_MS = 45000;
+// Operational diagnostics only: never log prompts, replies, provider bodies or keys.
+const diagnostic = (reason) => console.warn(`[lcorals:gemini] ${reason}`);
 const messages = {
     invalid: 'The practice request could not be read. Please try again.',
     large: 'This practice request is too large to send. Your answer has not been sent.',
@@ -50,6 +52,7 @@ export const handler = async (event) => {
         });
         // Never relay provider errors, billing details, URLs or stack traces.
         if (!response.ok) {
+            diagnostic(`upstream_http_${[400,401,402,403,429].includes(response.status) ? response.status : response.status >= 500 ? '5xx' : 'other'}`);
             if (response.status === 429) return reply(429, 'BUSY', messages.busy);
             if (response.status === 401 || response.status === 403 || response.status === 402) return reply(503, 'UNAVAILABLE', messages.unavailable);
             return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
@@ -57,6 +60,7 @@ export const handler = async (event) => {
         let data;
         try { data = await response.json(); } catch (error) {
             if (controller.signal.aborted) throw error;
+            diagnostic('upstream_json_parse');
             return reply(502, 'INVALID_RESPONSE', messages.response);
         }
         const candidate = data?.candidates?.[0];
@@ -65,6 +69,11 @@ export const handler = async (event) => {
             (candidate?.finishReason && candidate.finishReason !== 'STOP') ||
             !Array.isArray(parts) || !parts.length ||
             parts.some(part => typeof part?.text !== 'string') || !parts.map(part => part.text).join('').trim()) {
+            const reason = data?.promptFeedback?.blockReason ? 'prompt_blocked'
+                : candidate?.finishReason && candidate.finishReason !== 'STOP' ?
+                    (['MAX_TOKENS','SAFETY','RECITATION','OTHER'].includes(candidate.finishReason) ? `finish_${candidate.finishReason.toLowerCase()}` : 'finish_unexpected')
+                : 'upstream_shape';
+            diagnostic(reason);
             return reply(502, 'INVALID_RESPONSE', messages.response);
         }
         return {
@@ -74,6 +83,7 @@ export const handler = async (event) => {
             body: JSON.stringify({ candidates: [{ content: { parts: [{ text: parts.map(part => part.text).join('') }] } }] })
         };
     } catch {
+        diagnostic(controller.signal.aborted ? 'upstream_timeout' : 'upstream_network');
         return controller.signal.aborted ? reply(504, 'TIMEOUT', messages.timeout) : reply(503, 'UNAVAILABLE', messages.unavailable);
     } finally {
         clearTimeout(timer);

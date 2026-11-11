@@ -4,6 +4,15 @@ const vm = require('node:vm');
 const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync('oral-scoring.js','utf8')+';globalThis.S=LCOralScoring;',ctx);
 const S=ctx.S;
+const spanishConversation=fs.readFileSync('es/script.js','utf8');
+const polishConversation=fs.readFileSync('pl/script.js','utf8');
+assert.match(spanishConversation,/OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive/);
+assert.match(spanishConversation,/Match the numerical score to the written feedback/);
+assert.match(spanishConversation,/At OL distinguish accuracy from completeness/);
+assert.match(spanishConversation,/"solemos" \(from soler\) is not reflexive/);
+assert.match(polishConversation,/Prefer natural gender-neutral\/impersonal constructions/);
+assert.match(polishConversation,/Do not infer personal gender identity/);
+assert.match(polishConversation,/If a gendered form is unavoidable, match explicit masculine\/feminine first-person forms/);
 (async()=>{
   const draft={band:'competent',score:75,feedback_pl:'Dobry tekst.',feedback_en:'Good text.',errors:[{original:'ja iść szkoła',correction:'szłem do szkoły',explanation_en:'Use the accusative.'}],next_steps:[],vocabulary_suggestions:[]};
   const checked=await S.reviewFeedback('pl',draft,'Wczoraj ja iść szkoła',async()=>({...draft,band:'excellent',score:100,feedback_en:'A past-tense correction is useful.',errors:[{original:'ja iść szkoła',correction:'szedłem do szkoły / szłam do szkoły',explanation_en:'Use a conjugated past verb; do takes the genitive.'},{original:'Wczoraj',correction:'Dzisiaj',explanation_en:'Invented change.'}]}));

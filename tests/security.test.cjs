@@ -7,11 +7,13 @@ const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 const valid = text => ({ httpMethod:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text}]}]}) });
 function backend(fetch, key = 'test-only-dummy-key') {
   let timer, calls = 0, cleared = 0;
+  const logs = [];
   const context = vm.createContext({ Buffer, AbortController, process:{env:{GEMINI_API_KEY:key}},
+    console:{warn:(line)=>logs.push(line)},
     fetch:async (...args) => { calls++; return fetch(...args); },
     setTimeout:callback => { timer=callback; return 1; }, clearTimeout:()=>cleared++ });
   vm.runInContext(read('netlify/functions/gemini.js').replace('export const handler', 'const handler')+'\nglobalThis.handler=handler;', context);
-  return { run:context.handler, timeout:()=>timer(), calls:()=>calls, cleared:()=>cleared };
+  return { run:context.handler, timeout:()=>timer(), calls:()=>calls, cleared:()=>cleared, logs:()=>logs };
 }
 const generated = (text='Synthetic reply\nSecond line', extra={}) => ({ candidates:[{content:{parts:[{text}]},...extra}] });
 const upstream = (data,status=200) => ({ok:status>=200&&status<300,status,json:async()=>data});
@@ -69,6 +71,27 @@ test('server rejects empty, blocked, incomplete and malformed provider replies',
   assert.equal(JSON.parse((await multi.run(valid('answer'))).body).candidates[0].content.parts[0].text,'one\ntwo');
 });
 
+test('diagnostics distinguish an incomplete Gemini reply without logging student text', async () => {
+  const studentText='El fin de semana pasado salí con mis amigos. Me lo pasé fenomenal, fue un fin de semana muy divertido';
+  const b=backend(()=>upstream(generated('partial private reply',{finishReason:'MAX_TOKENS'})));
+  assert.equal((await b.run(valid(studentText))).statusCode,502);
+  assert.deepEqual(b.logs(),['[lcorals:gemini] finish_max_tokens']);
+  assert.doesNotMatch(b.logs().join(' '),/fin de semana|private reply|test-only-dummy-key/);
+  const success=backend(()=>upstream(generated('valid synthetic reply',{finishReason:'STOP'})));
+  assert.equal((await success.run(valid(studentText))).statusCode,200);
+  assert.deepEqual(success.logs(),[]);
+});
+
+test('conversation diagnostic stages are distinct and log no response content', () => {
+  const source=read('es/script.js');
+  assert.match(source,/evaluationStage = 'json_parse'/);
+  assert.match(source,/evaluationStage = 'schema_validation'/);
+  assert.match(source,/evaluationStage = 'render'/);
+  assert.match(source,/\[lcorals:conversation\] stage=\$\{evaluationStage\}/);
+  const conversation=source.slice(source.indexOf('async function analyze()'),source.indexOf('async function askAIConcept('));
+  assert.doesNotMatch(conversation,/console\.error\(e\)/);
+});
+
 test('server aborts a stalled request once; no automatic retry or trace exposure', async () => {
   const b=backend((url,options)=>new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(Error('private timeout detail')))));
   const pending=b.run(valid('answer'));b.timeout();const result=await pending;
@@ -103,6 +126,36 @@ test('invalid structured feedback is rejected rather than displayed as a zero or
   for(const data of [{},{score:'90',errors:[],feedback_en:'Good'},{score:90,errors:[],feedback_en:null}]) assert.throws(()=>api.feedback(data,['feedback_en']));
   const good={score:90,errors:[],feedback_en:'Line one\nLine two'};assert.equal(api.feedback(good,['feedback_en']),good);
   assert.throws(()=>api.roleplay({total_score:30,turns:[]}));
+});
+
+test('feedback schema diagnostics use only fixed codes and reveal no AI content', () => {
+  const {api}=client(()=>{});
+  const learner='El fin de semana pasado salí con mis amigos';
+  const baseline={score:30,errors:[],feedback_es:'Correcto',feedback_en:'Good'};
+  assert.equal(api.feedbackIssue({...baseline,score:'30',student:learner},['feedback_es','feedback_en']),'score_type');
+  assert.equal(api.feedbackIssue({...baseline,errors:[{original:learner,correction:17}]},['feedback_es','feedback_en']),'errors_item_field_type');
+  assert.equal(api.feedbackIssue({...baseline,feedback_en:null},['feedback_es','feedback_en']),'feedback_en_type');
+  assert.equal(api.feedbackIssue(baseline,['feedback_es','feedback_en']),'unknown');
+  for (const issue of [
+    api.feedbackIssue({...baseline,score:learner},['feedback_es','feedback_en']),
+    api.feedbackIssue({...baseline,errors:[{original:learner,correction:17}]},['feedback_es','feedback_en'])
+  ]) assert.doesNotMatch(issue,/fin de semana|amigos/);
+});
+
+test('Spanish Conversation safely normalizes only in-range integer score strings', () => {
+  const {api}=client(()=>{});
+  const base={score:'38',errors:[],feedback_es:'Bien',feedback_en:'Good'};
+  const fixed=api.normalizeSpanishScore(base,'HL');
+  assert.equal(fixed.score,38);
+  assert.equal(base.score,'38');
+  assert.equal(api.feedback(fixed,['feedback_es','feedback_en']),fixed);
+  for(const bad of ['38.5','-1','7x',' 38','038','Infinity','NaN','71','1000','']) {
+    const candidate=api.normalizeSpanishScore({...base,score:bad},'HL');
+    assert.equal(candidate.score,bad);
+    assert.throws(()=>api.feedback(candidate,['feedback_es','feedback_en']));
+  }
+  assert.equal(api.normalizeSpanishScore({...base,score:'100'},'OL').score,100);
+  assert.equal(api.normalizeSpanishScore({...base,score:'100'},'HL').score,'100');
 });
 
 const {hash,protectedContent}=require('./helpers/protected-content.cjs');

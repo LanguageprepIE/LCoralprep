@@ -7,11 +7,13 @@ const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 const valid = text => ({ httpMethod:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text}]}]}) });
 function backend(fetch, key = 'test-only-dummy-key') {
   let timer, calls = 0, cleared = 0;
+  const logs = [];
   const context = vm.createContext({ Buffer, AbortController, process:{env:{GEMINI_API_KEY:key}},
+    console:{warn:(line)=>logs.push(line)},
     fetch:async (...args) => { calls++; return fetch(...args); },
     setTimeout:callback => { timer=callback; return 1; }, clearTimeout:()=>cleared++ });
   vm.runInContext(read('netlify/functions/gemini.js').replace('export const handler', 'const handler')+'\nglobalThis.handler=handler;', context);
-  return { run:context.handler, timeout:()=>timer(), calls:()=>calls, cleared:()=>cleared };
+  return { run:context.handler, timeout:()=>timer(), calls:()=>calls, cleared:()=>cleared, logs:()=>logs };
 }
 const generated = (text='Synthetic reply\nSecond line', extra={}) => ({ candidates:[{content:{parts:[{text}]},...extra}] });
 const upstream = (data,status=200) => ({ok:status>=200&&status<300,status,json:async()=>data});
@@ -67,6 +69,27 @@ test('server rejects empty, blocked, incomplete and malformed provider replies',
   assert.equal((await badJSON.run(valid('answer'))).statusCode,502);
   const multi=backend(()=>upstream({candidates:[{finishReason:'STOP',content:{parts:[{text:'one\n'},{text:'two'}]}}]}));
   assert.equal(JSON.parse((await multi.run(valid('answer'))).body).candidates[0].content.parts[0].text,'one\ntwo');
+});
+
+test('diagnostics distinguish an incomplete Gemini reply without logging student text', async () => {
+  const studentText='El fin de semana pasado salí con mis amigos. Me lo pasé fenomenal, fue un fin de semana muy divertido';
+  const b=backend(()=>upstream(generated('partial private reply',{finishReason:'MAX_TOKENS'})));
+  assert.equal((await b.run(valid(studentText))).statusCode,502);
+  assert.deepEqual(b.logs(),['[lcorals:gemini] finish_max_tokens']);
+  assert.doesNotMatch(b.logs().join(' '),/fin de semana|private reply|test-only-dummy-key/);
+  const success=backend(()=>upstream(generated('valid synthetic reply',{finishReason:'STOP'})));
+  assert.equal((await success.run(valid(studentText))).statusCode,200);
+  assert.deepEqual(success.logs(),[]);
+});
+
+test('conversation diagnostic stages are distinct and log no response content', () => {
+  const source=read('es/script.js');
+  assert.match(source,/evaluationStage = 'json_parse'/);
+  assert.match(source,/evaluationStage = 'schema_validation'/);
+  assert.match(source,/evaluationStage = 'render'/);
+  assert.match(source,/\[lcorals:conversation\] stage=\$\{evaluationStage\}/);
+  const conversation=source.slice(source.indexOf('async function analyze()'),source.indexOf('async function askAIConcept('));
+  assert.doesNotMatch(conversation,/console\.error\(e\)/);
 });
 
 test('server aborts a stalled request once; no automatic retry or trace exposure', async () => {

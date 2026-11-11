@@ -142,6 +142,22 @@ test('feedback schema diagnostics use only fixed codes and reveal no AI content'
   ]) assert.doesNotMatch(issue,/fin de semana|amigos/);
 });
 
+test('Spanish Conversation safely normalizes only in-range integer score strings', () => {
+  const {api}=client(()=>{});
+  const base={score:'38',errors:[],feedback_es:'Bien',feedback_en:'Good'};
+  const fixed=api.normalizeSpanishScore(base,'HL');
+  assert.equal(fixed.score,38);
+  assert.equal(base.score,'38');
+  assert.equal(api.feedback(fixed,['feedback_es','feedback_en']),fixed);
+  for(const bad of ['38.5','-1','7x',' 38','038','Infinity','NaN','71','1000','']) {
+    const candidate=api.normalizeSpanishScore({...base,score:bad},'HL');
+    assert.equal(candidate.score,bad);
+    assert.throws(()=>api.feedback(candidate,['feedback_es','feedback_en']));
+  }
+  assert.equal(api.normalizeSpanishScore({...base,score:'100'},'OL').score,100);
+  assert.equal(api.normalizeSpanishScore({...base,score:'100'},'HL').score,'100');
+});
+
 const {hash,protectedContent}=require('./helpers/protected-content.cjs');
 const protectedBaseline=JSON.parse(read('tests/fixtures/work03-protected-content.json'));
 test('shared scoring/rubrics, accessibility logic and privacy are byte-identical to merged Work 02',()=>{

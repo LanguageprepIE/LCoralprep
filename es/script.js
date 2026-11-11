@@ -778,7 +778,7 @@ async function analyze() {
   const guidance = mockItem ? mockItem.guidance : getExamGuidance(currentTopic);
   const levelExpectation = currentLevel === 'HL'
       ? 'Expect a clear, autonomous and developed response with reasons, examples, a useful range of familiar vocabulary and some linking. A very strong H1-level response is excellent senior-cycle performance, not native-speaker or bilingual performance.'
-      : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity.';
+      : 'Prioritise successful communication and a relevant response. Accept simple, accurate language and do not penalise the learner for limited complexity. Score on a 0-100 practice scale, not a 0-10 scale.';
   const scoreCalibration = currentLevel === 'HL' ? `
     HL OFFICIAL-BAND EXPERIMENT — GENERAL CONVERSATION /70:
     First decide which Leaving Certificate conversation band best matches the performance. Only then choose a mark within that band. Do NOT start from a percentage and convert it.
@@ -815,6 +815,8 @@ async function analyze() {
     - At HL, reward relevant development, reasons, examples, detail, varied vocabulary, connectors and appropriate use of time frames.
     - A high HL score does not require idioms, subjunctive, conditional forms, multiple tenses in every answer or native-like spontaneity. Advanced structures are optional evidence of extra control, not prerequisites for an H1-level performance.
     - At OL, reward clear communication and relevant basic information; suggestions must be simple and achievable.
+    - OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive (not 0 to 10). Around 85-100: clear, relevant, well-developed basic communication with good control; 65-84: relevant and mostly accurate communication, though limited in detail or range; 40-64: partially developed but understandable response with some errors or omissions; 15-39: very limited information or repeated errors that materially obstruct communication; 0-14: almost no relevant comprehensible response. A short but correct and relevant response can earn more than 14 points; do not treat limited length alone as failure.
+    - Match the numerical score to the written feedback: very positive feedback describing a clear and accurate response must not accompany a near-zero mark. If the response is too brief for a high score, explain the limitation clearly and proportionately. Before returning JSON, review the mark and feedback together for consistency.
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.

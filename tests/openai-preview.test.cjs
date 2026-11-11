@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const source = fs.readFileSync('netlify/functions/gemini.js', 'utf8');
-const event = text => ({ httpMethod: 'POST', headers: { 'content-type': 'application/json' },
+const event = text => ({ httpMethod: 'POST', headers: { 'content-type': 'application/json', host:'deploy-preview-27--lcorals.netlify.app' },
   body: JSON.stringify({ contents: [{ parts: [{ text }] }] }) });
 function setup(fetcher, env = { CONTEXT: 'deploy-preview', OPENAI_API_KEY: 'synthetic-key' }) {
   const calls = [];
@@ -37,10 +37,10 @@ test('No secret on Deploy Preview fails closed without accessing Gemini', async 
   assert.equal(b.calls.length, 0);
 });
 
-test('Production remains on Gemini even if an OpenAI key exists', async () => {
+test('Production hostname remains on Gemini even if an OpenAI key exists', async () => {
   const b = setup(() => ({ ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: 'Hola' }] } }] }) }),
     { CONTEXT: 'production', GEMINI_API_KEY: 'synthetic-gemini', OPENAI_API_KEY: 'synthetic-openai' });
-  assert.equal((await b.run(event('Hola'))).statusCode, 200);
+  assert.equal((await b.run({...event('Hola'),headers:{...event('Hola').headers,host:'lcorals.ie'}})).statusCode, 200);
   assert.match(b.calls[0][0], /generativelanguage\.googleapis\.com/);
 });
 

@@ -2,7 +2,8 @@ name: OpenAI Preview Smoke (synthetic)
 on:
   push:
     branches: [work-06-openai-preview]
-    paths: [.github/workflows/openai-preview-smoke.yml]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 jobs:
   smoke:

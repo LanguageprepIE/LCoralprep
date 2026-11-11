@@ -71,6 +71,17 @@ const LCSecurity = (() => {
     return data;
   }
 
+  // Gemini occasionally serializes an integer mark as a string. Accept only
+  // canonical, in-range integer strings; malformed marks still fail validation.
+  function normalizeSpanishScore(data, level) {
+    if (!data || typeof data !== 'object' || Array.isArray(data) || typeof data.score !== 'string') return data;
+    const limit = level === 'HL' ? 70 : 100;
+    if (!/^(0|[1-9][0-9]{0,2})$/.test(data.score)) return data;
+    const score = Number(data.score);
+    if (score > limit) return data;
+    return { ...data, score };
+  }
+
   // Diagnostic categories contain only fixed schema names, never learner/AI content.
   // Mirrors feedback() rejection conditions without changing acceptance rules.
   function feedbackIssue(data, fields) {
@@ -126,5 +137,5 @@ const LCSecurity = (() => {
     for (const child of template.content.childNodes) copy(child, output);
     return output.innerHTML;
   }
-  return { request, message, escape, object, feedback, feedbackIssue, roleplay, studyHTML };
+  return { request, message, escape, object, feedback, feedbackIssue, normalizeSpanishScore, roleplay, studyHTML };
 })();

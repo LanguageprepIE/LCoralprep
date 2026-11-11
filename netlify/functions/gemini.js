@@ -123,7 +123,7 @@ async function requestOpenAI(contents) {
         if (!response.ok) {
             diagnostic(`openai_http_${response.status === 429 ? '429' : [401,402,403].includes(response.status) ? 'auth' : response.status >= 500 ? '5xx' : 'other'}`);
             if (response.status === 429) return reply(429, 'BUSY', messages.busy);
-            if ([401,402,403].includes(response.status)) return reply(503, 'OPENAI_AUTH', messages.unavailable);
+            if ([401,402,403].includes(response.status)) return reply(503, `OPENAI_HTTP_${response.status}`, messages.unavailable);
             return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
         }
         let data;

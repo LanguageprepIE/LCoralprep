@@ -1,9 +1,13 @@
 // Keep the existing Lambda-compatible endpoint and the existing Gemini model.
 const MAX_BODY_BYTES = 1024 * 1024; // Whole prompt, including complete mocks and review context.
 const UPSTREAM_TIMEOUT_MS = 45000;
-// OpenAI is enabled ONLY on Deploy Previews, never on production or branch deploys.
-// Production keeps the existing Gemini path even if a secret is later mis-scoped.
-const isOpenAIPreview = () => process.env.CONTEXT === 'deploy-preview' && Boolean(process.env.OPENAI_API_KEY);
+// Netlify's CONTEXT is documented as a *build* variable, not a reliable
+// function-runtime switch. Require BOTH the preview-scoped secret and a
+// preview deployment hostname. Never switch the custom production domain.
+const previewHost = (headers = {}) => {
+    const host = Object.entries(headers).find(([key]) => key.toLowerCase() === 'host')?.[1] || '';
+    return /^(?:deploy-preview-[0-9]+|[a-f0-9]{24})--lcorals\.netlify\.app$/i.test(host);
+};
 const MAX_OPENAI_PROMPT_CHARS = 180000;
 const MAX_OPENAI_OUTPUT_TOKENS = 3000;
 // Operational diagnostics only: never log prompts, replies, provider bodies or keys.
@@ -44,7 +48,7 @@ export const handler = async (event) => {
     if (!body || typeof body !== 'object' || Array.isArray(body) ||
         Object.keys(body).length !== 1 || !validContents(body.contents)) return reply(400, 'INVALID_REQUEST', messages.invalid);
 
-    if (process.env.CONTEXT === 'deploy-preview') {
+    if (previewHost(event.headers)) {
         if (!process.env.OPENAI_API_KEY) return reply(503, 'UNAVAILABLE', messages.unavailable);
         return requestOpenAI(body.contents);
     }

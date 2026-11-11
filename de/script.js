@@ -343,6 +343,7 @@ function germanAssessmentPrompt(question, transcript, scoringTask = 'conversatio
     Learner response (raw speech transcription): ${JSON.stringify(transcript)}
     Study guidance (optional support, never a compulsory checklist): ${JSON.stringify(guidance)}
     Apply common senior-cycle oral expectations. Do not expect native-speaker performance or require every suggested content point. Keep advice achievable for the language actually demonstrated.
+    Calibrate development against the breadth of the actual question. A short, accurate answer to a narrow question can be excellent; for a broad question asking for reasons, experiences or several details, a few correct sentences without enough development should receive credit for accuracy but not automatically the highest band. Explain the distinction constructively, without imposing a memorised checklist or requiring advanced grammar.
     Ignore punctuation, capitalization and accent-mark differences that may be transcription artifacts. Do not assess pronunciation, accent or prosody from text. Penalize only clear, meaningful language errors; distinguish errors from likely speech-recognition artifacts.
     Address the learner consistently using German formal Sie; never switch to informal address.
 ${LCOralScoring.instructions('de', scoringTask)}

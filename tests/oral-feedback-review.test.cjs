@@ -8,6 +8,8 @@ const spanishConversation=fs.readFileSync('es/script.js','utf8');
 const polishConversation=fs.readFileSync('pl/script.js','utf8');
 assert.match(spanishConversation,/OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive/);
 assert.match(spanishConversation,/Match the numerical score to the written feedback/);
+assert.match(spanishConversation,/At OL distinguish accuracy from completeness/);
+assert.match(spanishConversation,/"solemos" \(from soler\) is not reflexive/);
 assert.match(polishConversation,/Prefer natural gender-neutral\/impersonal constructions/);
 assert.match(polishConversation,/Do not infer personal gender identity/);
 assert.match(polishConversation,/If a gendered form is unavoidable, match explicit masculine\/feminine first-person forms/);

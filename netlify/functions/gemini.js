@@ -1,6 +1,11 @@
 // Keep the existing Lambda-compatible endpoint and the existing Gemini model.
 const MAX_BODY_BYTES = 1024 * 1024; // Whole prompt, including complete mocks and review context.
 const UPSTREAM_TIMEOUT_MS = 45000;
+// OpenAI is enabled ONLY on Deploy Previews, never on production or branch deploys.
+// Production keeps the existing Gemini path even if a secret is later mis-scoped.
+const isOpenAIPreview = () => process.env.CONTEXT === 'deploy-preview' && Boolean(process.env.OPENAI_API_KEY);
+const MAX_OPENAI_PROMPT_CHARS = 180000;
+const MAX_OPENAI_OUTPUT_TOKENS = 3000;
 // Operational diagnostics only: never log prompts, replies, provider bodies or keys.
 const diagnostic = (reason) => console.warn(`[lcorals:gemini] ${reason}`);
 const messages = {
@@ -38,6 +43,11 @@ export const handler = async (event) => {
     try { body = JSON.parse(event.body); } catch { return reply(400, 'INVALID_REQUEST', messages.invalid); }
     if (!body || typeof body !== 'object' || Array.isArray(body) ||
         Object.keys(body).length !== 1 || !validContents(body.contents)) return reply(400, 'INVALID_REQUEST', messages.invalid);
+
+    if (process.env.CONTEXT === 'deploy-preview') {
+        if (!process.env.OPENAI_API_KEY) return reply(503, 'UNAVAILABLE', messages.unavailable);
+        return requestOpenAI(body.contents);
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return reply(503, 'UNAVAILABLE', messages.unavailable);
@@ -89,3 +99,45 @@ export const handler = async (event) => {
         clearTimeout(timer);
     }
 };
+
+async function requestOpenAI(contents) {
+    // The current frontend sends text-only Gemini-shaped prompts. Preserve its
+    // response contract while changing only the upstream provider on previews.
+    const prompt = contents.flatMap(c => c.parts.map(p => p.text)).join('\n');
+    if (prompt.length > MAX_OPENAI_PROMPT_CHARS) return reply(413, 'REQUEST_TOO_LARGE', messages.large);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+    try {
+        const response = await fetch('https://api.openai.com/v1/responses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+            body: JSON.stringify({ model: 'gpt-6-luna', input: prompt,
+                max_output_tokens: MAX_OPENAI_OUTPUT_TOKENS,
+                reasoning: { effort: 'low' }, store: false }),
+            signal: controller.signal
+        });
+        if (!response.ok) {
+            diagnostic(`openai_http_${response.status === 429 ? '429' : [401,402,403].includes(response.status) ? 'auth' : response.status >= 500 ? '5xx' : 'other'}`);
+            if (response.status === 429) return reply(429, 'BUSY', messages.busy);
+            if ([401,402,403].includes(response.status)) return reply(503, 'UNAVAILABLE', messages.unavailable);
+            return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
+        }
+        let data;
+        try { data = await response.json(); } catch { return reply(502, 'INVALID_RESPONSE', messages.response); }
+        // Do not return partial JSON or feedback when token limits are reached.
+        const output = data?.output;
+        const texts = Array.isArray(output) ? output.flatMap(item =>
+            item?.type === 'message' && Array.isArray(item.content) ?
+                item.content.filter(part => part?.type === 'output_text' && typeof part.text === 'string').map(part => part.text) : []) : [];
+        if (data?.status !== 'completed' || !texts.length || !texts.join('').trim()) {
+            diagnostic('openai_incomplete');
+            return reply(502, 'INVALID_RESPONSE', messages.response);
+        }
+        return { statusCode: 200,
+            headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: texts.join('') }] } }] }) };
+    } catch {
+        diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');
+        return controller.signal.aborted ? reply(504, 'TIMEOUT', messages.timeout) : reply(503, 'UNAVAILABLE', messages.unavailable);
+    } finally { clearTimeout(timer); }
+}

@@ -82,6 +82,24 @@ const LCSecurity = (() => {
     return { ...data, score };
   }
 
+  // Fail closed on objectively contradictory Spanish conversation grading.
+  // Never silently change a learner's mark or rewrite the examiner's opinion.
+  function spanishAssessment(data, level) {
+    feedback(data, ['feedback_es', 'feedback_en']);
+    const max = level === 'HL' ? 70 : 100;
+    if (!Number.isInteger(data.score) || data.score < 0 || data.score > max) throw error('INVALID_RESPONSE');
+    if (level === 'HL') {
+      const ranges = { 1:[65,70], 2:[55,60], 3:[45,50], 4:[30,40], 5:[20,25], 6:[10,15], 7:[0,5] };
+      const band = ranges[data.band];
+      if (!Number.isInteger(data.band) || !band || data.score < band[0] || data.score > band[1]) throw error('INVALID_RESPONSE');
+    }
+    if (data.score === max) {
+      const words = `${data.feedback_es} ${data.feedback_en}`.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+      if (/\b(?:no (?:merece|alcanza|obtiene|tiene|recibe)|sin (?:alcanzar|obtener)|did not (?:deserve|receive|get|reach)|does(?: not|n't) (?:deserve|receive|get|reach)|not (?:the |a )?|short of)\b.{0,65}\b(?:maxim[ao]|maximum|full (?:marks?|score)|top (?:marks?|score)|highest (?:marks?|score))\b/i.test(words)) throw error('INVALID_RESPONSE');
+    }
+    return data;
+  }
+
   // Diagnostic categories contain only fixed schema names, never learner/AI content.
   // Mirrors feedback() rejection conditions without changing acceptance rules.
   function feedbackIssue(data, fields) {
@@ -137,5 +155,5 @@ const LCSecurity = (() => {
     for (const child of template.content.childNodes) copy(child, output);
     return output.innerHTML;
   }
-  return { request, message, escape, object, feedback, feedbackIssue, normalizeSpanishScore, roleplay, studyHTML };
+  return { request, message, escape, object, feedback, feedbackIssue, normalizeSpanishScore, spanishAssessment, roleplay, studyHTML };
 })();

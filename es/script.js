@@ -825,12 +825,13 @@ async function analyze() {
     - In connectors, suggest only connectors that would add something useful and that the learner has not already used effectively in this response. Use an empty array if there is no worthwhile suggestion.
     - In vocabulary_suggestions, only suggest natural alternatives that preserve the intended meaning, intensity and register. Do not replace a correct everyday word merely with a stronger or more formal word. Use an empty array if no genuine improvement is needed.
     ${scoreCalibration}
+    - Return score as a JSON NUMBER (an integer, never a quoted string). The 0 in the schema is only a placeholder.
     - Return valid JSON only, with no markdown.
 
     OUTPUT SCHEMA:
     ${currentLevel === 'HL' ? `{
       "band": 1-7,
-      "score": "an integer within the selected band's /70 range",
+      "score": 0,
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": [{"es":"fortaleza específica en español","en":"matching English translation"}],
@@ -839,7 +840,7 @@ async function analyze() {
       "vocabulary_suggestions": [{ "basic": "word or phrase used/repeated", "richer": "natural alternative" }],
       "errors": [{ "original": "...", "correction": "...", "explanation_en": "..." }]
     }` : `{
-      "score": 0-100,
+      "score": 0,
       "feedback_es": "Short encouraging overview in Spanish",
       "feedback_en": "Short clear overview in English",
       "strengths": ["up to 3 specific strengths"],
@@ -860,7 +861,8 @@ async function analyze() {
     const parsed = JSON.parse(cleanJson);
     parsedEvaluation = parsed;
     evaluationStage = 'schema_validation';
-    const j = LCSecurity.feedback(parsed, ["feedback_es", "feedback_en"]);
+    const normalized = LCSecurity.normalizeSpanishScore(parsed, currentLevel);
+    const j = LCSecurity.feedback(normalized, ["feedback_es", "feedback_en"]);
     evaluationStage = 'render';
     
     document.getElementById('exerciseArea').style.display = 'none'; 

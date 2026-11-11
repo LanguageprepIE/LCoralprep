@@ -21,6 +21,7 @@ test('Deploy Preview uses Luna with a bounded, non-stored request and original f
   const b = setup(() => success('{"score": 55}'));
   const result = await b.run(event('Evaluate this response'));
   assert.equal(result.statusCode, 200);
+  assert.equal(result.headers['X-LCorals-Provider'], 'openai-luna');
   assert.equal(JSON.parse(result.body).candidates[0].content.parts[0].text, '{"score": 55}');
   assert.equal(b.calls[0][0], 'https://api.openai.com/v1/responses');
   const payload = JSON.parse(b.calls[0][1].body);

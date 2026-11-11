@@ -128,6 +128,20 @@ test('invalid structured feedback is rejected rather than displayed as a zero or
   assert.throws(()=>api.roleplay({total_score:30,turns:[]}));
 });
 
+test('feedback schema diagnostics use only fixed codes and reveal no AI content', () => {
+  const {api}=client(()=>{});
+  const learner='El fin de semana pasado salí con mis amigos';
+  const baseline={score:30,errors:[],feedback_es:'Correcto',feedback_en:'Good'};
+  assert.equal(api.feedbackIssue({...baseline,score:'30',student:learner},['feedback_es','feedback_en']),'score_type');
+  assert.equal(api.feedbackIssue({...baseline,errors:[{original:learner,correction:17}]},['feedback_es','feedback_en']),'errors_item_field_type');
+  assert.equal(api.feedbackIssue({...baseline,feedback_en:null},['feedback_es','feedback_en']),'feedback_en_type');
+  assert.equal(api.feedbackIssue(baseline,['feedback_es','feedback_en']),'unknown');
+  for (const issue of [
+    api.feedbackIssue({...baseline,score:learner},['feedback_es','feedback_en']),
+    api.feedbackIssue({...baseline,errors:[{original:learner,correction:17}]},['feedback_es','feedback_en'])
+  ]) assert.doesNotMatch(issue,/fin de semana|amigos/);
+});
+
 const {hash,protectedContent}=require('./helpers/protected-content.cjs');
 const protectedBaseline=JSON.parse(read('tests/fixtures/work03-protected-content.json'));
 test('shared scoring/rubrics, accessibility logic and privacy are byte-identical to merged Work 02',()=>{

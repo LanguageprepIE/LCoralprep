@@ -821,6 +821,7 @@ async function analyze() {
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
+    - This applies to EVERY output field, including strengths, feedback, next_steps and errors: never praise or criticise pronunciation, clarity of speech, accent, listening ability or oral delivery, even with qualifiers such as "through the transcript". Praise clear WRITTEN communication or comprehensibility instead. The text cannot establish any of those audio properties.
     - Only flag a grammar or vocabulary error when it is clearly a genuine language error and not a likely transcription artefact.
     - In strengths and corrections, only name a grammatical category when certain it is correct. Do not mislabel common conjugated verbs as reflexive: for example, "solemos" (from soler) is not reflexive, whereas "nos llevamos" is. When a precise grammatical label adds no value, praise the natural expression instead.
     - Avoid demanding memorised idioms or unnatural language.

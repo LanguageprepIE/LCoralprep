@@ -49,7 +49,7 @@ export const handler = async (event) => {
         Object.keys(body).length !== 1 || !validContents(body.contents)) return reply(400, 'INVALID_REQUEST', messages.invalid);
 
     if (previewHost(event.headers)) {
-        if (!process.env.OPENAI_API_KEY) return reply(503, 'UNAVAILABLE', messages.unavailable);
+        if (!process.env.OPENAI_API_KEY) return reply(503, 'OPENAI_KEY_MISSING', messages.unavailable);
         return requestOpenAI(body.contents);
     }
 
@@ -123,7 +123,7 @@ async function requestOpenAI(contents) {
         if (!response.ok) {
             diagnostic(`openai_http_${response.status === 429 ? '429' : [401,402,403].includes(response.status) ? 'auth' : response.status >= 500 ? '5xx' : 'other'}`);
             if (response.status === 429) return reply(429, 'BUSY', messages.busy);
-            if ([401,402,403].includes(response.status)) return reply(503, 'UNAVAILABLE', messages.unavailable);
+            if ([401,402,403].includes(response.status)) return reply(503, 'OPENAI_AUTH', messages.unavailable);
             return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
         }
         let data;
@@ -142,6 +142,6 @@ async function requestOpenAI(contents) {
             body: JSON.stringify({ candidates: [{ content: { parts: [{ text: texts.join('') }] } }] }) };
     } catch {
         diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');
-        return controller.signal.aborted ? reply(504, 'TIMEOUT', messages.timeout) : reply(503, 'UNAVAILABLE', messages.unavailable);
+        return controller.signal.aborted ? reply(504, 'OPENAI_TIMEOUT', messages.timeout) : reply(503, 'OPENAI_NETWORK', messages.unavailable);
     } finally { clearTimeout(timer); }
 }

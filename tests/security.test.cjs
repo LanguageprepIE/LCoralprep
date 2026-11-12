@@ -117,7 +117,7 @@ test('client preserves text and turns transport/shape errors into safe actionabl
   }
   const broken=client(()=>{throw Error('private network trace');});await assert.rejects(broken.api.request('answer'),e=>e.code==='NETWORK'&&!e.message.includes('private'));
   const slow=client((url,options)=>new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(Error('private')))));
-  const pending=slow.api.request('answer');slow.timeout();await assert.rejects(pending,e=>e.code==='TIMEOUT');assert.equal(slow.calls(),1);
+  const pending=slow.api.request('answer');await Promise.resolve();slow.timeout();await assert.rejects(pending,e=>e.code==='TIMEOUT');assert.equal(slow.calls(),1);
 });
 
 test('invalid structured feedback is rejected rather than displayed as a zero or broken result', () => {

@@ -9,7 +9,7 @@ const event = text => ({ httpMethod: 'POST', headers: { 'content-type': 'applica
 function setup(fetcher, env = { CONTEXT: 'deploy-preview', OPENAI_API_KEY: 'synthetic-key' }) {
   const calls = [];
   const ctx = vm.createContext({ Buffer, AbortController, process: { env },
-    console: { warn() {} }, fetch: async (...args) => { calls.push(args); return fetcher(...args); },
+    console: { warn() {} }, fetch: async (...args) => { calls.push(args); if (String(args[0]).endsWith('/moderations')) return { ok:true, status:200, json:async()=>({results:[{categories:{}}]}) }; return fetcher(...args); },
     setTimeout: () => 1, clearTimeout() {} });
   vm.runInContext(source.replace('export const handler', 'const handler') + '\nglobalThis.run=handler;', ctx);
   return { run: ctx.run, calls };
@@ -23,13 +23,15 @@ test('Deploy Preview uses Luna with a bounded, non-stored request and original f
   assert.equal(result.statusCode, 200);
   assert.equal(result.headers['X-LCorals-Provider'], 'openai-luna');
   assert.equal(JSON.parse(result.body).candidates[0].content.parts[0].text, '{"score": 55}');
-  assert.equal(b.calls[0][0], 'https://api.openai.com/v1/responses');
-  const payload = JSON.parse(b.calls[0][1].body);
+  assert.equal(b.calls[0][0], 'https://api.openai.com/v1/moderations');
+  assert.equal(b.calls[1][0], 'https://api.openai.com/v1/responses');
+  assert.equal(b.calls[2][0], 'https://api.openai.com/v1/moderations');
+  const payload = JSON.parse(b.calls[1][1].body);
   assert.equal(payload.model, 'gpt-6-luna');
   assert.equal(payload.input, 'Evaluate this response');
   assert.equal(payload.store, false);
   assert.equal(payload.max_output_tokens, 3000);
-  assert.equal(b.calls[0][1].headers.Authorization, 'Bearer synthetic-key');
+  assert.equal(b.calls[1][1].headers.Authorization, 'Bearer synthetic-key');
 });
 
 test('No secret on Deploy Preview fails closed without accessing Gemini', async () => {
@@ -79,4 +81,47 @@ test('The under-18 guardian flow is preview-only and cannot grant API access by 
   assert.ok(ui.includes('AI practice remains unavailable for ages 16–17'));
   assert.ok(ui.includes("ageBand !== '18-plus'"));
   assert.ok(!ui.includes('localStorage') && !ui.includes('sessionStorage') && !ui.includes('document.cookie'));
+});
+
+test('Preview moderates input before Luna and output before returning feedback',async()=>{
+  const b=setup(() => success('Safe answer'));
+  const result=await b.run(event('Normal exam answer'));
+  assert.equal(result.statusCode,200);
+  assert.deepEqual(b.calls.map(x=>String(x[0]).split('/').pop()),['moderations','responses','moderations']);
+});
+
+test('High-risk input triggers support response, not model grading',async()=>{
+  const b=setup(()=>{throw Error('Luna must not be called')});
+  // Replace mocked upstream moderation with high-risk result, no prompts logged
+  const controlled=setup(()=>{throw Error('unexpected model')});
+  const body=fs.readFileSync('netlify/functions/gemini.js','utf8');
+  const calls=[];
+  const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
+    fetch:async(url)=>{calls.push(url);return {ok:true,json:async()=>({results:[{categories:{'self-harm/intent':true}}]})}},
+    setTimeout:()=>1,clearTimeout(){}});
+  vm.runInContext(body.replace('export const handler','const handler')+'\\nglobalThis.run=handler;',ctx);
+  const result=await ctx.run(event('fictional-risk-input'));
+  assert.equal(result.statusCode,422);
+  assert.equal(JSON.parse(result.body).error.code,'SAFETY_SUPPORT');
+  assert.deepEqual(calls,['https://api.openai.com/v1/moderations']);
+});
+
+test('Preview safety check failures stop before exposing AI output',async()=>{
+  const calls=[];
+  const code=fs.readFileSync('netlify/functions/gemini.js','utf8');
+  const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
+    fetch:async(url)=>{calls.push(url);return {ok:false,status:503,json:async()=>({})}},
+    setTimeout:()=>1,clearTimeout(){}});
+  vm.runInContext(code.replace('export const handler','const handler')+'\\nglobalThis.run=handler;',ctx);
+  const result=await ctx.run(event('regular practice'));
+  assert.equal(result.statusCode,503);
+  assert.equal(JSON.parse(result.body).error.code,'SAFETY_UNAVAILABLE');
+  assert.deepEqual(calls,['https://api.openai.com/v1/moderations']);
+});
+
+test('Age selection is remembered per tab and not persisted for under-18 guardian prototype',()=>{
+  const ui=fs.readFileSync('security.js','utf8');
+  assert.match(ui,/sessionStorage\\.getItem\\('lcorals-preview-age-band-v1'\\)/);
+  assert.match(ui,/sessionStorage\\.setItem\\('lcorals-preview-age-band-v1','18-plus'\\)/);
+  assert.ok(!ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','16-17'"));
 });

@@ -97,7 +97,7 @@ test('High-risk input triggers support response, not model grading',async()=>{
   const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
     fetch:async(url)=>{calls.push(url);return {ok:true,json:async()=>({results:[{categories:{'self-harm/intent':true}}]})}},
     setTimeout:()=>1,clearTimeout(){}});
-  vm.runInContext(body.replace('export const handler','const handler')+'\\nglobalThis.run=handler;',ctx);
+  vm.runInContext(body.replace('export const handler','const handler')+'\nglobalThis.run=handler;',ctx);
   const result=await ctx.run(event('fictional-risk-input'));
   assert.equal(result.statusCode,422);
   assert.equal(JSON.parse(result.body).error.code,'SAFETY_SUPPORT');
@@ -110,7 +110,7 @@ test('Preview safety check failures stop before exposing AI output',async()=>{
   const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
     fetch:async(url)=>{calls.push(url);return {ok:false,status:503,json:async()=>({})}},
     setTimeout:()=>1,clearTimeout(){}});
-  vm.runInContext(code.replace('export const handler','const handler')+'\\nglobalThis.run=handler;',ctx);
+  vm.runInContext(code.replace('export const handler','const handler')+'\nglobalThis.run=handler;',ctx);
   const result=await ctx.run(event('regular practice'));
   assert.equal(result.statusCode,503);
   assert.equal(JSON.parse(result.body).error.code,'SAFETY_UNAVAILABLE');
@@ -119,7 +119,7 @@ test('Preview safety check failures stop before exposing AI output',async()=>{
 
 test('Age selection is remembered per tab and not persisted for under-18 guardian prototype',()=>{
   const ui=fs.readFileSync('security.js','utf8');
-  assert.match(ui,/sessionStorage\\.getItem\\('lcorals-preview-age-band-v1'\\)/);
-  assert.match(ui,/sessionStorage\\.setItem\\('lcorals-preview-age-band-v1','18-plus'\\)/);
+  assert.ok(ui.includes("sessionStorage.getItem('lcorals-preview-age-band-v1')"));
+  assert.ok(ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','18-plus')"));
   assert.ok(!ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','16-17'"));
 });

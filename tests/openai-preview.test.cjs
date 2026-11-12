@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const source = fs.readFileSync('netlify/functions/gemini.js', 'utf8');
-const event = text => ({ httpMethod: 'POST', headers: { 'content-type': 'application/json', host:'deploy-preview-27--lcorals.netlify.app' },
+const event = text => ({ httpMethod: 'POST', headers: { 'content-type': 'application/json', 'x-lcorals-age-band':'18-plus', host:'deploy-preview-27--lcorals.netlify.app' },
   body: JSON.stringify({ contents: [{ parts: [{ text }] }] }) });
 function setup(fetcher, env = { CONTEXT: 'deploy-preview', OPENAI_API_KEY: 'synthetic-key' }) {
   const calls = [];
@@ -56,4 +56,18 @@ test('Rejects expensive inputs and incomplete or failed OpenAI outputs', async (
   }
   const quota = setup(() => ({ok:false,status:429}));
   assert.equal((await quota.run(event('hello'))).statusCode,429);
+});
+
+test('Preview rejects missing or underage declaration before calling a provider', async () => {
+  const b=setup(() => { throw Error('unexpected network access'); });
+  const original=event('Test');
+  for(const value of [undefined,'under-16','16-17']) {
+    const headers={...original.headers};
+    if(value===undefined)delete headers['x-lcorals-age-band'];
+    else headers['x-lcorals-age-band']=value;
+    const result=await b.run({...original,headers});
+    assert.equal(result.statusCode,403);
+    assert.equal(JSON.parse(result.body).error.code,'AGE_RESTRICTED');
+  }
+  assert.equal(b.calls.length,0);
 });

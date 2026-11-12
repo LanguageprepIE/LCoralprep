@@ -794,6 +794,7 @@ async function analyze() {
 
     IMPORTANT:
     - A top-band mark does NOT require error-free, native-speaker or C1/C2 Spanish. The official top band explicitly allows grammatical inaccuracies, mainly slips.
+    - LEVEL REFERENCE (not a formal exam-to-CEFR equivalence): Leaving Certificate curricular languages are broadly described around A2/B1. For HL conversation, B1-type familiar-topic communication is a helpful orientation, not a minimum B1 certificate for every response. Do not reserve 70/70 for bilingual, B2/C1, exceptionally rare syntax or a hypothetical extra detail. Give full marks when Band 1 criteria are fully met; a genuinely observable limitation may justify a lower mark within the band. For OL, value effective basic communication; do not apply HL development expectations.
     - Do not withhold Band 1 merely because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added.
     - Evaluate what the learner successfully communicates and how securely they control it. Weigh inaccuracies by frequency, seriousness and effect on communication.
     - Because this is a transcript, do not assess pronunciation, intonation, pauses, real-time fluency or examiner support.

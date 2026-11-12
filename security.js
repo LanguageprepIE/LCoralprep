@@ -9,7 +9,10 @@ const LCSecurity = (() => {
     TIMEOUT: 'The AI took too long to respond. Your answer is still on this page. Please try again.',
     INVALID_RESPONSE: 'The AI did not return a complete response. Your answer is still on this page. Please try again.',
     NETWORK: 'The connection was interrupted. Your answer is still on this page. Check your connection and try again.',
-    AGE_RESTRICTED: 'AI practice is not available for your age group in this preview. Your answer has not been sent.'
+    AGE_RESTRICTED: 'AI practice is not available for your age group in this preview. Your answer has not been sent.',
+    SAFETY_SUPPORT: 'This answer may involve someone\'s safety. LCorals cannot offer emergency help. If this relates to you, speak with a trusted adult or qualified professional. If anyone is in immediate danger in Ireland, call 112 or 999. Your text has not been submitted for exam feedback.',
+    SAFETY_BLOCKED: 'LCorals cannot process this content as language practice. Try a different answer, or ask a trusted adult or teacher for help.',
+    SAFETY_UNAVAILABLE: 'AI safety checks are temporarily unavailable. Your answer has not been sent for feedback. Please try again later.'
   };
   const error = code => Object.assign(new Error(messages[code] || messages.INVALID_RESPONSE), { code });
   const message = value => messages[value?.code] || messages.INVALID_RESPONSE;
@@ -27,6 +30,7 @@ const LCSecurity = (() => {
   async function confirmAdultForPreview() {
     if (!previewOnly()) return null;
     if (adultConfirmed) return '18-plus';
+    try { if (sessionStorage.getItem('lcorals-preview-age-band-v1') === '18-plus') { adultConfirmed = true; return '18-plus'; } } catch {}
     if (ageDialogPending) return ageDialogPending;
     ageDialogPending = new Promise(resolve => {
       const previousFocus = document.activeElement;
@@ -62,7 +66,7 @@ const LCSecurity = (() => {
         title.textContent='Before using AI practice';
         description.textContent='Choose your age group. No name, date of birth or account is requested. In this preview, only users aged 18 or over can send answers to the AI. Students aged 16–17 can view the parent/guardian permission step, but their practice remains disabled.';
         controls.replaceChildren();status.textContent='';
-        const first=button('I am 18 or older',()=>{adultConfirmed=true;finish('18-plus')},true);
+        const first=button('I am 18 or older',()=>{adultConfirmed=true;try { sessionStorage.setItem('lcorals-preview-age-band-v1','18-plus'); } catch {} finish('18-plus')},true);
         button('I am 16 or 17',renderGuardian);
         button('I am under 16',()=>{
           status.textContent='AI practice is not available to users under 16.';
@@ -118,6 +122,14 @@ const LCSecurity = (() => {
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }), signal: controller.signal
       });
       if (!response.ok) {
+        if (response.status === 422) {
+          let code='SAFETY_BLOCKED';
+          try { const data=await response.json(); if (data?.error?.code==='SAFETY_SUPPORT') code='SAFETY_SUPPORT'; } catch {}
+          throw error(code);
+        }
+        if (response.status === 503) {
+          try { const data=await response.json(); if (data?.error?.code==='SAFETY_UNAVAILABLE') throw error('SAFETY_UNAVAILABLE'); } catch (err) { if (err?.code==='SAFETY_UNAVAILABLE') throw err; }
+        }
         if (response.status === 429) throw error('BUSY');
         if (response.status === 413) throw error('REQUEST_TOO_LARGE');
         if (response.status === 504) throw error('TIMEOUT');

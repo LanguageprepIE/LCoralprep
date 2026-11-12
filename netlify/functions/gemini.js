@@ -108,30 +108,14 @@ export const handler = async (event) => {
     }
 };
 
-// Moderate only the OpenAI preview path. Classify rather than block all flagged
-// text: exam topics can legitimately discuss bullying, health and social issues.
-// Do not log transcripts, classifications or moderation bodies.
-async function checkMinorSafety(text, signal) {
-    let response;
-    try {
-        response = await fetch('https://api.openai.com/v1/moderations', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-            body: JSON.stringify({ model:'omni-moderation-latest', input:text }),
-            signal
-        });
-    } catch { diagnostic('moderation_network'); return { type:'unavailable' }; }
-    if (!response.ok) { diagnostic('moderation_http_' + ([401,403].includes(response.status) ? 'auth_' + response.status : response.status === 429 ? 'rate_limit' : response.status >= 500 ? 'server' : 'other')); return { type:'unavailable' }; }
-    let data;
-    try { data = await response.json(); } catch { return { type:'unavailable' }; }
-    const result = data?.results?.[0];
-    if (!result || !result.categories || typeof result.categories !== 'object') return { type:'unavailable' };
-    const c = result.categories;
-    // High-risk categories get a safe stop. Ordinary educational topics,
-    // including bullying and mental health, must remain usable.
-    if (c['self-harm/intent'] || c['self-harm/instructions']) return { type:'support' };
-    if (c['sexual/minors'] || c['illicit/violent']) return { type:'blocked' };
-    return { type:'ok' };
+// Inline moderation is returned by Responses with no extra API call.
+function classifyModeration(result) {
+    if (!result || result.type === 'error' || typeof result.categories !== 'object' || !result.categories) return 'unavailable';
+    const c=result.categories;
+    // Block only high-risk categories. Sensitive educational subjects remain available.
+    if (c['self-harm/intent'] || c['self-harm/instructions']) return 'support';
+    if (c['sexual/minors'] || c['illicit/violent']) return 'blocked';
+    return 'ok';
 }
 
 async function requestOpenAI(contents) {
@@ -142,16 +126,13 @@ async function requestOpenAI(contents) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
     try {
-        const inputSafety = await checkMinorSafety(prompt, controller.signal);
-        if (inputSafety.type === 'unavailable') return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
-        if (inputSafety.type === 'support') return reply(422, 'SAFETY_SUPPORT', 'This response needs human support, not automated language grading.');
-        if (inputSafety.type === 'blocked') return reply(422, 'SAFETY_BLOCKED', 'This content cannot be processed for language practice.');
         const response = await fetch('https://api.openai.com/v1/responses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
             body: JSON.stringify({ model: 'gpt-6-luna', input: prompt,
                 max_output_tokens: MAX_OPENAI_OUTPUT_TOKENS,
-                reasoning: { effort: 'low' }, store: false }),
+                reasoning: { effort: 'low' }, store: false,
+                moderation: { model: 'omni-moderation-latest' } }),
             signal: controller.signal
         });
         if (!response.ok) {
@@ -179,9 +160,14 @@ async function requestOpenAI(contents) {
             return reply(502, 'INVALID_RESPONSE', messages.response);
         }
         const outputText = texts.join('');
-        const outputSafety = await checkMinorSafety(outputText, controller.signal);
-        if (outputSafety.type === 'unavailable') return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
-        if (outputSafety.type !== 'ok') return reply(422, 'SAFETY_BLOCKED', 'The generated answer cannot be displayed safely. Please try again.');
+        const inputSafety = classifyModeration(data?.moderation?.input);
+        const outputSafety = classifyModeration(data?.moderation?.output);
+        if (inputSafety === 'unavailable' || outputSafety === 'unavailable')
+            return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
+        if (inputSafety === 'support')
+            return reply(422, 'SAFETY_SUPPORT', 'This response needs human support, not automated language grading.');
+        if (inputSafety === 'blocked' || outputSafety !== 'ok')
+            return reply(422, 'SAFETY_BLOCKED', 'This content cannot be displayed as language practice.');
         return { statusCode: 200,
             headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-LCorals-Provider': 'openai-luna' },
             body: JSON.stringify({ candidates: [{ content: { parts: [{ text: outputText }] } }] }) };

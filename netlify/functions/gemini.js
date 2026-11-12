@@ -1,6 +1,15 @@
 // Keep the existing Lambda-compatible endpoint and the existing Gemini model.
 const MAX_BODY_BYTES = 1024 * 1024; // Whole prompt, including complete mocks and review context.
 const UPSTREAM_TIMEOUT_MS = 45000;
+// Netlify's CONTEXT is documented as a *build* variable, not a reliable
+// function-runtime switch. Require BOTH the preview-scoped secret and a
+// preview deployment hostname. Never switch the custom production domain.
+const previewHost = (headers = {}) => {
+    const host = Object.entries(headers).find(([key]) => key.toLowerCase() === 'host')?.[1] || '';
+    return /^(?:deploy-preview-[0-9]+|[a-f0-9]{24})--lcorals\.netlify\.app$/i.test(host);
+};
+const MAX_OPENAI_PROMPT_CHARS = 180000;
+const MAX_OPENAI_OUTPUT_TOKENS = 3000;
 // Operational diagnostics only: never log prompts, replies, provider bodies or keys.
 const diagnostic = (reason) => console.warn(`[lcorals:gemini] ${reason}`);
 const messages = {
@@ -38,6 +47,15 @@ export const handler = async (event) => {
     try { body = JSON.parse(event.body); } catch { return reply(400, 'INVALID_REQUEST', messages.invalid); }
     if (!body || typeof body !== 'object' || Array.isArray(body) ||
         Object.keys(body).length !== 1 || !validContents(body.contents)) return reply(400, 'INVALID_REQUEST', messages.invalid);
+
+    if (previewHost(event.headers)) {
+        // Preview phase: block AI requests without an explicit 18+ self-declaration.
+        // A client header is NOT verified age assurance; this is only a first safeguard.
+        const ageBand = Object.entries(event.headers || {}).find(([key]) => key.toLowerCase() === 'x-lcorals-age-band')?.[1];
+        if (ageBand !== '18-plus' && ageBand !== '16-17-permission-declared') return reply(403, 'AGE_RESTRICTED', 'Please confirm your age group and, if aged 16–17, parental permission before using AI practice.');
+        if (!process.env.OPENAI_API_KEY) return reply(503, 'OPENAI_KEY_MISSING', messages.unavailable);
+        return requestOpenAI(body.contents);
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return reply(503, 'UNAVAILABLE', messages.unavailable);
@@ -89,3 +107,73 @@ export const handler = async (event) => {
         clearTimeout(timer);
     }
 };
+
+// Inline moderation is returned by Responses with no extra API call.
+function classifyModeration(result) {
+    if (!result || result.type === 'error' || typeof result.categories !== 'object' || !result.categories) return 'unavailable';
+    const c=result.categories;
+    // Block only high-risk categories. Sensitive educational subjects remain available.
+    if (c['self-harm/intent'] || c['self-harm/instructions']) return 'support';
+    if (c['sexual/minors'] || c['illicit/violent']) return 'blocked';
+    return 'ok';
+}
+
+async function requestOpenAI(contents) {
+    // The current frontend sends text-only Gemini-shaped prompts. Preserve its
+    // response contract while changing only the upstream provider on previews.
+    const prompt = contents.flatMap(c => c.parts.map(p => p.text)).join('\n');
+    if (prompt.length > MAX_OPENAI_PROMPT_CHARS) return reply(413, 'REQUEST_TOO_LARGE', messages.large);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
+    try {
+        const response = await fetch('https://api.openai.com/v1/responses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+            body: JSON.stringify({ model: 'gpt-6-luna', input: prompt,
+                max_output_tokens: MAX_OPENAI_OUTPUT_TOKENS,
+                reasoning: { effort: 'low' }, store: false,
+                moderation: { model: 'omni-moderation-latest' } }),
+            signal: controller.signal
+        });
+        if (!response.ok) {
+            diagnostic(`openai_http_${response.status === 429 ? '429' : [401,402,403].includes(response.status) ? 'auth' : response.status >= 500 ? '5xx' : 'other'}`);
+            if (response.status === 429) {
+                let errorCode = '';
+                try { const upstream = await response.json(); errorCode = String(upstream?.error?.code || upstream?.error?.type || ''); } catch {}
+                const quotaCodes = new Set(['insufficient_quota','credit_balance_exhausted','organization_usage_limit_exceeded','organization_spend_limit_exceeded','project_spend_limit_exceeded']);
+                const classification = quotaCodes.has(errorCode) ? 'OPENAI_QUOTA' : ['rate_limit_exceeded','rate_limit_error','slow_down'].includes(errorCode) ? 'OPENAI_RATE_LIMIT' : 'OPENAI_RATE_UNKNOWN';
+                diagnostic('openai_429_' + classification.toLowerCase());
+                return reply(429, classification, messages.busy);
+            }
+            if ([401,402,403].includes(response.status)) return reply(503, `OPENAI_HTTP_${response.status}`, messages.unavailable);
+            return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
+        }
+        let data;
+        try { data = await response.json(); } catch { return reply(502, 'INVALID_RESPONSE', messages.response); }
+        // Do not return partial JSON or feedback when token limits are reached.
+        const output = data?.output;
+        const texts = Array.isArray(output) ? output.flatMap(item =>
+            item?.type === 'message' && Array.isArray(item.content) ?
+                item.content.filter(part => part?.type === 'output_text' && typeof part.text === 'string').map(part => part.text) : []) : [];
+        if (data?.status !== 'completed' || !texts.length || !texts.join('').trim()) {
+            diagnostic('openai_incomplete');
+            return reply(502, 'INVALID_RESPONSE', messages.response);
+        }
+        const outputText = texts.join('');
+        const inputSafety = classifyModeration(data?.moderation?.input);
+        const outputSafety = classifyModeration(data?.moderation?.output);
+        if (inputSafety === 'unavailable' || outputSafety === 'unavailable')
+            return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
+        if (inputSafety === 'support')
+            return reply(422, 'SAFETY_SUPPORT', 'This response needs human support, not automated language grading.');
+        if (inputSafety === 'blocked' || outputSafety !== 'ok')
+            return reply(422, 'SAFETY_BLOCKED', 'This content cannot be displayed as language practice.');
+        const advice = Boolean(data?.moderation?.input?.categories?.['self-harm']);
+        return { statusCode: 200,
+            headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-LCorals-Provider': 'openai-luna' },
+            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: outputText }] } }], ...(advice ? { safety_advisory: 'wellbeing' } : {}) }) };
+    } catch {
+        diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');
+        return controller.signal.aborted ? reply(504, 'OPENAI_TIMEOUT', messages.timeout) : reply(503, 'OPENAI_NETWORK', messages.unavailable);
+    } finally { clearTimeout(timer); }
+}

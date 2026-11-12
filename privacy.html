@@ -34,8 +34,12 @@
     <p>LCOrals does not record or store your voice or audio. If you tap the microphone on your keyboard, your device or its dictation service turns your speech into text. LCOrals receives the resulting text, not an audio recording.</p>
 
     <h2>When you ask for AI feedback</h2>
-    <p>The text of your answer is sent through the services LCOrals uses to generate feedback. At present, the request goes through Netlify and is processed by Google Gemini. LCOrals does not keep a student account or an individual history of your answers.</p>
+    <p>The text of your answer is sent through Netlify to the AI provider to generate practice questions and feedback. The public site currently uses Google Gemini. The separate OpenAI Deploy Preview uses OpenAI instead. LCOrals does not create student accounts or maintain individual answer histories. The AI provider may process and retain data under its own applicable API terms and retention settings.</p>
+    <h2>Preview age and parent/guardian permission</h2>
+    <p>In the OpenAI preview, students aged 16–17 can confirm that they already have permission from their parent or legal guardian to use LCorals AI practice. This is a self-declaration, not independently verified proof of parental permission. The choice is remembered in the browser tab's session storage so the student can change topic, language or level without repeating it. No name, date of birth, account or server-side permission record is collected. Under-16s are outside the intended AI practice audience. This preview mechanism is subject to further privacy and safeguarding review before public release.</p>
 
+    <h2>Safety checks and reporting</h2>
+    <p>In the OpenAI preview, a safety classification can interrupt AI feedback. Classification is automated and may be mistaken. LCorals does not monitor responses in real time, identify students, or alert teachers or families. You can voluntarily report inappropriate content or an incorrect safety block without including a transcript or personal details. Reports use Formspree and are not an emergency service. <a href="/safety.html">Safety and reporting</a>.</p>
     <h2>Keep personal details out of answers</h2>
     <p>You do not need to give real full names, email addresses, phone numbers or other unnecessary personal information. For example, if a practice question asks about a friend or family member, a first name or a made-up name is enough.</p>
 

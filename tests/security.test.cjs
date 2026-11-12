@@ -117,7 +117,7 @@ test('client preserves text and turns transport/shape errors into safe actionabl
   }
   const broken=client(()=>{throw Error('private network trace');});await assert.rejects(broken.api.request('answer'),e=>e.code==='NETWORK'&&!e.message.includes('private'));
   const slow=client((url,options)=>new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(Error('private')))));
-  const pending=slow.api.request('answer');slow.timeout();await assert.rejects(pending,e=>e.code==='TIMEOUT');assert.equal(slow.calls(),1);
+  const pending=slow.api.request('answer');await Promise.resolve();slow.timeout();await assert.rejects(pending,e=>e.code==='TIMEOUT');assert.equal(slow.calls(),1);
 });
 
 test('invalid structured feedback is rejected rather than displayed as a zero or broken result', () => {
@@ -160,10 +160,39 @@ test('Spanish Conversation safely normalizes only in-range integer score strings
 
 const {hash,protectedContent}=require('./helpers/protected-content.cjs');
 const protectedBaseline=JSON.parse(read('tests/fixtures/work03-protected-content.json'));
-test('shared scoring/rubrics, accessibility logic and privacy are byte-identical to merged Work 02',()=>{
- for(const [file,expected]of Object.entries(protectedBaseline.files))assert.equal(hash(read(file)),expected,file);
+test('unchanged shared scoring/rubrics and accessibility remain byte-identical to baseline',()=>{
+ // Privacy notice was intentionally amended in Work 06 to disclose the preview provider and incident reporting.
+ for(const [file,expected]of Object.entries(protectedBaseline.files)){
+  if(file==='privacy.html' || file==='oral-scoring.js')continue; // Work 06 intentionally calibrates shared assessment guidance.
+  assert.equal(hash(read(file)),expected,file);
+ }
+ const scoring=read('oral-scoring.js');
+ assert.match(scoring,/broadly aligned to A2\/B1/);
+ assert.match(scoring,/not an official CEFR certificate/);
+ assert.match(scoring,/Reserve deductions for observable limitations/);
+ assert.match(scoring,/Pronunciation \/20 is NOT assessed/);
+ const privacy=read('privacy.html');
+ assert.match(privacy,/Google Gemini/);
+ assert.match(privacy,/OpenAI/);
+ assert.match(privacy,/safety\.html/);
+ assert.match(privacy,/Formspree/);
 });
-test('all seven modules retain their exact prompts, assessment builders and educational data', {skip:!process.env.LCORALS_ACORN_PATH},()=>{
+test('unchanged language prompt builders retain baseline content; Spanish scoring change is intentional', {skip:!process.env.LCORALS_ACORN_PATH},()=>{
  const acorn=require(process.env.LCORALS_ACORN_PATH);
- for(const [lang,expected]of Object.entries(protectedBaseline.modules))assert.deepEqual(protectedContent(read(`${lang}/script.js`),acorn),expected,lang);
+ for(const [lang,expected]of Object.entries(protectedBaseline.modules)){
+  if(lang==='es')continue; // Work 06 deliberately adds Spanish scoring consistency instructions.
+  if(lang==='pl') {
+   // The old Work 03 AST fixture predates the unchanged current main version of Polish.
+   // GitHub blob SHA is identical on main and this preview: e384ce6287d08737d88733d9ed7f3368bac8510c.
+   assert.deepEqual(protectedContent(read('pl/script.js'),acorn),{count:9,hash:'9140a1b5ebcbc6149af63eeb2e8de6c7ee2f72d58cc33614cb11d7c716533053'});
+   continue;
+  }
+  assert.deepEqual(protectedContent(read(`${lang}/script.js`),acorn),expected,lang);
+ }
+ const es=read('es/script.js');
+ assert.match(es,/CONSISTENCY GATE:/);
+ assert.match(es,/spanishAssessment\(normalized, currentLevel\)/);
+ assert.match(es,/OL SCORING CALIBRATION:/);
+ assert.match(es,/LEVEL REFERENCE \(not a formal exam-to-CEFR equivalence\)/);
+ assert.match(es,/Give full marks when Band 1 criteria are fully met/);
 });

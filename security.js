@@ -8,20 +8,91 @@ const LCSecurity = (() => {
     BUSY: 'AI practice is busy or its usage allowance has been reached. Your answer is still on this page. Please try again later.',
     TIMEOUT: 'The AI took too long to respond. Your answer is still on this page. Please try again.',
     INVALID_RESPONSE: 'The AI did not return a complete response. Your answer is still on this page. Please try again.',
-    NETWORK: 'The connection was interrupted. Your answer is still on this page. Check your connection and try again.'
+    NETWORK: 'The connection was interrupted. Your answer is still on this page. Check your connection and try again.',
+    AGE_RESTRICTED: 'AI practice is not available for your age group in this preview. Your answer has not been sent.'
   };
   const error = code => Object.assign(new Error(messages[code] || messages.INVALID_RESPONSE), { code });
   const message = value => messages[value?.code] || messages.INVALID_RESPONSE;
   const escape = value => String(value ?? '').replace(/[&<>"']/g, character =>
     ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[character]));
 
+  // Phase 1 (preview only): self-declared age band, no name/DOB/account stored.
+  // This is NOT verified age assurance and does not substitute for U18 safeguards.
+  let adultConfirmed = false;
+  let ageDialogPending = null;
+  function previewOnly() {
+    return /^(?:deploy-preview-[0-9]+|[a-f0-9]{24})--lcorals\\.netlify\\.app$/i.test(location.hostname);
+  }
+  async function confirmAdultForPreview() {
+    if (!previewOnly()) return null; // Keep the existing production experience unchanged.
+    if (adultConfirmed) return '18-plus';
+    if (ageDialogPending) return ageDialogPending;
+    ageDialogPending = new Promise(resolve => {
+      const previousFocus = document.activeElement;
+      const overlay = document.createElement('div');
+      overlay.setAttribute('role','presentation');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.76);display:grid;place-items:center;padding:16px;z-index:2147483647';
+      const dialog = document.createElement('section');
+      dialog.setAttribute('role','dialog');
+      dialog.setAttribute('aria-modal','true');
+      dialog.setAttribute('aria-labelledby','lcorals-age-title');
+      dialog.setAttribute('aria-describedby','lcorals-age-text');
+      dialog.style.cssText = 'background:white;color:#172033;border-radius:16px;max-width:440px;width:100%;padding:24px;font:inherit;box-shadow:0 16px 40px #0004';
+      const title = document.createElement('h2');
+      title.id='lcorals-age-title';title.textContent='Before using AI practice';title.style.margin='0 0 12px';
+      const description=document.createElement('p');description.id='lcorals-age-text';
+      description.textContent='Please select your age group. We do not ask for your name or date of birth. This preview is temporarily limited to adults while additional safeguards for students aged 16–17 are completed.';
+      description.style.margin='0 0 18px';
+      const note=document.createElement('p');note.setAttribute('role','status');note.style.cssText='font-size:.92rem;margin:10px 0;color:#444';
+      const buttons=document.createElement('div');buttons.style.cssText='display:grid;gap:9px';
+      const actions=[
+        ['I am 18 or older','adult'],
+        ['I am 16 or 17','teen'],
+        ['I am under 16','younger'],
+        ['Cancel','cancel']
+      ];
+      let completed=false;
+      const finish=value=>{
+        if(completed)return;completed=true;overlay.remove();
+        if(previousFocus&&typeof previousFocus.focus==='function')previousFocus.focus();
+        resolve(value);
+      };
+      for(const [label,choice] of actions) {
+        const button=document.createElement('button');button.type='button';button.textContent=label;
+        button.style.cssText='padding:12px;border-radius:9px;border:1px solid #bac4d2;background:'+(choice==='adult'?'#1d4ed8':'#f8fafc')+';color:'+(choice==='adult'?'white':'#172033')+';font:inherit;cursor:pointer';
+        button.addEventListener('click',()=>{
+          if(choice==='adult'){adultConfirmed=true;finish('18-plus');return}
+          if(choice==='teen'){note.textContent='Access for ages 16–17 is being prepared. AI practice is not available in this preview yet.';return}
+          if(choice==='younger'){note.textContent='AI practice is not available for users under 16.';return}
+          finish(null);
+        });
+        buttons.appendChild(button);
+      }
+      dialog.append(title,description,buttons,note);overlay.appendChild(dialog);
+      document.body.appendChild(overlay);
+      const focusables=buttons.querySelectorAll('button');
+      overlay.addEventListener('keydown',event=>{
+        if(event.key==='Escape'){event.preventDefault();finish(null)}
+        if(event.key==='Tab'){
+          const first=focusables[0],last=focusables[focusables.length-1];
+          if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+          else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+        }
+      });
+      focusables[0].focus();
+    }).finally(()=>{ageDialogPending=null});
+    return ageDialogPending;
+  }
+
   async function request(prompt) {
     if (typeof prompt !== 'string' || !prompt.trim()) throw error('INVALID_REQUEST');
+    const ageBand = await confirmAdultForPreview();
+    if (previewOnly() && ageBand !== '18-plus') throw error('AGE_RESTRICTED');
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 55000);
     try {
       const response = await fetch('/.netlify/functions/gemini', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...(ageBand ? { 'X-LCorals-Age-Band': ageBand } : {}) },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }), signal: controller.signal
       });
       if (!response.ok) {

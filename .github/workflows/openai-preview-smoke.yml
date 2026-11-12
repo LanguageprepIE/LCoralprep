@@ -17,4 +17,4 @@ jobs:
           node --check security.js
           node --check .github/scripts/preview-quality-audit.cjs
           node --check .github/scripts/preview-consistency-ab.cjs
-          node --test tests/openai-preview.test.cjs
+          node --test tests/*.test.cjs

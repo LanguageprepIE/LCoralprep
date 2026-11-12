@@ -25,6 +25,7 @@ const LCSecurity = (() => {
   let adultConfirmed = false;
   let ageDialogPending = null;
   function previewOnly() {
+    if (typeof location === 'undefined') return false; // Offline tests / non-browser environments.
     return /^(?:deploy-preview-[0-9]+|[a-f0-9]{24})--lcorals\.netlify\.app$/i.test(location.hostname);
   }
   async function confirmAdultForPreview() {

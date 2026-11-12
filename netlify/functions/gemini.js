@@ -52,7 +52,7 @@ export const handler = async (event) => {
         // Preview phase: block AI requests without an explicit 18+ self-declaration.
         // A client header is NOT verified age assurance; this is only a first safeguard.
         const ageBand = Object.entries(event.headers || {}).find(([key]) => key.toLowerCase() === 'x-lcorals-age-band')?.[1];
-        if (ageBand !== '18-plus') return reply(403, 'AGE_RESTRICTED', 'AI practice in this preview is currently available to adults aged 18 and over.');
+        if (ageBand !== '18-plus' && ageBand !== '16-17-permission-declared') return reply(403, 'AGE_RESTRICTED', 'Please confirm your age group and, if aged 16–17, parental permission before using AI practice.');
         if (!process.env.OPENAI_API_KEY) return reply(503, 'OPENAI_KEY_MISSING', messages.unavailable);
         return requestOpenAI(body.contents);
     }
@@ -168,9 +168,10 @@ async function requestOpenAI(contents) {
             return reply(422, 'SAFETY_SUPPORT', 'This response needs human support, not automated language grading.');
         if (inputSafety === 'blocked' || outputSafety !== 'ok')
             return reply(422, 'SAFETY_BLOCKED', 'This content cannot be displayed as language practice.');
+        const advice = Boolean(data?.moderation?.input?.categories?.['self-harm']);
         return { statusCode: 200,
             headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-LCorals-Provider': 'openai-luna' },
-            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: outputText }] } }] }) };
+            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: outputText }] } }], ...(advice ? { safety_advisory: 'wellbeing' } : {}) }) };
     } catch {
         diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');
         return controller.signal.aborted ? reply(504, 'OPENAI_TIMEOUT', messages.timeout) : reply(503, 'OPENAI_NETWORK', messages.unavailable);

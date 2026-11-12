@@ -219,10 +219,8 @@ const LCSecurity = (() => {
       const band = ranges[data.band];
       if (!Number.isInteger(data.band) || !band || data.score < band[0] || data.score > band[1]) throw error('INVALID_RESPONSE');
     }
-    if (data.score === max) {
-      const words = `${data.feedback_es} ${data.feedback_en}`.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
-      if (/\b(?:no (?:merece|alcanza|obtiene|tiene|recibe)|sin (?:alcanzar|obtener)|did not (?:deserve|receive|get|reach)|does(?: not|n't) (?:deserve|receive|get|reach)|not (?:the |a )?|short of)\b.{0,65}\b(?:maxim[ao]|maximum|full (?:marks?|score)|top (?:marks?|score)|highest (?:marks?|score))\b/i.test(words)) throw error('INVALID_RESPONSE');
-    }
+    // Do not parse subjective feedback wording: language-dependent heuristics
+    // can reject a legitimate mark and make students lose their evaluation.
     return data;
   }
 

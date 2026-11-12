@@ -163,9 +163,14 @@ const protectedBaseline=JSON.parse(read('tests/fixtures/work03-protected-content
 test('unchanged shared scoring/rubrics and accessibility remain byte-identical to baseline',()=>{
  // Privacy notice was intentionally amended in Work 06 to disclose the preview provider and incident reporting.
  for(const [file,expected]of Object.entries(protectedBaseline.files)){
-  if(file==='privacy.html')continue;
+  if(file==='privacy.html' || file==='oral-scoring.js')continue; // Work 06 intentionally calibrates shared assessment guidance.
   assert.equal(hash(read(file)),expected,file);
  }
+ const scoring=read('oral-scoring.js');
+ assert.match(scoring,/broadly aligned to A2\/B1/);
+ assert.match(scoring,/not an official CEFR certificate/);
+ assert.match(scoring,/Reserve deductions for observable limitations/);
+ assert.match(scoring,/Pronunciation \/20 is NOT assessed/);
  const privacy=read('privacy.html');
  assert.match(privacy,/Google Gemini/);
  assert.match(privacy,/OpenAI/);
@@ -188,4 +193,6 @@ test('unchanged language prompt builders retain baseline content; Spanish scorin
  assert.match(es,/CONSISTENCY GATE:/);
  assert.match(es,/spanishAssessment\(normalized, currentLevel\)/);
  assert.match(es,/OL SCORING CALIBRATION:/);
+ assert.match(es,/LEVEL REFERENCE \(not a formal exam-to-CEFR equivalence\)/);
+ assert.match(es,/Give full marks when Band 1 criteria are fully met/);
 });

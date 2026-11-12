@@ -33,7 +33,7 @@ test('Preview requests Luna, inline moderation and store:false, preserving front
  assert.equal(payload.max_output_tokens,3000);
  assert.equal(payload.moderation.model,'omni-moderation-latest');
 });
-test('Preview blocks underage or missing declarations before provider calls',async()=>{
+test('Preview requires a declared age group and permission for 16–17s',async()=>{
  const b=setup(()=>{throw Error('must not call')});
  for(const age of [undefined,'under-16','16-17','16-17-parent-declared']){
    const h={...event('Hello').headers};
@@ -44,6 +44,12 @@ test('Preview blocks underage or missing declarations before provider calls',asy
    assert.equal(JSON.parse(r.body).error.code,'AGE_RESTRICTED');
  }
  assert.equal(b.calls.length,0);
+});
+test('A 16–17 parental-permission attestation is accepted in preview without a new account',async()=>{
+ const b=setup(()=>success('Practice feedback'));
+ const r=await b.run(event('Short oral answer',{'x-lcorals-age-band':'16-17-permission-declared'}));
+ assert.equal(r.statusCode,200);
+ assert.equal(b.calls.length,1);
 });
 test('Missing OpenAI key fails closed without Gemini fallback',async()=>{
  const b=setup(()=>{throw Error('must not call')},{GEMINI_API_KEY:'fake'});
@@ -64,7 +70,7 @@ test('Missing or failed inline moderation never releases content',async()=>{
   assert.equal(JSON.parse(r.body).error.code,'SAFETY_UNAVAILABLE');
  }
 });
-test('Self-harm intent leads to human support instead of exam feedback',async()=>{
+test('High-risk self-harm intent does not receive ordinary exam grading',async()=>{
  const b=setup(()=>success('Unsent output',mod({'self-harm/intent':true}),mod()));
  const r=await b.run(event('Synthetic risk text'));
  assert.equal(r.statusCode,422);
@@ -79,10 +85,15 @@ test('Other high risk input and unsafe output are withheld',async()=>{
   assert.ok(!r.body.includes('not returned'));
  }
 });
-test('Legitimate bullying or mental-health education is not blanket-blocked',async()=>{
+test('Sensitive educational topics receive ordinary feedback plus optional separate wellbeing metadata',async()=>{
  const b=setup(()=>success('Useful school feedback',mod({harassment:true,'self-harm':true}),mod()));
  const r=await b.run(event('Discussion of bullying and wellbeing in a school'));
  assert.equal(r.statusCode,200);
+ const output=JSON.parse(r.body);
+ assert.equal(output.safety_advisory,'wellbeing');
+ assert.equal(output.candidates[0].content.parts[0].text,'Useful school feedback');
+ const ordinary=setup(()=>success('Normal feedback',mod({harassment:true}),mod()));
+ assert.equal(JSON.parse((await ordinary.run(event('Bullying essay'))).body).safety_advisory,undefined);
 });
 test('Bounded prompts and incomplete model outputs are rejected',async()=>{
  const b=setup(()=>success());
@@ -91,15 +102,23 @@ test('Bounded prompts and incomplete model outputs are rejected',async()=>{
  const incomplete=setup(()=>({ok:true,status:200,json:async()=>({status:'incomplete',output:[],moderation:{input:mod(),output:mod()}})}));
  assert.equal((await incomplete.run(event('OK'))).statusCode,502);
 });
-test('Age choice is session-scoped across same-tab navigation; guardian prototype does not enable teens',()=>{
+test('Adult and parent-permitted teen age declarations are session-scoped',()=>{
  const ui=fs.readFileSync('security.js','utf8');
- assert.ok(ui.includes("sessionStorage.getItem('lcorals-preview-age-band-v1')"));
- assert.ok(ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','18-plus')"));
- assert.ok(ui.includes('Parent or guardian permission'));
- assert.ok(ui.includes('AI practice remains unavailable for ages 16–17'));
+ assert.ok(ui.includes('lcorals-preview-age-v2'));
+ assert.ok(ui.includes('sessionStorage.getItem(AGE_SESSION_KEY)'));
+ assert.ok(ui.includes('sessionStorage.setItem(AGE_SESSION_KEY,choice)'));
+ assert.ok(ui.includes('I am 16 or 17 and I have permission'));
+ assert.ok(ui.includes('16-17-permission-declared'));
+ assert.ok(ui.includes("if(checkbox.checked)done('16-17-permission-declared')"));
  assert.ok(!ui.includes('localStorage'));
 });
-
+test('Optional support is not appended to examiner text or score',()=>{
+ const ui=fs.readFileSync('security.js','utf8');
+ assert.ok(ui.includes("data?.safety_advisory === 'wellbeing'"));
+ assert.ok(ui.includes("id='lcorals-wellbeing-advice'"));
+ assert.ok(ui.includes('Childline 1800 66 66 66'));
+ assert.ok(ui.includes('Samaritans 116 123'));
+});
 test('Incident page reuses existing Formspree channel without collecting student transcripts automatically',()=>{
  const safety=fs.readFileSync('safety.html','utf8');
  const home=fs.readFileSync('index.html','utf8');

@@ -160,8 +160,17 @@ test('Spanish Conversation safely normalizes only in-range integer score strings
 
 const {hash,protectedContent}=require('./helpers/protected-content.cjs');
 const protectedBaseline=JSON.parse(read('tests/fixtures/work03-protected-content.json'));
-test('shared scoring/rubrics, accessibility logic and privacy are byte-identical to merged Work 02',()=>{
- for(const [file,expected]of Object.entries(protectedBaseline.files))assert.equal(hash(read(file)),expected,file);
+test('unchanged shared scoring/rubrics and accessibility remain byte-identical to baseline',()=>{
+ // Privacy notice was intentionally amended in Work 06 to disclose the preview provider and incident reporting.
+ for(const [file,expected]of Object.entries(protectedBaseline.files)){
+  if(file==='privacy.html')continue;
+  assert.equal(hash(read(file)),expected,file);
+ }
+ const privacy=read('privacy.html');
+ assert.match(privacy,/Google Gemini/);
+ assert.match(privacy,/OpenAI/);
+ assert.match(privacy,/safety\.html/);
+ assert.match(privacy,/Formspree/);
 });
 test('all seven modules retain their exact prompts, assessment builders and educational data', {skip:!process.env.LCORALS_ACORN_PATH},()=>{
  const acorn=require(process.env.LCORALS_ACORN_PATH);

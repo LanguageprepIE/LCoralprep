@@ -18,3 +18,7 @@ jobs:
           node --check .github/scripts/preview-quality-audit.cjs
           node --check .github/scripts/preview-consistency-ab.cjs
           node --test tests/openai-preview.test.cjs
+      - name: One synthetic preview moderation and Luna integration check
+        run: |
+          sleep 35
+          node .github/scripts/preview-safety-live-smoke.cjs

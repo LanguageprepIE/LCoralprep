@@ -10,7 +10,7 @@ const cases=[
 async function run(c){
 const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),55000);
 try{
-const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:c.prompt}]}]}),signal:ctrl.signal});
+const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-LCorals-Age-Band':'18-plus'},body:JSON.stringify({contents:[{parts:[{text:c.prompt}]}]}),signal:ctrl.signal});
 const body=await r.json();if(!r.ok)throw Error('HTTP_'+r.status+'_'+(body?.error?.code||'unknown'));
 if(r.headers.get('x-lcorals-provider')!=='openai-luna')throw Error('wrong-provider');
 const raw=body?.candidates?.[0]?.content?.parts?.[0]?.text;

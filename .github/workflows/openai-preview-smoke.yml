@@ -1,4 +1,4 @@
-name: OpenAI Preview age access regression
+name: OpenAI Preview multilingual safety audit
 on:
   pull_request:
     branches: [main]
@@ -9,7 +9,7 @@ concurrency:
 jobs:
   age:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4
       - name: Offline backend and age-band tests (no API spend)
@@ -18,7 +18,7 @@ jobs:
           node --check .github/scripts/preview-quality-audit.cjs
           node --check .github/scripts/preview-consistency-ab.cjs
           node --test tests/openai-preview.test.cjs
-      - name: One synthetic preview moderation and Luna integration check
+      - name: Five paced multilingual educational-safety checks
         run: |
           sleep 35
-          node .github/scripts/preview-safety-live-smoke.cjs
+          node .github/scripts/preview-multilingual-safety.cjs

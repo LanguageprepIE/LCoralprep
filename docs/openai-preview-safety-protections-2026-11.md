@@ -1,3 +1,5 @@
+> **Updated design decision (12 November 2026):** The 18+-only access and non-activating parental prototype described below were superseded: the **OpenAI preview only** now accepts a 16–17-year-old's session-scoped self-declaration of existing parental permission. This is not verified consent. Ordinary learning content continues; for non-urgent wellbeing flags a separate, optional support notice is shown **without changing grades**. High-risk self-harm intent/instructions, sexual content involving minors, violent illicit instructions and unsafe output may still interrupt practice. Production remains unchanged. Do not merge without end-to-end browser and privacy checks.
+
 # LCorals: proportionate content safeguards (OpenAI preview only)
 Date: 12 November 2026. Draft implementation — **not cleared for under-18 access or production release**.
 

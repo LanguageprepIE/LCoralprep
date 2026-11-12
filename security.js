@@ -16,70 +16,92 @@ const LCSecurity = (() => {
   const escape = value => String(value ?? '').replace(/[&<>"']/g, character =>
     ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[character]));
 
-  // Phase 1 (preview only): self-declared age band, no name/DOB/account stored.
-  // This is NOT verified age assurance and does not substitute for U18 safeguards.
+  // Phase 2 (preview only): age band and guardian declaration prototype.
+  // It asks no DOB/name/contact details, records no declaration on our servers,
+  // and DOES NOT authorise minor requests until the other safeguards are ready.
   let adultConfirmed = false;
   let ageDialogPending = null;
   function previewOnly() {
     return /^(?:deploy-preview-[0-9]+|[a-f0-9]{24})--lcorals\.netlify\.app$/i.test(location.hostname);
   }
   async function confirmAdultForPreview() {
-    if (!previewOnly()) return null; // Keep the existing production experience unchanged.
+    if (!previewOnly()) return null;
     if (adultConfirmed) return '18-plus';
     if (ageDialogPending) return ageDialogPending;
     ageDialogPending = new Promise(resolve => {
       const previousFocus = document.activeElement;
       const overlay = document.createElement('div');
-      overlay.setAttribute('role','presentation');
+      overlay.setAttribute('role', 'presentation');
       overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.76);display:grid;place-items:center;padding:16px;z-index:2147483647';
       const dialog = document.createElement('section');
-      dialog.setAttribute('role','dialog');
-      dialog.setAttribute('aria-modal','true');
-      dialog.setAttribute('aria-labelledby','lcorals-age-title');
-      dialog.setAttribute('aria-describedby','lcorals-age-text');
-      dialog.style.cssText = 'background:white;color:#172033;border-radius:16px;max-width:440px;width:100%;padding:24px;font:inherit;box-shadow:0 16px 40px #0004';
-      const title = document.createElement('h2');
-      title.id='lcorals-age-title';title.textContent='Before using AI practice';title.style.margin='0 0 12px';
-      const description=document.createElement('p');description.id='lcorals-age-text';
-      description.textContent='Please select your age group. We do not ask for your name or date of birth. This preview is temporarily limited to adults while additional safeguards for students aged 16–17 are completed.';
-      description.style.margin='0 0 18px';
-      const note=document.createElement('p');note.setAttribute('role','status');note.style.cssText='font-size:.92rem;margin:10px 0;color:#444';
-      const buttons=document.createElement('div');buttons.style.cssText='display:grid;gap:9px';
-      const actions=[
-        ['I am 18 or older','adult'],
-        ['I am 16 or 17','teen'],
-        ['I am under 16','younger'],
-        ['Cancel','cancel']
-      ];
+      dialog.setAttribute('role', 'dialog');
+      dialog.setAttribute('aria-modal', 'true');
+      dialog.setAttribute('aria-labelledby', 'lcorals-age-title');
+      dialog.setAttribute('aria-describedby', 'lcorals-age-text');
+      dialog.style.cssText = 'background:#fff;color:#172033;border-radius:16px;max-width:480px;width:100%;max-height:90vh;overflow:auto;padding:24px;font:inherit;box-shadow:0 16px 40px #0004';
+      const title=document.createElement('h2');
+      title.id='lcorals-age-title';title.style.margin='0 0 12px';
+      const description=document.createElement('p');
+      description.id='lcorals-age-text';description.style.margin='0 0 18px';
+      const controls=document.createElement('div');controls.style.cssText='display:grid;gap:10px';
+      const status=document.createElement('p');status.setAttribute('role','status');
+      status.style.cssText='font-size:.93rem;margin:12px 0 0;color:#334155';
       let completed=false;
-      const finish=value=>{
-        if(completed)return;completed=true;overlay.remove();
-        if(previousFocus&&typeof previousFocus.focus==='function')previousFocus.focus();
+      function finish(value) {
+        if(completed)return;
+        completed=true;overlay.remove();
+        if(previousFocus && typeof previousFocus.focus==='function')previousFocus.focus();
         resolve(value);
-      };
-      for(const [label,choice] of actions) {
-        const button=document.createElement('button');button.type='button';button.textContent=label;
-        button.style.cssText='padding:12px;border-radius:9px;border:1px solid #bac4d2;background:'+(choice==='adult'?'#1d4ed8':'#f8fafc')+';color:'+(choice==='adult'?'white':'#172033')+';font:inherit;cursor:pointer';
-        button.addEventListener('click',()=>{
-          if(choice==='adult'){adultConfirmed=true;finish('18-plus');return}
-          if(choice==='teen'){note.textContent='Access for ages 16–17 is being prepared. AI practice is not available in this preview yet.';return}
-          if(choice==='younger'){note.textContent='AI practice is not available for users under 16.';return}
-          finish(null);
-        });
-        buttons.appendChild(button);
       }
-      dialog.append(title,description,buttons,note);overlay.appendChild(dialog);
-      document.body.appendChild(overlay);
-      const focusables=buttons.querySelectorAll('button');
+      function button(label,action,primary=false) {
+        const b=document.createElement('button');b.type='button';b.textContent=label;
+        b.style.cssText='padding:12px;border-radius:9px;border:1px solid #bac4d2;background:'+(primary?'#1d4ed8':'#f8fafc')+';color:'+(primary?'#fff':'#172033')+';font:inherit;cursor:pointer;min-height:44px';
+        b.addEventListener('click',action);controls.appendChild(b);return b;
+      }
+      function renderAge() {
+        title.textContent='Before using AI practice';
+        description.textContent='Choose your age group. No name, date of birth or account is requested. In this preview, only users aged 18 or over can send answers to the AI. Students aged 16–17 can view the parent/guardian permission step, but their practice remains disabled.';
+        controls.replaceChildren();status.textContent='';
+        const first=button('I am 18 or older',()=>{adultConfirmed=true;finish('18-plus')},true);
+        button('I am 16 or 17',renderGuardian);
+        button('I am under 16',()=>{
+          status.textContent='AI practice is not available to users under 16.';
+        });
+        button('Cancel',()=>finish(null));
+        first.focus();
+      }
+      function renderGuardian() {
+        title.textContent='Parent or guardian permission — ages 16–17';
+        description.textContent='This is a draft permission step for a parent or legal guardian. LCorals is a free Leaving Certificate practice tool. Students type or dictate answers; answer text is processed by AI to provide questions and feedback. AI feedback can contain mistakes. Please avoid sharing real names, contact details or sensitive information. See Privacy & AI for full information.';
+        controls.replaceChildren();status.textContent='Preview only: completing this declaration does not yet enable AI practice for anyone under 18.';
+        const link=document.createElement('a');link.href='/privacy.html';link.textContent='Read Privacy & AI';link.target='_blank';link.rel='noopener noreferrer';controls.appendChild(link);
+        const label=document.createElement('label');label.style.cssText='display:flex;align-items:start;gap:10px;padding:10px 0;line-height:1.45';
+        const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.style.cssText='width:20px;height:20px;flex-shrink:0;margin-top:3px';
+        const statement=document.createElement('span');
+        statement.textContent='I confirm that I am the parent or legal guardian of a student aged 16–17. I have read the explanation above and the privacy information, and I give permission for the student to use LCorals AI practice when its safeguards are enabled.';
+        label.append(checkbox,statement);controls.appendChild(label);
+        const confirm=button('Confirm permission (preview only)',()=>{
+          status.textContent='Declaration preview completed. No personal details or permission record were submitted. AI practice remains unavailable for ages 16–17 until the additional safeguards are completed.';
+          confirm.disabled=true;confirm.style.opacity='.6';checkbox.disabled=true;
+        },true);
+        confirm.disabled=true;confirm.style.opacity='.6';
+        checkbox.addEventListener('change',()=>{confirm.disabled=!checkbox.checked;confirm.style.opacity=checkbox.checked?'1':'.6'});
+        button('Back to age selection',renderAge);
+        button('Close',()=>finish(null));
+        checkbox.focus();
+      }
+      dialog.append(title,description,controls,status);overlay.appendChild(dialog);document.body.appendChild(overlay);
       overlay.addEventListener('keydown',event=>{
         if(event.key==='Escape'){event.preventDefault();finish(null)}
         if(event.key==='Tab'){
-          const first=focusables[0],last=focusables[focusables.length-1];
+          const focusable=[...dialog.querySelectorAll('button:not([disabled]),a[href],input:not([disabled])')];
+          const first=focusable[0],last=focusable[focusable.length-1];
+          if(!first)return;
           if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
           else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
         }
       });
-      focusables[0].focus();
+      renderAge();
     }).finally(()=>{ageDialogPending=null});
     return ageDialogPending;
   }

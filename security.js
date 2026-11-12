@@ -110,6 +110,25 @@ const LCSecurity = (() => {
     return ageDialogPending;
   }
 
+  // Optional support information lives outside exam scoring JSON and never
+  // changes marks or the learner's answer. One unobtrusive notice per page.
+  function updateWellbeingAdvice(show) {
+    if (typeof document === 'undefined') return;
+    let node=document.getElementById('lcorals-wellbeing-advice');
+    if (!show) { if(node) node.remove(); return; }
+    if(!node) {
+      node=document.createElement('aside');
+      node.id='lcorals-wellbeing-advice';
+      node.setAttribute('aria-label','Optional wellbeing support');
+      node.style.cssText='max-width:800px;margin:18px auto;padding:12px 16px;border:1px solid #cbd5e1;border-radius:9px;background:#f8fafc;color:#334155;font:inherit;font-size:.9rem;line-height:1.5';
+      const text=document.createElement('span');
+      text.textContent='If this topic relates to a real difficulty, consider talking to an adult you trust. For confidential support in Ireland: Childline 1800 66 66 66 or Samaritans 116 123. ';
+      const link=document.createElement('a');link.href='/safety.html';link.textContent='More support and reporting information';
+      node.append(text,link);
+      document.body.appendChild(node);
+    }
+  }
+
   async function request(prompt) {
     if (typeof prompt !== 'string' || !prompt.trim()) throw error('INVALID_REQUEST');
     const ageBand = await confirmAgeForPreview();
@@ -143,6 +162,8 @@ const LCSecurity = (() => {
       if (!Array.isArray(parts) || !parts.length || parts.some(part => typeof part?.text !== 'string')) throw error('INVALID_RESPONSE');
       const text = parts.map(part => part.text).join('');
       if (!text.trim()) throw error('INVALID_RESPONSE');
+      // A gentle information panel is separate from generated feedback and scores.
+      updateWellbeingAdvice(data?.safety_advisory === 'wellbeing');
       return text;
     } catch (failure) {
       if (controller.signal.aborted) throw error('TIMEOUT');

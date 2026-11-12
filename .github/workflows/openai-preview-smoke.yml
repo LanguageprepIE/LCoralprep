@@ -45,3 +45,5 @@ jobs:
         run: |
           sleep 35
           node .github/scripts/preview-pedagogy-smoke.cjs
+      - name: Study Mode, Spanish roleplay, Polish gender sanity checks
+        run: node .github/scripts/preview-modes-smoke.cjs

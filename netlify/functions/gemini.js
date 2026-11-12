@@ -120,8 +120,8 @@ async function checkMinorSafety(text, signal) {
             body: JSON.stringify({ model:'omni-moderation-latest', input:text }),
             signal
         });
-    } catch { return { type:'unavailable' }; }
-    if (!response.ok) return { type:'unavailable' };
+    } catch { diagnostic('moderation_network'); return { type:'unavailable' }; }
+    if (!response.ok) { diagnostic('moderation_http_' + ([401,403].includes(response.status) ? 'auth_' + response.status : response.status === 429 ? 'rate_limit' : response.status >= 500 ? 'server' : 'other')); return { type:'unavailable' }; }
     let data;
     try { data = await response.json(); } catch { return { type:'unavailable' }; }
     const result = data?.results?.[0];

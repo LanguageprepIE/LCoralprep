@@ -1,4 +1,4 @@
-name: OpenAI Preview diagnostics (bounded)
+name: OpenAI Preview mode tests (bounded)
 on:
   pull_request:
     branches: [main]
@@ -7,26 +7,14 @@ concurrency:
   group: lcorals-preview-validation
   cancel-in-progress: true
 jobs:
-  diagnose:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - name: Local adapter regression tests
         run: node --test tests/openai-preview.test.cjs
-      - name: Single diagnostic request, no retries
+      - name: Four paced Study Mode, roleplay and Polish checks
         run: |
-          sleep 45
-          python3 - <<'PY'
-          import json, urllib.request, urllib.error
-          url='https://deploy-preview-27--lcorals.netlify.app/.netlify/functions/gemini'
-          body=json.dumps({'contents':[{'parts':[{'text':'Reply only HOLA.'}]}]}).encode()
-          req=urllib.request.Request(url,data=body,headers={'Content-Type':'application/json'},method='POST')
-          try:
-              with urllib.request.urlopen(req,timeout=55) as res:
-                  status=res.status; response=json.loads(res.read()); provider=res.headers.get('X-LCorals-Provider','none')
-          except urllib.error.HTTPError as e:
-              status=e.code; response=json.loads(e.read()); provider=e.headers.get('X-LCorals-Provider','none')
-          print('http_status',status,'provider',provider,'safe_error_code',response.get('error',{}).get('code','none'))
-          if status!=200 or provider!='openai-luna': raise SystemExit('Diagnostic probe failed')
-          PY
+          sleep 35
+          node .github/scripts/preview-modes-smoke.cjs

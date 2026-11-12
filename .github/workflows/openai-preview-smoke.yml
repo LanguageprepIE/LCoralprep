@@ -1,4 +1,4 @@
-name: OpenAI Preview consistency and Gemini A/B audit
+name: OpenAI Preview age access regression
 on:
   pull_request:
     branches: [main]
@@ -7,14 +7,10 @@ concurrency:
   group: lcorals-preview-validation
   cancel-in-progress: true
 jobs:
-  compare:
+  age:
     runs-on: ubuntu-latest
-    timeout-minutes: 11
+    timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - name: Local adapter regression tests
+      - name: Offline backend and age-band tests (no API spend)
         run: node --test tests/openai-preview.test.cjs
-      - name: Bounded synthetic comparative pedagogy checks
-        run: |
-          sleep 40
-          node .github/scripts/preview-consistency-ab.cjs

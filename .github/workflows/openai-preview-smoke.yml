@@ -33,3 +33,15 @@ jobs:
               raise SystemExit('Preview routing or upstream unavailable')
           print('Confirmed preview calls OpenAI Luna')
           PY
+
+  pedagogy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify transport regression tests
+        run: node --test tests/openai-preview.test.cjs
+      - name: Seven synthetic LCorals cases (5 languages, 2 mocks)
+        run: |
+          sleep 35
+          node .github/scripts/preview-pedagogy-smoke.cjs

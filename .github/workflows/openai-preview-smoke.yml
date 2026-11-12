@@ -1,4 +1,4 @@
-name: OpenAI Preview pedagogical quality audit
+name: OpenAI Preview consistency and Gemini A/B audit
 on:
   pull_request:
     branches: [main]
@@ -7,14 +7,14 @@ concurrency:
   group: lcorals-preview-validation
   cancel-in-progress: true
 jobs:
-  quality:
+  compare:
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 11
     steps:
       - uses: actions/checkout@v4
-      - name: Local adapter tests
+      - name: Local adapter regression tests
         run: node --test tests/openai-preview.test.cjs
-      - name: Four fictional answers with scored feedback for manual review
+      - name: Bounded synthetic comparative pedagogy checks
         run: |
           sleep 40
-          node .github/scripts/preview-quality-audit.cjs
+          node .github/scripts/preview-consistency-ab.cjs

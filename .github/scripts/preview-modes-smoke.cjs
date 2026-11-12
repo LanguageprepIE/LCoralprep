@@ -32,4 +32,4 @@ if(j.errors.length)throw Error('polish-invented-errors');
 return 'PASS';
 }finally{clearTimeout(timer)}
 }
-(async()=>{const fails=[];for(const [index,c] of cases.entries()){if(index) await new Promise(resolve=>setTimeout(resolve,18000));try{console.log('PASS',c.id,await run(c))}catch(e){console.log('FAIL',c.id,String(e.message||e).slice(0,100));fails.push(c.id)}}console.log('SUMMARY',JSON.stringify({passed:cases.length-fails.length,total:cases.length,failedIds:fails}));if(fails.length)process.exitCode=1})().catch(e=>{console.log('HARNESS-ERROR',e.message);process.exitCode=1});
+(async()=>{const fails=[];for(const [index,c] of cases.entries()){if(index) await new Promise(resolve=>setTimeout(resolve,30000));try{console.log('PASS',c.id,await run(c))}catch(e){console.log('FAIL',c.id,String(e.message||e).slice(0,100));fails.push(c.id);if(/^HTTP_429/.test(String(e.message||e))){console.log('STOP_RATE_LIMIT','No more requests to protect quota');break;}}}console.log('SUMMARY',JSON.stringify({passed:cases.length-fails.length,total:cases.length,failedIds:fails}));if(fails.length)process.exitCode=1})().catch(e=>{console.log('HARNESS-ERROR',e.message);process.exitCode=1});

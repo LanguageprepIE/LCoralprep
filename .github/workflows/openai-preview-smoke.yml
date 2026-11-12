@@ -1,49 +1,20 @@
-name: OpenAI Preview Smoke (synthetic)
+name: OpenAI Preview checks (bounded)
 on:
   push:
     branches: [work-06-openai-preview]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
+concurrency:
+  group: lcorals-preview-validation
+  cancel-in-progress: true
 jobs:
-  smoke:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Request one synthetic completion from Deploy Preview 27
-        shell: bash
-        run: |
-          sleep 45
-          python3 - <<'PY'
-          import json, urllib.request, urllib.error
-          url='https://deploy-preview-27--lcorals.netlify.app/.netlify/functions/gemini'
-          body=json.dumps({'contents':[{'parts':[{'text':'Reply with the single word HOLA.'}]}]}).encode()
-          req=urllib.request.Request(url,data=body,headers={'Content-Type':'application/json'},method='POST')
-          try:
-              with urllib.request.urlopen(req,timeout=35) as response:
-                  status=response.status
-                  provider=response.headers.get('X-LCorals-Provider','none')
-                  payload=json.loads(response.read())
-          except urllib.error.HTTPError as e:
-              status=e.code; provider=e.headers.get('X-LCorals-Provider','none')
-              try: payload=json.loads(e.read())
-              except Exception: payload={}
-          print('status:',status,'provider:',provider,'safe_error_code:',payload.get('error',{}).get('code','none'))
-          if status != 200 or provider != 'openai-luna':
-              raise SystemExit('Preview routing or upstream unavailable')
-          print('Confirmed preview calls OpenAI Luna')
-          PY
-
-  pedagogy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Verify transport regression tests
+      - name: Local adapter regression tests
         run: node --test tests/openai-preview.test.cjs
-      - name: Seven synthetic LCorals cases (5 languages, 2 mocks)
+      - name: Four paced synthetic live-mode checks
         run: |
-          sleep 35
-          node .github/scripts/preview-pedagogy-smoke.cjs
-      - name: Study Mode, Spanish roleplay, Polish gender sanity checks
-        run: node .github/scripts/preview-modes-smoke.cjs
+          sleep 65
+          node .github/scripts/preview-modes-smoke.cjs

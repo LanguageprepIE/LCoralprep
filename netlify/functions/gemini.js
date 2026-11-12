@@ -49,6 +49,10 @@ export const handler = async (event) => {
         Object.keys(body).length !== 1 || !validContents(body.contents)) return reply(400, 'INVALID_REQUEST', messages.invalid);
 
     if (previewHost(event.headers)) {
+        // Preview phase: block AI requests without an explicit 18+ self-declaration.
+        // A client header is NOT verified age assurance; this is only a first safeguard.
+        const ageBand = Object.entries(event.headers || {}).find(([key]) => key.toLowerCase() === 'x-lcorals-age-band')?.[1];
+        if (ageBand !== '18-plus') return reply(403, 'AGE_RESTRICTED', 'AI practice in this preview is currently available to adults aged 18 and over.');
         if (!process.env.OPENAI_API_KEY) return reply(503, 'OPENAI_KEY_MISSING', messages.unavailable);
         return requestOpenAI(body.contents);
     }

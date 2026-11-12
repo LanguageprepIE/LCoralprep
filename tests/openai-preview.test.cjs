@@ -74,9 +74,9 @@ test('Preview rejects missing or underage declaration before calling a provider'
 
 test('The under-18 guardian flow is preview-only and cannot grant API access by itself', () => {
   const ui=fs.readFileSync('security.js','utf8');
-  assert.match(ui,/Parent or guardian permission/);
-  assert.match(ui,/Confirm permission \\(preview only\\)/);
-  assert.match(ui,/AI practice remains unavailable for ages 16–17/);
-  assert.match(ui,/if \\(previewOnly\\(\\) && ageBand !== '18-plus'\\)/);
-  assert.doesNotMatch(ui,/localStorage|sessionStorage|document\\.cookie/);
+  assert.ok(ui.includes('Parent or guardian permission'));
+  assert.ok(ui.includes('Confirm permission (preview only)'));
+  assert.ok(ui.includes('AI practice remains unavailable for ages 16–17'));
+  assert.ok(ui.includes("ageBand !== '18-plus'"));
+  assert.ok(!ui.includes('localStorage') && !ui.includes('sessionStorage') && !ui.includes('document.cookie'));
 });

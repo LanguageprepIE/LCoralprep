@@ -122,7 +122,14 @@ async function requestOpenAI(contents) {
         });
         if (!response.ok) {
             diagnostic(`openai_http_${response.status === 429 ? '429' : [401,402,403].includes(response.status) ? 'auth' : response.status >= 500 ? '5xx' : 'other'}`);
-            if (response.status === 429) return reply(429, 'BUSY', messages.busy);
+            if (response.status === 429) {
+                let errorCode = '';
+                try { const upstream = await response.json(); errorCode = String(upstream?.error?.code || upstream?.error?.type || ''); } catch {}
+                const quotaCodes = new Set(['insufficient_quota','credit_balance_exhausted','organization_usage_limit_exceeded','organization_spend_limit_exceeded','project_spend_limit_exceeded']);
+                const classification = quotaCodes.has(errorCode) ? 'OPENAI_QUOTA' : ['rate_limit_exceeded','rate_limit_error','slow_down'].includes(errorCode) ? 'OPENAI_RATE_LIMIT' : 'OPENAI_RATE_UNKNOWN';
+                diagnostic('openai_429_' + classification.toLowerCase());
+                return reply(429, classification, messages.busy);
+            }
             if ([401,402,403].includes(response.status)) return reply(503, `OPENAI_HTTP_${response.status}`, messages.unavailable);
             return reply(response.status >= 500 ? 503 : 502, 'UPSTREAM_ERROR', messages.unavailable);
         }

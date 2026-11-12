@@ -1,3 +1,5 @@
+> **Updated design decision (12 November 2026):** The earlier 18+-only and guardian-facing *prototype* descriptions below are historical. The current OpenAI preview supports a 16–17-year-old's **own explicit attestation** that they already have parental/guardian permission. It remembers the selection once per browser-tab session. No parent account, ID or DOB is collected. This is not verified permission, and is not a legal compliance certification. Under-16s remain outside the intended audience. **The public site is unchanged.** Age protection and legal/privacy review are still required before merging.
+
 # LCorals.ie — provisional age-access policy (Deploy Preview only)
 
 Date: 12 November 2026. This is an interim engineering safeguard, **not a legal compliance certification**.

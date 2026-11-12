@@ -10,9 +10,9 @@ const LCSecurity = (() => {
     INVALID_RESPONSE: 'The AI did not return a complete response. Your answer is still on this page. Please try again.',
     NETWORK: 'The connection was interrupted. Your answer is still on this page. Check your connection and try again.',
     AGE_RESTRICTED: 'AI practice is not available for your age group in this preview. Your answer has not been sent.',
-    SAFETY_SUPPORT: 'This answer may involve someone\'s safety. LCorals cannot offer emergency help. If this relates to you, speak with a trusted adult or qualified professional. If anyone is in immediate danger in Ireland, call 112 or 999. Your text has not been submitted for exam feedback.',
-    SAFETY_BLOCKED: 'LCorals cannot process this content as language practice. Try a different answer, or ask a trusted adult or teacher for help.',
-    SAFETY_UNAVAILABLE: 'AI safety checks are temporarily unavailable. Your answer has not been sent for feedback. Please try again later.'
+    SAFETY_SUPPORT: 'Practice paused. If this concerns a real person, please speak with a trusted adult or qualified professional. In immediate danger in Ireland, call 112 or 999. LCorals does not send alerts. Your answer was not graded. See Safety and reporting on the homepage.',
+    SAFETY_BLOCKED: 'Practice paused because the automated safety check flagged this response. This may be a mistake. Try rephrasing an ordinary exam answer or see Safety and reporting on the homepage. Your answer was not graded.',
+    SAFETY_UNAVAILABLE: 'AI safety checks are temporarily unavailable. Your answer was not graded. Please try again later.'
   };
   const error = code => Object.assign(new Error(messages[code] || messages.INVALID_RESPONSE), { code });
   const message = value => messages[value?.code] || messages.INVALID_RESPONSE;

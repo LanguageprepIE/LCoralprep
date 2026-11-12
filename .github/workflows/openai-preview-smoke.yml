@@ -18,3 +18,7 @@ jobs:
           node --check .github/scripts/preview-quality-audit.cjs
           node --check .github/scripts/preview-consistency-ab.cjs
           node --test tests/*.test.cjs
+      - name: DOM and content regression with temporary test-only dependencies
+        run: |
+          npm install --prefix /tmp/lcorals-test-deps --no-save --silent jsdom@26.1.0 acorn@8.15.0
+          LCORALS_JSDOM_PATH=/tmp/lcorals-test-deps/node_modules/jsdom LCORALS_ACORN_PATH=/tmp/lcorals-test-deps/node_modules/acorn node --test tests/*.test.cjs

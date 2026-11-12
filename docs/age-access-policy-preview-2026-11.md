@@ -52,3 +52,37 @@ Sources:
 - https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance
 - https://www.dataprotection.ie/sites/default/files/uploads/2023-04/DPC_ChildrensData_ParentalConsent.pdf
 - https://www.irishstatutebook.ie/eli/2018/act/7/section/31/enacted/en/html
+
+## Phase 2 — draft guardian declaration (12 November 2026)
+
+A parent/guardian-facing, accessible draft is now available under the `16–17`
+choice on OpenAI Deploy Previews. It explains the educational use, AI
+processing, privacy link, potential AI mistakes and avoidance of personal data.
+A confirmation checkbox is deliberately required before its draft acknowledgement.
+
+**This is not a finished parental consent mechanism.** No identity or
+parent-child relationship is verified; no auditable consent evidence is stored;
+no account, email, DOB or guardian details are collected. The UI does not
+unlock teen AI access. The backend *still rejects* all non-`18-plus` age-band
+headers, including forged `16-17-parent-declared` headers.
+
+### Legal distinction to resolve
+
+- The Data Protection Commission says Irish children aged **16 or 17 can
+  generally give their own GDPR consent for information society services
+  when consent is the appropriate lawful basis**, but remain minors under 18.
+- OpenAI's Services Agreement separately prohibits allowing minors to access
+  OpenAI services without parent or guardian consent. A contractual permission
+  declaration cannot automatically be considered sufficient for GDPR compliance.
+- This prototype alone does not prove the declaration came from a guardian.
+  We need to decide if proportionate verification/confirmation is appropriate
+  and document the decision before accepting any minor requests.
+- The age check must not be represented as verified age assurance. Declaring
+  `18-plus` in the browser can be falsified.
+- Safeguarding (content controls and incident escalation), lawful basis, and
+  applicable retention review still need completion before switching on 16–17.
+
+Sources:
+- https://openai.com/en-GB/policies/services-agreement/
+- https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance
+- https://www.dataprotection.ie/sites/default/files/uploads/2023-04/DPC_ChildrensData_ParentalConsent.pdf

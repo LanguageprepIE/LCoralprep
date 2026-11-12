@@ -123,3 +123,36 @@ test('Age selection is remembered per tab and not persisted for under-18 guardia
   assert.ok(ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','18-plus')"));
   assert.ok(!ui.includes("sessionStorage.setItem('lcorals-preview-age-band-v1','16-17'"));
 });
+
+test('Sensitive but legitimate school topics are not blocked merely for being flagged',async()=>{
+  const src=fs.readFileSync('netlify/functions/gemini.js','utf8');
+  const visited=[];
+  const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
+    fetch:async(url)=>{
+      visited.push(url);
+      if(url.endsWith('/moderations'))return {ok:true,json:async()=>({results:[{flagged:true,categories:{'harassment':true,'self-harm':true,'self-harm/intent':false,'self-harm/instructions':false}}]})};
+      return success('Safe practice feedback');
+    },setTimeout:()=>1,clearTimeout(){}});
+  vm.runInContext(src.replace('export const handler','const handler')+'\nglobalThis.run=handler;',ctx);
+  const result=await ctx.run(event('School essay about bullying'));
+  assert.equal(result.statusCode,200);
+  assert.equal(visited.length,3);
+});
+
+test('Unsafe model output is withheld after output moderation',async()=>{
+  const src=fs.readFileSync('netlify/functions/gemini.js','utf8');
+  let moderationIndex=0;
+  const ctx=vm.createContext({Buffer,AbortController,process:{env:{OPENAI_API_KEY:'synthetic-key'}},console:{warn(){}},
+    fetch:async(url)=>{
+      if(url.endsWith('/moderations')){
+        moderationIndex++;
+        return {ok:true,json:async()=>({results:[{categories:moderationIndex===2?{'sexual/minors':true}:{}}]})};
+      }
+      return success('Synthetic unsafe content withheld');
+    },setTimeout:()=>1,clearTimeout(){}});
+  vm.runInContext(src.replace('export const handler','const handler')+'\nglobalThis.run=handler;',ctx);
+  const result=await ctx.run(event('Ordinary language response'));
+  assert.equal(result.statusCode,422);
+  assert.equal(JSON.parse(result.body).error.code,'SAFETY_BLOCKED');
+  assert.equal(moderationIndex,2);
+});

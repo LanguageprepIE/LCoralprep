@@ -20,7 +20,7 @@ async function request(t) {
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),55000);
  try {
   const r=await fetch('https://deploy-preview-27--lcorals.netlify.app/.netlify/functions/gemini',
-   {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt(t)}]}]}),signal:controller.signal});
+   {method:'POST',headers:{'content-type':'application/json','X-LCorals-Age-Band':'18-plus'},body:JSON.stringify({contents:[{parts:[{text:prompt(t)}]}]}),signal:controller.signal});
   const d=await r.json();if(!r.ok)throw Error('HTTP_'+r.status+'_'+(d.error?.code||'unknown'));
   if(r.headers.get('x-lcorals-provider')!=='openai-luna')throw Error('PROVIDER_NOT_LUNA');
   const raw=d.candidates?.[0]?.content?.parts?.[0]?.text;

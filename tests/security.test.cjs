@@ -176,6 +176,12 @@ test('unchanged language prompt builders retain baseline content; Spanish scorin
  const acorn=require(process.env.LCORALS_ACORN_PATH);
  for(const [lang,expected]of Object.entries(protectedBaseline.modules)){
   if(lang==='es')continue; // Work 06 deliberately adds Spanish scoring consistency instructions.
+  if(lang==='pl') {
+   // The old Work 03 AST fixture predates the unchanged current main version of Polish.
+   // GitHub blob SHA is identical on main and this preview: e384ce6287d08737d88733d9ed7f3368bac8510c.
+   assert.deepEqual(protectedContent(read('pl/script.js'),acorn),{count:9,hash:'9140a1b5ebcbc6149af63eeb2e8de6c7ee2f72d58cc33614cb11d7c716533053'});
+   continue;
+  }
   assert.deepEqual(protectedContent(read(`${lang}/script.js`),acorn),expected,lang);
  }
  const es=read('es/script.js');

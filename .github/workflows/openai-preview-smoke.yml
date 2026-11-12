@@ -1,4 +1,4 @@
-name: OpenAI Preview mode tests (bounded)
+name: OpenAI Preview pedagogical quality audit
 on:
   pull_request:
     branches: [main]
@@ -7,14 +7,14 @@ concurrency:
   group: lcorals-preview-validation
   cancel-in-progress: true
 jobs:
-  validate:
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4
-      - name: Local adapter regression tests
+      - name: Local adapter tests
         run: node --test tests/openai-preview.test.cjs
-      - name: Four paced Study Mode, roleplay and Polish checks
+      - name: Four fictional answers with scored feedback for manual review
         run: |
-          sleep 35
-          node .github/scripts/preview-modes-smoke.cjs
+          sleep 40
+          node .github/scripts/preview-quality-audit.cjs

@@ -99,3 +99,29 @@ test('Age choice is session-scoped across same-tab navigation; guardian prototyp
  assert.ok(ui.includes('AI practice remains unavailable for ages 16–17'));
  assert.ok(!ui.includes('localStorage'));
 });
+
+test('Incident page reuses existing Formspree channel without collecting student transcripts automatically',()=>{
+ const safety=fs.readFileSync('safety.html','utf8');
+ const home=fs.readFileSync('index.html','utf8');
+ const privacy=fs.readFileSync('privacy.html','utf8');
+ assert.ok(home.includes('href="/safety.html"'));
+ assert.ok(privacy.includes('href="/safety.html"'));
+ assert.ok(safety.includes('https://formspree.io/f/mjggeygj'));
+ assert.ok(safety.includes('name="message"'));
+ assert.ok(safety.includes('112 or 999'));
+ assert.ok(safety.includes('not monitored continuously'));
+ assert.ok(safety.includes('school'));
+ assert.ok(!safety.includes('localStorage') && !safety.includes('sessionStorage'));
+ assert.ok(!safety.includes('type="file"'));
+ assert.ok(!safety.includes('onload=') && !safety.includes('navigator.sendBeacon'));
+});
+test('Safety messages distinguish emergency, false positives and downtime without claiming surveillance',()=>{
+ const ui=fs.readFileSync('security.js','utf8');
+ assert.ok(ui.includes('SAFETY_SUPPORT'));
+ assert.ok(ui.includes('SAFETY_BLOCKED'));
+ assert.ok(ui.includes('SAFETY_UNAVAILABLE'));
+ assert.ok(ui.includes('112 or 999'));
+ assert.ok(ui.includes('This may be a mistake'));
+ assert.ok(ui.includes('LCorals does not send alerts'));
+ assert.ok(!ui.includes('alert a teacher automatically'));
+});

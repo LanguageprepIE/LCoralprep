@@ -38,6 +38,7 @@ async function send(text){
   return textOut;
  }finally{clearTimeout(timer)}
 }
+async function main(){
 const problems=[];let passed=0;for(const t of tests){
  try{
    const raw=await send(promptFor(t));
@@ -61,3 +62,6 @@ const problems=[];let passed=0;for(const t of tests){
 }
 console.log('SUMMARY',JSON.stringify({passed,total:tests.length,failures:problems}));
 if(problems.length)process.exitCode=1;
+
+}
+main().catch(e=>{console.error('TEST_HARNESS_ERROR',e.message);process.exitCode=1;});

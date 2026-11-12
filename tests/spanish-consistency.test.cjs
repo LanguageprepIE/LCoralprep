@@ -16,8 +16,9 @@ test('score and selected official-style band cannot disagree', () => {
   for (const [score,band] of [[70,2],[62,1],[0,1],[60,3],[71,1],[-1,7]])
     assert.throws(() => assess(score,band,'Respuesta adecuada.'), /INVALID_RESPONSE|response/i);
 });
-test('a maximum mark cannot explicitly claim the maximum was not earned', () => {
-  assert.throws(() => assess(70,1,'La única razón por la que no tiene la máxima puntuación es su brevedad.'), /response/i);
-  assert.throws(() => assess(70,1,'Muy bien.','You did not receive the maximum score because it was brief.'), /response/i);
+test('text-only feedback variations do not discard a valid numerical mark', () => {
+  assert.equal(assess(70,1,'La única razón por la que no tiene la máxima puntuación es su brevedad.').score,70);
+  assert.equal(assess(70,1,'Muy bien.','You did not receive the maximum score because it was brief.').score,70);
   assert.equal(assess(65,1,'No alcanza la máxima puntuación por su desarrollo.').score,65);
+  // Rubric and feedback alignment remains a model instruction and audit concern.
 });

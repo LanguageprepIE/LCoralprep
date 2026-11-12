@@ -172,7 +172,14 @@ test('unchanged shared scoring/rubrics and accessibility remain byte-identical t
  assert.match(privacy,/safety\.html/);
  assert.match(privacy,/Formspree/);
 });
-test('all seven modules retain their exact prompts, assessment builders and educational data', {skip:!process.env.LCORALS_ACORN_PATH},()=>{
+test('unchanged language prompt builders retain baseline content; Spanish scoring change is intentional', {skip:!process.env.LCORALS_ACORN_PATH},()=>{
  const acorn=require(process.env.LCORALS_ACORN_PATH);
- for(const [lang,expected]of Object.entries(protectedBaseline.modules))assert.deepEqual(protectedContent(read(`${lang}/script.js`),acorn),expected,lang);
+ for(const [lang,expected]of Object.entries(protectedBaseline.modules)){
+  if(lang==='es')continue; // Work 06 deliberately adds Spanish scoring consistency instructions.
+  assert.deepEqual(protectedContent(read(`${lang}/script.js`),acorn),expected,lang);
+ }
+ const es=read('es/script.js');
+ assert.match(es,/CONSISTENCY GATE:/);
+ assert.match(es,/spanishAssessment\(normalized, currentLevel\)/);
+ assert.match(es,/OL SCORING CALIBRATION:/);
 });

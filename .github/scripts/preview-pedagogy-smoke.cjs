@@ -29,7 +29,7 @@ function promptFor(t) {
 async function send(text){
  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),55000);
  try {
-  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text}]}]}),signal:controller.signal});
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-LCorals-Age-Band':'18-plus'},body:JSON.stringify({contents:[{parts:[{text}]}]}),signal:controller.signal});
   const raw=await r.text();let data;try{data=JSON.parse(raw)}catch{throw Error('non_json_http_'+r.status)}
   if(!r.ok)throw Error(`HTTP_${r.status}_${data?.error?.code||'unknown'}`);
   if(r.headers.get('x-lcorals-provider')!=='openai-luna')throw Error('provider_header_not_luna');

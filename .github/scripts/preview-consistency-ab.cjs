@@ -18,7 +18,7 @@ const esRanges={1:[65,70],2:[55,60],3:[45,50],4:[30,40],5:[20,25],6:[10,15],7:[0
 async function send(t,provider){
  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),60000);
  try{
-  const r=await fetch(urls[provider],{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:ctx.makePrompt(t)}]}]}),signal:ctrl.signal});
+  const r=await fetch(urls[provider],{method:'POST',headers:{'Content-Type':'application/json','X-LCorals-Age-Band':'18-plus'},body:JSON.stringify({contents:[{parts:[{text:ctx.makePrompt(t)}]}]}),signal:ctrl.signal});
   const d=await r.json();if(!r.ok)throw Error('HTTP_'+r.status+'_'+(d.error?.code||'unknown'));
   if(provider==='luna'&&r.headers.get('x-lcorals-provider')!=='openai-luna')throw Error('LUNA_HEADER_MISSING');
   const raw=d?.candidates?.[0]?.content?.parts?.[0]?.text;

@@ -108,6 +108,32 @@ export const handler = async (event) => {
     }
 };
 
+// Moderate only the OpenAI preview path. Classify rather than block all flagged
+// text: exam topics can legitimately discuss bullying, health and social issues.
+// Do not log transcripts, classifications or moderation bodies.
+async function checkMinorSafety(text, signal) {
+    let response;
+    try {
+        response = await fetch('https://api.openai.com/v1/moderations', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+            body: JSON.stringify({ model:'omni-moderation-latest', input:text }),
+            signal
+        });
+    } catch { return { type:'unavailable' }; }
+    if (!response.ok) return { type:'unavailable' };
+    let data;
+    try { data = await response.json(); } catch { return { type:'unavailable' }; }
+    const result = data?.results?.[0];
+    if (!result || !result.categories || typeof result.categories !== 'object') return { type:'unavailable' };
+    const c = result.categories;
+    // High-risk categories get a safe stop. Ordinary educational topics,
+    // including bullying and mental health, must remain usable.
+    if (c['self-harm/intent'] || c['self-harm/instructions']) return { type:'support' };
+    if (c['sexual/minors'] || c['illicit/violent']) return { type:'blocked' };
+    return { type:'ok' };
+}
+
 async function requestOpenAI(contents) {
     // The current frontend sends text-only Gemini-shaped prompts. Preserve its
     // response contract while changing only the upstream provider on previews.
@@ -116,6 +142,10 @@ async function requestOpenAI(contents) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
     try {
+        const inputSafety = await checkMinorSafety(prompt, controller.signal);
+        if (inputSafety.type === 'unavailable') return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
+        if (inputSafety.type === 'support') return reply(422, 'SAFETY_SUPPORT', 'This response needs human support, not automated language grading.');
+        if (inputSafety.type === 'blocked') return reply(422, 'SAFETY_BLOCKED', 'This content cannot be processed for language practice.');
         const response = await fetch('https://api.openai.com/v1/responses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
@@ -148,9 +178,13 @@ async function requestOpenAI(contents) {
             diagnostic('openai_incomplete');
             return reply(502, 'INVALID_RESPONSE', messages.response);
         }
+        const outputText = texts.join('');
+        const outputSafety = await checkMinorSafety(outputText, controller.signal);
+        if (outputSafety.type === 'unavailable') return reply(503, 'SAFETY_UNAVAILABLE', messages.unavailable);
+        if (outputSafety.type !== 'ok') return reply(422, 'SAFETY_BLOCKED', 'The generated answer cannot be displayed safely. Please try again.');
         return { statusCode: 200,
             headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-LCorals-Provider': 'openai-luna' },
-            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: texts.join('') }] } }] }) };
+            body: JSON.stringify({ candidates: [{ content: { parts: [{ text: outputText }] } }] }) };
     } catch {
         diagnostic(controller.signal.aborted ? 'openai_timeout' : 'openai_network');
         return controller.signal.aborted ? reply(504, 'OPENAI_TIMEOUT', messages.timeout) : reply(503, 'OPENAI_NETWORK', messages.unavailable);

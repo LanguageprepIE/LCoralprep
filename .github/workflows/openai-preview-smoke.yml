@@ -13,4 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Offline backend and age-band tests (no API spend)
-        run: node --test tests/openai-preview.test.cjs
+        run: |
+          node --check security.js
+          node --check .github/scripts/preview-quality-audit.cjs
+          node --check .github/scripts/preview-consistency-ab.cjs
+          node --test tests/openai-preview.test.cjs

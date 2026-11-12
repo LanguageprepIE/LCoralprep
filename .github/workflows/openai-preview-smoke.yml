@@ -1,7 +1,7 @@
 name: OpenAI Preview checks (bounded)
 on:
-  push:
-    branches: [work-06-openai-preview]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: lcorals-preview-validation

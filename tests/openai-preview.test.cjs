@@ -57,7 +57,7 @@ test('Production hostname still uses Gemini',async()=>{
  assert.match(b.calls[0][0],/generativelanguage\.googleapis\.com/);
 });
 test('Missing or failed inline moderation never releases content',async()=>{
- for(const bad of [undefined,{type:'error',message:'unavailable'}]){
+ for(const bad of [null,{type:'error',message:'unavailable'}]){
   const b=setup(()=>success('Hola',bad,mod()));
   const r=await b.run(event('Practice'));
   assert.equal(r.statusCode,503);

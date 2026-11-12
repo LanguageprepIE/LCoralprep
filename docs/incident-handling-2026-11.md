@@ -1,3 +1,5 @@
+> **Updated design decision (12 November 2026):** In the OpenAI preview, the age declaration now accepts 16–17-year-olds who confirm that they already have parental/guardian permission (session-scoped; not independently verified). Routine wellbeing flags can show an optional Childline/Samaritans notice while preserving feedback. The high-risk interventions listed below remain; this is not an emergency service. End-to-end UI and legal/privacy release gates remain open.
+
 # LCorals.ie — incident handling and safeguarding procedure (draft)
 Date: 12 November 2026
 Status: prepared on **work-06-openai-preview** only. Not a legal compliance certificate; no rollout to minors.

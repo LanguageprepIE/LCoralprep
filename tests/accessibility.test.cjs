@@ -48,6 +48,16 @@ async function fixture(lang) {
   const html = read(`${lang}/index.html`).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
   const dom = new JSDOM(html, { runScripts: 'dangerously', url: `https://fixture.invalid/${lang}/`, pretendToBeVisual: true });
   const w = dom.window;
+  // Track observers created by app scripts so teardown cannot deliver callbacks
+  // against a closed jsdom document. Live browser MutationObservers are untouched.
+  const observers = [];
+  const NativeMutationObserver = w.MutationObserver;
+  w.MutationObserver = class extends NativeMutationObserver {
+    constructor(callback) {
+      super(callback);
+      observers.push(this);
+    }
+  };
   const errors = [];
   dom.virtualConsole.on('jsdomError', error => errors.push(String(error)));
   w.console.error = (...args) => errors.push(args.map(String).join(' '));
@@ -74,7 +84,10 @@ async function fixture(lang) {
   w.eval(read('security.js') + '\n' + read('oral-scoring.js') + '\n' + read(`${lang}/script.js`) + '\n' + read('accessibility.js'));
   await new Promise(resolve => w.addEventListener('load', resolve, { once: true }));
   await tick();
-  return { w, d: w.document, errors, close: () => w.close() };
+  return { w, d: w.document, errors, close: () => {
+    for (const observer of observers) observer.disconnect();
+    w.close();
+  } };
 }
 function reply(lang, task = 'conversation') {
   const max = { es: 70, it: task === 'picture' || task === 'roleplay' ? 25 : 50, de: task === 'picture' ? 30 : 40, pl: 100, ga: 100, eal: 100 }[lang];

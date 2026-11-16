@@ -794,6 +794,7 @@ async function analyze() {
 
     IMPORTANT:
     - A top-band mark does NOT require error-free, native-speaker or C1/C2 Spanish. The official top band explicitly allows grammatical inaccuracies, mainly slips.
+    - LEVEL REFERENCE (not a formal exam-to-CEFR equivalence): Leaving Certificate curricular languages are broadly described around A2/B1. For HL conversation, B1-type familiar-topic communication is a helpful orientation, not a minimum B1 certificate for every response. Do not reserve 70/70 for bilingual, B2/C1, exceptionally rare syntax or a hypothetical extra detail. Give full marks when Band 1 criteria are fully met; a genuinely observable limitation may justify a lower mark within the band. For OL, value effective basic communication; do not apply HL development expectations.
     - Do not withhold Band 1 merely because extra idioms, rarer vocabulary, more tenses or more sophisticated structures could be added.
     - Evaluate what the learner successfully communicates and how securely they control it. Weigh inaccuracies by frequency, seriousness and effect on communication.
     - Because this is a transcript, do not assess pronunciation, intonation, pauses, real-time fluency or examiner support.
@@ -818,6 +819,7 @@ async function analyze() {
     - OL SCORING CALIBRATION: score must be an INTEGER from 0 to 100 inclusive (not 0 to 10). Around 85-100: clear, relevant, well-developed basic communication with good control; 65-84: relevant and mostly accurate communication that answers most parts of the question, though limited in detail or range; 40-64: partially developed but understandable response, including a single correct fact when the question asks for several pieces of information; 15-39: very limited information or repeated errors that materially obstruct communication; 0-14: almost no relevant comprehensible response. A short but correct and relevant response can earn more than 14 points; do not treat limited length alone as failure.
     - At OL distinguish accuracy from completeness: one accurate sentence responding to only one part of a multi-part question deserves positive feedback on correctness but not a high mark for task completion. A single relevant fact without development will normally fall in the 40-64 range, not 65-84; do not apply this rule mechanically to a question that only asks for one fact.
     - Match the numerical score to the written feedback: very positive feedback describing a clear and accurate response must not accompany a near-zero mark. If the response is too brief for a high score, explain the limitation clearly and proportionately. Before returning JSON, review the mark and feedback together for consistency.
+    - CONSISTENCY GATE: if score equals the maximum (70 HL or 100 OL), both feedback summaries must explicitly support a maximum mark; NEVER say it falls short of full marks. If you identify a real limitation that prevents full marks, lower the mark to the appropriate band instead. For HL, the selected band number and score MUST agree with the exact band ranges above; never award a score in the gaps between bands.
     - Be encouraging and confidence-building, while identifying one or two realistic next steps.
     - This is raw speech-to-text. Ignore punctuation, capitalisation and accent marks. Never deduct for commas, full stops or question marks.
     - Do not assess pronunciation, intonation, pauses or fluency from a written transcript.
@@ -866,7 +868,7 @@ async function analyze() {
     parsedEvaluation = parsed;
     evaluationStage = 'schema_validation';
     const normalized = LCSecurity.normalizeSpanishScore(parsed, currentLevel);
-    const j = LCSecurity.feedback(normalized, ["feedback_es", "feedback_en"]);
+    const j = LCSecurity.spanishAssessment(normalized, currentLevel);
     evaluationStage = 'render';
     
     document.getElementById('exerciseArea').style.display = 'none'; 

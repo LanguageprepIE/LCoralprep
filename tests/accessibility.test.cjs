@@ -48,6 +48,16 @@ async function fixture(lang) {
   const html = read(`${lang}/index.html`).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
   const dom = new JSDOM(html, { runScripts: 'dangerously', url: `https://fixture.invalid/${lang}/`, pretendToBeVisual: true });
   const w = dom.window;
+  // Track observers created by app scripts so teardown cannot deliver callbacks
+  // against a closed jsdom document. Live browser MutationObservers are untouched.
+  const observers = [];
+  const NativeMutationObserver = w.MutationObserver;
+  w.MutationObserver = class extends NativeMutationObserver {
+    constructor(callback) {
+      super(callback);
+      observers.push(this);
+    }
+  };
   const errors = [];
   dom.virtualConsole.on('jsdomError', error => errors.push(String(error)));
   w.console.error = (...args) => errors.push(args.map(String).join(' '));
@@ -74,11 +84,14 @@ async function fixture(lang) {
   w.eval(read('security.js') + '\n' + read('oral-scoring.js') + '\n' + read(`${lang}/script.js`) + '\n' + read('accessibility.js'));
   await new Promise(resolve => w.addEventListener('load', resolve, { once: true }));
   await tick();
-  return { w, d: w.document, errors, close: () => w.close() };
+  return { w, d: w.document, errors, close: () => {
+    for (const observer of observers) observer.disconnect();
+    w.close();
+  } };
 }
 function reply(lang, task = 'conversation') {
   const max = { es: 70, it: task === 'picture' || task === 'roleplay' ? 25 : 50, de: task === 'picture' ? 30 : 40, pl: 100, ga: 100, eal: 100 }[lang];
-  const data = { question: '', band: 'excellent', score: max, feedback_es: 'Synthetic feedback.', feedback_it: 'Synthetic feedback.', feedback_de: 'Synthetic feedback.', feedback_pl: 'Synthetic feedback.', feedback_fr: 'Synthetic feedback.', feedback_ga: 'Synthetic feedback.', feedback_native: 'Synthetic feedback.', feedback_en: 'Synthetic feedback.', summary_en: 'Synthetic summary.', strengths: [], next_steps: [], connectors: [], vocabulary_suggestions: [], errors: [], corrections: [] };
+  const data = { question: '', band: lang === 'es' ? 1 : 'excellent', score: max, feedback_es: 'Synthetic feedback.', feedback_it: 'Synthetic feedback.', feedback_de: 'Synthetic feedback.', feedback_pl: 'Synthetic feedback.', feedback_fr: 'Synthetic feedback.', feedback_ga: 'Synthetic feedback.', feedback_native: 'Synthetic feedback.', feedback_en: 'Synthetic feedback.', summary_en: 'Synthetic summary.', strengths: [], next_steps: [], connectors: [], vocabulary_suggestions: [], errors: [], corrections: [] };
   const part = score => ({ band: 'excellent', score });
   if (lang === 'fr') Object.assign(data, { communication: part(30), structures: part(30), vocabulary: part(20) });
   if (lang === 'it' && task === 'mock') Object.assign(data, { conversation: part(50), roleplay: part(25), picture: part(25) });
@@ -245,6 +258,7 @@ test('DOM AI failure restores the submit control and retains the typed answer', 
     assert.equal(d.querySelector('#btnAction').disabled, false);
     assert.equal(d.querySelector('#exerciseArea').getAttribute('aria-busy'), 'false');
     assert.equal(d.querySelector('#userInput').value, 'Synthetic answer retained after failure.');
-    assert.ok(f.errors.some(x => /Synthetic offline error/.test(x)));
+    assert.ok(f.errors.some(x => /alert: .*Error:/.test(x)));
+    assert.ok(!f.errors.some(x => /Synthetic offline error/.test(x)), 'Error details should not leak to learners');
   } finally { f.close(); }
 });

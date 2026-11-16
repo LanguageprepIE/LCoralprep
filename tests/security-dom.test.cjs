@@ -9,6 +9,9 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,10));
 async function fixture(lang){
  const dom=new JSDOM(read(`${lang}/index.html`).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,''),{runScripts:'dangerously',url:`https://fixture.invalid/${lang}/`,pretendToBeVisual:true});
  const w=dom.window,d=w.document,errors=[];
+ // Disconnect test-only observers before destroying jsdom's document.
+ const observers=[],NativeMutationObserver=w.MutationObserver;
+ w.MutationObserver=class extends NativeMutationObserver{constructor(callback){super(callback);observers.push(this);}};
  dom.virtualConsole.on('jsdomError',e=>errors.push(String(e)));
  w.__xss=0;w.alert=s=>errors.push('alert: '+s);w.console.error=(...a)=>errors.push(a.map(String).join(' '));
  w.fetch=()=>{throw Error('NETWORK DISABLED');};w.HTMLElement.prototype.scrollIntoView=()=>{};
@@ -17,7 +20,7 @@ async function fixture(lang){
  Object.defineProperty(w,'speechSynthesis',{value:{cancel(){},getVoices:()=>[],speak(){}}});
  w.eval(read('security.js')+'\n'+read('oral-scoring.js')+'\n'+read(`${lang}/script.js`)+'\n'+read('accessibility.js'));
  await new Promise(resolve=>w.addEventListener('load',resolve,{once:true}));await tick();
- return {w,d,errors,close:()=>w.close()};
+ return {w,d,errors,close:()=>{for(const observer of observers)observer.disconnect();w.close();}};
 }
 function clean(f,element){
  assert.ok(element);assert.equal(element.querySelectorAll('img,script,svg,iframe,object').length,0);
